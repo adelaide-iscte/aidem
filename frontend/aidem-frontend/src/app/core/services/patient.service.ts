@@ -66,7 +66,8 @@ export interface EgpAssessment {
   providedIn: 'root'
 })
 export class PatientService {
-  private readonly apiUrl = 'http://localhost:8080/api/patients';
+  //private readonly apiUrl = 'http://localhost:8080/api/patients';
+  private readonly apiUrl = 'https://aidem-backend.onrender.com/api/patients';
 
   async getPatients(): Promise<AppPatient[]> {
     const token = localStorage.getItem('aidem_token');
@@ -105,7 +106,8 @@ export class PatientService {
     const token = localStorage.getItem('aidem_token');
 
     const response = await fetch(
-      `http://localhost:8080/api/patients/${id}`,
+      //`http://localhost:8080/api/patients/${id}`,
+      `https://aidem-backend.onrender.com/api`,
       {
         headers:{
           Authorization:`Bearer ${token}`

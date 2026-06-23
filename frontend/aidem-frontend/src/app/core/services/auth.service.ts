@@ -17,8 +17,8 @@ export type LoginResponse = {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly apiUrl = 'http://localhost:8080/api/auth';
-
+  //private readonly apiUrl = 'http://localhost:8080/api/auth';
+  private readonly apiUrl = 'https://aidem-backend.onrender.com/api/auth';
   async login(email: string, password: string): Promise<LoginResponse> {
     localStorage.removeItem('aidem_token');
     localStorage.removeItem('aidem_user');
