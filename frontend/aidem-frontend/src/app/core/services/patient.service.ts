@@ -101,21 +101,49 @@ export class PatientService {
     }
   }
 
-  async getPatient(id:number):Promise<PatientProfile>{
+  // async getPatient(id:number):Promise<PatientProfile>{
+  //
+  //   const token = localStorage.getItem('aidem_token');
+  //
+  //   const response = await fetch(
+  //     //`http://localhost:8080/api/patients/${id}`,
+  //     `https://aidem-backend.onrender.com/api`,
+  //     {
+  //       headers:{
+  //         Authorization:`Bearer ${token}`
+  //       }
+  //     }
+  //   );
+  //
+  //   return response.json();
+  // }
 
+  async getPatient(id: number): Promise<PatientProfile> {
     const token = localStorage.getItem('aidem_token');
 
+    if (!token) {
+      throw new Error('TOKEN_MISSING');
+    }
+
     const response = await fetch(
-      //`http://localhost:8080/api/patients/${id}`,
-      `https://aidem-backend.onrender.com/api`,
+      `${this.apiUrl}/${id}`,
       {
-        headers:{
-          Authorization:`Bearer ${token}`
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json'
         }
       }
     );
 
-    return response.json();
+    const raw = await response.text();
+
+    console.log(`GET /api/patients/${id}`, response.status, raw);
+
+    if (!response.ok) {
+      throw new Error(`Erro ao carregar utente (${response.status}): ${raw}`);
+    }
+
+    return JSON.parse(raw) as PatientProfile;
   }
 
   async getSessionHistory(patientId: number): Promise<SessionHistory[]> {
