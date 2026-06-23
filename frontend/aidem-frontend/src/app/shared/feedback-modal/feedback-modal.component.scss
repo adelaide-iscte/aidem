@@ -1,0 +1,193 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(3px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feedback-modal {
+  width: 430px;
+  background: white;
+  border-radius: 42px;
+  padding: 42px 42px 40px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  font-family: "Poppins", Inter, Arial, sans-serif;
+  animation: modalPop 0.18s ease-out;
+}
+
+@keyframes modalPop {
+
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.feedback-modal h2 {
+  margin: 0 0 22px;
+  max-width: 330px;
+
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.35;
+
+  color: #222;
+}
+
+.feedback-row {
+  width: 260px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 26px;
+}
+
+.emoji-option {
+  width: 72px;
+
+  border: none;
+  background: transparent;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.emoji-option:hover {
+  transform: scale(1.05);
+}
+
+.emoji-option.selected {
+  transform: scale(1.1);
+}
+
+.emoji-option img {
+  width: 52px;
+  height: auto;
+  max-height: 52px;
+
+  object-fit: contain;
+}
+
+.emoji-option span {
+  font-family: "Poppins", Inter, Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #222;
+}
+
+.finish-button {
+  font-family: "Poppins", Inter, Arial, sans-serif;
+  width: 190px;
+  height: 56px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #bfd0f0;
+  color: white;
+
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.cancel-button {
+  width: 190px;
+  height: 56px;
+
+  border: none;
+  border-radius: 10px;
+
+  background: #b93d3d;
+  color: white;
+
+  font-size: 28px;
+  font-weight: 500;
+
+  margin-top: 22px;
+}
+
+.emoji-option.selected {
+  background: #c8daf8;
+  border: 1px solid #4079e8;
+  border-radius: 7px;
+  transform: none;
+}
+
+.finish-button {
+  background: #bfd0f0;
+  cursor: not-allowed;
+}
+
+.finish-button.enabled {
+  background: #4079e8;
+  cursor: pointer;
+}
+.finish-button:disabled {
+  opacity: 1;
+}
+
+.success-modal {
+  width: 350px;
+  height: 190px;
+
+  background: white;
+  border-radius: 42px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+
+  animation: modalPop 0.18s ease-out;
+}
+
+.success-modal h2 {
+  margin: 0;
+
+  font-family: "Poppins", Inter, Arial, sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+
+  color: #222;
+}
+
+.continue-button {
+  width: 130px;
+  height: 38px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #5a8dee;
+  color: white;
+
+  font-family: "Poppins", Inter, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+
+  cursor: pointer;
+}

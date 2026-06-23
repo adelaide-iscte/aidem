@@ -1,0 +1,19 @@
+<div class="notifications-backdrop" (click)="close.emit()"></div>
+
+<section class="notifications-popover">
+  <header>
+    <h2>Notificações</h2>
+  </header>
+
+  <div class="notification-item" *ngFor="let notification of notifications">
+    <div class="notification-icon">
+      <img src="/icons/Message.svg" />
+    </div>
+
+    <div class="notification-content">
+      <h3>{{ notification.title }}</h3>
+      <p>{{ notification.text }}</p>
+      <span>{{ notification.time }}</span>
+    </div>
+  </div>
+</section>

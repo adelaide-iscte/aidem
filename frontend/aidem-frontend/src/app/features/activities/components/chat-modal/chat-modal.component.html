@@ -1,0 +1,89 @@
+<div class="modal-backdrop">
+  <div class="chat-page">
+    <header class="header">
+      <div class="left-actions">
+        <img src="/icons/menu.svg" class="menu-icon" />
+
+        <button class="back-button" type="button" (click)="closeModal()">
+          <span class="back-arrow">‹</span>
+          <span>Voltar</span>
+        </button>
+      </div>
+
+      <div class="top-icons">
+        <img src="/icons/bell.svg" class="top-icon" />
+        <img src="/icons/profile.svg" class="avatar-small" />
+      </div>
+    </header>
+
+    <section class="professional-card">
+      <img src="/icons/professional.svg" class="professional-avatar" />
+
+      <div class="professional-info">
+        <div class="professional-name-row">
+          <h1>Carolina Santos Cortes</h1>
+          <span class="online-dot"></span>
+          <span class="online-text">Online</span>
+        </div>
+
+        <p>Profissional de Saúde</p>
+      </div>
+
+      <img src="/icons/Phone_2.svg" class="call-icon" (click)="openCallOverlay()" />
+    </section>
+
+    <section class="chat-main">
+      <main class="chat-content">
+        <div class="message sent large"></div>
+        <span class="time sent-time">9:35</span>
+
+        <div class="message received"></div>
+        <span class="time received-time">9:41</span>
+
+        <div class="message sent small"></div>
+        <span class="time sent-time">9:50</span>
+
+        <div class="message received"></div>
+        <span class="time received-time last-time">9:56</span>
+      </main>
+
+      <section class="chat-input-area">
+        <div class="chat-input-shell">
+          <input
+            [(ngModel)]="message"
+            placeholder="Escreva uma mensagem..."
+            (keyup.enter)="sendMessage()"
+          />
+
+          <button type="button" (click)="sendMessage()">
+            <img src="/icons/send.svg" alt="Enviar mensagem" />
+          </button>
+        </div>
+      </section>
+    </section>
+
+    <footer class="bottom-nav">
+      <div class="active">
+        <img src="/icons/atividade_marked.svg" />
+        <span>Atividades</span>
+      </div>
+
+      <div>
+        <img src="/icons/Home_unmarked.svg" />
+        <span>Início</span>
+      </div>
+
+      <div>
+        <img src="/icons/person.svg" />
+        <span>Perfil</span>
+      </div>
+    </footer>
+  </div>
+  <app-call-overlay
+    *ngIf="showCallOverlay"
+    name="Carolia Santos Cortes"
+    status="A chamar ..."
+    avatar="/icons/professional.svg"
+    (endCall)="closeCallOverlay()">
+  </app-call-overlay>
+</div>

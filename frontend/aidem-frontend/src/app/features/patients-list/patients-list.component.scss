@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:host {
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.patients-page {
+  min-height: 100vh;
+  background: #ffffff;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  color: #111111;
+  padding-bottom: 110px;
+}
+
+.header {
+  height: 90px;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.menu-icon {
+  width: 42px;
+  height: 42px;
+}
+
+.top-icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.top-icon {
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.content {
+  width: min(1500px, calc(100% - 110px));
+  margin: 24px auto 0;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 190px 280px;
+  gap: 10px;
+  align-items: center;
+  padding: 0 6px 26px;
+  border-bottom: 1px solid #eef1f6;
+}
+
+.search-wrapper {
+  height: 48px;
+  background: #dce7f8;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+}
+
+.search-icon {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.search-icon::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  right: -5px;
+  bottom: -1px;
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+.search-wrapper input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+}
+
+.search-wrapper input::placeholder {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.clear-button {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.sort-button,
+.add-button {
+  height: 48px;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 21px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.sort-button {
+  height: 48px;
+  border-radius: 8px;
+  border: none;
+  background: #4079e8;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 21px;
+  font-weight: 600;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.add-button {
+  border: 1.5px solid #4079e8;
+  background: #ffffff;
+  color: #4079e8;
+  padding: 0 18px;
+}
+
+.chevron {
+  font-size: 18px;
+  line-height: 1;
+  transform: translateY(1px);
+}
+
+.patients-card {
+  padding: 24px 6px 0;
+}
+
+.patients-scroll {
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  padding-right: 18px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px 90px;
+}
+
+.patient-item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.patient-avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 3px #dce7f8;
+}
+
+.patient-copy h2 {
+  margin: 0;
+  color: #111111;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.patient-copy p {
+  margin: 6px 0 0;
+  color: #7e7e7e;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.patient-copy span {
+  color: #4079e8;
+}
+
+.patient-copy strong {
+  font-weight: 500;
+  margin: 0 5px;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 95px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottom-nav div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #9fb0ce;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.bottom-nav img {
+  width: 38px;
+  height: 38px;
+}
+
+.bottom-nav .active {
+  color: #4079e8;
+}

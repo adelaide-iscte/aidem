@@ -1,0 +1,32 @@
+<div class="call-overlay">
+  <div class="call-content">
+    <img [src]="avatar" class="call-avatar" />
+
+    <h1>{{ name }}</h1>
+    <p>{{ status }}</p>
+
+    <div class="call-actions first-row">
+      <button type="button">
+        <img src="/icons/speaker.svg" />
+      </button>
+
+      <button type="button">
+        <img src="/icons/video.svg" />
+      </button>
+    </div>
+
+    <div class="call-actions second-row">
+      <button type="button">
+        <img src="/icons/microphone.svg" />
+      </button>
+
+      <button type="button">
+        <img src="/icons/pause.svg" />
+      </button>
+    </div>
+
+    <button class="end-call-button" type="button" (click)="endCall.emit()">
+      <img src="/icons/end-call.svg" />
+    </button>
+  </div>
+</div>

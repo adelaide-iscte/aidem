@@ -1,0 +1,148 @@
+<div class="activities-page" [class.formal-mode]="isFormalMode">
+  <header class="header">
+    <img src="/icons/menu.svg" class="menu-icon" (click)="openSideMenu()" />
+
+    <div class="top-icons">
+      <img src="/icons/bell.svg" class="top-icon" (click)="toggleNotifications()" />
+      <img [src]="role === 'formal' ? '/icons/professional.svg' : '/icons/profile.svg'" class="avatar" />
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="contact-card">
+      <img src="/icons/question.svg" class="contact-icon" />
+
+      <div class="contact-text">
+        <h1>Tem alguma questão?</h1>
+        <p>{{ supportCopy }}</p>
+      </div>
+
+      <div class="contact-actions">
+        <button class="message-button" (click)="openChat.emit()">
+          <img src="/icons/Message.svg" class="button-icon" />
+          <span>Enviar mensagem</span>
+        </button>
+
+        <button class="call-button" type="button" (click)="openCallOverlay()">
+          <img src="/icons/Phone.svg" class="button-icon" />
+          Fazer chamada
+        </button>
+      </div>
+    </section>
+
+    <section class="progress-card">
+      <strong>Progresso da sessão</strong>
+      <span>{{ completedCount }} de {{ activities.length }}</span>
+
+      <div class="progress-line">
+        <div [style.width]="progressBarWidth"></div>
+      </div>
+
+      <span>{{ progressPercent }}%</span>
+    </section>
+
+    <p *ngIf="isLoadingPlan" class="plan-state">A gerar plano diário inteligente...</p>
+    <p *ngIf="planError" class="plan-state error">{{ planError }}</p>
+
+    <section class="activity-list" *ngIf="!isLoadingPlan && !planError">
+      <div class="activity-card" *ngFor="let activity of activities; let i = index" [class.done]="activity.status === 'COMPLETED'" [class.failed]="activity.status === 'FAILED' || activity.status === 'SKIPPED'">
+        <span class="activity-number">{{ i + 1 }}</span>
+
+        <img [src]="activityImage(activity)" class="activity-image" />
+
+        <div class="activity-info">
+          <h2>{{ activity.title }}</h2>
+
+          <div class="bottom-actions">
+            <button
+              *ngIf="isFormalMode && !isSkipped(activity)"
+              class="skip-button"
+              type="button"
+              [disabled]="activity.status !== 'PENDING'"
+              (click)="openSkipModal(activity)">
+              ✕ Não realizar
+            </button>
+
+            <button
+              *ngIf="isFormalMode && isSkipped(activity)"
+              class="skip-button skipped-lock"
+              type="button"
+              disabled>
+              ✕ Não realizado
+            </button>
+
+            <button
+              *ngIf="!isCompleted(activity)"
+              class="complete-button"
+              [disabled]="activity.status !== 'PENDING'"
+              (click)="openFeedbackModal(activity)">
+              <img src="/icons/Check_2.svg" class="small-icon" />
+              Marcar como concluído
+            </button>
+
+            <button
+              *ngIf="isCompleted(activity)"
+              class="undo-button"
+              type="button"
+              (click)="resetExercise(activity)">
+              ↺ Cancelar feito
+            </button>
+
+            <button
+              class="instructions-button"
+              [disabled]="isSkipped(activity)"
+              (click)="!isSkipped(activity) && openInstructionsModal(activity)">
+              <img src="/icons/play.svg" class="small-icon" />
+              Instruções
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bottom-nav">
+    <div class="active">
+      <img src="/icons/atividade_marked.svg" />
+      <span>Atividades</span>
+    </div>
+
+    <div (click)="goHome.emit()">
+      <img src="/icons/Home_unmarked.svg" />
+      <span>Início</span>
+    </div>
+
+    <div (click)="openProfile.emit()">
+      <img src="/icons/person.svg" />
+      <span>Perfil</span>
+    </div>
+  </footer>
+
+  <div class="side-menu-overlay" *ngIf="showSideMenu" (click)="closeSideMenu()"></div>
+
+  <aside class="side-menu" *ngIf="showSideMenu">
+    <button class="side-menu-back" type="button" (click)="closeSideMenu()">‹ Voltar</button>
+    <button class="side-menu-item" type="button" (click)="changePatient()">Trocar Utente</button>
+    <button class="side-menu-item" type="button" (click)="openChat.emit(); closeSideMenu()">Conversas</button>
+  </aside>
+</div>
+
+<app-feedback-modal *ngIf="showFeedbackModal" (submitFeedback)="submitFeedback($event)" (close)="closeFeedbackModal()"></app-feedback-modal>
+
+<app-instructions-modal
+        *ngIf="showInstructionsModal && selectedActivity"
+        [activity]="selectedActivity"
+        (close)="closeInstructionsModal()">
+</app-instructions-modal>
+
+<app-complementary-info-modal *ngIf="showComplementaryInfoModal" (close)="closeComplementaryInfoModal()"></app-complementary-info-modal>
+
+<app-call-overlay *ngIf="showCallOverlay" name="Carolia Santos Cortes" status="A chamar ..." avatar="/icons/professional.svg" (endCall)="closeCallOverlay()"></app-call-overlay>
+
+<app-notifications-popover *ngIf="showNotifications" (close)="closeNotifications()"></app-notifications-popover>
+
+<app-skip-reason-modal
+        *ngIf="showSkipModal"
+        (submitReason)="submitSkip($event)"
+        (close)="closeSkipModal()">
+</app-skip-reason-modal>

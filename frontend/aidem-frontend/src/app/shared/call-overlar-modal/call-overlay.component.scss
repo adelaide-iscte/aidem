@@ -1,0 +1,106 @@
+
+.call-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.call-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(-20px);
+}
+
+.call-avatar {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 18px;
+}
+
+.call-content h1 {
+  margin: 20px 0 8px;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 54px;
+
+  letter-spacing: -0.02em;
+
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.call-content p {
+  margin: 0 0 42px;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.call-actions {
+  display: flex;
+  gap: 92px;
+  align-items: center;
+  justify-content: center;
+}
+
+.first-row {
+  margin-bottom: 38px;
+}
+
+.second-row {
+  margin-bottom: 32px;
+}
+
+.call-actions button {
+  width: 72px;
+  height: 72px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.call-actions img {
+  width: 64px;
+  height: 64px;
+}
+
+.end-call-button {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  border: none;
+  background: #ff4141;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.end-call-button img {
+  width: 48px;
+  height: 48px;
+}

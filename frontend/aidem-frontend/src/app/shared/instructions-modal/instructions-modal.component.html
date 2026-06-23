@@ -1,0 +1,79 @@
+<div class="modal-backdrop">
+  <div class="instructions-modal">
+    <section class="description-box">
+      {{ activity?.instructions || activity?.description || 'Sem instruções disponíveis.' }}
+    </section>
+
+    <section class="modal-content">
+      <div class="info-card">
+        <div class="info-card-inner">
+
+          <p>
+            <span>Local:</span>
+             Não definido
+          </p>
+
+        <p>
+          <span>Materiais:</span>
+          {{ activity?.materials || 'Não definido' }}
+        </p>
+
+        <p>
+          <span>Número de séries:</span>
+          {{ activity?.sets ?? 'Não definido' }}
+        </p>
+
+        <p>
+          <span>Número de repetições:</span>
+          {{ activity?.repetitions ?? 'Não definido' }}
+        </p>
+
+        <p>
+          <span>Intervalo entre séries:</span>
+          {{ activity?.restSeconds ?? 'Não definido' }}
+          <ng-container *ngIf="activity?.restSeconds !== null && activity?.restSeconds !== undefined">
+            segundos
+          </ng-container>
+        </p>
+
+        <p>
+          <span>Duração:</span>
+          {{ activity?.durationMinutes ?? 'Não definido' }}
+          <ng-container *ngIf="activity?.durationMinutes">
+            minutos
+          </ng-container>
+        </p>
+        </div>
+      </div>
+
+      <div class="video-area">
+        <div class="video-box">
+          <span class="video-title">Ver vídeo</span>
+
+          <div class="video-controls">
+            <span class="video-time">00:14</span>
+
+            <div class="video-progress">
+              <div class="video-progress-fill"></div>
+              <div class="video-dot"></div>
+            </div>
+
+            <span class="video-time">00:34</span>
+
+            <div class="video-icons">
+              <span>🔊</span>
+              <span>⟲</span>
+              <span class="play-circle">▶</span>
+              <span>⟳</span>
+              <span>⛶</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="close-button" type="button" (click)="closeModal()">
+          Fechar
+        </button>
+      </div>
+    </section>
+  </div>
+</div>

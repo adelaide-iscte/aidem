@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: backend
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/aidem_db
+    username: aidem_user
+    password: aidem_password
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+
+app:
+  jwt:
+    secret: "CHANGE_ME_TO_A_LONG_RANDOM_SECRET_WITH_AT_LEAST_32_CHARS"
+    expiration-minutes: 60
+
+server:
+  port:8080

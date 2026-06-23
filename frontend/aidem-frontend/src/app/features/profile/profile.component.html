@@ -1,0 +1,202 @@
+<div class="profile-page">
+  <header class="header">
+    <img src="/icons/menu.svg" class="menu-icon" />
+
+    <div class="top-icons">
+      <img
+        src="/icons/bell.svg"
+        class="top-icon"
+        (click)="toggleNotifications()"
+      />
+      <img
+        [src]="role === 'formal' ? '/icons/professional.svg' : '/icons/profile.svg'"
+        class="avatar"
+      />
+    </div>
+  </header>
+
+  <main class="profile-content">
+    <section class="profile-hero">
+      <img [src]="patient.avatar" class="patient-avatar" />
+
+      <div class="patient-info">
+        <h1>{{ patient.name }}</h1>
+        <p>{{ patientSubtitle }}</p>
+        <span>{{ patient.code }}</span>
+
+        <div class="profile-tabs">
+          <button
+            type="button"
+            [class.active]="activeTab === 'dados'"
+            (click)="setTab('dados')">
+            Dados
+          </button>
+
+          <button
+            type="button"
+            [class.active]="activeTab === 'sessoes'"
+            (click)="setTab('sessoes')">
+            Sessões
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="dados-section" *ngIf="activeTab === 'dados'">
+      <div class="contacts-card">
+        <div class="card-title">
+          <img src="/icons/Info.svg" />
+          <h2>Contactos do Utente</h2>
+        </div>
+
+        <div class="contact-row">
+          <img src="/icons/Phone_2.svg" />
+          <span>{{ patient.phone }}</span>
+        </div>
+
+        <div class="contact-row">
+          <img src="/icons/Message.svg" />
+          <span>{{ patient.email }}</span>
+        </div>
+
+        <div class="contact-row">
+          <img src="/icons/location.svg" />
+          <span>{{ patient.address }}</span>
+        </div>
+      </div>
+
+      <div class="user-data-card">
+        <h2>Dados do Utente</h2>
+
+        <div class="data-grid">
+          <div>
+            <strong>Examinando:</strong> {{ patient.code }}
+          </div>
+          <div>
+            <strong>Sexo:</strong> {{ patient.gender === 'MALE' ? 'Masculino' : 'Feminino' }}
+          </div>
+          <div>
+            <strong>Sessão:</strong> {{ patient.sessionType }}
+          </div>
+          <div>
+            <strong>Escolaridade:</strong> {{ patient.education }}
+          </div>
+          <div>
+            <strong>Idade:</strong> {{ patient.age }} anos
+          </div>
+          <div>
+            <strong>Profissão:</strong> {{ patient.profession }}
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="egp-button" (click)="openEgpModal()">
+        Ver dados EGP
+      </button>
+
+      <div class="caregiver-card">
+        <div class="caregiver-title">
+          <img src="/icons/person_selected.svg" />
+          <span>Cuidador/a</span>
+        </div>
+
+        <div class="caregiver-content">
+          <img src="/icons/generic_user.svg" class="caregiver-avatar" />
+
+          <div>
+            <h3>{{ patient.informalCaregiverName }}</h3>
+
+            <p>
+              <img src="/icons/Phone_2.svg" />
+              {{ patient.informalCaregiverPhone }}
+            </p>
+
+            <p>
+              <img src="/icons/Message.svg" />
+              {{ patient.informalCaregiverEmail }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sessions-section" *ngIf="activeTab === 'sessoes'">
+      <div class="session-filter">
+        <img src="/icons/calendar.svg" />
+        <span>Últimos 7 dias</span>
+        <span class="filter-arrow">⌄</span>
+      </div>
+
+      <p *ngIf="isLoadingSessions">A carregar sessões...</p>
+
+      <p *ngIf="sessionsError">
+        {{ sessionsError }}
+      </p>
+
+
+      <p *ngIf="!isLoadingSessions && !sessionsError && sessionHistory.length === 0">
+        Sem sessões registadas.
+      </p>
+
+      <div
+        class="session-card"
+        *ngFor="let session of sessionHistory">
+
+        <img src="/icons/Info.svg" class="session-info-icon" />
+
+        <div class="session-copy">
+          <h3>{{ formatSessionDate(session.sessionDate) }}</h3>
+
+          <p>
+            <strong [class.easy]="session.averageDifficulty === 'Fácil'"
+                    [class.medium]="session.averageDifficulty === 'Média'"
+                    [class.hard]="session.averageDifficulty === 'Difícil'">
+              {{ session.completedActivities }}
+            </strong>
+            atividade(s) concluída(s) | Média da dificuldade: {{ session.averageDifficulty }}
+          </p>
+
+          <button type="button">
+            Ver resultados
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bottom-nav">
+    <div (click)="openActivities.emit()">
+      <img src="/icons/activities.svg" />
+      <span>Atividades</span>
+    </div>
+
+    <div (click)="goHome.emit()">
+      <img src="/icons/Home_unmarked.svg" />
+      <span>Início</span>
+    </div>
+
+    <div class="active">
+      <img src="/icons/person_selected.svg" />
+      <span>Perfil</span>
+    </div>
+  </footer>
+
+  <app-egp-modal
+    *ngIf="showEgpModal"
+    [patientCard]="{
+    title: 'Perfil do utente',
+    name: patient.name,
+    avatar: patient.avatar || '/icons/generic_user.svg'
+  }"
+    [userData]="egpUserData"
+    [rows]="egpData?.rows ?? []"
+    [isLoading]="isLoadingEgp"
+    [error]="egpError"
+    (close)="closeEgpModal()">
+  </app-egp-modal>
+
+  <app-notifications-popover
+    *ngIf="showNotifications"
+    (close)="closeNotifications()">
+  </app-notifications-popover>
+</div>

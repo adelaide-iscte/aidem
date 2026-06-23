@@ -1,0 +1,79 @@
+:host {
+  font-family: Inter, Arial, sans-serif;
+}
+
+.notifications-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: transparent;
+}
+
+.notifications-popover {
+  position: fixed;
+  top: 104px;
+  right: 58px;
+  width: 420px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  z-index: 2001;
+  overflow: hidden;
+}
+
+.notifications-popover header {
+  padding: 22px 26px 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.notifications-popover h2 {
+  margin: 0;
+  color: #222;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.notification-item {
+  display: flex;
+  gap: 18px;
+  padding: 20px 24px;
+  background: #ffffff;
+}
+
+.notification-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #e8f0ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notification-icon img {
+  width: 28px;
+  height: 28px;
+}
+
+.notification-content h3 {
+  margin: 0;
+  color: #4079e8;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.notification-content p {
+  margin: 6px 0 8px;
+  color: #555;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.notification-content span {
+  color: #9fb0ce;
+  font-size: 14px;
+  font-weight: 700;
+}

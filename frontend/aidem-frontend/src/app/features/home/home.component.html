@@ -1,0 +1,101 @@
+<div class="home-page">
+  <header class="header">
+    <img src="/icons/menu.svg" class="menu-icon" />
+
+    <div class="top-icons">
+      <img
+        src="/icons/bell.svg"
+        class="top-icon"
+        (click)="toggleNotifications()"
+      />
+      <img src="/icons/profile.svg" class="avatar" />
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="hero-card">
+      <div>
+        <h1>Bom dia Maria!</h1>
+        <p>Hoje o seu foco é equilíbrio e mobilidade.</p>
+      </div>
+
+      <button class="hero-button" (click)="openActivities.emit()">
+        Leve-me lá!
+      </button>
+
+      <img src="/icons/care-hands.svg" class="hero-image" />
+    </section>
+
+    <section class="days">
+      <div class="day-card">
+        <span>sab.</span>
+        <strong>2</strong>
+      </div>
+
+      <div class="day-card">
+        <span>sab.</span>
+        <strong>3</strong>
+      </div>
+
+      <div class="day-card">
+        <span>sab.</span>
+        <strong>4</strong>
+      </div>
+
+      <div class="day-card active">
+        <span>sab.</span>
+        <strong>5</strong>
+      </div>
+    </section>
+
+    <section class="today-section">
+      <h2>Atividades para a sessão de hoje</h2>
+
+      <div
+        class="activity-row"
+        *ngFor="let activity of todayActivities">
+
+        <img
+          src="/icons/generic_exercise.svg"
+          class="activity-image">
+
+        <span class="activity-name">
+      {{ activity.title }}
+    </span>
+
+        <img
+          *ngIf="activity.status === 'COMPLETED'"
+          src="/icons/check_completed.svg"
+          class="tick-icon">
+
+        <img
+          *ngIf="activity.status !== 'COMPLETED'"
+          src="/icons/check_incompleted.svg"
+          class="tick-icon">
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bottom-nav">
+    <div (click)="openActivities.emit()">
+      <img src="/icons/activities.svg" />
+      <span>Atividades</span>
+    </div>
+
+    <div class="active">
+      <img src="/icons/Home.svg" />
+      <span>Início</span>
+    </div>
+
+    <div (click)="openProfile.emit()">
+      <img src="/icons/person.svg" />
+      <span>Perfil</span>
+    </div>
+  </footer>
+</div>
+<app-notifications-popover
+  *ngIf="showNotifications"
+  (close)="closeNotifications()">
+</app-notifications-popover>

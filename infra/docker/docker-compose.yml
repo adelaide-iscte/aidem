@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: aidem-postgres
+
+    environment:
+      POSTGRES_DB: aidem_db
+      POSTGRES_USER: aidem_user
+      POSTGRES_PASSWORD: aidem_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

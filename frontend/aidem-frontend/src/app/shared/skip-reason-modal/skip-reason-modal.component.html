@@ -1,0 +1,22 @@
+<div class="skip-overlay">
+  <div class="skip-backdrop" (click)="close.emit()"></div>
+
+  <div class="skip-modal">
+    <button class="back-button" (click)="close.emit()">
+      ‹ Voltar
+    </button>
+
+    <h1>
+      Indique abaixo o motivo pelo qual optou que não fosse realizada a atividade:
+    </h1>
+
+    <textarea
+      [(ngModel)]="reason"
+      placeholder="Escreva o motivo aqui ..."
+    ></textarea>
+
+    <button class="submit-button" (click)="submit()">
+      Concluir
+    </button>
+  </div>
+</div>

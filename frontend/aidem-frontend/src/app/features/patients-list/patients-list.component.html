@@ -1,0 +1,78 @@
+<div class="patients-page">
+  <header class="header">
+    <img src="/icons/menu.svg" class="menu-icon" />
+
+    <div class="top-icons">
+      <img
+        src="/icons/bell.svg"
+        class="top-icon"
+        (click)="toggleNotifications()"
+      />
+      <img src="/icons/professional.svg" class="avatar" />
+    </div>
+  </header>
+
+  <main class="content">
+    <section class="toolbar">
+      <div class="search-wrapper">
+        <span class="search-icon" aria-hidden="true"></span>
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Pesquisar"
+        />
+
+        <button
+          *ngIf="searchTerm"
+          type="button"
+          class="clear-button"
+          (click)="clearSearch()">
+          ×
+        </button>
+      </div>
+
+      <button type="button" class="sort-button" (click)="toggleSortMode()">
+        <span>{{ sortMode === 'recent' ? 'Mais recentes' : 'A-Z' }}</span>
+        <span class="chevron">v</span>
+      </button>
+
+      <button type="button" class="add-button">
+        + Adicionar paciente
+      </button>
+    </section>
+
+    <section class="patients-card">
+      <div class="patients-scroll">
+        <button
+          type="button"
+          class="patient-item"
+          *ngFor="let patient of filteredPatients; trackBy: trackByPatientCode"
+          (click)="openPatient(patient)">
+          <img [src]="patient.avatar" class="patient-avatar" />
+
+          <div class="patient-copy">
+            <h2>{{ patient.name }}</h2>
+            <p>
+              <span>{{ patient.age }} anos</span>
+              <strong>|</strong>
+              {{ patient.code }}
+            </p>
+          </div>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bottom-nav">
+    <div class="active">
+      <img src="/icons/doctor.svg" />
+      <span>Profissional</span>
+    </div>
+  </footer>
+
+  <app-notifications-popover
+    *ngIf="showNotifications"
+    (close)="closeNotifications()">
+  </app-notifications-popover>
+</div>

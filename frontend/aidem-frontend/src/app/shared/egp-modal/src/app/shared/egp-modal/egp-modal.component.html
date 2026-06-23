@@ -1,0 +1,174 @@
+<div class="egp-overlay">
+  <div class="egp-backdrop" (click)="closeModal()"></div>
+
+  <section class="egp-shell">
+    <div class="egp-surface">
+      <p *ngIf="isLoading">A carregar dados EGP...</p>
+
+      <p *ngIf="error">{{ error }}</p>
+
+      <p *ngIf="!isLoading && !error && rows.length === 0">
+        Sem dados EGP para este utente.
+      </p>
+      <div class="top-row">
+        <article class="patient-card">
+          <img [src]="patientCard.avatar" [alt]="patientCard.name" class="patient-avatar">
+
+          <div class="patient-copy">
+            <p>{{ patientCard.title }}</p>
+            <h2>{{ patientCard.name }}</h2>
+          </div>
+        </article>
+
+        <article class="user-data-card">
+          <h3>Dados do Utente</h3>
+
+          <div class="user-data-grid">
+            <div class="data-row" *ngFor="let row of userData">
+              <div class="data-cell">
+                <strong>{{ row[0].label }}:</strong>
+                <span>{{ row[0].value }}</span>
+              </div>
+
+              <div class="data-cell">
+                <strong>{{ row[1].label }}:</strong>
+                <span>{{ row[1].value }}</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="egp-table-layout">
+        <section class="egp-column">
+          <header class="egp-header">
+            <h3>EGP</h3>
+            <div class="scores-header">
+              <span>PD</span>
+              <span>NR</span>
+            </div>
+          </header>
+
+          <div class="egp-rows">
+            <div class="egp-row" *ngFor="let row of firstColumnRows">
+              <div class="egp-label">{{ row.label }}</div>
+
+              <div class="egp-scores">
+                <span>{{ formatScore(row.pd) }}</span>
+                <span>{{ formatScore(row.nr) }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="egp-column right">
+          <header class="egp-header right-align">
+            <div class="spacer"></div>
+
+            <div class="scores-header">
+              <span>PD</span>
+              <span>NR</span>
+            </div>
+          </header>
+
+          <div class="egp-rows">
+            <div
+              class="egp-row"
+              *ngFor="let row of secondColumnRows"
+              [class.summary-row]="row.summary">
+
+              <div class="egp-label">{{ row.label }}</div>
+
+              <div class="egp-scores">
+                <span>{{ formatScore(row.pd) }}</span>
+                <span>{{ formatScore(row.nr) }}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="footer-actions">
+        <button type="button" class="primary-button" (click)="openGraph()">
+          Ver gráfico
+        </button>
+
+        <button type="button" class="secondary-button" (click)="closeModal()">
+          <span class="back-icon">‹</span>
+          Voltar
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="graph-overlay" *ngIf="showGraphModal">
+    <div class="graph-backdrop" (click)="closeGraph()"></div>
+
+    <section class="graph-modal">
+      <div class="graph-content">
+        <div class="graph-table">
+          <header class="graph-table-header">
+            <h3>EGP</h3>
+
+            <div class="graph-scores-header">
+              <span>PD</span>
+              <span>NR</span>
+            </div>
+          </header>
+
+          <div class="graph-table-body">
+            <div
+              class="graph-row"
+              *ngFor="let row of chartRows"
+              [class.summary-row]="row.summary">
+
+              <div class="graph-label">{{ row.label }}</div>
+
+              <div class="graph-scores">
+                <span>{{ formatScore(row.pd) }}</span>
+                <span>{{ formatScore(row.nr) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-panel">
+          <div class="chart-background">
+            <div class="zone zone-one"></div>
+            <div class="zone zone-two"></div>
+            <div class="zone zone-three"></div>
+
+            <div class="vertical-grid">
+              <span *ngFor="let x of [0,1,2,3,4,5,6]"></span>
+            </div>
+
+            <div class="horizontal-grid">
+              <span *ngFor="let row of chartRows"></span>
+            </div>
+
+            <svg class="chart-svg" viewBox="0 0 556 800" preserveAspectRatio="none">
+              <polyline [attr.points]="polylinePoints"></polyline>
+
+              <circle
+                *ngFor="let row of chartRows; let i = index"
+                [attr.cx]="pointX(row.nr)"
+                [attr.cy]="pointY(i)"
+                r="5.5">
+              </circle>
+            </svg>
+          </div>
+
+          <div class="x-axis">
+            <span *ngFor="let value of [0,1,2,3,4,5,6]">{{ value }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="graph-footer">
+        <button type="button" class="close-graph-button" (click)="closeGraph()">
+          Fechar
+        </button>
+      </div>
+    </section>
+  </div>
+</div>

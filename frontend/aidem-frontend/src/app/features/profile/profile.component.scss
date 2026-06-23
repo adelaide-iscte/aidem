@@ -1,0 +1,530 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:host {
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.profile-page {
+  min-height: 100vh;
+  background: #ffffff;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  color: #111;
+  padding-bottom: 115px;
+}
+
+.header {
+  height: 90px;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.menu-icon {
+  width: 42px;
+  height: 42px;
+}
+
+.top-icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.top-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.profile-content {
+  width: min(1130px, calc(100% - 120px));
+  margin: 74px auto 0;
+}
+
+.profile-hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 38px;
+}
+
+.patient-avatar {
+  width: 184px;
+  height: 184px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.patient-info h1 {
+  margin: 0;
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #000;
+  letter-spacing: -0.02em;
+}
+
+.patient-info p {
+  margin: 8px 0 0;
+  font-size: 26px;
+  font-weight: 400;
+  color: #555;
+}
+
+.patient-info span {
+  display: block;
+  margin-top: 2px;
+  font-size: 24px;
+  font-weight: 400;
+  color: #555;
+}
+
+.profile-tabs {
+  margin-top: 28px;
+  display: flex;
+  width: 384px;
+  height: 54px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.profile-tabs button {
+  width: 192px;
+  border: none;
+  background: #dfe8f8;
+  color: #555;
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.profile-tabs button.active {
+  background: #4079e8;
+  color: #ffffff;
+}
+
+.dados-section {
+  display: grid;
+  grid-template-columns: 1fr 1.08fr;
+  grid-template-areas:
+    "contacts data"
+    "egp caregiver";
+  gap: 24px;
+  align-items: start;
+}
+
+.contacts-card,
+.user-data-card,
+.caregiver-card {
+  background: #fff;
+  border: 1px solid #d9dde7;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.contacts-card {
+  grid-area: contacts;
+}
+
+.user-data-card {
+  grid-area: data;
+}
+
+.card-title {
+  height: 62px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #d9dde7;
+}
+
+.card-title img {
+  width: 28px;
+  height: 28px;
+}
+
+.card-title h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #555;
+}
+
+.contact-row {
+  height: 56px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid #d9dde7;
+}
+
+.contact-row:last-child {
+  border-bottom: none;
+}
+
+.contact-row img {
+  width: 24px;
+  height: 24px;
+}
+
+.contact-row span {
+  font-size: 19px;
+  font-weight: 600;
+  color: #555;
+}
+
+.user-data-card h2 {
+  height: 50px;
+  margin: 0;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #d9dde7;
+  color: #4079e8;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.data-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.data-grid div {
+  min-height: 54px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid #d9dde7;
+  font-size: 18px;
+  color: #222;
+}
+
+.data-grid div:nth-child(odd) {
+  border-right: 1px solid #d9dde7;
+}
+
+.data-grid div:nth-last-child(-n + 2) {
+  border-bottom: none;
+}
+
+.data-grid strong {
+  font-weight: 700;
+  color: #000;
+}
+
+.egp-button {
+  grid-area: egp;
+  justify-self: center;
+  margin-top: 32px;
+  width: 356px;
+  height: 72px;
+  border: none;
+  border-radius: 14px;
+  background: #4079e8;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 27px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.caregiver-card {
+  grid-area: caregiver;
+}
+
+.caregiver-title {
+  height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.caregiver-title img {
+  width: 24px;
+  height: 24px;
+}
+
+.caregiver-title span {
+  font-size: 18px;
+  font-weight: 600;
+  color: #555;
+}
+
+.caregiver-content {
+  padding: 8px 16px 16px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.caregiver-avatar {
+  width: 94px;
+  height: 94px;
+  border-radius: 18px;
+  object-fit: cover;
+}
+
+.caregiver-content h3 {
+  margin: 0 0 8px;
+  font-size: 21px;
+  font-weight: 700;
+  color: #111;
+}
+
+.caregiver-content p {
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #555;
+}
+
+.caregiver-content p img {
+  width: 18px;
+  height: 18px;
+}
+
+.sessions-section {
+  width: min(920px, 100%);
+  margin: 0 auto;
+}
+
+.filter-button {
+  width: 470px;
+  height: 52px;
+  margin-bottom: 28px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 10px;
+  background: #e4e9f3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Poppins', sans-serif;
+  cursor: pointer;
+}
+
+.filter-button span {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #555;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.filter-button img {
+  width: 24px;
+  height: 24px;
+}
+
+.chevron {
+  font-size: 26px !important;
+  color: #4079e8 !important;
+}
+
+.sessions-list {
+  height: 430px;
+  overflow-y: auto;
+  padding-right: 18px;
+}
+
+.session-card {
+  background: #fff;
+  border: 1px solid #d9dde7;
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.session-info-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.session-info h2 {
+  margin: 0 0 5px;
+  font-size: 25px;
+  font-weight: 700;
+  color: #111;
+}
+
+.session-info p {
+  margin: 0 0 10px;
+  font-size: 19px;
+  font-weight: 400;
+  color: #555;
+}
+
+.easy {
+  color: #39ba1f;
+  font-weight: 700;
+}
+
+.medium {
+  color: #d2b100;
+  font-weight: 700;
+}
+
+.hard {
+  color: #e14242;
+  font-weight: 700;
+}
+
+.session-info button {
+  min-width: 165px;
+  height: 38px;
+  border: none;
+  border-radius: 12px;
+  background: #4079e8;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 95px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: center;
+  gap: 95px;
+  align-items: center;
+  z-index: 1000;
+}
+
+.bottom-nav div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #9fb0ce;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bottom-nav img {
+  width: 38px;
+  height: 38px;
+}
+
+.bottom-nav .active {
+  color: #4079e8;
+}
+
+.session-card {
+  min-height: 105px;
+  border: 1px solid #d9dee8;
+  border-radius: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 22px;
+  margin-bottom: 18px;
+}
+
+.session-info-icon {
+  width: 30px;
+  height: 30px;
+  margin-top: 4px;
+}
+
+.session-copy h3 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.session-copy p {
+  margin: 4px 0 8px;
+  font-size: 20px;
+  color: #555;
+}
+
+.session-copy strong.easy {
+  color: #28b928;
+}
+
+.session-copy strong.medium {
+  color: #d5b300;
+}
+
+.session-copy strong.hard {
+  color: #d93030;
+}
+
+.session-copy button {
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: #4079e8;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 0 24px;
+}
+
+.session-filter {
+  width: 285px;
+  height: 48px;
+  margin: 0 0 28px 0;
+  padding: 0 18px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  background: #e8eef8;
+  border-radius: 9px;
+
+  color: #555;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.session-filter img {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.session-filter span:nth-child(2) {
+  flex: 1;
+}
+
+.filter-arrow {
+  color: #4079e8;
+  font-size: 26px;
+  line-height: 1;
+  transform: translateY(-2px);
+}

@@ -1,0 +1,53 @@
+<app-login
+  *ngIf="!isLoggedIn"
+  (loginSuccess)="onLogin($event)">
+</app-login>
+
+<div *ngIf="isLoggedIn && userRole === 'formal' && currentPage === 'patients'">
+
+  <p *ngIf="isLoadingPatients">
+    A carregar utentes...
+  </p>
+
+  <p *ngIf="patientsError">
+    {{ patientsError }}
+  </p>
+
+  <app-patients-list
+    *ngIf="!isLoadingPatients && !patientsError"
+    [patients]="patients"
+    (selectPatient)="onSelectPatient($event)">
+  </app-patients-list>
+
+</div>
+
+<app-home
+  *ngIf="isLoggedIn && currentPage === 'home' && selectedPatient"
+  [patient]="selectedPatient!"
+  (openActivities)="goToActivities()"
+  (openProfile)="goToProfile()">
+</app-home>
+
+
+<app-activities
+  *ngIf="isLoggedIn && currentPage === 'activities' && selectedPatient"
+  [role]="userRole"
+  [selectedPatient]="selectedPatient!"
+  (goHome)="goToHome()"
+  (openPatients)="goToPatients()"
+  (openChat)="goToChat()"
+  (openProfile)="goToProfile()">
+</app-activities>
+
+<app-chat-modal
+  *ngIf="isLoggedIn && currentPage === 'chat'"
+  (goBack)="goToActivities()">
+</app-chat-modal>
+
+<app-profile
+  *ngIf="isLoggedIn && currentPage === 'profile' && selectedPatient"
+  [role]="userRole"
+  [patient]="selectedPatient!"
+  (goHome)="goToHome()"
+  (openActivities)="goToActivities()">
+</app-profile>
