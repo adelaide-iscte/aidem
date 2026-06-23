@@ -61,9 +61,9 @@ public class SessionPlanService {
     public SessionPlanResponse getOrGenerateTodayPlan(Long patientId, String userEmail) {
         LocalDate today = LocalDate.now();
 
-        Optional<SessionPlan> existing = sessionPlanRepository.findByPatientIdAndSessionDate(patientId, today);
-        if (existing.isPresent()) {
-            return toResponse(existing.get());
+        List<SessionPlan> existing = sessionPlanRepository.findByPatientIdAndSessionDateOrderByIdDesc(patientId, today);
+        if (!existing.isEmpty()) {
+            return toResponse(existing.get(0));
         }
 
         return toResponse(generatePlan(patientId, userEmail, today));
@@ -72,7 +72,8 @@ public class SessionPlanService {
     @Transactional
     public SessionPlanResponse regenerateTodayPlan(Long patientId, String userEmail) {
         LocalDate today = LocalDate.now();
-        sessionPlanRepository.findByPatientIdAndSessionDate(patientId, today).ifPresent(sessionPlanRepository::delete);
+        List<SessionPlan> existing = sessionPlanRepository.findByPatientIdAndSessionDateOrderByIdDesc(patientId, today);
+        sessionPlanRepository.deleteAll(existing);
         return toResponse(generatePlan(patientId, userEmail, today));
     }
 
