@@ -27,9 +27,9 @@
 # prod
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/aidem_db}
-    username: ${SPRING_DATASOURCE_USERNAME:aidem_user}
-    password: ${SPRING_DATASOURCE_PASSWORD:aidem_password}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
   jpa:
     hibernate:
