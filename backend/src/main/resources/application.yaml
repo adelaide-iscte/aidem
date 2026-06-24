@@ -1,35 +1,14 @@
 
 #local
 
-spring:
-  application:
-    name: backend
-
-  datasource:
-    url: jdbc:postgresql://localhost:5432/aidem_db
-    username: aidem_user
-    password: aidem_password
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    open-in-view: false
-
-app:
-  jwt:
-    secret: "CHANGE_ME_TO_A_LONG_RANDOM_SECRET_WITH_AT_LEAST_32_CHARS"
-    expiration-minutes: 60
-
-#server:
-#  port:8080
-
-# prod
 #spring:
+#  application:
+#    name: backend
+#
 #  datasource:
-#    url: ${SPRING_DATASOURCE_URL}
-#    username: ${SPRING_DATASOURCE_USERNAME}
-#    password: ${SPRING_DATASOURCE_PASSWORD}
+#    url: jdbc:postgresql://localhost:5432/aidem_db
+#    username: aidem_user
+#    password: aidem_password
 #
 #  jpa:
 #    hibernate:
@@ -39,8 +18,29 @@ app:
 #
 #app:
 #  jwt:
-#    secret: ${APP_JWT_SECRET:CHANGE_ME_TO_A_LONG_RANDOM_SECRET_WITH_AT_LEAST_32_CHARS}
+#    secret: "CHANGE_ME_TO_A_LONG_RANDOM_SECRET_WITH_AT_LEAST_32_CHARS"
 #    expiration-minutes: 60
 #
 #server:
-#  port: ${PORT:8080}
+#  port:8080
+
+# prod
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:CHANGE_ME_TO_A_LONG_RANDOM_SECRET_WITH_AT_LEAST_32_CHARS}
+    expiration-minutes: 60
+
+server:
+  port: ${PORT:8080}
