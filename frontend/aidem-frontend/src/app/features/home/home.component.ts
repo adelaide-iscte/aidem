@@ -11,11 +11,12 @@ import { CommonModule } from '@angular/common';
 import { NotificationsPopoverComponent } from '../../shared/notifications-popover-modal/notifications-popover.component';
 import { SessionPlanService, SessionPlanExercise } from '../../core/services/session-plan.service';
 import { PatientProfile } from '../../core/services/patient.service';
+import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, NotificationsPopoverComponent],
+  imports: [CommonModule, NotificationsPopoverComponent, SideMenuComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -25,10 +26,21 @@ export class HomeComponent implements OnChanges {
   @Output() openActivities = new EventEmitter<void>();
   @Output() goHome = new EventEmitter<void>();
   @Output() openProfile = new EventEmitter<void>();
+  @Output() openPatients = new EventEmitter<void>();
+  @Output() openChat = new EventEmitter<void>();
 
   showNotifications = false;
   todayActivities: SessionPlanExercise[] = [];
   isLoadingActivities = false;
+  showSideMenu = false;
+
+  openSideMenu(): void {
+    this.showSideMenu = true;
+  }
+
+  closeSideMenu(): void {
+    this.showSideMenu = false;
+  }
 
   constructor(
     private sessionPlanService: SessionPlanService,

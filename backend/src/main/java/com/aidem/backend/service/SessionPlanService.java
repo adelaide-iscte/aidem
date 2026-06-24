@@ -501,4 +501,37 @@ public class SessionPlanService {
                 item.getStatus().name()
         );
     }
+
+    @Transactional
+    public void resetCompletedExercises(Long patientId) {
+        List<SessionPlanExercise> completedExercises =
+                sessionPlanExerciseRepository.findBySessionPlan_Patient_IdAndStatus(
+                        patientId,
+                        ExerciseStatus.COMPLETED
+                );
+
+        for (SessionPlanExercise exercise : completedExercises) {
+            exercise.setStatus(ExerciseStatus.PENDING);
+            exerciseFeedbackRepository.deleteBySessionPlanExercise_Id(exercise.getId());
+
+            SessionPlan plan = exercise.getSessionPlan();
+            plan.setStatus(SessionStatus.PLANNED);
+            sessionPlanRepository.save(plan);
+        }
+
+        sessionPlanExerciseRepository.saveAll(completedExercises);
+    }
+
+    @Transactional
+    public void resetAllCompletedExercises() {
+
+        List<SessionPlanExercise> completedExercises =
+                sessionPlanExerciseRepository.findByStatus(ExerciseStatus.COMPLETED);
+
+        for (SessionPlanExercise exercise : completedExercises) {
+            exercise.setStatus(ExerciseStatus.PENDING);
+        }
+
+        sessionPlanExerciseRepository.saveAll(completedExercises);
+    }
 }

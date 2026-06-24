@@ -101,13 +101,13 @@ export class PatientService {
     }
   }
 
+  // local
   // async getPatient(id:number):Promise<PatientProfile>{
   //
   //   const token = localStorage.getItem('aidem_token');
   //
   //   const response = await fetch(
-  //     //`http://localhost:8080/api/patients/${id}`,
-  //     `https://aidem-backend.onrender.com/api`,
+  //     `http://localhost:8080/api/patients/${id}`,
   //     {
   //       headers:{
   //         Authorization:`Bearer ${token}`

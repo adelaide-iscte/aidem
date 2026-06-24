@@ -16,6 +16,23 @@ type SortMode = 'recent' | 'alphabetical';
 export class PatientsListComponent {
   @Input() patients: AppPatient[] = [];
   @Output() selectPatient = new EventEmitter<AppPatient>();
+  @Output() openPatients = new EventEmitter<void>();
+  @Output() openChat = new EventEmitter<void>();
+
+  showSideMenu = false;
+
+  openSideMenu(): void {
+    this.showSideMenu = true;
+  }
+
+  closeSideMenu(): void {
+    this.showSideMenu = false;
+  }
+
+  changePatient(): void {
+    this.openPatients.emit();
+    this.closeSideMenu();
+  }
 
   searchTerm = '';
   sortMode: SortMode = 'recent';

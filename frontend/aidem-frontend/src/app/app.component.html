@@ -25,7 +25,9 @@
   *ngIf="isLoggedIn && currentPage === 'home' && selectedPatient"
   [patient]="selectedPatient!"
   (openActivities)="goToActivities()"
-  (openProfile)="goToProfile()">
+  (openProfile)="goToProfile()"
+  (openChat)="goToChat()"
+  (openPatients)="goToPatients()">
 </app-home>
 
 
@@ -41,7 +43,11 @@
 
 <app-chat-modal
   *ngIf="isLoggedIn && currentPage === 'chat'"
-  (goBack)="goToActivities()">
+  (goBack)="goToActivities()"
+  (close)="goToActivities()"
+  (openPatients)="goToPatients()"
+  (goHome)="goToHome()"
+  (openProfile)="goToProfile()">
 </app-chat-modal>
 
 <app-profile
@@ -49,5 +55,7 @@
   [role]="userRole"
   [patient]="selectedPatient!"
   (goHome)="goToHome()"
-  (openActivities)="goToActivities()">
+  (openActivities)="goToActivities()"
+  (openChat)="goToChat()"
+  (openPatients)="goToPatients()">
 </app-profile>

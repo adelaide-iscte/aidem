@@ -62,4 +62,18 @@ public class SessionPlanController {
         return ResponseEntity.ok(sessionPlanService.resetExercise(sessionPlanExerciseId));
     }
 
+    @PatchMapping("/api/patients/{patientId}/session-plan-exercises/reset-completed")
+    public ResponseEntity<Void> resetCompletedExercises(@PathVariable Long patientId) {
+        sessionPlanService.resetCompletedExercises(patientId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/api/session-plan-exercises/reset-completed")
+    public ResponseEntity<Void> resetAllCompletedExercises() {
+
+        sessionPlanService.resetAllCompletedExercises();
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

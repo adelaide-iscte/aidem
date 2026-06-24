@@ -1,6 +1,6 @@
 <div class="patients-page">
   <header class="header">
-    <img src="/icons/menu.svg" class="menu-icon" />
+    <img src="/icons/menu.svg" class="menu-icon" (click)="openSideMenu()" />
 
     <div class="top-icons">
       <img
@@ -34,7 +34,6 @@
 
       <button type="button" class="sort-button" (click)="toggleSortMode()">
         <span>{{ sortMode === 'recent' ? 'Mais recentes' : 'A-Z' }}</span>
-        <span class="chevron">v</span>
       </button>
 
       <button type="button" class="add-button">

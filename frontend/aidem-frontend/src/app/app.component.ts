@@ -80,12 +80,15 @@ export class AppComponent {
     }
   }
 
-  async onSelectPatient(patient: AppPatient) {
-
-    this.selectedPatient =
-      await this.patientService.getPatient(patient.id);
-
-    this.currentPage = 'home';
+  async onSelectPatient(patient: AppPatient): Promise<void> {
+    try {
+      this.selectedPatient = await this.patientService.getPatient(patient.id);
+      this.currentPage = 'home';
+    } catch (error) {
+      console.error('Erro ao abrir utente:', error);
+    } finally {
+      this.cdr.detectChanges();
+    }
   }
 
   goToHome(): void {

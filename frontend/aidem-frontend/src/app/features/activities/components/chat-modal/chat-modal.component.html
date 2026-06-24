@@ -2,7 +2,7 @@
   <div class="chat-page">
     <header class="header">
       <div class="left-actions">
-        <img src="/icons/menu.svg" class="menu-icon" />
+        <img src="/icons/menu.svg" class="menu-icon" (click)="openSideMenu()" />
 
         <button class="back-button" type="button" (click)="closeModal()">
           <span class="back-arrow">‹</span>
@@ -12,21 +12,21 @@
 
       <div class="top-icons">
         <img src="/icons/bell.svg" class="top-icon" />
-        <img src="/icons/profile.svg" class="avatar-small" />
+        <img src="/icons/professional.svg" class="avatar-small" />
       </div>
     </header>
 
     <section class="professional-card">
-      <img src="/icons/professional.svg" class="professional-avatar" />
+      <img src="/icons/adm.svg" class="professional-avatar" />
 
       <div class="professional-info">
         <div class="professional-name-row">
-          <h1>Carolina Santos Cortes</h1>
+          <h1>Administração</h1>
           <span class="online-dot"></span>
           <span class="online-text">Online</span>
         </div>
 
-        <p>Profissional de Saúde</p>
+        <p>Serviços</p>
       </div>
 
       <img src="/icons/Phone_2.svg" class="call-icon" (click)="openCallOverlay()" />
@@ -63,27 +63,38 @@
     </section>
 
     <footer class="bottom-nav">
-      <div class="active">
+      <div class="active" (click)="openActivities.emit()">
         <img src="/icons/atividade_marked.svg" />
         <span>Atividades</span>
       </div>
 
-      <div>
+      <div (click)="goHome.emit()">
         <img src="/icons/Home_unmarked.svg" />
         <span>Início</span>
       </div>
 
       <div>
-        <img src="/icons/person.svg" />
+        <div (click)="openProfile.emit()">
+          <img src="/icons/person.svg" />
         <span>Perfil</span>
+        </div>
       </div>
     </footer>
   </div>
+
   <app-call-overlay
     *ngIf="showCallOverlay"
-    name="Carolia Santos Cortes"
+    name="Administração"
     status="A chamar ..."
-    avatar="/icons/professional.svg"
+    avatar="/icons/adm.svg"
     (endCall)="closeCallOverlay()">
   </app-call-overlay>
+
+
+  <app-side-menu
+    *ngIf="showSideMenu"
+    (close)="closeSideMenu()"
+    (changePatient)="openPatients.emit(); closeSideMenu()"
+    (openChat)="openChat.emit(); closeSideMenu()">
+  </app-side-menu>
 </div>

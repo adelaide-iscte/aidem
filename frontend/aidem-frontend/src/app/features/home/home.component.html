@@ -1,6 +1,6 @@
 <div class="home-page">
   <header class="header">
-    <img src="/icons/menu.svg" class="menu-icon" />
+    <img src="/icons/menu.svg" class="menu-icon" (click)="openSideMenu()" />
 
     <div class="top-icons">
       <img
@@ -64,7 +64,7 @@
     </span>
 
         <img
-          *ngIf="activity.status === 'COMPLETED'"
+          *ngIf="activity.status === 'COMPLETED' || activity.status === 'SKIPPED'"
           src="/icons/check_completed.svg"
           class="tick-icon">
 
@@ -99,3 +99,9 @@
   *ngIf="showNotifications"
   (close)="closeNotifications()">
 </app-notifications-popover>
+<app-side-menu
+  *ngIf="showSideMenu"
+  (close)="closeSideMenu()"
+  (changePatient)="openPatients.emit(); closeSideMenu()"
+  (openChat)="openChat.emit(); closeSideMenu()">
+</app-side-menu>

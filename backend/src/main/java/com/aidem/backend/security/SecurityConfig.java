@@ -67,6 +67,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/dev/hash").permitAll()
                         .requestMatchers("/api/health").permitAll()
+                        .requestMatchers("/api/session-plan-exercises/reset-completed").permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )

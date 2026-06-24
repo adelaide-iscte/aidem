@@ -1,6 +1,6 @@
 <div class="profile-page">
   <header class="header">
-    <img src="/icons/menu.svg" class="menu-icon" />
+    <img src="/icons/menu.svg" class="menu-icon" (click)="openSideMenu()" />
 
     <div class="top-icons">
       <img
@@ -199,4 +199,11 @@
     *ngIf="showNotifications"
     (close)="closeNotifications()">
   </app-notifications-popover>
+
+  <app-side-menu
+    *ngIf="showSideMenu"
+    (close)="closeSideMenu()"
+    (changePatient)="openPatients.emit(); closeSideMenu()"
+    (openChat)="openChat.emit(); closeSideMenu()">
+  </app-side-menu>
 </div>

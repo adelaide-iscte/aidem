@@ -3,6 +3,7 @@ import { Component, ChangeDetectorRef, EventEmitter, Input, Output } from '@angu
 import { EgpModalComponent } from '../../shared/egp-modal/src/app/shared/egp-modal/egp-modal.component';
 import { NotificationsPopoverComponent } from '../../shared/notifications-popover-modal/notifications-popover.component';
 import {EgpAssessment, PatientProfile, PatientService, SessionHistory} from '../../core/services/patient.service';
+import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
 
 type ProfileTab = 'dados' | 'sessoes';
 type UserRole = 'informal' | 'formal';
@@ -14,7 +15,7 @@ type UserDataRow = [
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, EgpModalComponent, NotificationsPopoverComponent],
+  imports: [CommonModule, EgpModalComponent, NotificationsPopoverComponent, SideMenuComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -24,6 +25,20 @@ export class ProfileComponent {
 
   @Output() goHome = new EventEmitter<void>();
   @Output() openActivities = new EventEmitter<void>();
+  @Output() openPatients = new EventEmitter<void>();
+  @Output() openChat = new EventEmitter<void>();
+
+
+  showSideMenu = false;
+
+  openSideMenu(): void {
+    this.showSideMenu = true;
+  }
+
+  closeSideMenu(): void {
+    this.showSideMenu = false;
+  }
+
 
   sessionHistory: SessionHistory[] = [];
   isLoadingSessions = false;

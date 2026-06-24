@@ -174,15 +174,21 @@
 
 .patient-item {
   width: 100%;
+  min-height: 82px;
   border: none;
   background: transparent;
   display: grid;
   grid-template-columns: 74px minmax(0, 1fr);
   align-items: center;
   gap: 18px;
-  padding: 0;
+  padding: 7px 12px;
   text-align: left;
   cursor: pointer;
+  border-radius: 10px;
+}
+
+.patient-item:hover {
+  background: #f4f7ff;
 }
 
 .patient-avatar {

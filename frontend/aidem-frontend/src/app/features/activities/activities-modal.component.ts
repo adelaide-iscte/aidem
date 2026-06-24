@@ -16,6 +16,7 @@ import { CallOverlayComponent } from '../../shared/call-overlar-modal/call-overl
 import { NotificationsPopoverComponent } from '../../shared/notifications-popover-modal/notifications-popover.component';
 import { SkipReasonModalComponent } from '../../shared/skip-reason-modal/skip-reason-modal';
 import { SessionPlan, SessionPlanExercise, SessionPlanService } from '../../core/services/session-plan.service';
+import {SideMenuComponent} from "../../shared/side-menu-modal/side-menu.component";
 
 type UserRole = 'informal' | 'formal';
 
@@ -38,7 +39,8 @@ type SelectedPatient = {
     ComplementaryInfoModalComponent,
     CallOverlayComponent,
     NotificationsPopoverComponent,
-    SkipReasonModalComponent
+    SkipReasonModalComponent,
+    SideMenuComponent
   ],
   templateUrl: './activities-modal.component.html',
   styleUrl: './activities-modal.component.scss'
@@ -175,10 +177,11 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     if (!this.selectedActivity) return;
 
     const updated = await this.sessionPlanService.sendFeedback(this.selectedActivity.sessionPlanExerciseId, {
-      completed: event.completion === 'yes' || event.completion === 'almost',
+      completed: true,
       difficultyFeedback: event.difficulty,
       emotionFeedback: event.completion,
-      notes: event.completion === 'almost' ? 'Conseguiu quase finalizar a atividade.' : undefined
+      notes: event.reason
+          ?? (event.completion === 'almost' ? 'Conseguiu quase finalizar a atividade.' : undefined)
     });
 
     this.updateActivity(updated);

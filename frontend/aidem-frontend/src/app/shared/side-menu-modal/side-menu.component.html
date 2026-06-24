@@ -1,0 +1,17 @@
+<div class="side-menu-overlay" (click)="close.emit()"></div>
+
+<aside class="side-menu">
+  <button
+    class="side-menu-back"
+    type="button"
+    (click)="close.emit()">
+    ‹ Voltar
+  </button>
+
+  <button
+    class="side-menu-item"
+    type="button"
+    (click)="changePatient.emit()">
+    Trocar Utente
+  </button>
+</aside>

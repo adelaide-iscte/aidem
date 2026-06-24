@@ -1,0 +1,57 @@
+:host {
+  display: contents;
+}
+
+.side-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 560px;
+  height: 100vh;
+  background: #ffffff;
+  z-index: 2001;
+  box-shadow: 12px 0 28px rgba(0, 0, 0, 0.18);
+  padding-top: 88px;
+}
+
+.side-menu-back,
+.side-menu-item {
+  width: 100%;
+  height: 112px;
+  border: none;
+  border-bottom: 1px solid #d9dee8;
+  background: #ffffff;
+  text-align: left;
+  padding: 0 64px;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  cursor: pointer;
+}
+
+.side-menu-back {
+  height: 72px;
+  background: #dbe7fb;
+  color: #4079e8;
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.side-menu-item {
+  color: #222222;
+  font-size: 36px;
+  font-weight: 400;
+}
+
+.side-menu-item:hover {
+  background: #f8fafc;
+}
+
+.side-menu-back:hover {
+  background: #d2dff7;
+}

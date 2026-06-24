@@ -14,6 +14,14 @@ public interface SessionPlanExerciseRepository extends JpaRepository<SessionPlan
 
     List<SessionPlanExercise> findBySessionPlan_IdOrderByOrderIndexAsc(Long sessionPlanId);
 
+
+    List<SessionPlanExercise> findBySessionPlan_Patient_IdAndStatus(
+            Long patientId,
+            ExerciseStatus status
+    );
+
+    List<SessionPlanExercise> findByStatus(ExerciseStatus status);
+
     @Query("""
             select distinct spe.exercise.id
             from SessionPlanExercise spe
