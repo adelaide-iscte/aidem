@@ -86,15 +86,19 @@ public class SessionPlanService {
         planExercise.setStatus(completed ? ExerciseStatus.COMPLETED : ExerciseStatus.FAILED);
         sessionPlanExerciseRepository.save(planExercise);
 
-        exerciseFeedbackRepository.deleteBySessionPlanExercise_Id(sessionPlanExerciseId);
 
-        exerciseFeedbackRepository.save(ExerciseFeedback.builder()
-                .sessionPlanExercise(planExercise)
-                .completed(completed)
-                .difficultyFeedback(parseDifficulty(request.difficultyFeedback()))
-                .emotionFeedback(request.emotionFeedback())
-                .notes(request.notes())
-                .build());
+        ExerciseFeedback feedback = exerciseFeedbackRepository
+                .findBySessionPlanExercise_Id(sessionPlanExerciseId)
+                .orElseGet(() -> ExerciseFeedback.builder()
+                        .sessionPlanExercise(planExercise)
+                        .build());
+
+        feedback.setCompleted(completed);
+        feedback.setDifficultyFeedback(parseDifficulty(request.difficultyFeedback()));
+        feedback.setEmotionFeedback(request.emotionFeedback());
+        feedback.setNotes(request.notes());
+
+        exerciseFeedbackRepository.save(feedback);
 
         updateSessionStatusIfFinished(planExercise.getSessionPlan());
         return toExerciseResponse(planExercise);
@@ -108,14 +112,18 @@ public class SessionPlanService {
         planExercise.setStatus(ExerciseStatus.SKIPPED);
         sessionPlanExerciseRepository.save(planExercise);
 
-        exerciseFeedbackRepository.deleteBySessionPlanExercise_Id(sessionPlanExerciseId);
+        ExerciseFeedback feedback = exerciseFeedbackRepository
+                .findBySessionPlanExercise_Id(sessionPlanExerciseId)
+                .orElseGet(() -> ExerciseFeedback.builder()
+                        .sessionPlanExercise(planExercise)
+                        .build());
 
-        exerciseFeedbackRepository.save(ExerciseFeedback.builder()
-                .sessionPlanExercise(planExercise)
-                .completed(false)
-                .difficultyFeedback(DifficultyFeedback.TOO_HARD)
-                .notes(notes)
-                .build());
+        feedback.setCompleted(false);
+        feedback.setDifficultyFeedback(DifficultyFeedback.TOO_HARD);
+        feedback.setEmotionFeedback("skipped");
+        feedback.setNotes(notes);
+
+        exerciseFeedbackRepository.save(feedback);
 
         updateSessionStatusIfFinished(planExercise.getSessionPlan());
         return toExerciseResponse(planExercise);

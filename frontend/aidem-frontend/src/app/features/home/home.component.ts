@@ -158,4 +158,6 @@ export class HomeComponent implements OnChanges, OnInit {
       dateA.getFullYear() === dateB.getFullYear()
     );
   }
+
+
 }

@@ -180,13 +180,19 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   async submitFeedback(event: FeedbackSubmitEvent): Promise<void> {
     if (!this.selectedActivity) return;
 
-    const updated = await this.sessionPlanService.sendFeedback(this.selectedActivity.sessionPlanExerciseId, {
-      completed: true,
-      difficultyFeedback: event.difficulty,
-      emotionFeedback: event.completion,
-      notes: event.reason
-          ?? (event.completion === 'almost' ? 'Conseguiu quase finalizar a atividade.' : undefined)
-    });
+
+    const completed = event.completion === 'yes' || event.completion === 'almost';
+
+    const updated = await this.sessionPlanService.sendFeedback(
+
+        this.selectedActivity.sessionPlanExerciseId,
+        {
+          completed: true,
+          difficultyFeedback: event.difficulty,
+          emotionFeedback: event.completion,
+          notes: event.reason
+        }
+    );
 
     this.updateActivity(updated);
     this.closeFeedbackModal();
@@ -227,12 +233,12 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     this.cdr.detectChanges();
   }
 
-  isSkipped(activity: SessionPlanExercise): boolean {
-    return activity.status === 'SKIPPED';
+  isCompleted(activity: SessionPlanExercise): boolean {
+    return activity.status === 'COMPLETED';
   }
 
-  isCompleted(activity: SessionPlanExercise): boolean {
-    return activity.status === 'COMPLETED' || activity.status === 'SKIPPED';
+  isSkipped(activity: SessionPlanExercise): boolean {
+    return activity.status === 'SKIPPED';
   }
 
   isLocked(activity: SessionPlanExercise): boolean {
