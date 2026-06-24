@@ -1,17 +1,27 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService, FrontendRole } from '../../../core/services/auth.service';
+import {
+  AuthService,
+  AuthUser,
+  FrontendRole
+} from '../../../core/services/auth.service';
+import { LoadingSpinnerComponent } from '../../../shared/laoding-spinner-modal/loading-spinner.component';
+
+export type LoginSuccessEvent = {
+  role: FrontendRole;
+  user: AuthUser;
+};
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoadingSpinnerComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  @Output() loginSuccess = new EventEmitter<FrontendRole>();
+  @Output() loginSuccess = new EventEmitter<LoginSuccessEvent>();
 
   email = '';
   password = '';
@@ -33,7 +43,11 @@ export class LoginComponent {
 
     try {
       const response = await this.authService.login(this.email, this.password);
-      this.loginSuccess.emit(this.authService.toFrontendRole(response.user.role));
+
+      this.loginSuccess.emit({
+        role: this.authService.toFrontendRole(response.user.role),
+        user: response.user
+      });
     } catch {
       this.errorMessage = 'Palavra-passe errada.';
     } finally {

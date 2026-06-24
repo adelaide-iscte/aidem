@@ -4,6 +4,7 @@ import { EgpModalComponent } from '../../shared/egp-modal/src/app/shared/egp-mod
 import { NotificationsPopoverComponent } from '../../shared/notifications-popover-modal/notifications-popover.component';
 import {EgpAssessment, PatientProfile, PatientService, SessionHistory} from '../../core/services/patient.service';
 import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
+import {LoadingSpinnerComponent} from '../../shared/laoding-spinner-modal/loading-spinner.component';
 
 type ProfileTab = 'dados' | 'sessoes';
 type UserRole = 'informal' | 'formal';
@@ -15,7 +16,7 @@ type UserDataRow = [
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, EgpModalComponent, NotificationsPopoverComponent, SideMenuComponent],
+  imports: [CommonModule, EgpModalComponent, NotificationsPopoverComponent, SideMenuComponent, LoadingSpinnerComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })

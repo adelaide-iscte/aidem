@@ -17,6 +17,7 @@ import { NotificationsPopoverComponent } from '../../shared/notifications-popove
 import { SkipReasonModalComponent } from '../../shared/skip-reason-modal/skip-reason-modal';
 import { SessionPlan, SessionPlanExercise, SessionPlanService } from '../../core/services/session-plan.service';
 import {SideMenuComponent} from "../../shared/side-menu-modal/side-menu.component";
+import {LoadingSpinnerComponent} from "../../shared/laoding-spinner-modal/loading-spinner.component";
 
 type UserRole = 'informal' | 'formal';
 
@@ -40,7 +41,8 @@ type SelectedPatient = {
     CallOverlayComponent,
     NotificationsPopoverComponent,
     SkipReasonModalComponent,
-    SideMenuComponent
+    SideMenuComponent,
+    LoadingSpinnerComponent
   ],
   templateUrl: './activities-modal.component.html',
   styleUrl: './activities-modal.component.scss'
@@ -112,7 +114,9 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   }
 
   get completedCount(): number {
-    return this.activities.filter(activity => activity.status === 'COMPLETED').length;
+    return this.activities.filter(activity =>
+        activity.status === 'COMPLETED' || activity.status === 'SKIPPED'
+    ).length;
   }
 
   get progressPercent(): number {
@@ -228,7 +232,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   }
 
   isCompleted(activity: SessionPlanExercise): boolean {
-    return activity.status === 'COMPLETED';
+    return activity.status === 'COMPLETED' || activity.status === 'SKIPPED';
   }
 
   isLocked(activity: SessionPlanExercise): boolean {

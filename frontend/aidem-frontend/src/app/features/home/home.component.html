@@ -8,48 +8,63 @@
         class="top-icon"
         (click)="toggleNotifications()"
       />
-      <img src="/icons/profile.svg" class="avatar" />
+      <img src="/icons/professional.svg" class="avatar" />
     </div>
   </header>
 
   <main class="content">
     <section class="hero-card">
-      <div>
-        <h1>Bom dia Maria!</h1>
-        <p>Hoje o seu foco é equilíbrio e mobilidade.</p>
+      <div class="patient-avatar">
+        <img src="/icons/generic_user.svg" alt="Utente" />
       </div>
+
+      <div class="hero-info">
+        <h1>Bom dia {{ caregiverFirstName }}!</h1>
+
+        <div class="patient-meta">
+          <img src="/icons/patient_card.svg" alt="" />
+          <span>{{ patient.code }}</span>
+          <span class="dot">•</span>
+          <span>{{ patientDisplayName }}</span>
+        </div>
+
+        <p>
+          Hoje o seu foco é
+          <strong>equilíbrio e mobilidade.</strong>
+        </p>
+      </div>
+
+      <img src="/icons/care-hands-blue.png" class="hero-watermark" />
 
       <button class="hero-button" (click)="openActivities.emit()">
         Leve-me lá!
       </button>
-
-      <img src="/icons/care-hands.svg" class="hero-image" />
     </section>
 
     <section class="days">
-      <div class="day-card">
-        <span>sab.</span>
-        <strong>2</strong>
-      </div>
+      <div
+        class="day-card"
+        *ngFor="let day of days"
+        [class.active]="day.isToday">
 
-      <div class="day-card">
-        <span>sab.</span>
-        <strong>3</strong>
-      </div>
-
-      <div class="day-card">
-        <span>sab.</span>
-        <strong>4</strong>
-      </div>
-
-      <div class="day-card active">
-        <span>sab.</span>
-        <strong>5</strong>
+        <span>{{ day.label }}</span>
+        <strong>{{ day.dayNumber }}</strong>
       </div>
     </section>
 
     <section class="today-section">
       <h2>Atividades para a sessão de hoje</h2>
+
+      <app-loading-spinner
+        *ngIf="isLoadingActivities"
+        message="A preparar os exercícios de hoje...">
+      </app-loading-spinner>
+
+      <p
+        class="empty-activities"
+        *ngIf="!isLoadingActivities && todayActivities.length === 0">
+        Ainda não existem exercícios para hoje.
+      </p>
 
       <div
         class="activity-row"

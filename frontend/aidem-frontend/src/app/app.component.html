@@ -5,9 +5,10 @@
 
 <div *ngIf="isLoggedIn && userRole === 'formal' && currentPage === 'patients'">
 
-  <p *ngIf="isLoadingPatients">
-    A carregar utentes...
-  </p>
+  <<app-loading-spinner
+    *ngIf="isLoadingPatients"
+    message="A carregar utentes...">
+  </app-loading-spinner>
 
   <p *ngIf="patientsError">
     {{ patientsError }}
@@ -21,9 +22,19 @@
 
 </div>
 
+<app-loading-spinner
+  *ngIf="isLoggedIn && isLoadingSelectedPatient"
+  message="A carregar perfil do utente...">
+</app-loading-spinner>
+
+<p *ngIf="selectedPatientError">
+  {{ selectedPatientError }}
+</p>
+
 <app-home
-  *ngIf="isLoggedIn && currentPage === 'home' && selectedPatient"
+  *ngIf="isLoggedIn && currentPage === 'home' && selectedPatient && !isLoadingSelectedPatient"
   [patient]="selectedPatient!"
+  [currentUser]="currentUser!"
   (openActivities)="goToActivities()"
   (openProfile)="goToProfile()"
   (openChat)="goToChat()"

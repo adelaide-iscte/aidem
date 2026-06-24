@@ -3,14 +3,17 @@
 
   <section class="egp-shell">
     <div class="egp-surface">
-      <p *ngIf="isLoading">A carregar dados EGP...</p>
+      <app-loading-spinner
+        *ngIf="isLoading"
+        message="A carregar dados EGP...">
+      </app-loading-spinner>
 
       <p *ngIf="error">{{ error }}</p>
 
       <p *ngIf="!isLoading && !error && rows.length === 0">
         Sem dados EGP para este utente.
       </p>
-      <div class="top-row">
+      <div class="top-row" *ngIf="!isLoading && !error">
         <article class="patient-card">
           <img [src]="patientCard.avatar" [alt]="patientCard.name" class="patient-avatar">
 

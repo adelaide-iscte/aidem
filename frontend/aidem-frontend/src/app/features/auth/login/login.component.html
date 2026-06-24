@@ -1,6 +1,12 @@
 <div class="tablet-frame">
   <main class="login-container">
-    <h1>Entrar</h1>
+    <div class="login-logo">
+      <img src="/logo_horizontal.svg" alt="AIDEM" />
+    </div>
+    <div class="login-welcome">
+      <h1>Olá de volta!</h1>
+      <p>Faça login para continuar</p>
+    </div>
 
     <form class="login-form" (ngSubmit)="login()">
       <div class="input-wrapper">
@@ -41,7 +47,13 @@
 
 
       <button type="submit" class="login-button" [disabled]="isLoading">
-        {{ isLoading ? 'A entrar...' : 'Entrar' }}
+        <app-loading-spinner
+          *ngIf="isLoading"
+          size="small"
+          message="">
+        </app-loading-spinner>
+
+        <span *ngIf="!isLoading">Entrar</span>
       </button>
     </form>
 

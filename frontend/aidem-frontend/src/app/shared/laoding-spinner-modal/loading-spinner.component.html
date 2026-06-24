@@ -1,0 +1,12 @@
+<div class="loading-shell" [class.full-page]="fullPage" [class.compact]="compact" role="status" aria-live="polite">
+  <div class="loading-card">
+    <div class="logo-orbit" aria-hidden="true">
+      <span class="orbit-ring orbit-ring-one"></span>
+      <span class="orbit-ring orbit-ring-two"></span>
+      <img src="/logo_load.svg" alt="" class="loading-logo" />
+    </div>
+
+    <p class="loading-message">{{ message }}</p>
+    <p *ngIf="subMessage" class="loading-sub-message">{{ subMessage }}</p>
+  </div>
+</div>

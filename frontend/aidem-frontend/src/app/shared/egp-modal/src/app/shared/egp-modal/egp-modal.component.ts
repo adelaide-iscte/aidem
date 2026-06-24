@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {LoadingSpinnerComponent} from '../../../../../laoding-spinner-modal/loading-spinner.component';
 
 type EgpEntry = {
   label: string;
@@ -24,7 +25,7 @@ type UserDataRow = [
 @Component({
   selector: 'app-egp-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LoadingSpinnerComponent],
   templateUrl: './egp-modal.component.html',
   styleUrl: './egp-modal.component.scss'
 })

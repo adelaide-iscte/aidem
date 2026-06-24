@@ -127,7 +127,10 @@
         <span class="filter-arrow">⌄</span>
       </div>
 
-      <p *ngIf="isLoadingSessions">A carregar sessões...</p>
+      <app-loading-spinner
+        *ngIf="isLoadingSessions"
+        message="A carregar sessões...">
+      </app-loading-spinner>
 
       <p *ngIf="sessionsError">
         {{ sessionsError }}

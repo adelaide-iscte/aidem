@@ -7,6 +7,9 @@ import { ChatModalComponent } from './features/activities/components/chat-modal/
 import { ProfileComponent } from './features/profile/profile.component';
 import { PatientsListComponent } from './features/patients-list/patients-list.component';
 import {AppPatient, PatientProfile, PatientService} from './core/services/patient.service';
+import {LoadingSpinnerComponent} from './shared/laoding-spinner-modal/loading-spinner.component';
+import {AuthUser} from './core/services/auth.service';
+import { LoginSuccessEvent } from './features/auth/login/login.component';
 
 type UserRole = 'informal' | 'formal';
 type AppPage = 'home' | 'patients' | 'activities' | 'chat' | 'profile';
@@ -21,16 +24,20 @@ type AppPage = 'home' | 'patients' | 'activities' | 'chat' | 'profile';
     ActivitiesModalComponent,
     ChatModalComponent,
     ProfileComponent,
-    PatientsListComponent
+    PatientsListComponent,
+    LoadingSpinnerComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+
+  currentUser: AuthUser | null = null;
   isLoggedIn = false;
   userRole: UserRole = 'informal';
   currentPage: AppPage = 'home';
-
+  isLoadingSelectedPatient = false;
+  selectedPatientError = '';
   patients: AppPatient[] = [];
   selectedPatient: PatientProfile | null = null;
   isLoadingPatients = false;
@@ -41,11 +48,12 @@ export class AppComponent {
     private cdr: ChangeDetectorRef
   ) {}
 
-  onLogin(role: UserRole): void {
+  onLogin(event: LoginSuccessEvent): void {
     this.isLoggedIn = true;
-    this.userRole = role;
+    this.userRole = event.role;
+    this.currentUser = event.user;
 
-    if (role === 'formal') {
+    if (event.role === 'formal') {
       this.currentPage = 'patients';
       this.cdr.detectChanges();
       this.loadPatients();
@@ -81,12 +89,21 @@ export class AppComponent {
   }
 
   async onSelectPatient(patient: AppPatient): Promise<void> {
+    this.isLoadingSelectedPatient = true;
+    this.selectedPatientError = '';
+    this.cdr.detectChanges();
+
     try {
       this.selectedPatient = await this.patientService.getPatient(patient.id);
       this.currentPage = 'home';
     } catch (error) {
       console.error('Erro ao abrir utente:', error);
+      this.selectedPatientError =
+        error instanceof Error
+          ? error.message
+          : 'Erro ao carregar perfil do utente.';
     } finally {
+      this.isLoadingSelectedPatient = false;
       this.cdr.detectChanges();
     }
   }

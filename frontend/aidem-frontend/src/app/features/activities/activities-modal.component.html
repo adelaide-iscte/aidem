@@ -41,11 +41,15 @@
           <span>{{ progressPercent }}%</span>
         </section>
 
-        <p *ngIf="isLoadingPlan" class="plan-state">A gerar plano diário inteligente...</p>
+          <app-loading-spinner
+                  *ngIf="isLoadingPlan"
+                  message="A gerar plano diário inteligente...">
+          </app-loading-spinner>
         <p *ngIf="planError" class="plan-state error">{{ planError }}</p>
 
         <section class="activity-list" *ngIf="!isLoadingPlan && !planError">
-          <div class="activity-card" *ngFor="let activity of activities; let i = index" [class.done]="activity.status === 'COMPLETED'" [class.failed]="activity.status === 'FAILED' || activity.status === 'SKIPPED'">
+          <div class="activity-card" *ngFor="let activity of activities; let i = index" [class.done]="activity.status === 'COMPLETED' || activity.status === 'SKIPPED'"
+               [class.failed]="activity.status === 'FAILED'">
             <span class="activity-number">{{ i + 1 }}</span>
 
             <img [src]="activityImage(activity)" class="activity-image" />

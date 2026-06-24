@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+* {
+  font-family: 'Poppins', sans-serif;
+}
 .tablet-frame {
   min-height: 100vh;
   background: #ffffff;
@@ -23,14 +28,31 @@
   align-items: center;
 }
 
-h1 {
-  font-size: 34px;
-  font-weight: 800;
-  margin-bottom: 70px;
+.login-welcome {
+  text-align: center;
+  margin-bottom: 50px;
+
+  h1 {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #437EE6;
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    margin-top: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: #6B7280;
+  }
 }
 
-.login-form {
-  width: 100%;
+.login-welcome h1 {
+  color: #437ee6;
 }
 
 .input-wrapper {
@@ -51,16 +73,19 @@ h1 {
 }
 
 input {
-  flex: 1;
   border: none;
   outline: none;
-  background: transparent;
-  font-size: 22px;
-  color: #111827;
+  width: 100%;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 26px;
+  font-weight: 500;
 }
 
 input::placeholder {
-  color: #a7a7a7;
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  color: #9CA3AF;
 }
 
 .eye-button {
@@ -81,6 +106,7 @@ input::placeholder {
 }
 
 .login-button {
+  font-family: 'Poppins', sans-serif;
   width: 100%;
   height: 58px;
   border: none;
@@ -108,6 +134,7 @@ input::placeholder {
 }
 
 .divider p {
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   font-size: 16px;
 }
@@ -120,6 +147,7 @@ input::placeholder {
 }
 
 .social-buttons button {
+  font-family: 'Poppins', sans-serif;
   height: 57px;
   border: 1px solid #d9dee8;
   border-radius: 5px;
@@ -201,3 +229,29 @@ input {
   font-size: 13px;
   font-weight: 500;
 }
+
+.login-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 44px;
+
+  img {
+    width: 320px;
+    max-width: 85%;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-logo img {
+  width: 380px;
+}
+
+
