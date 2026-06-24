@@ -5,7 +5,7 @@
 
 <div *ngIf="isLoggedIn && userRole === 'formal' && currentPage === 'patients'">
 
-  <<app-loading-spinner
+  <app-loading-spinner
     *ngIf="isLoadingPatients"
     message="A carregar utentes...">
   </app-loading-spinner>
