@@ -7,8 +7,22 @@
           <img [src]="role === 'formal' ? '/icons/professional.svg' : '/icons/profile.svg'" class="avatar" />
         </div>
       </header>
-
       <main class="content">
+        <div class="accessibility-row">
+          <button
+            class="accessibility-button"
+            type="button"
+            aria-label="Ler conteúdo da página inicial em voz alta">
+
+            <img
+              src="/icons/volume-blue.svg"
+              class="accessibility-icon"
+              alt="">
+
+            <span>Ouvir página</span>
+
+          </button>
+        </div>
         <section class="contact-card">
           <img src="/icons/question_icon.png" class="contact-icon" />
 

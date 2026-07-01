@@ -1,0 +1,187 @@
+<div class="create-patient-page">
+  <header class="header">
+    <button type="button" class="back-button" (click)="cancelCreation()">
+      < Cancelar
+    </button>
+
+    <h1>Adicionar utente</h1>
+
+  </header>
+
+  <main class="content">
+    <section *ngIf="submitError" class="error-card">
+      <strong>{{ submitError }}</strong>
+
+      <ul *ngIf="fieldErrors.length > 0">
+        <li *ngFor="let error of fieldErrors">
+          Falta preencher: {{ error }}
+        </li>
+      </ul>
+    </section>
+
+    <section class="form-card">
+      <h2>Dados do utente</h2>
+
+      <div class="form-grid">
+        <label [class.invalid]="hasError('Nome')">
+          Nome completo *
+          <input type="text" [(ngModel)]="form.fullName" />
+        </label>
+
+        <label [class.invalid]="hasError('Data de nascimento')">
+          Data de nascimento *
+          <input type="date" [(ngModel)]="form.birthDate" />
+        </label>
+
+        <label [class.invalid]="hasError('Sexo')">
+          Sexo *
+          <select [(ngModel)]="form.gender">
+            <option value="">Selecionar</option>
+            <option value="FEMALE">Feminino</option>
+            <option value="MALE">Masculino</option>
+            <option value="OTHER">Outro</option>
+          </select>
+        </label>
+
+        <label [class.invalid]="hasError('Diagnóstico')">
+          Diagnóstico *
+          <input type="text" [(ngModel)]="form.diagnosisType" />
+        </label>
+
+        <label [class.invalid]="hasError('Telefone')">
+          Telefone *
+          <input type="text" [(ngModel)]="form.phone" />
+        </label>
+
+        <label [class.invalid]="hasError('Email')">
+          Email *
+          <input type="email" [(ngModel)]="form.email" />
+        </label>
+
+        <label class="full" [class.invalid]="hasError('Morada')">
+          Morada *
+          <input type="text" [(ngModel)]="form.address" />
+        </label>
+
+        <label [class.invalid]="hasError('Escolaridade')">
+          Escolaridade *
+          <select [(ngModel)]="form.education">
+            <option value="">Selecionar</option>
+            <option value="1.º ano">1.º ano</option>
+            <option value="2.º ano">2.º ano</option>
+            <option value="3.º ano">3.º ano</option>
+            <option value="4.º ano">4.º ano</option>
+            <option value="5.º ano">5.º ano</option>
+            <option value="6.º ano">6.º ano</option>
+            <option value="7.º ano">7.º ano</option>
+            <option value="8.º ano">8.º ano</option>
+            <option value="9.º ano">9.º ano</option>
+            <option value="Secundário">Secundário</option>
+            <option value="Licenciatura">Licenciatura</option>
+            <option value="Mestrado">Mestrado</option>
+            <option value="Doutoramento">Doutoramento</option>
+          </select>
+        </label>
+
+        <label [class.invalid]="hasError('Profissão')">
+          Profissão *
+          <input type="text" [(ngModel)]="form.profession" />
+        </label>
+
+        <label [class.invalid]="hasError('Sessão')">
+          Sessão *
+          <select [(ngModel)]="form.sessionType">
+            <option value="">Selecionar</option>
+            <option value="Formação">Formação</option>
+          </select>
+        </label>
+
+        <label class="full">
+          Observações
+          <textarea rows="4" [(ngModel)]="form.notes"></textarea>
+        </label>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <h2>Dados do cuidador</h2>
+
+      <div class="form-grid">
+        <label [class.invalid]="hasError('Nome do cuidador')">
+          Nome do cuidador *
+          <input type="text" [(ngModel)]="form.informalCaregiverName" />
+        </label>
+
+        <label [class.invalid]="hasError('Telefone do cuidador')">
+          Telefone do cuidador *
+          <input type="text" [(ngModel)]="form.informalCaregiverPhone" />
+        </label>
+
+        <label [class.invalid]="hasError('Email do cuidador')">
+          Email do cuidador *
+          <input type="email" [(ngModel)]="form.informalCaregiverEmail" />
+        </label>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <div class="egp-header">
+        <div>
+          <h2>Dados EGP</h2>
+          <p>Preenche os valores de cada domínio.</p>
+        </div>
+
+        <label [class.invalid]="hasError('Data da avaliação EGP')">
+          Data da avaliação *
+          <input type="date" [(ngModel)]="form.assessmentDate" />
+        </label>
+      </div>
+
+      <div class="egp-table">
+      <div class="egp-row egp-head">
+        <span>Domínio</span>
+
+        <div class="egp-inputs">
+          <span>PD</span>
+          <span>NR</span>
+          <span>Risco</span>
+        </div>
+      </div>
+
+      <div class="egp-row" *ngFor="let row of egpRows">
+        <strong>{{ row.domain }}</strong>
+
+        <div class="egp-inputs">
+          <input
+            type="number"
+            min="0"
+            [(ngModel)]="row.score"
+            [class.invalid-input]="hasError('EGP - ' + row.domain + ' - PD')" />
+
+          <input
+            type="number"
+            min="0"
+            [(ngModel)]="row.normalizedScore"
+            [class.invalid-input]="hasError('EGP - ' + row.domain + ' - NR')" />
+
+          <select [(ngModel)]="row.riskLevel">
+            <option value="LOW">Baixo</option>
+            <option value="MEDIUM">Médio</option>
+            <option value="HIGH">Elevado</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <section class="actions-card">
+      <button
+        type="button"
+        class="save-button save-button-large"
+        [disabled]="isSaving"
+        (click)="save()">
+        {{ isSaving ? 'A guardar...' : 'Guardar utente' }}
+      </button>
+    </section>
+  </main>
+</div>

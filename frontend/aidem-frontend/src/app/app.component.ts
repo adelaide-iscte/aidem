@@ -10,9 +10,10 @@ import {AppPatient, PatientProfile, PatientService} from './core/services/patien
 import {LoadingSpinnerComponent} from './shared/laoding-spinner-modal/loading-spinner.component';
 import {AuthUser} from './core/services/auth.service';
 import { LoginSuccessEvent } from './features/auth/login/login.component';
+import {CreatePatientComponent} from './features/create-patient/create-patient.component';
 
 type UserRole = 'informal' | 'formal';
-type AppPage = 'home' | 'patients' | 'activities' | 'chat' | 'profile';
+type AppPage = 'home' | 'patients' | 'activities' | 'chat' | 'profile' | 'createPatient';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +26,8 @@ type AppPage = 'home' | 'patients' | 'activities' | 'chat' | 'profile';
     ChatModalComponent,
     ProfileComponent,
     PatientsListComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    CreatePatientComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -47,6 +49,15 @@ export class AppComponent {
     private patientService: PatientService,
     private cdr: ChangeDetectorRef
   ) {}
+
+  openCreatePatient(): void {
+    this.currentPage = 'createPatient';
+  }
+
+  async onPatientCreated(): Promise<void> {
+    this.currentPage = 'patients';
+    await this.loadPatients();
+  }
 
   onLogin(event: LoginSuccessEvent): void {
     this.isLoggedIn = true;

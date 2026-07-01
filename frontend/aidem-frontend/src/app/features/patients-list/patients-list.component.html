@@ -36,7 +36,7 @@
         <span>{{ sortMode === 'recent' ? 'Mais recentes' : 'A-Z' }}</span>
       </button>
 
-      <button type="button" class="add-button">
+      <button type="button" class="add-button" (click)="createPatient.emit()">
         + Adicionar paciente
       </button>
     </section>

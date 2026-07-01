@@ -18,6 +18,7 @@ export class PatientsListComponent {
   @Output() selectPatient = new EventEmitter<AppPatient>();
   @Output() openPatients = new EventEmitter<void>();
   @Output() openChat = new EventEmitter<void>();
+  @Output() createPatient = new EventEmitter<void>();
 
   showSideMenu = false;
 

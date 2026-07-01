@@ -20,7 +20,7 @@
 #  jwt:
 #    secret: "CHANGE_ME_TO_A_LONG_RANDOM_SECRET_WITH_AT_LEAST_32_CHARS"
 #    expiration-minutes: 60
-#
+
 #server:
 #  port:8080
 

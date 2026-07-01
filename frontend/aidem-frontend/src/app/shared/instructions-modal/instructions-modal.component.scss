@@ -21,7 +21,6 @@
   min-height: 220px;
   background: #dbe7fb;
   border-radius: 8px;
-  padding: 42px 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -30,6 +29,8 @@
   font-size: 30px;
   font-weight: 400;
   line-height: 1.45;
+  position: relative;
+  padding-top: 70px;
 }
 
 .modal-content {
@@ -203,4 +204,42 @@
   font-size: 30px;
   font-weight: 600;
   cursor: pointer;
+
+}
+.accessibility-button {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+
+  height: 46px;
+  padding: 0 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  background: #ffffff;
+  color: #407ce2;
+
+  border: 2px solid #a8c5ff;
+  border-radius: 999px;
+
+  font-size: 16px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow: 0 3px 10px rgba(64, 124, 226, 0.12);
+  transition: all .2s ease;
+}
+
+.accessibility-button:hover {
+  background: #f6faff;
+  border-color: #407ce2;
+}
+
+.accessibility-icon {
+  width: 22px;
+  height: 22px;
 }

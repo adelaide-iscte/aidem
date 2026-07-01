@@ -17,6 +17,30 @@ export type SessionHistory = {
   completedActivities: number;
   averageDifficulty: string;
 };
+export interface CreatePatientRequest {
+  fullName: string;
+  birthDate: string;
+  gender: string;
+  diagnosisType: string;
+  phone: string;
+  email: string;
+  address: string;
+  education: string;
+  profession: string;
+  sessionType: string;
+  informalCaregiverName: string;
+  informalCaregiverPhone: string;
+  informalCaregiverEmail: string;
+  notes: string;
+  assessmentDate: string;
+  egpScores: {
+    domain: string;
+    score: number;
+    normalizedScore: number;
+    riskLevel: string;
+    displayOrder: number;
+  }[];
+}
 
 export interface PatientProfile {
   id: number;
@@ -101,7 +125,7 @@ export class PatientService {
     }
   }
 
-  // local
+  //local
   // async getPatient(id:number):Promise<PatientProfile>{
   //
   //   const token = localStorage.getItem('aidem_token');
@@ -215,6 +239,34 @@ export class PatientService {
     }
 
     return raw ? JSON.parse(raw) as EgpAssessment : null;
+  }
+
+  async createPatient(payload: CreatePatientRequest): Promise<PatientProfile> {
+    const token = localStorage.getItem('aidem_token');
+
+    if (!token) {
+      throw new Error('TOKEN_MISSING');
+    }
+
+    const response = await fetch(this.apiUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const raw = await response.text();
+
+    console.log('POST /api/patients', response.status, raw);
+
+    if (!response.ok) {
+      throw new Error(`Erro ao criar utente (${response.status}): ${raw}`);
+    }
+
+    return JSON.parse(raw) as PatientProfile;
   }
 
 

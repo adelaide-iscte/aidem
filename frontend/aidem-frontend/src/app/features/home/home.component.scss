@@ -286,3 +286,50 @@ h2 {
   font-size: 14px;
   margin: 18px 0;
 }
+.accessibility-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 18px;
+}
+
+.accessibility-button {
+  height: 52px;
+  padding: 0 24px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  background: #ffffff;
+  color: #407ce2;
+
+  border: 2px solid #a8c5ff;
+  border-radius: 999px;
+
+  font-family: Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow: 0 3px 10px rgba(64, 124, 226, 0.12);
+
+  transition: all .2s ease;
+}
+
+.accessibility-button:hover {
+  background: #f6faff;
+  border-color: #407ce2;
+  box-shadow: 0 6px 18px rgba(64, 124, 226, 0.18);
+}
+
+.accessibility-button:active {
+  transform: scale(.98);
+}
+
+.accessibility-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}

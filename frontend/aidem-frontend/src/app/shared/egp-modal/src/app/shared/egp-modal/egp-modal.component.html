@@ -13,6 +13,22 @@
       <p *ngIf="!isLoading && !error && rows.length === 0">
         Sem dados EGP para este utente.
       </p>
+
+      <div class="egp-accessibility-row" *ngIf="!isLoading && !error">
+        <button
+          class="accessibility-button"
+          type="button"
+          aria-label="Ler dados EGP em voz alta">
+
+          <img
+            src="/icons/volume-blue.svg"
+            class="accessibility-icon"
+            alt="">
+
+          <span>Ouvir página</span>
+        </button>
+      </div>
+
       <div class="top-row" *ngIf="!isLoading && !error">
         <article class="patient-card">
           <img [src]="patientCard.avatar" [alt]="patientCard.name" class="patient-avatar">

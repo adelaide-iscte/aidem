@@ -1,7 +1,24 @@
 <div class="modal-backdrop">
   <div class="instructions-modal">
+
     <section class="description-box">
+
+      <button
+        class="accessibility-button"
+        type="button"
+        aria-label="Ler instruções em voz alta">
+
+        <img
+          src="/icons/volume-blue.svg"
+          class="accessibility-icon"
+          alt="">
+
+        <span>Ouvir página</span>
+
+      </button>
+
       {{ activity?.instructions || activity?.description || 'Sem instruções disponíveis.' }}
+
     </section>
 
     <section class="modal-content">

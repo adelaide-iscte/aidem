@@ -17,10 +17,18 @@
   <app-patients-list
     *ngIf="!isLoadingPatients && !patientsError"
     [patients]="patients"
-    (selectPatient)="onSelectPatient($event)">
+    (selectPatient)="onSelectPatient($event)"
+    (createPatient)="openCreatePatient()">
   </app-patients-list>
 
+
 </div>
+
+<app-create-patient
+  *ngIf="isLoggedIn && currentPage === 'createPatient'"
+  (cancel)="goToPatients()"
+  (created)="onPatientCreated()">
+</app-create-patient>
 
 <app-loading-spinner
   *ngIf="isLoggedIn && isLoadingSelectedPatient"
