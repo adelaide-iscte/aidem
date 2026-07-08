@@ -40,17 +40,36 @@
 }
 
 .back-button {
-  border: none;
+  min-height: 56px;
+  padding: 0 22px;
+
+  border: 2px solid transparent;
+  border-radius: 14px;
   background: transparent;
   color: #4079e8;
+
   font-family: 'Poppins', sans-serif;
-  font-size: 48px;
-  font-weight: 700;
+  font-size: 50px;
+  font-weight: 800;
   line-height: 1;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   width: fit-content;
-  padding: 0;
+  white-space: nowrap;
   cursor: pointer;
 }
+
+.back-button:hover {
+  background: rgba(64, 121, 232, 0.08);
+}
+
+.back-button:active {
+  transform: scale(0.98);
+}
+
 
 .skip-modal h1 {
   margin: 58px 0 36px;
@@ -84,14 +103,33 @@
 
 .submit-button {
   margin: 40px auto 0;
-  width: 250px;
-  height: 74px;
-  border: none;
+
+  min-width: 230px;
+  min-height: 56px;
+  padding: 0 28px;
+
+  border: 2px solid transparent;
   border-radius: 14px;
+
   background: #4079e8;
   color: #ffffff;
+
   font-family: 'Poppins', sans-serif;
-  font-size: 36px;
-  font-weight: 500;
+  font-size: 35px;
+  font-weight: 800;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;
   cursor: pointer;
+}
+
+.submit-button:hover {
+  background: #356bd0;
+}
+
+.submit-button:active {
+  transform: scale(0.98);
 }

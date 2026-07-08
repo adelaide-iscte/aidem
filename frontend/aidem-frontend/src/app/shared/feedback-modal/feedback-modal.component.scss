@@ -98,35 +98,77 @@
   color: #222;
 }
 
-.finish-button {
+.finish-button,
+.cancel-button,
+.continue-button {
+  min-width: 190px;
+  min-height: 56px;
+  padding: 0 28px;
+
+  border: 2px solid transparent;
+  border-radius: 14px;
+
   font-family: "Poppins", Inter, Arial, sans-serif;
-  width: 190px;
-  height: 56px;
+  font-size: 24px;
+  font-weight: 800;
 
-  border: none;
-  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-  background: #bfd0f0;
-  color: white;
+  white-space: nowrap;
+  cursor: pointer;
 
-  font-size: 28px;
-  font-weight: 500;
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
 }
 
-.cancel-button {
-  width: 190px;
-  height: 56px;
+/* CONCLUIR DESATIVADO */
+.finish-button {
+  background: #bfd0f0;
+  color: #ffffff;
+  cursor: not-allowed;
+}
 
-  border: none;
-  border-radius: 10px;
+/* CONCLUIR ATIVO */
+.finish-button.enabled {
+  background: #4079e8;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.finish-button:disabled {
+  opacity: 1;
+}
+
+/* CANCELAR */
+.cancel-button {
+  margin-top: 18px;
 
   background: #b93d3d;
-  color: white;
+  color: #ffffff;
+}
 
-  font-size: 28px;
-  font-weight: 500;
+/* CONTINUAR */
+.continue-button {
+  background: #4079e8;
+  color: #ffffff;
+}
 
-  margin-top: 22px;
+.finish-button.enabled:hover,
+.continue-button:hover {
+  background: #356bd0;
+}
+
+.cancel-button:hover {
+  background: #a83232;
+}
+
+.finish-button.enabled:active,
+.cancel-button:active,
+.continue-button:active {
+  transform: scale(0.98);
 }
 
 .emoji-option.selected {
@@ -175,22 +217,6 @@
   color: #222;
 }
 
-.continue-button {
-  width: 130px;
-  height: 38px;
-
-  border: none;
-  border-radius: 8px;
-
-  background: #5a8dee;
-  color: white;
-
-  font-family: "Poppins", Inter, Arial, sans-serif;
-  font-size: 18px;
-  font-weight: 500;
-
-  cursor: pointer;
-}
 
 .reason-modal h2 {
   margin-bottom: 26px;

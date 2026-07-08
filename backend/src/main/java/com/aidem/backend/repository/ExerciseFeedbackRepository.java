@@ -3,6 +3,7 @@ package com.aidem.backend.repository;
 import com.aidem.backend.model.ExerciseFeedback;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ExerciseFeedbackRepository extends JpaRepository<ExerciseFeedback, Long> {
@@ -13,5 +14,12 @@ public interface ExerciseFeedbackRepository extends JpaRepository<ExerciseFeedba
     boolean existsBySessionPlanExercise_Id(Long sessionPlanExerciseId);
 
     Optional<ExerciseFeedback> findBySessionPlanExercise_Id(Long sessionPlanExerciseId);
+
+    List<ExerciseFeedback> findBySessionPlanExercise_SessionPlan_Id(Long sessionPlanId);
+
+    List<ExerciseFeedback> findBySessionPlanExercise_IdIn(
+            List<Long> sessionPlanExerciseIds
+    );
 }
+
 

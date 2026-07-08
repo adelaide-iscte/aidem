@@ -107,8 +107,11 @@
         </div>
       </div>
 
-      <button type="button" class="egp-button" (click)="openEgpModal()">
-        Ver dados EGP
+      <button
+        type="button"
+        class="action-button primary egp-button"
+        (click)="openEgpModal()">
+        <span>Ver dados EGP</span>
       </button>
 
       <div class="caregiver-card">
@@ -176,8 +179,11 @@
             atividade(s) concluída(s) | Média da dificuldade: {{ session.averageDifficulty }}
           </p>
 
-          <button type="button">
-            Ver resultados
+          <button
+            type="button"
+            class="action-button primary details-button"
+            (click)="openSessionDetails(session)">
+            <span>Ver detalhes</span>
           </button>
         </div>
       </div>
@@ -226,4 +232,91 @@
     (changePatient)="openPatients.emit(); closeSideMenu()"
     (openChat)="openChat.emit(); closeSideMenu()">
   </app-side-menu>
+
+  <div
+    class="session-modal-backdrop"
+    *ngIf="selectedSession"
+    (click)="closeSessionDetails()">
+
+    <div
+      class="session-modal"
+      (click)="$event.stopPropagation()">
+
+      <div class="session-modal-header">
+        <div>
+          <p class="session-modal-label">Detalhes da sessão</p>
+          <h2>{{ formatSessionDate(selectedSession.sessionDate) }}</h2>
+          <p>
+            {{ selectedSession.completedActivities }}
+            de
+            {{ selectedSession.totalActivities }}
+            atividades concluídas
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="modal-close-button"
+          (click)="closeSessionDetails()"
+          aria-label="Fechar detalhes da sessão">
+          <span class="close-icon">×</span>
+          <span>Fechar</span>
+        </button>
+      </div>
+
+      <div class="session-modal-body">
+
+        <div
+          class="modal-exercise-card"
+          *ngFor="let exercise of selectedSession.exercises">
+
+          <div class="modal-exercise-top">
+          <span class="exercise-number">
+            {{ exercise.orderIndex }}
+          </span>
+
+            <div class="exercise-main-info">
+              <h3>{{ exercise.title }}</h3>
+              <p>
+                {{ exercise.domain }}
+                ·
+                {{ exercise.durationMinutes || '-' }} min
+              </p>
+            </div>
+
+            <span
+              class="exercise-pill"
+              [class.completed]="exercise.status === 'COMPLETED'"
+              [class.failed]="exercise.status === 'FAILED'"
+              [class.skipped]="exercise.status === 'SKIPPED'">
+            {{ exerciseStatusLabel(exercise.status) }}
+          </span>
+          </div>
+
+          <div class="exercise-modal-details">
+            <p>
+              {{ exerciseStatusReason(exercise) }}
+            </p>
+            <p *ngIf="exercise.status !== 'PENDING'">
+              <strong>Conclusão da atividade:</strong>
+              {{ completionAnswerLabel(exercise.emotionFeedback) }}
+            </p>
+
+            <p *ngIf="exercise.status !== 'PENDING'">
+              <strong>Dificuldade sentida:</strong>
+              {{ difficultyFeedbackLabel(exercise.difficultyFeedback) }}
+            </p>
+
+            <p *ngIf="exercise.recommendationReason">
+              <strong>Motivo da recomendação:</strong>
+              {{ exercise.recommendationReason }}
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
 </div>

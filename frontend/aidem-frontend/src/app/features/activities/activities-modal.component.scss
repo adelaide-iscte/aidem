@@ -95,34 +95,34 @@
   gap: 10px;
 }
 
-.contact-actions button {
-  height: 48px;
-  border-radius: 8px;
-  font-size: 24px;
-  font-weight: 800;
-  cursor: pointer;
-}
+//.contact-actions button {
+//  height: 48px;
+//  border-radius: 8px;
+//  font-size: 24px;
+//  font-weight: 800;
+//  cursor: pointer;
+//}
 
-.message-button,
-.call-button {
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  padding: 0;
-}
+//.message-button,
+//.call-button {
+//  border: none;
+//  display: flex;
+//  align-items: center;
+//  justify-content: center;
+//  gap: 18px;
+//  padding: 0;
+//}
 
-.message-button {
-  background: white;
-  color: #4079e8;
-}
-
-.call-button {
-  background: #4079e8;
-  color: #ffffff;
-  border: none;
-}
+//.message-button {
+//  background: white;
+//  color: #4079e8;
+//}
+//
+//.call-button {
+//  background: #4079e8;
+//  color: #ffffff;
+//  border: none;
+//}
 
 .progress-card {
   height: 65px;
@@ -221,21 +221,21 @@
   margin-top: 0;
 }
 
-.complete-button,
-.instructions-button,
-.skip-button,
-.undo-button {
-  height: 39px;
-  border-radius: 7px;
-  padding: 0 18px;
-  font-size: 18px;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-}
+//.complete-button,
+//.instructions-button,
+//.skip-button,
+//.undo-button {
+//  height: 39px;
+//  border-radius: 7px;
+//  padding: 0 18px;
+//  font-size: 18px;
+//  font-weight: 700;
+//  display: inline-flex;
+//  align-items: center;
+//  justify-content: center;
+//  gap: 8px;
+//  cursor: pointer;
+//}
 
 .complete-button {
   border: none;
@@ -272,21 +272,21 @@
   align-items: center;
 }
 
-.formal-mode .bottom-actions {
-  display: grid;
-  grid-template-columns: 170px 290px 185px;
-  gap: 12px;
-  justify-content: end;
-  align-items: center;
-}
+//.formal-mode .bottom-actions {
+//  display: grid;
+//  grid-template-columns: 170px 290px 185px;
+//  gap: 12px;
+//  justify-content: end;
+//  align-items: center;
+//}
 
-.formal-mode .skip-button,
-.formal-mode .complete-button,
-.formal-mode .undo-button,
-.formal-mode .instructions-button {
-  width: 100%;
-  white-space: nowrap;
-}
+//.formal-mode .skip-button,
+//.formal-mode .complete-button,
+//.formal-mode .undo-button,
+//.formal-mode .instructions-button {
+//  width: 100%;
+//  white-space: nowrap;
+//}
 
 .formal-mode .skip-button {
   background: #b93232;
@@ -437,23 +437,24 @@
 }
 
 .bottom-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: 190px 190px 170px;
+  gap: 12px;
   align-items: center;
-  gap: 14px;
 }
 
-.skip-button {
-  width: 170px;
-}
+//.skip-button {
+//  width: 170px;
+//}
 
-.complete-button,
-.undo-button {
-  width: 290px;
-}
-
-.instructions-button {
-  width: 180px;
-}
+//.complete-button,
+//.undo-button {
+//  width: 290px;
+//}
+//
+//.instructions-button {
+//  width: 180px;
+//}
 
 .plan-state {
   margin: 18px auto;
@@ -567,4 +568,113 @@ button:disabled {
   width: 26px;
   height: 26px;
   object-fit: contain;
+}
+
+.activity-card {
+  min-height: 160px;
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.activity-info {
+  grid-template-columns: minmax(0, 1fr) 620px;
+}
+
+.bottom-actions {
+  display: grid;
+  grid-template-columns: 180px 210px 180px;
+  gap: 14px;
+  align-items: center;
+}
+
+.action-button {
+  min-height: 56px;
+  width: 100%;
+  border-radius: 14px;
+  padding: 0 14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.action-button.primary {
+  background: #4079e8;
+  color: #ffffff;
+}
+
+.action-button.secondary,
+.action-button.outline {
+  background: #ffffff;
+  color: #4079e8;
+  border-color: #4079e8;
+}
+
+.action-button.danger {
+  background: #b93232;
+  color: #ffffff;
+}
+
+.action-button.muted,
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.action-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.small-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.contact-actions {
+  gap: 12px;
+}
+
+.contact-actions .action-button {
+  min-height: 56px;
+  width: 100%;
+  border-radius: 14px;
+  padding: 0 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.contact-actions .action-button.primary {
+  background: #4079e8;
+  color: #ffffff;
+}
+
+.contact-actions .action-button.outline {
+  background: #ffffff;
+  color: #4079e8;
+  border-color: #4079e8;
 }

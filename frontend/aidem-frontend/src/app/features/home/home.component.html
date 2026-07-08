@@ -52,8 +52,11 @@
 
       <img src="/icons/care-hands-blue.png" class="hero-watermark" />
 
-      <button class="hero-button" (click)="openActivities.emit()">
-        Leve-me lá!
+      <button
+        class="action-button primary hero-action-button"
+        type="button"
+        (click)="openActivities.emit()">
+        <span>Leve-me lá!</span>
       </button>
     </section>
 
@@ -63,8 +66,18 @@
         *ngFor="let day of days"
         [class.active]="day.isToday">
 
-        <span>{{ day.label }}</span>
-        <strong>{{ day.dayNumber }}</strong>
+    <span class="day-week">
+      {{ day.label }}
+    </span>
+
+        <strong>
+          {{ day.dayNumber }}
+        </strong>
+
+        <span class="day-month">
+      {{ day.monthLabel }}
+    </span>
+
       </div>
     </section>
 
@@ -87,7 +100,8 @@
         *ngFor="let activity of todayActivities">
 
         <img
-          src="/icons/generic_exercise.svg"
+          [src]="getExerciseImage(activity)"
+          [alt]="activity.title"
           class="activity-image">
 
         <span class="activity-name">

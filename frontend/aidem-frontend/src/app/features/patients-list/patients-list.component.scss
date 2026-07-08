@@ -56,21 +56,23 @@
 
 .toolbar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 190px 280px;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) 210px 300px;
+  gap: 12px;
   align-items: center;
   padding: 0 6px 26px;
   border-bottom: 1px solid #eef1f6;
 }
 
 .search-wrapper {
-  height: 48px;
+  height: 56px;
   background: #dce7f8;
-  border-radius: 8px;
+  border-radius: 14px;
+
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 14px;
+
+  padding: 0 18px;
 }
 
 .search-icon {
@@ -120,36 +122,33 @@
 
 .sort-button,
 .add-button {
-  height: 48px;
-  border-radius: 8px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 21px;
-  font-weight: 500;
+  min-height: 56px;
+  border-radius: 14px;
+  padding: 0 22px;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  white-space: nowrap;
   cursor: pointer;
+  border: 2px solid transparent;
 }
 
 .sort-button {
-  height: 48px;
-  border-radius: 8px;
-  border: none;
   background: #4079e8;
   color: #ffffff;
-  font-family: 'Poppins', sans-serif;
-  font-size: 21px;
-  font-weight: 600;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
 }
 
 .add-button {
-  border: 1.5px solid #4079e8;
   background: #ffffff;
   color: #4079e8;
-  padding: 0 18px;
+  border-color: #4079e8;
 }
 
 .chevron {

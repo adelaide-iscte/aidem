@@ -30,6 +30,14 @@ export class InstructionsModalComponent {
     });
   }
 
+  getVideoBackground(activity?: SessionPlanExercise): string {
+    const imageUrl = activity?.mediaUrl
+      ? `/${activity.mediaUrl}`
+      : '/icons/generic_activity.svg';
+
+    return `linear-gradient(rgba(0, 0, 0, .35), rgba(0, 0, 0, .35)), url("${imageUrl}")`;
+  }
+
   ngOnChanges(): void {
     console.log('INSTRUCTIONS ACTIVITY:', this.activity);
   }

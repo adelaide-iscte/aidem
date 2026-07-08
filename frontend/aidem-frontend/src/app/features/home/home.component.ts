@@ -19,6 +19,7 @@ import {AuthUser} from '../../core/services/auth.service';
 interface HomeDay {
   label: string;
   dayNumber: number;
+  monthLabel: string;
   isToday: boolean;
   date: Date;
 }
@@ -91,6 +92,14 @@ export class HomeComponent implements OnChanges, OnInit {
     }
   }
 
+  getExerciseImage(activity: SessionPlanExercise): string {
+    if (!activity.mediaUrl) {
+      return '/icons/generic_exercise.svg';
+    }
+
+    return `/${activity.mediaUrl}`;
+  }
+
   async loadTodayActivities(): Promise<void> {
     if (!this.patient?.id) return;
 
@@ -132,9 +141,18 @@ export class HomeComponent implements OnChanges, OnInit {
         date,
         label: this.formatWeekDay(date),
         dayNumber: date.getDate(),
-        isToday: this.isSameDay(date, today)
+        monthLabel: this.formatMonth(date),
+        isToday: this.isSameDay(date, today),
       };
     });
+  }
+
+  private formatMonth(date: Date): string {
+    return new Intl.DateTimeFormat('pt-PT', {
+      month: 'short'
+    })
+      .format(date)
+      .replace('.', '');
   }
 
   private formatWeekDay(date: Date): string {

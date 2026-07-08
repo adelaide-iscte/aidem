@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectorRef, EventEmitter, Input, Output } from '@angular/core';
 import { EgpModalComponent } from '../../shared/egp-modal/src/app/shared/egp-modal/egp-modal.component';
 import { NotificationsPopoverComponent } from '../../shared/notifications-popover-modal/notifications-popover.component';
-import {EgpAssessment, PatientProfile, PatientService, SessionHistory} from '../../core/services/patient.service';
+import {EgpAssessment, PatientProfile, PatientService, SessionHistory, SessionHistoryExercise} from '../../core/services/patient.service';
 import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
 import {LoadingSpinnerComponent} from '../../shared/laoding-spinner-modal/loading-spinner.component';
 
@@ -31,6 +31,7 @@ export class ProfileComponent {
 
 
   showSideMenu = false;
+  selectedSession: SessionHistory | null = null;
 
   openSideMenu(): void {
     this.showSideMenu = true;
@@ -44,6 +45,7 @@ export class ProfileComponent {
   sessionHistory: SessionHistory[] = [];
   isLoadingSessions = false;
   sessionsError = '';
+  expandedSessionId: number | null = null;
 
   showEgpModal = false;
   showNotifications = false;
@@ -161,6 +163,87 @@ export class ProfileComponent {
 
     if (tab === 'sessoes' && this.sessionHistory.length === 0) {
       await this.loadSessionHistory();
+    }
+  }
+
+  openSessionDetails(session: SessionHistory): void {
+    this.selectedSession = session;
+  }
+
+  closeSessionDetails(): void {
+    this.selectedSession = null;
+  }
+
+  exerciseStatusLabel(status: SessionHistoryExercise['status']): string {
+    switch (status) {
+      case 'COMPLETED':
+        return 'Concluído';
+      case 'FAILED':
+        return 'Não conseguido';
+      case 'SKIPPED':
+        return 'Não realizado';
+      default:
+        return 'Pendente';
+    }
+  }
+
+  exerciseStatusReason(exercise: SessionHistoryExercise): string {
+    if (exercise.status === 'FAILED') {
+      return exercise.caregiverReason
+        ? `Motivo indicado: ${exercise.caregiverReason}`
+        : 'O exercício foi tentado, mas não foi conseguido.';
+    }
+
+    if (exercise.status === 'SKIPPED') {
+      return exercise.caregiverReason
+        ? `Motivo para não realizar: ${exercise.caregiverReason}`
+        : 'O cuidador decidiu não realizar este exercício.';
+    }
+
+    if (exercise.status === 'COMPLETED') {
+      return exercise.caregiverReason
+        ? `Observações: ${exercise.caregiverReason}`
+        : 'Exercício realizado.';
+    }
+
+    return 'Ainda não existe registo para este exercício.';
+  }
+
+  difficultyFeedbackLabel(value: string | null): string {
+    switch (value) {
+      case 'EASY':
+        return 'Fácil';
+      case 'OK':
+        return 'Média';
+      case 'HARD':
+        return 'Difícil';
+      case 'TOO_HARD':
+        return 'Muito difícil';
+      default:
+        return '-';
+    }
+  }
+
+  completionAnswerLabel(value: string | null): string {
+    switch (value) {
+      case 'yes':
+      case 'YES':
+      case 'sim':
+        return 'Sim';
+
+      case 'almost':
+      case 'ALMOST':
+      case 'quase':
+        return 'Quase';
+
+      case 'no':
+      case 'NO':
+      case 'nao':
+      case 'não':
+        return 'Não';
+
+      default:
+        return '-';
     }
   }
 

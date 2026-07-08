@@ -1,5 +1,7 @@
 package com.aidem.backend.service;
 
+import com.aidem.backend.dto.patient.SessionHistoryExerciseResponse;
+import com.aidem.backend.dto.patient.SessionHistoryResponse;
 import com.aidem.backend.dto.session.ExerciseFeedbackRequest;
 import com.aidem.backend.dto.session.SessionPlanExerciseResponse;
 import com.aidem.backend.dto.session.SessionPlanResponse;
@@ -36,6 +38,7 @@ public class SessionPlanService {
     private final SessionPlanRepository sessionPlanRepository;
     private final SessionPlanExerciseRepository sessionPlanExerciseRepository;
     private final ExerciseFeedbackRepository exerciseFeedbackRepository;
+    private final SessionHistoryRepository sessionHistoryRepository;
 
     public SessionPlanService(
             PatientRepository patientRepository,
@@ -45,7 +48,8 @@ public class SessionPlanService {
             ExerciseRepository exerciseRepository,
             SessionPlanRepository sessionPlanRepository,
             SessionPlanExerciseRepository sessionPlanExerciseRepository,
-            ExerciseFeedbackRepository exerciseFeedbackRepository
+            ExerciseFeedbackRepository exerciseFeedbackRepository,
+            SessionHistoryRepository sessionHistoryRepository
     ) {
         this.patientRepository = patientRepository;
         this.userRepository = userRepository;
@@ -55,6 +59,31 @@ public class SessionPlanService {
         this.sessionPlanRepository = sessionPlanRepository;
         this.sessionPlanExerciseRepository = sessionPlanExerciseRepository;
         this.exerciseFeedbackRepository = exerciseFeedbackRepository;
+        this.sessionHistoryRepository = sessionHistoryRepository;
+    }
+
+    @Transactional
+    public List<SessionHistoryResponse> getPatientSessionHistory(Long patientId) {
+
+        if (!patientRepository.existsById(patientId)) {
+            throw new IllegalArgumentException("Utente não encontrado.");
+        }
+
+        return sessionPlanRepository
+                .findByPatient_IdOrderBySessionDateDescIdDesc(patientId)
+                .stream()
+                .filter(this::hasSessionProgress)
+                .map(this::toHistoryResponse)
+                .toList();
+    }
+
+    private boolean hasSessionProgress(SessionPlan plan) {
+        List<SessionPlanExercise> items =
+                sessionPlanExerciseRepository
+                        .findBySessionPlan_IdOrderByOrderIndexAsc(plan.getId());
+
+        return items.stream()
+                .anyMatch(item -> item.getStatus() != ExerciseStatus.PENDING);
     }
 
     @Transactional
@@ -73,6 +102,7 @@ public class SessionPlanService {
     public SessionPlanResponse regenerateTodayPlan(Long patientId, String userEmail) {
         LocalDate today = LocalDate.now();
         List<SessionPlan> existing = sessionPlanRepository.findByPatientIdAndSessionDateOrderByIdDesc(patientId, today);
+        sessionHistoryRepository.deleteByPatientIdAndSessionDate(patientId, today);
         sessionPlanRepository.deleteAll(existing);
         return toResponse(generatePlan(patientId, userEmail, today));
     }
@@ -144,6 +174,10 @@ public class SessionPlanService {
         boolean hasProgress = items.stream()
                 .anyMatch(item -> !item.getId().equals(sessionPlanExerciseId) && item.getStatus() != ExerciseStatus.PENDING);
         plan.setStatus(hasProgress ? SessionStatus.IN_PROGRESS : SessionStatus.PLANNED);
+        sessionHistoryRepository.deleteByPatientIdAndSessionDate(
+                plan.getPatient().getId(),
+                plan.getSessionDate()
+        );
         sessionPlanRepository.save(plan);
 
         return toExerciseResponse(planExercise);
@@ -459,16 +493,205 @@ public class SessionPlanService {
     }
 
     private void updateSessionStatusIfFinished(SessionPlan plan) {
-        List<SessionPlanExercise> items = sessionPlanExerciseRepository.findBySessionPlan_IdOrderByOrderIndexAsc(plan.getId());
-        boolean allFinished = items.stream().allMatch(item -> item.getStatus() != ExerciseStatus.PENDING);
+        List<SessionPlanExercise> items =
+                sessionPlanExerciseRepository.findBySessionPlan_IdOrderByOrderIndexAsc(plan.getId());
+
+        boolean allFinished = items.stream()
+                .allMatch(item -> item.getStatus() != ExerciseStatus.PENDING);
+
         if (allFinished) {
             plan.setStatus(SessionStatus.COMPLETED);
             sessionPlanRepository.save(plan);
+            saveSessionHistory(plan, items);
         } else if (items.stream().anyMatch(item -> item.getStatus() != ExerciseStatus.PENDING)) {
             plan.setStatus(SessionStatus.IN_PROGRESS);
             sessionPlanRepository.save(plan);
         }
     }
+
+    private void saveSessionHistory(SessionPlan plan, List<SessionPlanExercise> items) {
+        Long patientId = plan.getPatient().getId();
+        LocalDate sessionDate = plan.getSessionDate();
+
+        int completedActivities = (int) items.stream()
+                .filter(item -> item.getStatus() == ExerciseStatus.COMPLETED)
+                .count();
+
+        List<ExerciseFeedback> feedbacks =
+                exerciseFeedbackRepository.findBySessionPlanExercise_SessionPlan_Id(plan.getId());
+
+        String averageDifficulty = calculateAverageDifficulty(feedbacks);
+
+        SessionHistory history = sessionHistoryRepository
+                .findByPatientIdAndSessionDate(patientId, sessionDate)
+                .orElseGet(() -> SessionHistory.builder()
+                        .patientId(patientId)
+                        .sessionDate(sessionDate)
+                        .build());
+
+        history.setCompletedActivities(completedActivities);
+        history.setAverageDifficulty(averageDifficulty);
+
+        sessionHistoryRepository.save(history);
+    }
+
+    private String calculateAverageDifficulty(List<ExerciseFeedback> feedbacks) {
+        List<Integer> values = feedbacks.stream()
+                .map(ExerciseFeedback::getDifficultyFeedback)
+                .filter(Objects::nonNull)
+                .map(this::difficultyValue)
+                .toList();
+
+        if (values.isEmpty()) {
+            return "-";
+        }
+
+        double average = values.stream()
+                .mapToInt(Integer::intValue)
+                .average()
+                .orElse(0);
+
+        if (average <= 1.5) return "Fácil";
+        if (average <= 2.5) return "Média";
+        return "Difícil";
+    }
+
+    private SessionHistoryResponse toHistoryResponse(SessionPlan plan) {
+
+        List<SessionPlanExercise> items =
+                sessionPlanExerciseRepository
+                        .findBySessionPlan_IdOrderByOrderIndexAsc(plan.getId());
+
+        List<Long> itemIds = items.stream()
+                .map(SessionPlanExercise::getId)
+                .toList();
+
+        Map<Long, ExerciseFeedback> feedbackByExerciseId =
+                itemIds.isEmpty()
+                        ? Map.of()
+                        : exerciseFeedbackRepository
+                        .findBySessionPlanExercise_IdIn(itemIds)
+                        .stream()
+                        .collect(Collectors.toMap(
+                                feedback ->
+                                        feedback
+                                                .getSessionPlanExercise()
+                                                .getId(),
+                                feedback -> feedback
+                        ));
+
+        List<SessionHistoryExerciseResponse> exercises =
+                items.stream()
+                        .map(item ->
+                                toHistoryExerciseResponse(
+                                        item,
+                                        feedbackByExerciseId.get(item.getId())
+                                )
+                        )
+                        .toList();
+
+        int completedActivities = (int) items.stream()
+                .filter(item ->
+                        item.getStatus() == ExerciseStatus.COMPLETED
+                )
+                .count();
+
+        return new SessionHistoryResponse(
+                plan.getId(),
+                plan.getPatient().getId(),
+                plan.getSessionDate(),
+                plan.getStatus().name(),
+                completedActivities,
+                items.size(),
+                averageDifficultyLabel(feedbackByExerciseId.values()),
+                exercises
+        );
+    }
+
+    private SessionHistoryExerciseResponse toHistoryExerciseResponse(
+            SessionPlanExercise item,
+            ExerciseFeedback feedback
+    ) {
+
+        Exercise exercise = item.getExercise();
+
+        return new SessionHistoryExerciseResponse(
+                item.getId(),
+                exercise.getId(),
+                item.getOrderIndex(),
+                exercise.getTitle(),
+                exercise.getDomain(),
+                exercise.getActivityType().name(),
+                exercise.getDifficultyLevel().name(),
+                item.getRecommendedDurationMinutes(),
+                item.getStatus().name(),
+                item.getReason(),
+
+                feedback == null
+                        ? null
+                        : feedback.getCompleted(),
+
+                feedback == null ||
+                        feedback.getDifficultyFeedback() == null
+                        ? null
+                        : feedback.getDifficultyFeedback().name(),
+
+                feedback == null
+                        ? null
+                        : feedback.getEmotionFeedback(),
+
+                feedback == null
+                        ? null
+                        : feedback.getNotes()
+        );
+    }
+
+    private String averageDifficultyLabel(
+            Collection<ExerciseFeedback> feedbacks
+    ) {
+
+        List<Integer> values = feedbacks.stream()
+                .map(ExerciseFeedback::getDifficultyFeedback)
+                .filter(Objects::nonNull)
+                .map(this::difficultyValue)
+                .toList();
+
+        if (values.isEmpty()) {
+            return "-";
+        }
+
+        double average = values.stream()
+                .mapToInt(Integer::intValue)
+                .average()
+                .orElse(0);
+
+        if (average < 1.5) {
+            return "Fácil";
+        }
+
+        if (average < 2.5) {
+            return "Média";
+        }
+
+        if (average < 3.5) {
+            return "Difícil";
+        }
+
+        return "Muito difícil";
+    }
+
+    private int difficultyValue(
+            DifficultyFeedback difficultyFeedback
+    ) {
+
+        return switch (difficultyFeedback) {
+            case EASY -> 1;
+            case OK -> 2;
+            case HARD -> 3;
+            case TOO_HARD -> 4;
+        };
+    }
+
 
     private SessionPlanResponse toResponse(SessionPlan plan) {
         List<SessionPlanExercise> items = sessionPlanExerciseRepository.findBySessionPlan_IdOrderByOrderIndexAsc(plan.getId());
@@ -524,6 +747,10 @@ public class SessionPlanService {
 
             SessionPlan plan = exercise.getSessionPlan();
             plan.setStatus(SessionStatus.PLANNED);
+            sessionHistoryRepository.deleteByPatientIdAndSessionDate(
+                    plan.getPatient().getId(),
+                    plan.getSessionDate()
+            );
             sessionPlanRepository.save(plan);
         }
 
@@ -538,6 +765,13 @@ public class SessionPlanService {
 
         for (SessionPlanExercise exercise : completedExercises) {
             exercise.setStatus(ExerciseStatus.PENDING);
+
+            SessionPlan plan = exercise.getSessionPlan();
+
+            sessionHistoryRepository.deleteByPatientIdAndSessionDate(
+                    plan.getPatient().getId(),
+                    plan.getSessionDate()
+            );
         }
 
         sessionPlanExerciseRepository.saveAll(completedExercises);

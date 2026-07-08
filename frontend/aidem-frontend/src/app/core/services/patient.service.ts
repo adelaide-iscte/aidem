@@ -1,5 +1,39 @@
 import { Injectable } from '@angular/core';
 
+export type SessionHistoryExercise = {
+  sessionPlanExerciseId: number;
+  exerciseId: number;
+  orderIndex: number;
+  title: string;
+  domain: string;
+  activityType: string;
+  difficultyLevel: string;
+  durationMinutes: number | null;
+
+  status:
+    | 'PENDING'
+    | 'COMPLETED'
+    | 'FAILED'
+    | 'SKIPPED';
+
+  recommendationReason: string | null;
+  completed: boolean | null;
+  difficultyFeedback: string | null;
+  emotionFeedback: string | null;
+  caregiverReason: string | null;
+};
+
+export type SessionHistory = {
+  id: number;
+  patientId: number;
+  sessionDate: string;
+  status: string;
+  completedActivities: number;
+  totalActivities: number;
+  averageDifficulty: string;
+  exercises: SessionHistoryExercise[];
+};
+
 export type AppPatient = {
   id: number;
   name: string;
@@ -10,13 +44,6 @@ export type AppPatient = {
   subtitle: string;
 };
 
-export type SessionHistory = {
-  id: number;
-  patientId: number;
-  sessionDate: string;
-  completedActivities: number;
-  averageDifficulty: string;
-};
 export interface CreatePatientRequest {
   fullName: string;
   birthDate: string;
@@ -268,6 +295,8 @@ export class PatientService {
 
     return JSON.parse(raw) as PatientProfile;
   }
+
+
 
 
 }

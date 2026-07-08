@@ -1,15 +1,13 @@
 package com.aidem.backend.controller;
 
-import com.aidem.backend.dto.patient.EgpAssessmentResponse;
-import com.aidem.backend.dto.patient.EgpRowResponse;
-import com.aidem.backend.dto.patient.PatientListResponse;
-import com.aidem.backend.dto.patient.PatientProfileResponse;
+import com.aidem.backend.dto.patient.*;
 import com.aidem.backend.model.Patient;
 import com.aidem.backend.model.SessionHistory;
 import com.aidem.backend.repository.AssessmentRepository;
 import com.aidem.backend.repository.DomainScoreRepository;
 import com.aidem.backend.repository.PatientRepository;
 import com.aidem.backend.repository.SessionHistoryRepository;
+import com.aidem.backend.service.SessionPlanService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -18,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
-import com.aidem.backend.dto.patient.CreatePatientRequest;
 import com.aidem.backend.model.Assessment;
 import com.aidem.backend.model.DomainScore;
 import com.aidem.backend.model.enums.RiskLevel;
@@ -38,17 +35,20 @@ public class PatientController {
     private final SessionHistoryRepository sessionHistoryRepository;
     private final DomainScoreRepository domainScoreRepository;
     private final AssessmentRepository assessmentRepository;
+    private final SessionPlanService sessionPlanService;
 
     public PatientController(
             PatientRepository patientRepository,
             SessionHistoryRepository sessionHistoryRepository,
             DomainScoreRepository domainScoreRepository,
-            AssessmentRepository assessmentRepository
+            AssessmentRepository assessmentRepository,
+            SessionPlanService sessionPlanService
     ) {
         this.patientRepository = patientRepository;
         this.sessionHistoryRepository = sessionHistoryRepository;
         this.domainScoreRepository = domainScoreRepository;
         this.assessmentRepository = assessmentRepository;
+        this.sessionPlanService = sessionPlanService;
     }
 
     @Transactional(readOnly = true)
@@ -121,10 +121,11 @@ public class PatientController {
     }
 
     @GetMapping("/{id}/session-history")
-    public List<SessionHistory> getSessionHistory(@PathVariable Long id) {
-        return sessionHistoryRepository.findByPatientIdOrderBySessionDateDesc(id);
+    public List<SessionHistoryResponse> getSessionHistory(
+            @PathVariable Long id
+    ) {
+        return sessionPlanService.getPatientSessionHistory(id);
     }
-
     @GetMapping("/{id}/egp/latest")
     @Transactional(readOnly = true)
     public ResponseEntity<EgpAssessmentResponse> getLatestEgp(@PathVariable Long id) {

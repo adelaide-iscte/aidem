@@ -5,8 +5,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
-public interface SessionPlanRepository extends JpaRepository<SessionPlan, Long> {
-    List<SessionPlan> findByPatientIdAndSessionDateOrderByIdDesc(Long patientId, LocalDate sessionDate);
+public interface SessionPlanRepository
+        extends JpaRepository<SessionPlan, Long> {
+
+    List<SessionPlan> findByPatientIdAndSessionDateOrderByIdDesc(
+            Long patientId,
+            LocalDate sessionDate
+    );
+
+    List<SessionPlan> findByPatient_IdOrderBySessionDateDescIdDesc(
+            Long patientId
+    );
 }

@@ -130,22 +130,41 @@
   }
 }
 
-.hero-button {
-  width: 145px;
-  height: 52px;
-  padding: 0;
-  border: none;
-  border-radius: 7px;
-  background: #407ce2;
-  color: white;
-  font-size: 20px;
-  font-weight: 800;
-  white-space: nowrap;
-  display: flex;
+.action-button {
+  min-height: 56px;
+  border-radius: 14px;
+  padding: 0 18px;
+
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  z-index: 3;
+  gap: 10px;
+
+  font-family: Inter, Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+
+  white-space: nowrap;
+
   cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.action-button.primary {
+  background: #407ce2;
+  color: #ffffff;
+}
+
+.hero-action-button {
+  width: 190px;
+  min-height: 64px;
+  padding: 0 24px;
+
+  font-size: 22px;
+  border-radius: 16px;
+
+  z-index: 3;
 }
 
 .hero-watermark {
@@ -173,24 +192,38 @@
 }
 
 .day-card {
-  width: 76px;
-  height: 84px;
+  width: 82px;
+  height: 92px;
   border: 1px solid #b8c7df;
-  border-radius: 14px;
+  border-radius: 16px;
   color: #a7b5cc;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 2px;
 }
 
-.day-card span {
-  font-size: 22px;
+.day-week {
+  font-size: 20px;
+  line-height: 1;
 }
 
 .day-card strong {
   font-size: 34px;
+  line-height: 1;
   color: #111827;
+}
+
+.day-month {
+  margin-top: 2px;
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #8fa1bd;
 }
 
 .day-card.active {
@@ -332,4 +365,9 @@ h2 {
   width: 26px;
   height: 26px;
   object-fit: contain;
+}
+
+.day-card.active .day-month {
+  color: white;
+  opacity: 0.9;
 }

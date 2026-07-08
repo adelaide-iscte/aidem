@@ -235,50 +235,58 @@
 }
 
 .primary-button,
-.secondary-button,
-.close-graph-button {
-  height: 56px;
-  border-radius: 12px;
-  border: none;
-  font-family: 'Poppins', sans-serif;
-  cursor: pointer;
-  transition: transform 0.15s ease, opacity 0.15s ease;
-  font-size: 24px;
-}
-
-.primary-button:hover,
-.secondary-button:hover,
-.close-graph-button:hover {
-  transform: translateY(-1px);
-}
-
-.primary-button {
-  min-width: 230px;
-  padding: 0 32px;
-  background: #4179e8;
-  color: #ffffff;
-  font-size: 28px;
-  font-weight: 500;
-}
-
 .secondary-button {
   min-width: 230px;
-  padding: 0 30px;
-  border: 2px solid #4179e8;
-  background: #ffffff;
-  color: #4179e8;
-  font-size: 27px;
-  font-weight: 500;
+  min-height: 56px;
+  border-radius: 14px;
+  padding: 0 24px;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+  border: 2px solid transparent;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.primary-button {
+  background: #4079e8;
+  color: #ffffff;
+}
+
+.secondary-button {
+  background: #ffffff;
+  color: #4079e8;
+  border-color: #4079e8;
+}
+
+.primary-button:hover,
+.secondary-button:hover {
+  transform: translateY(-1px);
+}
+
+.primary-button:active,
+.secondary-button:active {
+  transform: scale(0.98);
 }
 
 .back-icon {
-  font-size: 46px;
-  line-height: 0.7;
-  transform: translateY(-2px);
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  transform: translateY(-1px);
 }
 
 .graph-backdrop {
@@ -499,14 +507,22 @@
 
 .close-graph-button {
   min-width: 159px;
-  height: 56px;
+  min-height: 56px;
   padding: 0 30px;
-  background: #5387e4;
+
+  background: #4079e8;
   color: #ffffff;
-  font-size: 25px;
-  font-weight: 500;
-  border-radius: 12px;
+
+  border: 2px solid transparent;
+  border-radius: 14px;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+
+  cursor: pointer;
 }
+
 .egp-accessibility-row {
   display: flex;
   justify-content: flex-end;

@@ -32,14 +32,20 @@
           </div>
 
           <div class="contact-actions">
-            <button class="message-button" (click)="openChat.emit()">
+            <button
+              class="action-button outline"
+              type="button"
+              (click)="openChat.emit()">
               <img src="/icons/Message.svg" class="button-icon" />
-              <span>Enviar mensagem</span>
+              <span>Mensagem</span>
             </button>
 
-            <button class="call-button" type="button" (click)="openCallOverlay()">
+            <button
+              class="action-button primary"
+              type="button"
+              (click)="openCallOverlay()">
               <img src="/icons/Phone.svg" class="button-icon" />
-              Fazer chamada
+              <span>Chamada</span>
             </button>
           </div>
         </section>
@@ -72,49 +78,52 @@
               <h2>{{ activity.title }}</h2>
 
               <div class="bottom-actions">
-                  <button
-                          *ngIf="isFormalMode && !isSkipped(activity)"
-                          class="skip-button"
-                          type="button"
-                          [disabled]="isLocked(activity)"
-                          (click)="openSkipModal(activity)">
-                      ✕ Não realizar
-                  </button>
+                <button
+                  *ngIf="isFormalMode && !isSkipped(activity)"
+                  class="action-button danger"
+                  type="button"
+                  [disabled]="isLocked(activity)"
+                  (click)="openSkipModal(activity)">
+                  <span class="action-icon">✕</span>
+                  <span>Não realizar</span>
+                </button>
 
-                  <button
-                          *ngIf="isFormalMode && isSkipped(activity)"
-                          class="skip-button skipped-lock"
-                          type="button"
-                          disabled>
-                      ✕ Não realizado
-                  </button>
+                <button
+                  *ngIf="isFormalMode && isSkipped(activity)"
+                  class="action-button danger muted"
+                  type="button"
+                  disabled>
+                  <span class="action-icon">✕</span>
+                  <span>Não realizado</span>
+                </button>
 
-                  <button
-                          *ngIf="!isCompleted(activity)"
-                          class="complete-button"
-                          type="button"
-                          [disabled]="isSkipped(activity)"
-                          (click)="openFeedbackModal(activity)">
-                      <img src="/icons/Check_2.svg" class="small-icon" />
-                      Marcar como concluído
-                  </button>
+                <button
+                  *ngIf="!isCompleted(activity)"
+                  class="action-button primary"
+                  type="button"
+                  [disabled]="isSkipped(activity)"
+                  (click)="openFeedbackModal(activity)">
+                  <img src="/icons/Check_2.svg" class="small-icon" />
+                  <span>Concluir</span>
+                </button>
 
-                  <button
-                          *ngIf="isCompleted(activity)"
-                          class="undo-button"
-                          type="button"
-                          (click)="resetExercise(activity)">
-                      ↺ Cancelar feito
-                  </button>
+                <button
+                  *ngIf="isCompleted(activity)"
+                  class="action-button secondary"
+                  type="button"
+                  (click)="resetExercise(activity)">
+                  <span class="action-icon">↺</span>
+                  <span>Cancelar</span>
+                </button>
 
-                  <button
-                          class="instructions-button"
-                          type="button"
-                          [disabled]="isLocked(activity)"
-                          (click)="!isLocked(activity) && openInstructionsModal(activity)">
-                      <img src="/icons/play.svg" class="small-icon" />
-                      Instruções
-                  </button>
+                <button
+                  class="action-button outline"
+                  type="button"
+                  [disabled]="isLocked(activity)"
+                  (click)="!isLocked(activity) && openInstructionsModal(activity)">
+                  <img src="/icons/play.svg" class="small-icon" />
+                  <span>Instruções</span>
+                </button>
               </div>
             </div>
           </div>
