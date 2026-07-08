@@ -26,6 +26,19 @@ export class FeedbackModalComponent {
   showReasonStep = false;
   showSuccess = false;
 
+  successMessages = [
+    'Muito bem!',
+    'Bom esforço!',
+    'Continue o bom trabalho!',
+    'Excelente trabalho!',
+    'Está a ir muito bem!',
+    'Parabéns pelo seu esforço!',
+    'Continue assim!',
+    'Ótimo trabalho!'
+  ];
+
+  successMessage = '';
+
   selectCompletion(value: FeedbackSubmitEvent['completion']): void {
     this.selectedCompletion = value;
   }
@@ -58,6 +71,11 @@ export class FeedbackModalComponent {
       difficulty: this.selectedDifficulty,
       reason: this.reason.trim() || undefined
     });
+
+    this.successMessage =
+      this.successMessages[
+        Math.floor(Math.random() * this.successMessages.length)
+        ];
 
     this.showSuccess = true;
   }
