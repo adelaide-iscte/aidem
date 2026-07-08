@@ -206,8 +206,8 @@ public class SessionPlanService {
         }
 
         Map<RiskLevel, List<DomainScore>> riskGroups = classifyRiskGroups(domainScores);
-        List<Exercise> selected = selectExercises(patientId, date, domainScores, riskGroups, allExercises);
-
+        SelectionHistory selectionHistory = loadSelectionHistory(patientId);
+        List<Exercise> selected = selectExercises(patientId, date, domainScores, riskGroups, allExercises, selectionHistory);
         User generatedBy = userEmail == null ? null : userRepository.findByEmailIgnoreCase(userEmail).orElse(null);
 
         SessionPlan plan = SessionPlan.builder()
@@ -240,7 +240,8 @@ public class SessionPlanService {
             LocalDate date,
             List<DomainScore> scores,
             Map<RiskLevel, List<DomainScore>> riskGroups,
-            List<Exercise> allExercises
+            List<Exercise> allExercises,
+            SelectionHistory selectionHistory
     ) {
         Random random = new Random(Objects.hash(patientId, date));
         List<Exercise> selected = new ArrayList<>();
@@ -252,11 +253,13 @@ public class SessionPlanService {
                 .toList();
 
         // Regra: incluir sempre pelo menos 1 atividade da área prioritária.
-        pickFirstValid(patientId, allExercises, selectedIds,
+        pickFirstValid(allExercises,
+                selectedIds,
                 sortedScores.stream().map(DomainScore::getDomain).toList(),
                 null,
                 priorityType,
-                random
+                random,
+                selectionHistory
         ).ifPresent(ex -> addExercise(selected, selectedIds, ex));
 
         // Regra: uma atividade de cada divisão interna/risk group.
@@ -265,24 +268,57 @@ public class SessionPlanService {
                     .map(DomainScore::getDomain)
                     .toList();
 
-            pickFirstValid(patientId, allExercises, selectedIds, domains, toDifficulty(risk), null, random)
+            pickFirstValid(        allExercises,
+                    selectedIds,
+                    domains,
+                    toDifficulty(risk),
+                    null,
+                    random,
+                    selectionHistory)
                     .ifPresent(ex -> addExercise(selected, selectedIds, ex));
         }
 
         // Regra: pelo menos uma motora e uma cognitiva.
-        ensureActivityType(patientId, allExercises, selected, selectedIds, ActivityType.MOTOR, random);
-        ensureActivityType(patientId, allExercises, selected, selectedIds, ActivityType.COGNITIVE, random);
+        ensureActivityType(
+                allExercises,
+                selected,
+                selectedIds,
+                ActivityType.MOTOR,
+                random,
+                selectionHistory
+        );
+
+        ensureActivityType(
+                allExercises,
+                selected,
+                selectedIds,
+                ActivityType.COGNITIVE,
+                random,
+                selectionHistory
+        );
 
         // Regra: preferencialmente 3 domínios distintos e perto de 45 min.
         List<String> domainPriority = sortedScores.stream().map(DomainScore::getDomain).toList();
         while (totalMinutes(selected) < MIN_MINUTES) {
-            Optional<Exercise> next = pickFirstValid(patientId, allExercises, selectedIds, domainPriority, null, null, random);
+            Optional<Exercise> next = pickFirstValid(allExercises,
+                    selectedIds,
+                    domainPriority,
+                    null,
+                    null,
+                    random,
+                    selectionHistory);
             if (next.isEmpty() || totalMinutes(selected) + duration(next.get()) > MAX_MINUTES) break;
             addExercise(selected, selectedIds, next.get());
         }
 
         while (totalMinutes(selected) < TARGET_MINUTES) {
-            Optional<Exercise> next = pickFirstValid(patientId, allExercises, selectedIds, domainPriority, null, null, random);
+            Optional<Exercise> next = pickFirstValid(allExercises,
+                    selectedIds,
+                    domainPriority,
+                    null,
+                    null,
+                    random,
+                    selectionHistory);
             if (next.isEmpty() || totalMinutes(selected) + duration(next.get()) > TARGET_MINUTES) break;
             addExercise(selected, selectedIds, next.get());
         }
@@ -295,57 +331,84 @@ public class SessionPlanService {
     }
 
     private Optional<Exercise> pickFirstValid(
-            Long patientId,
             List<Exercise> allExercises,
             Set<Long> selectedIds,
             List<String> domains,
             DifficultyLevel difficulty,
             ActivityType activityType,
-            Random random
+            Random random,
+            SelectionHistory selectionHistory
     ) {
-        List<Exercise> pool = allExercises.stream()
-                .filter(ex -> !selectedIds.contains(ex.getId()))
-                .filter(ex -> domains == null || domains.isEmpty() || domains.stream().anyMatch(d -> sameDomain(d, ex.getDomain())))
-                .filter(ex -> difficulty == null || ex.getDifficultyLevel() == difficulty)
-                .filter(ex -> activityType == null || ex.getActivityType() == activityType || ex.getActivityType() == ActivityType.MIXED)
-                .filter(ex -> isAllowedAfterFailure(patientId, ex))
-                .sorted(Comparator.comparing((Exercise ex) -> wasCompletedBefore(patientId, ex.getId())).thenComparing(Exercise::getId))
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<Exercise> pool = buildPool(allExercises, selectedIds, domains, difficulty, activityType, selectionHistory);
 
         if (pool.isEmpty() && difficulty != null) {
-            pool = allExercises.stream()
-                    .filter(ex -> !selectedIds.contains(ex.getId()))
-                    .filter(ex -> domains == null || domains.isEmpty() || domains.stream().anyMatch(d -> sameDomain(d, ex.getDomain())))
-                    .filter(ex -> activityType == null || ex.getActivityType() == activityType || ex.getActivityType() == ActivityType.MIXED)
-                    .filter(ex -> isAllowedAfterFailure(patientId, ex))
-                    .sorted(Comparator.comparing((Exercise ex) -> wasCompletedBefore(patientId, ex.getId())).thenComparing(Exercise::getId))
-                    .collect(Collectors.toCollection(ArrayList::new));
+            pool = buildPool(allExercises, selectedIds, domains, null, activityType, selectionHistory);
         }
 
         if (pool.isEmpty()) return Optional.empty();
 
-        // Mantém rotação determinística, mas evita sempre a mesma escolha quando há vários empatados.
-        boolean firstWasCompleted = wasCompletedBefore(patientId, pool.get(0).getId());
+        boolean firstWasCompleted = wasCompletedBefore(selectionHistory, pool.get(0).getId());
+
         List<Exercise> bestPool = pool.stream()
-                .filter(ex -> wasCompletedBefore(patientId, ex.getId()) == firstWasCompleted)
+                .filter(ex -> wasCompletedBefore(selectionHistory, ex.getId()) == firstWasCompleted)
                 .toList();
+
         return Optional.of(bestPool.get(random.nextInt(bestPool.size())));
     }
 
+    private List<Exercise> buildPool(
+            List<Exercise> allExercises,
+            Set<Long> selectedIds,
+            List<String> domains,
+            DifficultyLevel difficulty,
+            ActivityType activityType,
+            SelectionHistory selectionHistory
+    ) {
+        return allExercises.stream()
+                .filter(ex -> !selectedIds.contains(ex.getId()))
+                .filter(ex -> domains == null || domains.isEmpty() || domains.stream().anyMatch(d -> sameDomain(d, ex.getDomain())))
+                .filter(ex -> difficulty == null || ex.getDifficultyLevel() == difficulty)
+                .filter(ex -> activityType == null || ex.getActivityType() == activityType || ex.getActivityType() == ActivityType.MIXED)
+                .filter(ex -> isAllowedAfterFailure(selectionHistory, ex))
+                .sorted(Comparator
+                        .comparing((Exercise ex) -> wasCompletedBefore(selectionHistory, ex.getId()))
+                        .thenComparing(Exercise::getId))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
     private void ensureActivityType(
-            Long patientId,
             List<Exercise> allExercises,
             List<Exercise> selected,
             Set<Long> selectedIds,
             ActivityType type,
-            Random random
+            Random random,
+            SelectionHistory selectionHistory
     ) {
-        boolean alreadyPresent = selected.stream().anyMatch(ex -> ex.getActivityType() == type || ex.getActivityType() == ActivityType.MIXED);
-        if (alreadyPresent) return;
+        boolean alreadyPresent = selected.stream()
+                .anyMatch(ex ->
+                        ex.getActivityType() == type
+                                || ex.getActivityType() == ActivityType.MIXED
+                );
 
-        pickFirstValid(patientId, allExercises, selectedIds, List.of(), null, type, random)
-                .filter(ex -> totalMinutes(selected) + duration(ex) <= MAX_MINUTES)
-                .ifPresent(ex -> addExercise(selected, selectedIds, ex));
+        if (alreadyPresent) {
+            return;
+        }
+
+        pickFirstValid(
+                allExercises,
+                selectedIds,
+                List.of(),
+                null,
+                type,
+                random,
+                selectionHistory
+        )
+                .filter(ex ->
+                        totalMinutes(selected) + duration(ex) <= MAX_MINUTES
+                )
+                .ifPresent(ex ->
+                        addExercise(selected, selectedIds, ex)
+                );
     }
 
     private Map<RiskLevel, List<DomainScore>> classifyRiskGroups(List<DomainScore> scores) {
@@ -391,24 +454,59 @@ public class SessionPlanService {
                 .orElse(null);
     }
 
-    private boolean wasCompletedBefore(Long patientId, Long exerciseId) {
-        return sessionPlanExerciseRepository.findCompletedExerciseIdsByPatient(patientId).contains(exerciseId);
+    private SelectionHistory loadSelectionHistory(Long patientId) {
+        List<SessionPlanExercise> completedExercises = sessionPlanExerciseRepository
+                .findBySessionPlan_Patient_IdAndStatus(patientId, ExerciseStatus.COMPLETED);
+
+        Set<Long> completedExerciseIds = completedExercises.stream()
+                .map(item -> item.getExercise().getId())
+                .collect(Collectors.toSet());
+
+        Map<Long, SessionPlanExercise> latestFailureByExerciseId = sessionPlanExerciseRepository
+                .findBySessionPlan_Patient_IdAndStatusInOrderByUpdatedAtDesc(
+                        patientId,
+                        List.of(ExerciseStatus.FAILED, ExerciseStatus.SKIPPED)
+                )
+                .stream()
+                .collect(Collectors.toMap(
+                        item -> item.getExercise().getId(),
+                        item -> item,
+                        (first, ignored) -> first,
+                        LinkedHashMap::new
+                ));
+
+        return new SelectionHistory(completedExerciseIds, latestFailureByExerciseId, completedExercises);
     }
 
-    private boolean isAllowedAfterFailure(Long patientId, Exercise exercise) {
-        List<SessionPlanExercise> failures = sessionPlanExerciseRepository
-                .findBySessionPlan_Patient_IdAndStatusInOrderByUpdatedAtDesc(patientId, List.of(ExerciseStatus.FAILED, ExerciseStatus.SKIPPED))
-                .stream()
-                .filter(spe -> Objects.equals(spe.getExercise().getId(), exercise.getId()))
-                .toList();
+    private boolean wasCompletedBefore(SelectionHistory selectionHistory, Long exerciseId) {
+        return selectionHistory.completedExerciseIds().contains(exerciseId);
+    }
 
-        if (failures.isEmpty()) return true;
+    private boolean isAllowedAfterFailure(SelectionHistory selectionHistory, Exercise exercise) {
+        SessionPlanExercise latestFailure = selectionHistory.latestFailureByExerciseId().get(exercise.getId());
 
-        SessionPlanExercise latestFailure = failures.get(0);
-        LocalDateTime failedAt = latestFailure.getUpdatedAt() != null ? latestFailure.getUpdatedAt() : latestFailure.getCreatedAt();
+        if (latestFailure == null) return true;
+
+        LocalDateTime failedAt = latestFailure.getUpdatedAt() != null
+                ? latestFailure.getUpdatedAt()
+                : latestFailure.getCreatedAt();
+
         if (failedAt == null) return false;
 
-        return sessionPlanExerciseRepository.countCompletedInDomainAfter(patientId, exercise.getDomain(), failedAt) >= 5;
+        long completedInDomainAfterFailure = selectionHistory.completedExercises().stream()
+                .filter(item -> item.getUpdatedAt() != null)
+                .filter(item -> item.getUpdatedAt().isAfter(failedAt))
+                .filter(item -> sameDomain(item.getExercise().getDomain(), exercise.getDomain()))
+                .count();
+
+        return completedInDomainAfterFailure >= 5;
+    }
+
+    private record SelectionHistory(
+            Set<Long> completedExerciseIds,
+            Map<Long, SessionPlanExercise> latestFailureByExerciseId,
+            List<SessionPlanExercise> completedExercises
+    ) {
     }
 
     private DifficultyLevel toDifficulty(RiskLevel riskLevel) {

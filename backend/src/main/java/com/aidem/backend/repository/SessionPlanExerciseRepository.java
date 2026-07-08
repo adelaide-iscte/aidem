@@ -9,16 +9,20 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import org.springframework.data.jpa.repository.EntityGraph;
+import java.util.Collection;
 
 public interface SessionPlanExerciseRepository extends JpaRepository<SessionPlanExercise, Long> {
 
     List<SessionPlanExercise> findBySessionPlan_IdOrderByOrderIndexAsc(Long sessionPlanId);
 
 
+    @EntityGraph(attributePaths = {"exercise", "sessionPlan"})
     List<SessionPlanExercise> findBySessionPlan_Patient_IdAndStatus(
             Long patientId,
             ExerciseStatus status
     );
+
 
     List<SessionPlanExercise> findByStatus(ExerciseStatus status);
 
@@ -30,6 +34,7 @@ public interface SessionPlanExerciseRepository extends JpaRepository<SessionPlan
             """)
     List<Long> findCompletedExerciseIdsByPatient(@Param("patientId") Long patientId);
 
+    @EntityGraph(attributePaths = {"exercise", "sessionPlan"})
     List<SessionPlanExercise> findBySessionPlan_Patient_IdAndStatusInOrderByUpdatedAtDesc(
             Long patientId,
             Collection<ExerciseStatus> statuses
@@ -48,4 +53,6 @@ public interface SessionPlanExerciseRepository extends JpaRepository<SessionPlan
             @Param("domain") String domain,
             @Param("afterDate") LocalDateTime afterDate
     );
+
+
 }
