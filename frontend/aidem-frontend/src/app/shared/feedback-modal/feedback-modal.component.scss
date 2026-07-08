@@ -193,7 +193,8 @@
 
 .success-modal {
   width: 350px;
-  height: 190px;
+  min-height: 190px;
+  padding: 24px 28px;
 
   background: white;
   border-radius: 42px;
@@ -202,17 +203,21 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 28px;
+  gap: 24px;
 
   animation: modalPop 0.18s ease-out;
+  box-sizing: border-box;
 }
 
 .success-modal h2 {
   margin: 0;
+  max-width: 100%;
 
   font-family: "Poppins", Inter, Arial, sans-serif;
-  font-size: 36px;
+  font-size: 28px;
   font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
 
   color: #222;
 }
