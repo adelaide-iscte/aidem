@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component } from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from './features/auth/login/login.component';
 import { HomeComponent } from './features/home/home.component';
@@ -11,9 +11,11 @@ import {LoadingSpinnerComponent} from './shared/laoding-spinner-modal/loading-sp
 import {AuthUser} from './core/services/auth.service';
 import { LoginSuccessEvent } from './features/auth/login/login.component';
 import {CreatePatientComponent} from './features/create-patient/create-patient.component';
+import {ContentsComponent} from './features/contents/contents.component';
+import {ExerciseNotificationService} from './core/services/exercise-notification.service';
 
 type UserRole = 'informal' | 'formal';
-type AppPage = 'home' | 'patients' | 'activities' | 'chat' | 'profile' | 'createPatient';
+type AppPage = 'home' | 'patients' | 'activities' | 'chat' | 'profile' | 'createPatient' | 'contents';
 
 @Component({
   selector: 'app-root',
@@ -27,13 +29,15 @@ type AppPage = 'home' | 'patients' | 'activities' | 'chat' | 'profile' | 'create
     ProfileComponent,
     PatientsListComponent,
     LoadingSpinnerComponent,
-    CreatePatientComponent
+    CreatePatientComponent,
+    ContentsComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
 
+  @Output() openContents = new EventEmitter<void>();
   currentUser: AuthUser | null = null;
   isLoggedIn = false;
   userRole: UserRole = 'informal';
@@ -47,8 +51,13 @@ export class AppComponent {
 
   constructor(
     private patientService: PatientService,
+    private notificationService: ExerciseNotificationService,
     private cdr: ChangeDetectorRef
   ) {}
+
+  goToContents(): void {
+    this.currentPage = 'contents';
+  }
 
   openCreatePatient(): void {
     this.currentPage = 'createPatient';
@@ -59,7 +68,7 @@ export class AppComponent {
     await this.loadPatients();
   }
 
-  onLogin(event: LoginSuccessEvent): void {
+  async onLogin(event: LoginSuccessEvent): Promise<void> {
     this.isLoggedIn = true;
     this.userRole = event.role;
     this.currentUser = event.user;
@@ -67,12 +76,71 @@ export class AppComponent {
     if (event.role === 'formal') {
       this.currentPage = 'patients';
       this.cdr.detectChanges();
-      this.loadPatients();
+
+      await this.loadPatients();
       return;
     }
 
-    this.currentPage = 'home';
+    await this.loadInformalCaregiverPatient();
+  }
+
+  private async loadInformalCaregiverPatient(): Promise<void> {
+    if (!this.currentUser?.email) {
+      this.selectedPatientError = 'Não foi possível identificar o cuidador.';
+      return;
+    }
+
+    this.isLoadingSelectedPatient = true;
+    this.selectedPatientError = '';
     this.cdr.detectChanges();
+
+    try {
+      const patients = await this.patientService.getPatients();
+
+      const normalizedUserEmail =
+        this.currentUser.email.trim().toLowerCase();
+
+      for (const patient of patients) {
+        const patientProfile =
+          await this.patientService.getPatient(patient.id);
+
+        const caregiverEmail =
+          patientProfile.informalCaregiverEmail
+            ?.trim()
+            .toLowerCase();
+
+        if (caregiverEmail === normalizedUserEmail) {
+          this.selectedPatient = patientProfile;
+
+          console.log(
+            'A iniciar notificações para o utente informal:',
+            patientProfile.id
+          );
+
+          this.notificationService.start(patientProfile.id);
+
+          this.currentPage = 'home';
+          return;
+        }
+      }
+
+      this.selectedPatient = null;
+      this.selectedPatientError =
+        'Não foi encontrado nenhum utente associado a este cuidador informal.';
+    } catch (error) {
+      console.error(
+        'Erro ao carregar utente do cuidador informal:',
+        error
+      );
+
+      this.selectedPatientError =
+        error instanceof Error
+          ? error.message
+          : 'Erro ao carregar o utente associado.';
+    } finally {
+      this.isLoadingSelectedPatient = false;
+      this.cdr.detectChanges();
+    }
   }
 
   async loadPatients(): Promise<void> {
@@ -105,10 +173,15 @@ export class AppComponent {
     this.cdr.detectChanges();
 
     try {
-      this.selectedPatient = await this.patientService.getPatient(patient.id);
+      this.selectedPatient =
+        await this.patientService.getPatient(patient.id);
+
+      this.notificationService.start(this.selectedPatient.id);
+
       this.currentPage = 'home';
     } catch (error) {
       console.error('Erro ao abrir utente:', error);
+
       this.selectedPatientError =
         error instanceof Error
           ? error.message

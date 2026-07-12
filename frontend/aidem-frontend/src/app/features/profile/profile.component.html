@@ -230,7 +230,7 @@
     *ngIf="showSideMenu"
     (close)="closeSideMenu()"
     (changePatient)="openPatients.emit(); closeSideMenu()"
-    (openChat)="openChat.emit(); closeSideMenu()">
+    (openContents)="openContents.emit(); closeSideMenu()">
   </app-side-menu>
 
   <div
@@ -320,3 +320,10 @@
     </div>
   </div>
 </div>
+
+<app-side-menu
+  *ngIf="showSideMenu"
+  (close)="closeSideMenu()"
+  (changePatient)="openPatients.emit(); closeSideMenu()"
+  (openContents)="openContents.emit(); closeSideMenu()">
+</app-side-menu>

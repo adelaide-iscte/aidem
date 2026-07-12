@@ -678,3 +678,9 @@ button:disabled {
   color: #4079e8;
   border-color: #4079e8;
 }
+/* Cuidador informal: mantém os dois botões alinhados à direita,
+   no mesmo local dos últimos dois botões do cuidador formal */
+.bottom-actions.informal-actions {
+  grid-template-columns: 210px 180px;
+  justify-content: end;
+}

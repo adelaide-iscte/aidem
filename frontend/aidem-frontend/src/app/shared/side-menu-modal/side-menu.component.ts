@@ -11,7 +11,8 @@ import { CommonModule } from '@angular/common';
 export class SideMenuComponent {
   @Output() close = new EventEmitter<void>();
   @Output() changePatient = new EventEmitter<void>();
-  @Output() openChat = new EventEmitter<void>();
+  //@Output() openChat = new EventEmitter<void>();
+  @Output() openContents = new EventEmitter<void>();
 
   showSideMenu = false;
 

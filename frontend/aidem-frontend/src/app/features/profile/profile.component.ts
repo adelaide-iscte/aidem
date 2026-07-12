@@ -28,6 +28,7 @@ export class ProfileComponent {
   @Output() openActivities = new EventEmitter<void>();
   @Output() openPatients = new EventEmitter<void>();
   @Output() openChat = new EventEmitter<void>();
+  @Output() openContents = new EventEmitter<void>();
 
 
   showSideMenu = false;

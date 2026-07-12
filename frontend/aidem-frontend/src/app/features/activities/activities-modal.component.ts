@@ -18,6 +18,7 @@ import { SkipReasonModalComponent } from '../../shared/skip-reason-modal/skip-re
 import { SessionPlan, SessionPlanExercise, SessionPlanService } from '../../core/services/session-plan.service';
 import {SideMenuComponent} from "../../shared/side-menu-modal/side-menu.component";
 import {LoadingSpinnerComponent} from "../../shared/laoding-spinner-modal/loading-spinner.component";
+import { ExerciseNotificationService } from '../../core/services/exercise-notification.service';
 
 type UserRole = 'informal' | 'formal';
 
@@ -55,6 +56,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   @Output() openChat = new EventEmitter<void>();
   @Output() openProfile = new EventEmitter<void>();
   @Output() openPatients = new EventEmitter<void>();
+  @Output() openContents = new EventEmitter<void>();
 
   sessionPlan: SessionPlan | null = null;
   activities: SessionPlanExercise[] = [];
@@ -70,10 +72,21 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   showInstructionsModal = false;
   showComplementaryInfoModal = false;
 
-  constructor(private sessionPlanService: SessionPlanService,  private cdr: ChangeDetectorRef) {}
+  constructor(private sessionPlanService: SessionPlanService, private notificationService: ExerciseNotificationService,  private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     void this.loadTodayPlan();
+  }
+
+
+  get supportContactName(): string {
+    return this.isFormalMode
+      ? 'Carolina Cortes'
+      : 'Profissional de saúde';
+  }
+
+  get supportContactAvatar(): string {
+    return '/icons/professional.svg';
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -110,7 +123,9 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   }
 
   get supportCopy(): string {
-    return this.isFormalMode ? 'Contacte a administração!' : 'Contacte-nos!';
+    return this.isFormalMode
+      ? 'Contacte a administração!'
+      : 'Contacte-nos!';
   }
 
   get completedCount(): number {
@@ -230,6 +245,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     if (this.sessionPlan) {
       this.sessionPlan = { ...this.sessionPlan, exercises: this.activities };
     }
+    void this.notificationService.refresh();
     this.cdr.detectChanges();
   }
 

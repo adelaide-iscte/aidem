@@ -1,0 +1,40 @@
+<div class="contents-page">
+  <header class="contents-header">
+    <button type="button" class="back-button" (click)="goBack.emit()">
+      ‹ Voltar
+    </button>
+
+    <h1>Conteúdos</h1>
+  </header>
+
+  <main class="contents-main" *ngIf="!selectedType">
+    <button class="content-card" type="button" (click)="select('books')">
+      <img src="/icons/livros.png" alt="">
+      <span>Livros</span>
+    </button>
+
+    <button class="content-card" type="button" (click)="select('movies')">
+      <img src="/icons/filmes.png" alt="">
+      <span>Filmes</span>
+    </button>
+
+    <button class="content-card" type="button" (click)="select('theater')">
+      <img src="/icons/teatros.png" alt="">
+      <span>Peças de teatro</span>
+    </button>
+  </main>
+
+  <main class="contents-main" *ngIf="selectedType">
+    <button class="back-small" type="button" (click)="select(null)">
+      ‹ Escolher outro tipo
+    </button>
+
+    <section class="empty-content">
+      <h2 *ngIf="selectedType === 'books'">Livros</h2>
+      <h2 *ngIf="selectedType === 'movies'">Filmes</h2>
+      <h2 *ngIf="selectedType === 'theater'">Peças de teatro</h2>
+
+      <p>Ainda não existem conteúdos adicionados aqui.</p>
+    </section>
+  </main>
+</div>

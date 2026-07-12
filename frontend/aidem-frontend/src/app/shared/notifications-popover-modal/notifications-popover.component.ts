@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Output
+} from '@angular/core';
+
+import {
+  ExerciseNotificationService
+} from '../../core/services/exercise-notification.service';
 
 @Component({
   selector: 'app-notifications-popover',
@@ -9,13 +17,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrl: './notifications-popover.component.scss'
 })
 export class NotificationsPopoverComponent {
-  @Input() notifications = [
-    {
-      title: 'Nova mensagem',
-      text: 'O cuidador profissional enviou-lhe uma mensagem!',
-      time: 'Agora'
-    }
-  ];
 
   @Output() close = new EventEmitter<void>();
+
+  constructor(
+    public notificationService: ExerciseNotificationService
+  ) {}
 }

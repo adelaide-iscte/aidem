@@ -3,12 +3,20 @@
     <img src="/icons/menu.svg" class="menu-icon" (click)="openSideMenu()" />
 
     <div class="top-icons">
-      <img
-        src="/icons/bell.svg"
-        class="top-icon"
-        (click)="toggleNotifications()"
-      />
-      <img src="/icons/professional.svg" class="avatar" />
+      <div class="notification-bell-wrapper">
+        <img
+          src="/icons/bell.svg"
+          class="top-icon"
+          (click)="toggleNotifications()"
+        />
+
+        <span
+          *ngIf="notificationService.unreadCount() > 0"
+          class="notification-badge">
+    {{ notificationService.unreadCount() }}
+  </span>
+      </div>
+      <img [src]="role === 'formal' ? '/icons/professional.svg' : '/icons/profile.svg'" class="avatar" />
     </div>
   </header>
 
@@ -148,5 +156,5 @@
   *ngIf="showSideMenu"
   (close)="closeSideMenu()"
   (changePatient)="openPatients.emit(); closeSideMenu()"
-  (openChat)="openChat.emit(); closeSideMenu()">
+  (openContents)="openContents.emit(); closeSideMenu()">
 </app-side-menu>

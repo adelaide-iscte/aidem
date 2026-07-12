@@ -77,7 +77,9 @@
             <div class="activity-info">
               <h2>{{ activity.title }}</h2>
 
-              <div class="bottom-actions">
+              <div
+                class="bottom-actions"
+                [class.informal-actions]="!isFormalMode">
                 <button
                   *ngIf="isFormalMode && !isSkipped(activity)"
                   class="action-button danger"
@@ -159,8 +161,13 @@
 
     <app-complementary-info-modal *ngIf="showComplementaryInfoModal" (close)="closeComplementaryInfoModal()"></app-complementary-info-modal>
 
-    <app-call-overlay *ngIf="showCallOverlay" name="Administração" status="A chamar ..." avatar="/icons/adm.svg" (endCall)="closeCallOverlay()"></app-call-overlay>
-
+    <app-call-overlay
+      *ngIf="showCallOverlay"
+      [name]="supportContactName"
+      status="A chamar ..."
+      [avatar]="supportContactAvatar"
+      (endCall)="closeCallOverlay()">
+    </app-call-overlay>
     <app-notifications-popover *ngIf="showNotifications" (close)="closeNotifications()"></app-notifications-popover>
 
     <app-skip-reason-modal
@@ -172,5 +179,5 @@
             *ngIf="showSideMenu"
             (close)="closeSideMenu()"
             (changePatient)="openPatients.emit(); closeSideMenu()"
-            (openChat)="openChat.emit(); closeSideMenu()">
+            (openContents)="openContents.emit(); closeSideMenu()">
     </app-side-menu>

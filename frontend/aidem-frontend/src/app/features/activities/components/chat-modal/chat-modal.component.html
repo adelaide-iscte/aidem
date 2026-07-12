@@ -12,21 +12,27 @@
 
       <div class="top-icons">
         <img src="/icons/bell.svg" class="top-icon" />
-        <img src="/icons/professional.svg" class="avatar-small" />
+        <img
+          [src]="headerAvatar"
+          class="avatar"
+        />
       </div>
     </header>
 
     <section class="professional-card">
-      <img src="/icons/adm.svg" class="professional-avatar" />
+      <img
+        [src]="contactAvatar"
+        class="professional-avatar"
+      />
 
       <div class="professional-info">
         <div class="professional-name-row">
-          <h1>Administração</h1>
+          <h1>{{ contactName }}</h1>
           <span class="online-dot"></span>
           <span class="online-text">Online</span>
         </div>
 
-        <p>Serviços</p>
+        <p>{{ contactRole }}</p>
       </div>
 
       <img src="/icons/Phone_2.svg" class="call-icon" (click)="openCallOverlay()" />
@@ -84,9 +90,9 @@
 
   <app-call-overlay
     *ngIf="showCallOverlay"
-    name="Administração"
+    [name]="contactName"
     status="A chamar ..."
-    avatar="/icons/adm.svg"
+    [avatar]="contactAvatar"
     (endCall)="closeCallOverlay()">
   </app-call-overlay>
 
@@ -95,6 +101,6 @@
     *ngIf="showSideMenu"
     (close)="closeSideMenu()"
     (changePatient)="openPatients.emit(); closeSideMenu()"
-    (openChat)="openChat.emit(); closeSideMenu()">
+    (openContents)="openContents.emit(); closeSideMenu()">
   </app-side-menu>
 </div>

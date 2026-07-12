@@ -1,0 +1,79 @@
+.contents-page {
+  min-height: 100vh;
+  background: #f7f9fc;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+}
+
+.contents-header {
+  height: 110px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 0 48px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+
+  h1 {
+    margin: 0;
+    font-size: 42px;
+    color: #222;
+  }
+}
+
+.back-button,
+.back-small {
+  border: none;
+  background: transparent;
+  color: #407ce2;
+  font-size: 32px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.contents-main {
+  padding: 56px 48px;
+  display: grid;
+  gap: 32px;
+}
+
+.content-card {
+  height: 150px;
+  border: none;
+  border-radius: 32px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 0 40px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+
+  img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+  }
+
+  span {
+    font-size: 36px;
+    color: #222;
+    font-weight: 600;
+  }
+}
+
+.empty-content {
+  background: #ffffff;
+  border-radius: 32px;
+  padding: 48px;
+  text-align: center;
+
+  h2 {
+    font-size: 38px;
+    margin: 0 0 16px;
+  }
+
+  p {
+    font-size: 26px;
+    color: #666;
+  }
+}

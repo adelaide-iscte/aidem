@@ -15,6 +15,7 @@ import { PatientProfile } from '../../core/services/patient.service';
 import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
 import {LoadingSpinnerComponent} from '../../shared/laoding-spinner-modal/loading-spinner.component';
 import {AuthUser} from '../../core/services/auth.service';
+import { ExerciseNotificationService } from '../../core/services/exercise-notification.service';
 
 interface HomeDay {
   label: string;
@@ -23,6 +24,8 @@ interface HomeDay {
   isToday: boolean;
   date: Date;
 }
+type UserRole = 'informal' | 'formal';
+
 
 @Component({
   selector: 'app-home',
@@ -39,17 +42,20 @@ interface HomeDay {
 export class HomeComponent implements OnChanges, OnInit {
   @Input() patient!: PatientProfile;
   @Input() currentUser!: AuthUser;
+  @Input() role: UserRole = 'informal';
   @Output() openActivities = new EventEmitter<void>();
   @Output() goHome = new EventEmitter<void>();
   @Output() openProfile = new EventEmitter<void>();
   @Output() openPatients = new EventEmitter<void>();
   @Output() openChat = new EventEmitter<void>();
+  @Output() openContents = new EventEmitter<void>();
 
   showNotifications = false;
   todayActivities: SessionPlanExercise[] = [];
   isLoadingActivities = false;
   showSideMenu = false;
   days: HomeDay[] = [];
+
 
   openSideMenu(): void {
     this.showSideMenu = true;
@@ -65,6 +71,7 @@ export class HomeComponent implements OnChanges, OnInit {
 
   constructor(
     private sessionPlanService: SessionPlanService,
+    public notificationService: ExerciseNotificationService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -124,6 +131,10 @@ export class HomeComponent implements OnChanges, OnInit {
 
   toggleNotifications(): void {
     this.showNotifications = !this.showNotifications;
+
+    if (this.showNotifications) {
+      this.notificationService.markAsRead();
+    }
   }
 
   closeNotifications(): void {
