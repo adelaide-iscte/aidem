@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -9,16 +9,21 @@ import { CommonModule } from '@angular/common';
   styleUrl: './side-menu.component.scss'
 })
 export class SideMenuComponent {
+  @Input() canChangePatient = true;
+  @Input() isAdmin = false;
   @Output() close = new EventEmitter<void>();
   @Output() changePatient = new EventEmitter<void>();
-  //@Output() openChat = new EventEmitter<void>();
   @Output() openContents = new EventEmitter<void>();
+  @Output() openAdminActivities = new EventEmitter<void>();
+  @Output()
+  logout = new EventEmitter<void>();
 
   showSideMenu = false;
 
   openSideMenu(): void {
     this.showSideMenu = true;
   }
+
 
   closeSideMenu(): void {
     this.showSideMenu = false;

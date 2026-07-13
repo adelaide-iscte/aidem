@@ -51,12 +51,15 @@ type SelectedPatient = {
 export class ActivitiesModalComponent implements OnInit, OnChanges {
   @Input() role: UserRole = 'informal';
   @Input() selectedPatient: SelectedPatient | null = null;
+  @Input() isAdmin = false;
 
   @Output() goHome = new EventEmitter<void>();
   @Output() openChat = new EventEmitter<void>();
   @Output() openProfile = new EventEmitter<void>();
   @Output() openPatients = new EventEmitter<void>();
   @Output() openContents = new EventEmitter<void>();
+  @Output() logout = new EventEmitter<void>();
+  @Output() openAdminActivities = new EventEmitter<void>();
 
   sessionPlan: SessionPlan | null = null;
   activities: SessionPlanExercise[] = [];
@@ -78,6 +81,15 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     void this.loadTodayPlan();
   }
 
+  get headerAvatar(): string {
+    if (this.isAdmin) {
+      return '/icons/adm.svg';
+    }
+
+    return this.role === 'formal'
+      ? '/icons/professional.svg'
+      : '/icons/generic_user.svg';
+  }
 
   get supportContactName(): string {
     return this.isFormalMode
@@ -164,7 +176,17 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     this.openPatients.emit();
   }
 
-  toggleNotifications(): void { this.showNotifications = !this.showNotifications; }
+  toggleNotifications(): void {
+    if (
+      this.role !== 'informal' ||
+      this.isAdmin
+    ) {
+      return;
+    }
+
+    this.showNotifications =
+      !this.showNotifications;
+  }
   closeNotifications(): void { this.showNotifications = false; }
   openCallOverlay(): void { this.showCallOverlay = true; }
   closeCallOverlay(): void { this.showCallOverlay = false; }

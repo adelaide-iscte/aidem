@@ -3,22 +3,31 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NotificationsPopoverComponent } from '../../shared/notifications-popover-modal/notifications-popover.component';
 import { AppPatient } from '../../core/services/patient.service';
+import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
 
 type SortMode = 'recent' | 'alphabetical';
 
 @Component({
   selector: 'app-patients-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NotificationsPopoverComponent],
+  imports: [CommonModule, FormsModule, NotificationsPopoverComponent, SideMenuComponent],
   templateUrl: './patients-list.component.html',
   styleUrl: './patients-list.component.scss'
 })
 export class PatientsListComponent {
   @Input() patients: AppPatient[] = [];
+  @Input() isAdmin = false;
   @Output() selectPatient = new EventEmitter<AppPatient>();
   @Output() openPatients = new EventEmitter<void>();
   @Output() openChat = new EventEmitter<void>();
   @Output() createPatient = new EventEmitter<void>();
+  @Output() openContents = new EventEmitter<void>();
+  @Output()
+  openAdminActivities =
+    new EventEmitter<void>();
+
+  @Output()
+  logout = new EventEmitter<void>();
 
   showSideMenu = false;
 
@@ -30,10 +39,18 @@ export class PatientsListComponent {
     this.showSideMenu = false;
   }
 
+  @Output() openCreateExercise = new EventEmitter<void>();
+
   changePatient(): void {
     this.openPatients.emit();
     this.closeSideMenu();
   }
+  get headerAvatar(): string {
+    return this.isAdmin
+      ? '/icons/adm.svg'
+      : '/icons/professional.svg';
+  }
+
 
   searchTerm = '';
   sortMode: SortMode = 'recent';

@@ -1,0 +1,239 @@
+<div class="activities-page">
+  <header class="header">
+    <button
+      type="button"
+      class="back-button"
+      aria-label="Voltar à página anterior"
+      (click)="goBack.emit()">
+
+      <span class="back-arrow">←</span>
+      <span>Voltar</span>
+    </button>
+
+    <h1>Atividades</h1>
+
+    <div class="header-icons">
+      <img
+        src="/icons/bell.svg"
+        class="notification-icon"
+        alt="Notificações"
+      />
+
+      <img
+        src="/icons/adm.svg"
+        class="admin-avatar"
+        alt="Administrador"
+      />
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="list-header">
+      <h2>Lista de atividades</h2>
+
+      <button
+        type="button"
+        class="add-button"
+        (click)="createExercise.emit()">
+        <span class="plus">＋</span>
+        Adicionar atividade
+      </button>
+    </div>
+
+    <div class="search-wrapper">
+      <span
+        class="search-icon"
+        aria-hidden="true">
+      </span>
+
+      <input
+        type="text"
+        name="searchTerm"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()"
+        placeholder="Pesquisar atividade pelo nome"
+        aria-label="Pesquisar atividade pelo nome"
+      />
+
+      <button
+        *ngIf="searchTerm"
+        type="button"
+        class="clear-search"
+        aria-label="Limpar pesquisa"
+        (click)="clearSearch()">
+        ×
+      </button>
+    </div>
+
+    <app-loading-spinner
+      *ngIf="isLoading"
+      message="A carregar atividades...">
+    </app-loading-spinner>
+
+    <p
+      *ngIf="!isLoading && errorMessage"
+      class="error-message">
+      {{ errorMessage }}
+    </p>
+
+    <p
+      *ngIf="
+        !isLoading &&
+        !errorMessage &&
+        exercises.length === 0
+      "
+      class="empty-message">
+
+      {{
+        searchTerm.trim()
+          ? 'Não foram encontradas atividades com esse nome.'
+          : 'Não existem atividades registadas.'
+      }}
+    </p>
+
+    <section
+      *ngIf="
+        !isLoading &&
+        !errorMessage &&
+        exercises.length > 0
+      "
+      class="activities-list">
+
+      <article
+        *ngFor="let exercise of exercises"
+        class="activity-card">
+
+        <img
+          [src]="getImage(exercise)"
+          class="activity-image"
+          [alt]="exercise.title"
+        />
+
+        <div class="activity-information">
+          <h3>{{ exercise.title }}</h3>
+
+          <p
+            *ngIf="getActivitySummary(exercise)"
+            class="activity-details">
+            {{ getActivitySummary(exercise) }}
+          </p>
+
+          <p
+            *ngIf="getRestSummary(exercise)"
+            class="activity-rest">
+            {{ getRestSummary(exercise) }}
+          </p>
+        </div>
+
+        <div class="activity-actions">
+          <button
+            type="button"
+            class="icon-button edit-button"
+            aria-label="Editar atividade"
+            (click)="requestEdit(exercise)">
+
+            <img
+              src="/icons/Edit.svg"
+              class="edit-icon-image"
+              alt=""
+            />
+          </button>
+
+          <button
+            type="button"
+            class="icon-button delete-button"
+            aria-label="Apagar atividade"
+            [disabled]="deletingId === exercise.id"
+            (click)="openDeleteModal(exercise)">
+            ×
+          </button>
+        </div>
+      </article>
+    </section>
+
+    <nav
+      *ngIf="
+        !isLoading &&
+        !errorMessage &&
+        totalElements > 0
+      "
+      class="pagination"
+      aria-label="Paginação das atividades">
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="
+          !hasPreviousPage ||
+          isLoading
+        "
+        (click)="previousPage()">
+        ‹ Anterior
+      </button>
+
+      <span class="pagination-info">
+        Página {{ displayedPage }}
+        de {{ totalPages }}
+
+        <small>
+          {{ totalElements }}
+          {{
+            totalElements === 1
+              ? 'atividade'
+              : 'atividades'
+          }}
+        </small>
+      </span>
+
+      <button
+        type="button"
+        class="pagination-button"
+        [disabled]="
+          !hasNextPage ||
+          isLoading
+        "
+        (click)="nextPage()">
+        Seguinte ›
+      </button>
+    </nav>
+  </main>
+
+  <div
+    *ngIf="showDeleteModal"
+    class="delete-modal-backdrop"
+    (click)="closeDeleteModal()">
+
+    <section
+      class="delete-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-modal-title"
+      (click)="$event.stopPropagation()">
+
+      <h2 id="delete-modal-title">
+        Remover atividade?
+      </h2>
+
+      <button
+        type="button"
+        class="confirm-delete-button"
+        [disabled]="deletingId !== null"
+        (click)="confirmDelete()">
+        {{
+          deletingId !== null
+            ? 'A remover...'
+            : 'Sim'
+        }}
+      </button>
+
+      <button
+        type="button"
+        class="cancel-delete-button"
+        [disabled]="deletingId !== null"
+        (click)="closeDeleteModal()">
+        Cancelar
+      </button>
+    </section>
+  </div>
+
+</div>

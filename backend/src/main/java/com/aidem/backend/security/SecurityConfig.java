@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.*;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -51,27 +52,74 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http
+    ) throws Exception {
+        JwtAuthenticationConverter jwtConverter =
+                new JwtAuthenticationConverter();
 
         jwtConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
             String role = jwt.getClaimAsString("role");
-            return List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority(role));
+
+            if (role == null || role.isBlank()) {
+                return List.of();
+            }
+
+            return List.of(
+                    new org.springframework.security.core.authority.SimpleGrantedAuthority(
+                            role
+                    )
+            );
         });
 
         http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/dev/hash").permitAll()
                         .requestMatchers("/api/health").permitAll()
-                        .requestMatchers("/api/session-plan-exercises/reset-completed").permitAll()
+                        .requestMatchers(
+                                "/api/session-plan-exercises/reset-completed"
+                        ).permitAll()
+
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/exercises",
+                                "/api/exercises/**"
+                        ).authenticated()
+
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/exercises",
+                                "/api/exercises/**"
+                        ).hasAuthority("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/exercises/**"
+                        ).hasAuthority("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/exercises/**"
+                        ).hasAuthority("ADMIN")
+
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter)));
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2.jwt(jwt ->
+                                jwt.jwtAuthenticationConverter(
+                                        jwtConverter
+                                )
+                        )
+                );
 
         return http.build();
     }

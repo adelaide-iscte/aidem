@@ -1,7 +1,13 @@
 <div class="contents-page">
   <header class="contents-header">
-    <button type="button" class="back-button" (click)="goBack.emit()">
-      ‹ Voltar
+    <button
+      type="button"
+      class="back-button"
+      aria-label="Voltar à página anterior"
+      (click)="goBack.emit()">
+
+      <span class="back-arrow">←</span>
+      <span>Voltar</span>
     </button>
 
     <h1>Conteúdos</h1>

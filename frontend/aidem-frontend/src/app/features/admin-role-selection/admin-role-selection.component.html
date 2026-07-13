@@ -1,0 +1,61 @@
+<div class="admin-selection-page">
+  <header class="header">
+    <img
+      src="/icons/menu.svg"
+      class="menu-icon"
+      alt="Menu"
+    />
+
+    <div class="top-icons">
+      <img
+        src="/icons/bell.svg"
+        class="top-icon"
+        alt="Notificações"
+      />
+
+      <img
+        src="/icons/adm.svg"
+        class="avatar"
+        alt="Administrador"
+      />
+    </div>
+  </header>
+
+  <main class="content">
+    <h1>Que tipo de cuidador quer acessar?</h1>
+
+    <div class="options">
+      <!-- Cuidador formal -->
+      <button
+        type="button"
+        class="role-option"
+        (click)="selectFormal()"
+      >
+        <div class="role-circle">
+          <img
+            src="/icons/Professional_doctor.svg"
+            alt="Cuidador formal"
+          />
+        </div>
+
+        <span>Formal</span>
+      </button>
+
+      <!-- Cuidador informal -->
+      <button
+        type="button"
+        class="role-option"
+        (click)="selectInformal()"
+      >
+        <div class="role-circle">
+          <img
+            src="/icons/User.svg"
+            alt="Cuidador informal"
+          />
+        </div>
+
+        <span>Informal</span>
+      </button>
+    </div>
+  </main>
+</div>

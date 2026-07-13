@@ -1,0 +1,296 @@
+<div class="exercise-form-page">
+  <header class="header">
+    <button
+      type="button"
+      class="menu-button"
+      aria-label="Cancelar"
+      (click)="cancel.emit()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <h1>{{ pageTitle }}</h1>
+
+    <div class="header-icons">
+      <img
+        src="/icons/bell.svg"
+        alt="Notificações"
+      />
+
+      <img
+        src="/icons/adm.svg"
+        class="admin-avatar"
+        alt="Administrador"
+      />
+    </div>
+  </header>
+
+  <main class="form-content">
+    <img
+      [src]="getExerciseImage()"
+      class="form-illustration"
+      [alt]="form.title || 'Atividade'"
+    />
+
+    <form
+      class="activity-form"
+      (ngSubmit)="save()">
+
+      <div class="form-columns">
+
+        <!-- Informações principais -->
+        <section class="main-fields">
+          <h2>Informações principais</h2>
+
+          <label class="full-field">
+            <span>Nome da atividade</span>
+
+            <input
+              type="text"
+              name="title"
+              [(ngModel)]="form.title"
+              placeholder="Escreva o nome da atividade"
+              required
+            />
+          </label>
+
+          <div class="fields-grid">
+            <div class="counter-field">
+              <span class="field-label">
+                Duração
+              </span>
+
+              <div class="counter-control">
+                <button
+                  type="button"
+                  aria-label="Diminuir duração"
+                  (click)="decrease('durationMinutes')">
+                  −
+                </button>
+
+                <span>
+                  {{ form.durationMinutes }} min.
+                </span>
+
+                <button
+                  type="button"
+                  aria-label="Aumentar duração"
+                  (click)="increase('durationMinutes')">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="counter-field">
+              <span class="field-label">
+                Contagem
+              </span>
+
+              <div class="counter-control">
+                <button
+                  type="button"
+                  aria-label="Diminuir contagem"
+                  (click)="decrease('sets')">
+                  −
+                </button>
+
+                <span>
+                  {{ form.sets }}
+                </span>
+
+                <button
+                  type="button"
+                  aria-label="Aumentar contagem"
+                  (click)="increase('sets')">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="counter-field">
+              <span class="field-label">
+                N.º de repetições
+              </span>
+
+              <div class="counter-control">
+                <button
+                  type="button"
+                  aria-label="Diminuir repetições"
+                  (click)="decrease('repetitions')">
+                  −
+                </button>
+
+                <span>
+                  {{ form.repetitions }}
+                </span>
+
+                <button
+                  type="button"
+                  aria-label="Aumentar repetições"
+                  (click)="increase('repetitions')">
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="counter-field">
+              <span class="field-label">
+                Descanso
+              </span>
+
+              <div class="counter-control">
+                <button
+                  type="button"
+                  aria-label="Diminuir descanso"
+                  (click)="decrease('restSeconds')">
+                  −
+                </button>
+
+                <span>
+                  {{ form.restSeconds }} seg.
+                </span>
+
+                <button
+                  type="button"
+                  aria-label="Aumentar descanso"
+                  (click)="increase('restSeconds')">
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <label class="full-field">
+            <span>Observações</span>
+
+            <textarea
+              name="description"
+              [(ngModel)]="form.description"
+              placeholder="Escreva uma observação aqui...">
+            </textarea>
+          </label>
+        </section>
+
+        <!-- Informações adicionais sempre visíveis -->
+        <section class="extra-fields">
+          <h2>Informações adicionais</h2>
+
+          <div class="select-grid">
+            <label>
+              <span>Domínio</span>
+
+              <input
+                type="text"
+                name="domain"
+                [(ngModel)]="form.domain"
+                placeholder="Ex.: Memória, Equilíbrio"
+                required
+              />
+            </label>
+
+            <label>
+              <span>Tipo</span>
+
+              <select
+                name="activityType"
+                [(ngModel)]="form.activityType">
+
+                <option
+                  *ngFor="let type of activityTypes"
+                  [value]="type.value">
+                  {{ type.label }}
+                </option>
+              </select>
+            </label>
+
+            <label>
+              <span>Dificuldade</span>
+
+              <select
+                name="difficultyLevel"
+                [(ngModel)]="form.difficultyLevel">
+
+                <option
+                  *ngFor="let level of difficultyLevels"
+                  [value]="level.value">
+                  {{ level.label }}
+                </option>
+              </select>
+            </label>
+
+            <label>
+              <span>Imagem</span>
+
+              <input
+                type="text"
+                name="mediaUrl"
+                [(ngModel)]="form.mediaUrl"
+                [readonly]="!isEditing"
+                [disabled]="!isEditing"
+                [placeholder]="
+    isEditing
+      ? 'exercicios/nome.png'
+      : 'Indispoível'
+  "
+              />
+            </label>
+          </div>
+
+          <label>
+            <span>Materiais necessários</span>
+
+            <textarea
+              name="materials"
+              [(ngModel)]="form.materials"
+              placeholder="Ex.: bola pequena, cadeira...">
+            </textarea>
+          </label>
+
+          <label>
+            <span>Instruções</span>
+
+            <textarea
+              name="instructions"
+              [(ngModel)]="form.instructions"
+              placeholder="Descreva a preparação e a execução da atividade..."
+              required>
+            </textarea>
+          </label>
+        </section>
+      </div>
+
+      <p
+        *ngIf="errorMessage"
+        class="error-message">
+        {{ errorMessage }}
+      </p>
+
+      <p
+        *ngIf="successMessage"
+        class="success-message">
+        {{ successMessage }}
+      </p>
+
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="save-button"
+          [disabled]="isSaving">
+          {{
+            isSaving
+              ? 'A guardar...'
+              : 'Guardar atividade'
+          }}
+        </button>
+
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="cancel.emit()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </main>
+</div>

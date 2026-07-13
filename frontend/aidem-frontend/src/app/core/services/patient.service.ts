@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AuthService } from './auth.service';
 
 export type SessionHistoryExercise = {
   sessionPlanExerciseId: number;
@@ -112,115 +113,155 @@ export interface EgpAssessment {
   rows: EgpRow[];
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class PatientService {
-  //private readonly apiUrl = 'http://localhost:8080/api/patients';
-  private readonly apiUrl = 'https://aidem-backend.onrender.com/api/patients';
+  // private readonly apiUrl =
+  //   'http://localhost:8080/api/patients';
 
-  async getPatients(): Promise<AppPatient[]> {
-    const token = localStorage.getItem('aidem_token');
+  // Produção:
+  private readonly apiUrl =
+    'https://aidem-backend.onrender.com/api/patients';
+
+  constructor(
+    private authService: AuthService
+  ) {}
+
+  private getHeaders(
+    includeContentType = false
+  ): HeadersInit {
+    const token =
+      this.authService.getToken();
 
     if (!token) {
       throw new Error('TOKEN_MISSING');
     }
 
-    const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 10000);
+    return {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/json',
+      ...(includeContentType
+        ? {
+          'Content-Type':
+            'application/json'
+        }
+        : {})
+    };
+  }
+
+  private async handleResponse(
+    response: Response,
+    defaultError: string
+  ): Promise<string> {
+    const raw = await response.text();
+
+    if (response.status === 401) {
+      this.authService.expireSession();
+
+      throw new Error(
+        'A sessão expirou. Inicie sessão novamente.'
+      );
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        raw ||
+        `${defaultError} (${response.status}).`
+      );
+    }
+
+    return raw;
+  }
+
+  async getPatients(): Promise<AppPatient[]> {
+    const controller =
+      new AbortController();
+
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      10000
+    );
 
     try {
-      const response = await fetch(this.apiUrl, {
-        signal: controller.signal,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json'
+      const response = await fetch(
+        this.apiUrl,
+        {
+          signal: controller.signal,
+          headers: this.getHeaders()
         }
-      });
+      );
 
-      const raw = await response.text();
-      console.log('GET /api/patients', response.status, raw);
+      const raw =
+        await this.handleResponse(
+          response,
+          'Erro ao carregar utentes'
+        );
 
-      if (!response.ok) {
-        throw new Error(`Erro ao carregar utentes (${response.status}): ${raw}`);
-      }
+      console.log(
+        'GET /api/patients',
+        response.status,
+        raw
+      );
 
-      return JSON.parse(raw) as AppPatient[];
+      return raw
+        ? JSON.parse(raw) as AppPatient[]
+        : [];
     } finally {
       clearTimeout(timeoutId);
     }
   }
 
-  //local
-  // async getPatient(id:number):Promise<PatientProfile>{
-  //
-  //   const token = localStorage.getItem('aidem_token');
-  //
-  //   const response = await fetch(
-  //     `http://localhost:8080/api/patients/${id}`,
-  //     {
-  //       headers:{
-  //         Authorization:`Bearer ${token}`
-  //       }
-  //     }
-  //   );
-  //
-  //   return response.json();
-  // }
-
-  //prod
-  async getPatient(id: number): Promise<PatientProfile> {
-    const token = localStorage.getItem('aidem_token');
-
-    if (!token) {
-      throw new Error('TOKEN_MISSING');
-    }
-
+  async getPatient(
+    id: number
+  ): Promise<PatientProfile> {
     const response = await fetch(
       `${this.apiUrl}/${id}`,
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json'
-        }
+        headers: this.getHeaders()
       }
     );
 
-    const raw = await response.text();
+    const raw =
+      await this.handleResponse(
+        response,
+        'Erro ao carregar utente'
+      );
 
-    console.log(`GET /api/patients/${id}`, response.status, raw);
-
-    if (!response.ok) {
-      throw new Error(`Erro ao carregar utente (${response.status}): ${raw}`);
-    }
+    console.log(
+      `GET /api/patients/${id}`,
+      response.status,
+      raw
+    );
 
     return JSON.parse(raw) as PatientProfile;
   }
 
-  async getSessionHistory(patientId: number): Promise<SessionHistory[]> {
-    const token = localStorage.getItem('aidem_token');
+  async getSessionHistory(
+    patientId: number
+  ): Promise<SessionHistory[]> {
+    const controller =
+      new AbortController();
 
-    if (!token) {
-      throw new Error('TOKEN_MISSING');
-    }
-
-    const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 10000);
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      10000
+    );
 
     try {
       const response = await fetch(
         `${this.apiUrl}/${patientId}/session-history`,
         {
           signal: controller.signal,
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: 'application/json'
-          }
+          headers: this.getHeaders()
         }
       );
 
-      const raw = await response.text();
+      const raw =
+        await this.handleResponse(
+          response,
+          'Erro ao carregar histórico de sessões'
+        );
 
       console.log(
         `GET /api/patients/${patientId}/session-history`,
@@ -228,75 +269,66 @@ export class PatientService {
         raw
       );
 
-      if (!response.ok) {
-        throw new Error(`Erro ${response.status}: ${raw}`);
-      }
-
-      return raw ? JSON.parse(raw) as SessionHistory[] : [];
+      return raw
+        ? JSON.parse(raw) as SessionHistory[]
+        : [];
     } finally {
       clearTimeout(timeoutId);
     }
   }
 
-  async getLatestEgp(patientId: number): Promise<EgpAssessment | null> {
-    const token = localStorage.getItem('aidem_token');
-
-    if (!token) {
-      throw new Error('TOKEN_MISSING');
-    }
-
+  async getLatestEgp(
+    patientId: number
+  ): Promise<EgpAssessment | null> {
     const response = await fetch(
       `${this.apiUrl}/${patientId}/egp/latest`,
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json'
-        }
+        headers: this.getHeaders()
       }
     );
 
-    if (response.status === 204 || response.status === 404) {
+    if (
+      response.status === 204 ||
+      response.status === 404
+    ) {
       return null;
     }
 
-    const raw = await response.text();
+    const raw =
+      await this.handleResponse(
+        response,
+        'Erro ao carregar EGP'
+      );
 
-    if (!response.ok) {
-      throw new Error(`Erro ao carregar EGP (${response.status}): ${raw}`);
-    }
-
-    return raw ? JSON.parse(raw) as EgpAssessment : null;
+    return raw
+      ? JSON.parse(raw) as EgpAssessment
+      : null;
   }
 
-  async createPatient(payload: CreatePatientRequest): Promise<PatientProfile> {
-    const token = localStorage.getItem('aidem_token');
+  async createPatient(
+    payload: CreatePatientRequest
+  ): Promise<PatientProfile> {
+    const response = await fetch(
+      this.apiUrl,
+      {
+        method: 'POST',
+        headers: this.getHeaders(true),
+        body: JSON.stringify(payload)
+      }
+    );
 
-    if (!token) {
-      throw new Error('TOKEN_MISSING');
-    }
+    const raw =
+      await this.handleResponse(
+        response,
+        'Erro ao criar utente'
+      );
 
-    const response = await fetch(this.apiUrl, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const raw = await response.text();
-
-    console.log('POST /api/patients', response.status, raw);
-
-    if (!response.ok) {
-      throw new Error(`Erro ao criar utente (${response.status}): ${raw}`);
-    }
+    console.log(
+      'POST /api/patients',
+      response.status,
+      raw
+    );
 
     return JSON.parse(raw) as PatientProfile;
   }
-
-
-
-
 }

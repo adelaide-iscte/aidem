@@ -8,7 +8,11 @@
         class="top-icon"
         (click)="toggleNotifications()"
       />
-      <img src="/icons/professional.svg" class="avatar" />
+      <img
+        [src]="headerAvatar"
+        class="avatar"
+        alt="Perfil"
+      />
     </div>
   </header>
 
@@ -75,3 +79,19 @@
     (close)="closeNotifications()">
   </app-notifications-popover>
 </div>
+
+<app-side-menu
+  *ngIf="showSideMenu"
+  (close)="closeSideMenu()"
+  (changePatient)="openPatients.emit(); closeSideMenu()"
+  (openContents)="openContents.emit(); closeSideMenu()"
+  [isAdmin]="isAdmin"
+  (openAdminActivities)="
+    openAdminActivities.emit();
+    closeSideMenu()
+  "
+  (logout)="
+    logout.emit();
+    closeSideMenu()
+  ">
+</app-side-menu>

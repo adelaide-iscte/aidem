@@ -1,0 +1,138 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+}
+
+.admin-selection-page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.header {
+  height: 110px;
+  padding: 0 52px;
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu-icon,
+.top-icon,
+.avatar {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.top-icons {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.content {
+  padding: 70px 40px;
+  text-align: center;
+}
+
+.content h1 {
+  margin: 0 0 65px;
+  color: #171b26;
+  font-size: 38px;
+  font-weight: 800;
+}
+
+.options {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 70px;
+}
+
+.role-option {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.role-circle {
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  background: #dce8fb;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.role-circle img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+.role-option span {
+  min-width: 185px;
+  padding: 12px 28px;
+  border-radius: 5px;
+  background: #487fe5;
+  color: #ffffff;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.role-option:hover .role-circle {
+  transform: scale(1.03);
+}
+
+.role-option:hover span {
+  background: #356fd7;
+}
+
+@media (max-width: 700px) {
+  .content h1 {
+    font-size: 28px;
+  }
+
+  .options {
+    gap: 30px;
+  }
+
+  .role-circle {
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    background: #dce8fb;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .role-circle img {
+    width: 115px;
+    height: 115px;
+    object-fit: contain;
+  }
+
+  .avatar {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 50%;
+  }
+
+  .role-option span {
+    min-width: 140px;
+    font-size: 21px;
+  }
+}

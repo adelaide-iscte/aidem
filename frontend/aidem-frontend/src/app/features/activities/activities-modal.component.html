@@ -3,8 +3,19 @@
         <img src="/icons/menu.svg" class="menu-icon" (click)="openSideMenu()" />
 
         <div class="top-icons">
-          <img src="/icons/bell.svg" class="top-icon" (click)="toggleNotifications()" />
-          <img [src]="role === 'formal' ? '/icons/professional.svg' : '/icons/generic_user.svg'" class="avatar" />
+          <img
+            *ngIf="role === 'informal' && !isAdmin"
+            src="/icons/bell.svg"
+            class="top-icon"
+            alt="Notificações"
+            (click)="toggleNotifications()"
+          />
+
+          <img
+            [src]="headerAvatar"
+            class="avatar"
+            alt="Perfil"
+          />
         </div>
       </header>
       <main class="content">
@@ -168,16 +179,29 @@
       [avatar]="supportContactAvatar"
       (endCall)="closeCallOverlay()">
     </app-call-overlay>
-    <app-notifications-popover *ngIf="showNotifications" (close)="closeNotifications()"></app-notifications-popover>
+    <app-notifications-popover
+      *ngIf="
+    showNotifications &&
+    role === 'informal' &&
+    !isAdmin
+  "
+      (close)="closeNotifications()">
+    </app-notifications-popover>
 
     <app-skip-reason-modal
             *ngIf="showSkipModal"
             (submitReason)="submitSkip($event)"
             (close)="closeSkipModal()">
     </app-skip-reason-modal>
+
     <app-side-menu
             *ngIf="showSideMenu"
             (close)="closeSideMenu()"
+            [canChangePatient]="role === 'formal' || isAdmin"
             (changePatient)="openPatients.emit(); closeSideMenu()"
-            (openContents)="openContents.emit(); closeSideMenu()">
+            (openContents)="openContents.emit(); closeSideMenu()"
+            [isAdmin]="isAdmin"
+            (openAdminActivities)="openAdminActivities.emit();closeSideMenu()"
+            (logout)="logout.emit();closeSideMenu()">
     </app-side-menu>
+

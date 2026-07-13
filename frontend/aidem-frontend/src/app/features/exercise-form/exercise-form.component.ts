@@ -1,0 +1,277 @@
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges
+} from '@angular/core';
+
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import {
+  ActivityType,
+  DifficultyLevel,
+  Exercise,
+  ExercisePayload,
+  ExerciseService
+} from '../../core/services/exercise.service';
+
+@Component({
+  selector: 'app-exercise-form',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
+  templateUrl: './exercise-form.component.html',
+  styleUrl: './exercise-form.component.scss'
+})
+export class ExerciseFormComponent
+  implements OnChanges {
+
+  @Input()
+  exerciseToEdit: Exercise | null = null;
+
+  @Output()
+  cancel = new EventEmitter<void>();
+
+  @Output()
+  saved = new EventEmitter<void>();
+
+  isSaving = false;
+
+  errorMessage = '';
+  successMessage = '';
+
+  form: ExercisePayload =
+    this.createEmptyForm();
+
+  constructor(
+    private exerciseService: ExerciseService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  ngOnChanges(
+    changes: SimpleChanges
+  ): void {
+    if (changes['exerciseToEdit']) {
+      this.loadExercise();
+    }
+  }
+
+  get isEditing(): boolean {
+    return this.exerciseToEdit !== null;
+  }
+
+  get pageTitle(): string {
+    return this.isEditing
+      ? 'Editar atividade'
+      : 'Criar atividade';
+  }
+
+  private createEmptyForm():
+    ExercisePayload {
+    return {
+      title: '',
+      description: '',
+      domain: '',
+      activityType: 'MOTOR',
+      difficultyLevel: 'LOW',
+      durationMinutes: 0,
+      sets: 0,
+      repetitions: 0,
+      restSeconds: 0,
+      materials: '',
+      instructions: '',
+      mediaUrl: ''
+    };
+  }
+
+  private loadExercise(): void {
+    if (!this.exerciseToEdit) {
+      this.form = this.createEmptyForm();
+      return;
+    }
+
+    this.form = {
+      title: this.exerciseToEdit.title ?? '',
+      description: this.exerciseToEdit.description ?? '',
+      domain: this.exerciseToEdit.domain ?? '',
+      activityType: this.exerciseToEdit.activityType,
+      difficultyLevel: this.exerciseToEdit.difficultyLevel,
+      durationMinutes:
+        this.exerciseToEdit.durationMinutes ?? 0,
+      sets: this.exerciseToEdit.sets ?? 0,
+      repetitions:
+        this.exerciseToEdit.repetitions ?? 0,
+      restSeconds:
+        this.exerciseToEdit.restSeconds ?? 0,
+      materials:
+        this.exerciseToEdit.materials ?? '',
+      instructions:
+        this.exerciseToEdit.instructions ?? '',
+      mediaUrl:
+        this.exerciseToEdit.mediaUrl ?? ''
+    };
+
+    console.log(
+      'IMAGEM RECEBIDA:',
+      this.exerciseToEdit.mediaUrl
+    );
+
+    console.log(
+      'URL FINAL:',
+      this.getExerciseImage()
+    );
+  }
+
+  increase(
+    field:
+      | 'durationMinutes'
+      | 'sets'
+      | 'repetitions'
+      | 'restSeconds'
+  ): void {
+    const increment =
+      field === 'restSeconds'
+        ? 5
+        : 1;
+
+    this.form[field] =
+      (this.form[field] ?? 0) +
+      increment;
+  }
+
+  decrease(
+    field:
+      | 'durationMinutes'
+      | 'sets'
+      | 'repetitions'
+      | 'restSeconds'
+  ): void {
+    const decrement =
+      field === 'restSeconds'
+        ? 5
+        : 1;
+
+    this.form[field] = Math.max(
+      0,
+      (this.form[field] ?? 0) -
+      decrement
+    );
+  }
+
+  getExerciseImage(): string {
+    const mediaUrl = this.form.mediaUrl?.trim();
+
+    if (!mediaUrl) {
+      return '/icons/generic_exercise.svg';
+    }
+
+    if (
+      mediaUrl.startsWith('http://') ||
+      mediaUrl.startsWith('https://') ||
+      mediaUrl.startsWith('/')
+    ) {
+      return mediaUrl;
+    }
+
+    return `/${mediaUrl}`;
+  }
+
+  async save(): Promise<void> {
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    if (!this.form.title.trim()) {
+      this.errorMessage =
+        'Indique o nome da atividade.';
+      return;
+    }
+
+    if (!this.form.domain.trim()) {
+      this.errorMessage =
+        'Indique o domínio da atividade.';
+      return;
+    }
+
+    this.isSaving = true;
+
+    try {
+      if (
+        this.isEditing &&
+        this.exerciseToEdit
+      ) {
+        await this.exerciseService
+          .updateExercise(
+            this.exerciseToEdit.id,
+            this.form
+          );
+      } else {
+        await this.exerciseService
+          .createExercise(this.form);
+      }
+
+      this.successMessage =
+        this.isEditing
+          ? 'Atividade atualizada com sucesso.'
+          : 'Atividade criada com sucesso.';
+
+      this.saved.emit();
+    } catch (error) {
+      console.error(
+        'Erro ao guardar atividade:',
+        error
+      );
+
+      this.errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível guardar a atividade.';
+    } finally {
+      this.isSaving = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  activityTypes:
+    Array<{
+      value: ActivityType;
+      label: string;
+    }> = [
+    {
+      value: 'MOTOR',
+      label: 'Motora'
+    },
+    {
+      value: 'COGNITIVE',
+      label: 'Cognitiva'
+    },
+    {
+      value: 'MIXED',
+      label: 'Mista'
+    }
+  ];
+
+  difficultyLevels:
+    Array<{
+      value: DifficultyLevel;
+      label: string;
+    }> = [
+    {
+      value: 'LOW',
+      label: 'Baixa'
+    },
+    {
+      value: 'MEDIUM',
+      label: 'Média'
+    },
+    {
+      value: 'HIGH',
+      label: 'Alta'
+    }
+  ];
+}

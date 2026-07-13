@@ -43,12 +43,15 @@ export class HomeComponent implements OnChanges, OnInit {
   @Input() patient!: PatientProfile;
   @Input() currentUser!: AuthUser;
   @Input() role: UserRole = 'informal';
+  @Input() isAdmin = false;
   @Output() openActivities = new EventEmitter<void>();
   @Output() goHome = new EventEmitter<void>();
   @Output() openProfile = new EventEmitter<void>();
   @Output() openPatients = new EventEmitter<void>();
   @Output() openChat = new EventEmitter<void>();
   @Output() openContents = new EventEmitter<void>();
+  @Output() openAdminActivities = new EventEmitter<void>();
+  @Output() logout = new EventEmitter<void>();
 
   showNotifications = false;
   todayActivities: SessionPlanExercise[] = [];
@@ -56,6 +59,15 @@ export class HomeComponent implements OnChanges, OnInit {
   showSideMenu = false;
   days: HomeDay[] = [];
 
+  get headerAvatar(): string {
+    if (this.isAdmin) {
+      return '/icons/adm.svg';
+    }
+
+    return this.role === 'formal'
+      ? '/icons/professional.svg'
+      : '/icons/generic_user.svg';
+  }
 
   openSideMenu(): void {
     this.showSideMenu = true;

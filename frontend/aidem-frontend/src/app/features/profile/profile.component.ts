@@ -23,16 +23,32 @@ type UserDataRow = [
 export class ProfileComponent {
   @Input() role: UserRole = 'informal';
   @Input() patient!: PatientProfile;
+  @Input() isAdmin = false;
 
   @Output() goHome = new EventEmitter<void>();
   @Output() openActivities = new EventEmitter<void>();
   @Output() openPatients = new EventEmitter<void>();
   @Output() openChat = new EventEmitter<void>();
   @Output() openContents = new EventEmitter<void>();
+  @Output()
+  openAdminActivities =
+    new EventEmitter<void>();
 
+  @Output()
+  logout = new EventEmitter<void>();
 
   showSideMenu = false;
   selectedSession: SessionHistory | null = null;
+
+  get headerAvatar(): string {
+    if (this.isAdmin) {
+      return '/icons/adm.svg';
+    }
+
+    return this.role === 'formal'
+      ? '/icons/professional.svg'
+      : '/icons/generic_user.svg';
+  }
 
   openSideMenu(): void {
     this.showSideMenu = true;
@@ -64,7 +80,15 @@ export class ProfileComponent {
   }
 
   toggleNotifications(): void {
-    this.showNotifications = !this.showNotifications;
+    if (
+      this.role !== 'informal' ||
+      this.isAdmin
+    ) {
+      return;
+    }
+
+    this.showNotifications =
+      !this.showNotifications;
   }
 
   closeNotifications(): void {
@@ -137,22 +161,37 @@ export class ProfileComponent {
   }
 
   async loadSessionHistory(): Promise<void> {
-    if (!this.patient?.id || this.isLoadingSessions) return;
+    if (!this.patient?.id || this.isLoadingSessions) {
+      return;
+    }
 
     this.isLoadingSessions = true;
     this.sessionsError = '';
 
     try {
-      this.sessionHistory = await this.patientService.getSessionHistory(this.patient.id);
-      console.log('SESSION HISTORY LOADED:', this.sessionHistory);
+      this.sessionHistory =
+        await this.patientService.getSessionHistory(
+          this.patient.id
+        );
+
+      console.log(
+        'SESSION HISTORY LOADED:',
+        this.sessionHistory
+      );
     } catch (error) {
-      console.error('loadSessionHistory failed', error);
+      console.error(
+        'Erro ao carregar histórico:',
+        error
+      );
+
       this.sessionsError =
-        error instanceof Error
-          ? error.message
-          : 'Erro ao carregar histórico de sessões.';
+        'Não foi possível carregar o histórico de sessões.';
     } finally {
       this.isLoadingSessions = false;
+      console.log(
+        'LOADING TERMINADO:',
+        this.isLoadingSessions
+      );
       this.cdr.detectChanges();
     }
   }

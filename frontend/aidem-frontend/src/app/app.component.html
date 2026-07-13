@@ -3,7 +3,14 @@
   (loginSuccess)="onLogin($event)">
 </app-login>
 
-<div *ngIf="isLoggedIn && userRole === 'formal' && currentPage === 'patients'">
+
+<!-- Lista de utentes do formal ou do administrador -->
+<div
+  *ngIf="
+    isLoggedIn &&
+    currentPage === 'patients' &&
+    (userRole === 'formal' || isAdmin)
+  ">
 
   <app-loading-spinner
     *ngIf="isLoadingPatients"
@@ -15,23 +22,37 @@
   </p>
 
   <app-patients-list
-    *ngIf="!isLoadingPatients && !patientsError"
+    *ngIf="
+      !isLoadingPatients &&
+      !patientsError
+    "
+    [isAdmin]="isAdmin"
     [patients]="patients"
     (selectPatient)="onSelectPatient($event)"
-    (createPatient)="openCreatePatient()">
+    (createPatient)="openCreatePatient()"
+    (openChat)="goToChat()"
+    (openPatients)="goToPatients()"
+    (openContents)="goToContents()"
+    (openAdminActivities)="openAdminActivities()"
+    (logout)="handleLogout()"
+  >
   </app-patients-list>
-
-
 </div>
 
 <app-create-patient
-  *ngIf="isLoggedIn && currentPage === 'createPatient'"
+  *ngIf="
+    isLoggedIn &&
+    currentPage === 'createPatient'
+  "
   (cancel)="goToPatients()"
   (created)="onPatientCreated()">
 </app-create-patient>
 
 <app-loading-spinner
-  *ngIf="isLoggedIn && isLoadingSelectedPatient"
+  *ngIf="
+    isLoggedIn &&
+    isLoadingSelectedPatient
+  "
   message="A carregar perfil do utente...">
 </app-loading-spinner>
 
@@ -40,33 +61,55 @@
 </p>
 
 <app-home
-  *ngIf="isLoggedIn && currentPage === 'home' && selectedPatient && !isLoadingSelectedPatient"
-  [patient]="selectedPatient!"
+  *ngIf="
+    isLoggedIn &&
+    currentPage === 'home' &&
+    selectedPatient &&
+    !isLoadingSelectedPatient
+  "
+  [patient]="selectedPatient"
   [currentUser]="currentUser!"
+  [role]="componentRole"
+  [isAdmin]="isAdmin"
+
   (openActivities)="goToActivities()"
   (openProfile)="goToProfile()"
   (openChat)="goToChat()"
   (openPatients)="goToPatients()"
   (openContents)="goToContents()"
-  [role]="userRole">
+  (openAdminActivities)="openAdminActivities()"
+  (logout)="handleLogout()">
 </app-home>
 
-
 <app-activities
-  *ngIf="isLoggedIn && currentPage === 'activities' && selectedPatient"
-  [role]="userRole"
-  [selectedPatient]="selectedPatient!"
+  *ngIf="
+    isLoggedIn &&
+    currentPage === 'activities' &&
+    selectedPatient
+  "
+  [isAdmin]="isAdmin"
+  [role]="componentRole"
+  [selectedPatient]="selectedPatient"
+
   (goHome)="goToHome()"
   (openPatients)="goToPatients()"
   (openChat)="goToChat()"
   (openProfile)="goToProfile()"
-  (openContents)="goToContents()">
+  (openContents)="goToContents()"
+  (openAdminActivities)="openAdminActivities()"
+  (logout)="handleLogout()">
 </app-activities>
 
 <app-chat-modal
-  *ngIf="isLoggedIn && currentPage === 'chat'"
-  [role]="userRole"
-  [patient]="selectedPatient!"
+  *ngIf="
+    isLoggedIn &&
+    currentPage === 'chat' &&
+    selectedPatient
+  "
+  [isAdmin]="isAdmin"
+  [role]="componentRole"
+  [patient]="selectedPatient"
+
   (goBack)="goToActivities()"
   (close)="goToActivities()"
   (openPatients)="goToPatients()"
@@ -75,17 +118,48 @@
 </app-chat-modal>
 
 <app-profile
-  *ngIf="isLoggedIn && currentPage === 'profile' && selectedPatient"
-  [role]="userRole"
-  [patient]="selectedPatient!"
+  *ngIf="
+    isLoggedIn &&
+    currentPage === 'profile' &&
+    selectedPatient
+  "
+  [isAdmin]="isAdmin"
+  [role]="componentRole"
+  [patient]="selectedPatient"
+
   (goHome)="goToHome()"
   (openActivities)="goToActivities()"
   (openChat)="goToChat()"
   (openPatients)="goToPatients()"
-  (openContents)="goToContents()">
+  (openContents)="goToContents()"
+  (openAdminActivities)="openAdminActivities()"
+  (logout)="handleLogout()">
 </app-profile>
 
 <app-contents
   *ngIf="isLoggedIn && currentPage === 'contents'"
-  (goBack)="goToHome()">
+  (goBack)="closeContents()">
 </app-contents>
+
+<app-admin-exercises
+  *ngIf="isLoggedIn && isAdmin && currentPage === 'adminActivities'"
+  [isAdmin]="isAdmin"
+  (goBack)="closeAdminActivities()"
+  (createExercise)="openCreateExercise()"
+  (editExercise)="openEditExercise($event)">
+</app-admin-exercises>
+
+<app-exercise-form
+  *ngIf="
+    isLoggedIn &&
+    isAdmin &&
+    currentPage === 'exerciseForm'
+  "
+  [exerciseToEdit]="
+    selectedExerciseToEdit
+  "
+
+  (cancel)="closeExerciseForm()"
+
+  (saved)="onExerciseSaved()">
+</app-exercise-form>

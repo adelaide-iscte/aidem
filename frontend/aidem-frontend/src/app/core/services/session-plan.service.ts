@@ -42,7 +42,7 @@ export interface ExerciseFeedbackPayload {
 
 @Injectable({ providedIn: 'root' })
 export class SessionPlanService {
-  //private readonly apiBase = 'http://localhost:8080/api';
+  // private readonly apiBase = 'http://localhost:8080/api';
   private readonly apiBase = 'https://aidem-backend.onrender.com/api';
 
   async getTodayPlan(patientId: number): Promise<SessionPlan> {

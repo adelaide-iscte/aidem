@@ -4,13 +4,17 @@
 
     <div class="top-icons">
       <img
+        *ngIf="role === 'informal' && !isAdmin"
         src="/icons/bell.svg"
         class="top-icon"
+        alt="Notificações"
         (click)="toggleNotifications()"
       />
+
       <img
-        [src]="role === 'formal' ? '/icons/professional.svg' : '/icons/generic_user.svg'"
+        [src]="headerAvatar"
         class="avatar"
+        alt="Perfil"
       />
     </div>
   </header>
@@ -152,39 +156,33 @@
         message="A carregar sessões...">
       </app-loading-spinner>
 
-      <p *ngIf="sessionsError">
+      <p
+        class="sessions-error"
+        *ngIf="!isLoadingSessions && sessionsError">
         {{ sessionsError }}
       </p>
 
 
-      <p *ngIf="!isLoadingSessions && !sessionsError && sessionHistory.length === 0">
-        Sem sessões registadas.
+      <p
+        class="empty-sessions-message"
+        *ngIf="
+    !isLoadingSessions &&
+    !sessionsError &&
+    sessionHistory.length === 0
+  ">
+        Não existem sessões registadas nos últimos 7 dias.
       </p>
 
       <div
-        class="session-card"
-        *ngFor="let session of sessionHistory">
-
-        <img src="/icons/Info.svg" class="session-info-icon" />
-
-        <div class="session-copy">
-          <h3>{{ formatSessionDate(session.sessionDate) }}</h3>
-
-          <p>
-            <strong [class.easy]="session.averageDifficulty === 'Fácil'"
-                    [class.medium]="session.averageDifficulty === 'Média'"
-                    [class.hard]="session.averageDifficulty === 'Difícil'">
-              {{ session.completedActivities }}
-            </strong>
-            atividade(s) concluída(s) | Média da dificuldade: {{ session.averageDifficulty }}
-          </p>
-
-          <button
-            type="button"
-            class="action-button primary details-button"
-            (click)="openSessionDetails(session)">
-            <span>Ver detalhes</span>
-          </button>
+        *ngIf="
+    !isLoadingSessions &&
+    !sessionsError &&
+    sessionHistory.length > 0
+  ">
+        <div
+          class="session-card"
+          *ngFor="let session of sessionHistory">
+          <!-- conteúdo da sessão -->
         </div>
       </div>
     </section>
@@ -222,16 +220,13 @@
   </app-egp-modal>
 
   <app-notifications-popover
-    *ngIf="showNotifications"
+    *ngIf="
+    showNotifications &&
+    role === 'informal' &&
+    !isAdmin
+  "
     (close)="closeNotifications()">
   </app-notifications-popover>
-
-  <app-side-menu
-    *ngIf="showSideMenu"
-    (close)="closeSideMenu()"
-    (changePatient)="openPatients.emit(); closeSideMenu()"
-    (openContents)="openContents.emit(); closeSideMenu()">
-  </app-side-menu>
 
   <div
     class="session-modal-backdrop"
@@ -325,5 +320,14 @@
   *ngIf="showSideMenu"
   (close)="closeSideMenu()"
   (changePatient)="openPatients.emit(); closeSideMenu()"
-  (openContents)="openContents.emit(); closeSideMenu()">
+  (openContents)="openContents.emit(); closeSideMenu()"
+  [isAdmin]="isAdmin"
+  (openAdminActivities)="
+    openAdminActivities.emit();
+    closeSideMenu()
+  "
+  (logout)="
+    logout.emit();
+    closeSideMenu()
+  ">
 </app-side-menu>

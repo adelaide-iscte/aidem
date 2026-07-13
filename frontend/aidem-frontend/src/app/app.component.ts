@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from './features/auth/login/login.component';
 import { HomeComponent } from './features/home/home.component';
@@ -8,39 +8,76 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { PatientsListComponent } from './features/patients-list/patients-list.component';
 import {AppPatient, PatientProfile, PatientService} from './core/services/patient.service';
 import {LoadingSpinnerComponent} from './shared/laoding-spinner-modal/loading-spinner.component';
-import {AuthUser} from './core/services/auth.service';
 import { LoginSuccessEvent } from './features/auth/login/login.component';
 import {CreatePatientComponent} from './features/create-patient/create-patient.component';
 import {ContentsComponent} from './features/contents/contents.component';
 import {ExerciseNotificationService} from './core/services/exercise-notification.service';
+import { Subscription } from 'rxjs';
 
-type UserRole = 'informal' | 'formal';
-type AppPage = 'home' | 'patients' | 'activities' | 'chat' | 'profile' | 'createPatient' | 'contents';
+import {
+  AdminExercisesComponent
+} from './features/admin-exercises/admin-exercises.component';
+
+
+import {
+  Exercise
+} from './core/services/exercise.service';
+
+import {
+  AuthService,
+  AuthUser,
+  FrontendRole
+} from './core/services/auth.service';
+import {ExerciseFormComponent} from './features/exercise-form/exercise-form.component';
+
+type UserRole =
+  | 'admin'
+  | 'informal'
+  | 'formal';
+
+type CaregiverViewRole =
+  | 'informal'
+  | 'formal';
+
+type AppPage =
+  | 'home'
+  | 'patients'
+  | 'activities'
+  | 'chat'
+  | 'profile'
+  | 'createPatient'
+  | 'contents'
+  | 'adminActivities'
+  | 'exerciseForm';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    CommonModule,
-    LoginComponent,
-    HomeComponent,
-    ActivitiesModalComponent,
-    ChatModalComponent,
-    ProfileComponent,
-    PatientsListComponent,
-    LoadingSpinnerComponent,
-    CreatePatientComponent,
-    ContentsComponent
-  ],
+  CommonModule,
+  LoginComponent,
+  HomeComponent,
+  ActivitiesModalComponent,
+  ChatModalComponent,
+  ProfileComponent,
+  PatientsListComponent,
+  LoadingSpinnerComponent,
+  CreatePatientComponent,
+  ContentsComponent,
+  AdminExercisesComponent,
+  ExerciseFormComponent
+],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
 
   @Output() openContents = new EventEmitter<void>();
   currentUser: AuthUser | null = null;
   isLoggedIn = false;
   userRole: UserRole = 'informal';
+  selectedExerciseToEdit: Exercise | null = null;
+  activeCaregiverView: CaregiverViewRole = 'informal';
   currentPage: AppPage = 'home';
   isLoadingSelectedPatient = false;
   selectedPatientError = '';
@@ -48,19 +85,159 @@ export class AppComponent {
   selectedPatient: PatientProfile | null = null;
   isLoadingPatients = false;
   patientsError = '';
+  private sessionExpiredSubscription?: Subscription;
+  private isLoadingPatientsRequest = false;
+  private pageBeforeAdminActivities: AppPage = 'patients';
+  private pageBeforeContents: AppPage = 'home';
 
   constructor(
     private patientService: PatientService,
     private notificationService: ExerciseNotificationService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
 
+
+  ngOnInit(): void {
+    this.sessionExpiredSubscription =
+      this.authService.sessionExpired$
+        .subscribe(() => {
+          this.handleLogout();
+        });
+
+    void this.restoreSession();
+  }
+
+  ngOnDestroy(): void {
+    this.sessionExpiredSubscription?.unsubscribe();
+  }
+
+
+  private async restoreSession(): Promise<void> {
+    const token =
+      this.authService.getToken();
+
+    const user =
+      this.authService.getStoredUser();
+
+    if (!token || !user) {
+      this.handleLogout();
+      return;
+    }
+
+    this.isLoggedIn = true;
+    this.currentUser = user;
+    this.userRole =
+      this.authService.toFrontendRole(
+        user.role
+      );
+
+    if (this.userRole === 'admin') {
+      this.activeCaregiverView = 'formal';
+      this.currentPage = 'patients';
+
+      await this.loadPatients();
+      return;
+    }
+
+    if (this.userRole === 'formal') {
+      this.activeCaregiverView = 'formal';
+      this.currentPage = 'patients';
+
+      await this.loadPatients();
+      return;
+    }
+
+    this.activeCaregiverView = 'informal';
+
+    await this.loadInformalCaregiverPatient();
+  }
+
+  handleLogout(): void {
+    this.notificationService.stop();
+    this.authService.logout();
+
+    this.isLoggedIn = false;
+    this.currentUser = null;
+    this.selectedPatient = null;
+    this.patients = [];
+
+    this.userRole = 'informal';
+    this.activeCaregiverView = 'informal';
+    this.currentPage = 'home';
+
+    this.selectedPatientError = '';
+    this.patientsError = '';
+
+    this.cdr.detectChanges();
+  }
+
+  openAdminActivities(): void {
+    if (!this.isAdmin) {
+      return;
+    }
+
+    this.pageBeforeAdminActivities =
+      this.currentPage;
+
+    this.selectedExerciseToEdit = null;
+    this.currentPage = 'adminActivities';
+  }
+
+  openCreateExercise(): void {
+    if (!this.isAdmin) {
+      return;
+    }
+
+    this.selectedExerciseToEdit = null;
+    this.currentPage = 'exerciseForm';
+  }
+
+  openEditExercise(
+    exercise: Exercise
+  ): void {
+    if (!this.isAdmin) {
+      return;
+    }
+
+    this.selectedExerciseToEdit = exercise;
+    this.currentPage = 'exerciseForm';
+  }
+
+  closeExerciseForm(): void {
+    this.selectedExerciseToEdit = null;
+    this.currentPage = 'adminActivities';
+  }
+
+  onExerciseSaved(): void {
+    this.selectedExerciseToEdit = null;
+    this.currentPage = 'adminActivities';
+  }
+
+  closeAdminActivities(): void {
+    this.currentPage =
+      this.pageBeforeAdminActivities;
+  }
+
   goToContents(): void {
+    this.pageBeforeContents = this.currentPage;
     this.currentPage = 'contents';
+  }
+
+  closeContents(): void {
+    this.currentPage = this.pageBeforeContents;
   }
 
   openCreatePatient(): void {
     this.currentPage = 'createPatient';
+  }
+
+  get isAdmin(): boolean {
+    return this.userRole === 'admin';
+  }
+
+  get componentRole(): CaregiverViewRole {
+    return this.activeCaregiverView;
   }
 
   async onPatientCreated(): Promise<void> {
@@ -68,12 +245,19 @@ export class AppComponent {
     await this.loadPatients();
   }
 
-  async onLogin(event: LoginSuccessEvent): Promise<void> {
+  async onLogin(
+    event: LoginSuccessEvent
+  ): Promise<void> {
+    this.notificationService.stop();
     this.isLoggedIn = true;
     this.userRole = event.role;
     this.currentUser = event.user;
+    this.selectedPatient = null;
+    this.selectedPatientError = '';
+    this.patientsError = '';
 
-    if (event.role === 'formal') {
+    if (event.role === 'admin') {
+      this.activeCaregiverView = 'formal';
       this.currentPage = 'patients';
       this.cdr.detectChanges();
 
@@ -81,8 +265,32 @@ export class AppComponent {
       return;
     }
 
+    if (event.role === 'formal') {
+      this.activeCaregiverView = 'formal';
+      this.currentPage = 'patients';
+      this.cdr.detectChanges();
+
+      await this.loadPatients();
+      return;
+    }
+
+    this.activeCaregiverView = 'informal';
     await this.loadInformalCaregiverPatient();
   }
+
+  onExerciseCreated(): void {
+    this.currentPage =
+      this.selectedPatient
+        ? 'home'
+        : 'patients';
+  }
+  closeCreateExercise(): void {
+    this.currentPage =
+      this.selectedPatient
+        ? 'home'
+        : 'patients';
+  }
+
 
   private async loadInformalCaregiverPatient(): Promise<void> {
     if (!this.currentUser?.email) {
@@ -144,25 +352,47 @@ export class AppComponent {
   }
 
   async loadPatients(): Promise<void> {
+    if (this.isLoadingPatientsRequest) {
+      return;
+    }
+
+    this.isLoadingPatientsRequest = true;
     this.isLoadingPatients = true;
     this.patientsError = '';
+
     this.cdr.detectChanges();
 
     try {
-      const result = await this.patientService.getPatients();
-
-      console.log('PATIENTS RECEIVED IN APP:', result);
+      const result =
+        await this.patientService.getPatients();
 
       this.patients = result;
+
+      console.log(
+        'PATIENTS RECEIVED IN APP:',
+        this.patients
+      );
     } catch (error) {
-      console.error('loadPatients failed', error);
+      console.error(
+        'loadPatients failed',
+        error
+      );
+
+      this.patients = [];
+
       this.patientsError =
         error instanceof Error
           ? error.message
           : 'Erro ao carregar lista de utentes.';
     } finally {
       this.isLoadingPatients = false;
-      console.log('LOADING FINISHED:', this.isLoadingPatients);
+      this.isLoadingPatientsRequest = false;
+
+      console.log(
+        'LOADING FINISHED:',
+        this.isLoadingPatients
+      );
+
       this.cdr.detectChanges();
     }
   }
@@ -176,7 +406,7 @@ export class AppComponent {
       this.selectedPatient =
         await this.patientService.getPatient(patient.id);
 
-      this.notificationService.start(this.selectedPatient.id);
+      this.notificationService.stop();
 
       this.currentPage = 'home';
     } catch (error) {
@@ -197,9 +427,19 @@ export class AppComponent {
   }
 
   async goToPatients(): Promise<void> {
+    if (
+      this.userRole === 'informal' &&
+      !this.isAdmin
+    ) {
+      return;
+    }
+
     this.currentPage = 'patients';
 
-    if (this.patients.length === 0) {
+    if (
+      this.patients.length === 0 &&
+      !this.isLoadingPatientsRequest
+    ) {
       await this.loadPatients();
     }
   }

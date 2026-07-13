@@ -41,6 +41,7 @@ export interface PatientProfile {
 export class ChatModalComponent {
   @Input() role: 'formal' | 'informal' = 'formal';
   @Input() patient!: PatientProfile;
+  @Input() isAdmin = false;
   @Output() close = new EventEmitter<void>();
   @Output() goBack = new EventEmitter<void>();
   @Output() openPatients = new EventEmitter<void>();
@@ -51,6 +52,10 @@ export class ChatModalComponent {
   @Output() openContents = new EventEmitter<void>();
   showSideMenu = false;
 
+  @Output()
+  openAdminActivities =
+    new EventEmitter<void>();
+
   openSideMenu(): void {
     this.showSideMenu = true;
   }
@@ -60,11 +65,13 @@ export class ChatModalComponent {
   }
 
   get headerAvatar(): string {
-    if (this.role === 'informal') {
-      return this.patient?.avatar || '/icons/generic_user.svg';
+    if (this.isAdmin) {
+      return '/icons/adm.svg';
     }
 
-    return '/icons/professional.svg';
+    return this.role === 'formal'
+      ? '/icons/professional.svg'
+      : '/icons/generic_user.svg';
   }
 
   get contactName(): string {

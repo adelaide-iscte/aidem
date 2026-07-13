@@ -15,6 +15,7 @@
         <img
           [src]="headerAvatar"
           class="avatar"
+          alt="Perfil"
         />
       </div>
     </header>
@@ -101,6 +102,11 @@
     *ngIf="showSideMenu"
     (close)="closeSideMenu()"
     (changePatient)="openPatients.emit(); closeSideMenu()"
-    (openContents)="openContents.emit(); closeSideMenu()">
+    (openContents)="openContents.emit(); closeSideMenu()"
+    [isAdmin]="isAdmin"
+    (openAdminActivities)="
+    openAdminActivities.emit();
+    closeSideMenu()
+  ">
   </app-side-menu>
 </div>

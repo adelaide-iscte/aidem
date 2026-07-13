@@ -11,12 +11,20 @@
         />
 
         <span
-          *ngIf="notificationService.unreadCount() > 0"
+          *ngIf="
+    !isAdmin &&
+    role === 'informal' &&
+    notificationService.unreadCount() > 0
+  "
           class="notification-badge">
-    {{ notificationService.unreadCount() }}
-  </span>
+  {{ notificationService.unreadCount() }}
+</span>
       </div>
-      <img [src]="role === 'formal' ? '/icons/professional.svg' : '/icons/generic_user.svg'" class="avatar" />
+      <img
+        [src]="headerAvatar"
+        class="avatar"
+        alt="Perfil"
+      />
     </div>
   </header>
 
@@ -152,9 +160,14 @@
   *ngIf="showNotifications"
   (close)="closeNotifications()">
 </app-notifications-popover>
+
 <app-side-menu
   *ngIf="showSideMenu"
+  [isAdmin]="isAdmin"
+  [canChangePatient]="role === 'formal' || isAdmin"
   (close)="closeSideMenu()"
-  (changePatient)="openPatients.emit(); closeSideMenu()"
-  (openContents)="openContents.emit(); closeSideMenu()">
+  (changePatient)="openPatients.emit();closeSideMenu()"
+  (openContents)="openContents.emit();closeSideMenu()"
+  (openAdminActivities)="openAdminActivities.emit();closeSideMenu()"
+  (logout)="logout.emit();closeSideMenu()">
 </app-side-menu>
