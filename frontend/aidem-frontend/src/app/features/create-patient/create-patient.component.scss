@@ -292,3 +292,14 @@ textarea:focus {
     min-width: 0;
   }
 }
+
+@media (max-width: 1200px) {
+  .egp-table {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .egp-row {
+    width: 100%;
+  }
+}
