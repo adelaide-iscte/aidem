@@ -18,19 +18,44 @@
 }
 
 .description-box {
-  min-height: 220px;
+  height: 220px;
+  max-height: 220px;
+
   background: #dbe7fb;
   border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
+  display: block;
   text-align: center;
+
   color: #555f6d;
   font-size: 30px;
   font-weight: 400;
   line-height: 1.45;
+
   position: relative;
-  padding-top: 70px;
+
+  padding: 75px 28px 24px;
+  box-sizing: border-box;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.description-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.description-box::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.description-box::-webkit-scrollbar-thumb {
+  background: #9dbaf0;
+  border-radius: 999px;
+}
+
+.description-box::-webkit-scrollbar-thumb:hover {
+  background: #407ce2;
 }
 
 .modal-content {
