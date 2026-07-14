@@ -272,15 +272,74 @@ textarea:focus {
   font-weight: 800;
   padding: 0 42px;
 }
-
 @media (max-width: 800px) {
   .header {
-    height: 90px;
-    padding: 0 48px;
+    min-height: 90px;
+    padding: 16px 20px;
+
     display: grid;
-    grid-template-columns: 180px 1fr;
-    align-items: center;
-    border-bottom: 1px solid #e5e7eb;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+    text-align: left;
+  }
+
+  .back-button {
+    width: auto;
+    height: 48px;
+    padding: 0 18px;
+    font-size: 17px;
+  }
+
+  .content {
+    padding: 24px 16px 48px;
+  }
+
+  .form-card {
+    padding: 24px 20px;
+  }
+
+  .form-card h2 {
+    font-size: 25px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .egp-table {
+    grid-template-columns: 1fr;
+  }
+
+  .egp-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .egp-row strong {
+    min-width: 0;
+  }
+
+  .egp-inputs {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.3fr;
+    gap: 10px;
+  }
+
+  .egp-inputs input,
+  .egp-inputs select {
+    width: 100%;
+    max-width: none;
+  }
+
+  .egp-head {
+    display: none;
   }
 
   .actions-card {
