@@ -294,6 +294,10 @@ textarea:focus {
 }
 
 @media (max-width: 1200px) {
+  .form-card {
+    padding: 28px 30px;
+  }
+
   .egp-table {
     grid-template-columns: 1fr;
     gap: 0;
@@ -301,5 +305,10 @@ textarea:focus {
 
   .egp-row {
     width: 100%;
+    gap: 24px;
+  }
+
+  .egp-row strong {
+    min-width: 0;
   }
 }
