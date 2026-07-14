@@ -181,8 +181,47 @@
   ">
         <div
           class="session-card"
-          *ngFor="let session of sessionHistory">
-          <!-- conteúdo da sessão -->
+          *ngFor="let session of sessionHistory"
+          (click)="openSessionDetails(session)">
+
+          <div class="session-card-header">
+            <div>
+              <h3>{{ formatSessionDate(session.sessionDate) }}</h3>
+
+              <p>
+                {{ session.completedActivities }}
+                de
+                {{ session.totalActivities }}
+                atividades concluídas
+              </p>
+            </div>
+
+            <span class="session-arrow">›</span>
+          </div>
+
+          <div class="session-progress">
+            <div
+              class="session-progress-bar"
+              [style.width.%]="
+        session.totalActivities > 0
+          ? (session.completedActivities / session.totalActivities) * 100
+          : 0
+      ">
+            </div>
+          </div>
+
+          <div class="session-card-footer">
+    <span>
+      Dificuldade média:
+      {{ difficultyFeedbackLabel(session.averageDifficulty) }}
+    </span>
+
+            <button
+              type="button"
+              (click)="openSessionDetails(session); $event.stopPropagation()">
+              Ver detalhes
+            </button>
+          </div>
         </div>
       </div>
     </section>
