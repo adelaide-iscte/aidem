@@ -146,3 +146,39 @@
     color: #666;
   }
 }
+
+.back-small {
+  justify-self: start;
+
+  min-height: 48px;
+  padding: 0 20px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border: 2px solid #407ce2;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #407ce2;
+
+  font-family: 'Poppins', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.back-small:hover {
+  background: #f3f7ff;
+}
+
+.back-small:active {
+  transform: scale(0.98);
+}
