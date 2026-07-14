@@ -162,66 +162,64 @@
         {{ sessionsError }}
       </p>
 
-
       <p
         class="empty-sessions-message"
         *ngIf="
-    !isLoadingSessions &&
-    !sessionsError &&
-    sessionHistory.length === 0
-  ">
+      !isLoadingSessions &&
+      !sessionsError &&
+      sessionHistory.length === 0
+    ">
         Não existem sessões registadas nos últimos 7 dias.
       </p>
 
       <div
         *ngIf="
-    !isLoadingSessions &&
-    !sessionsError &&
-    sessionHistory.length > 0
-  ">
+      !isLoadingSessions &&
+      !sessionsError &&
+      sessionHistory.length > 0
+    "
+        class="sessions-list">
+
         <div
           class="session-card"
-          *ngFor="let session of sessionHistory"
-          (click)="openSessionDetails(session)">
+          *ngFor="let session of sessionHistory">
 
-          <div class="session-card-header">
-            <div>
-              <h3>{{ formatSessionDate(session.sessionDate) }}</h3>
+          <img
+            src="/icons/Info.svg"
+            class="session-info-icon"
+            alt="Informação da sessão">
 
-              <p>
-                {{ session.completedActivities }}
-                de
-                {{ session.totalActivities }}
-                atividades concluídas
-              </p>
-            </div>
+          <div class="session-copy">
+            <h3>{{ formatSessionDate(session.sessionDate) }}</h3>
 
-            <span class="session-arrow">›</span>
-          </div>
+            <p>
+              {{ session.completedActivities }}
+              de
+              {{ session.totalActivities }}
+              atividades concluídas
+            </p>
 
-          <div class="session-progress">
-            <div
-              class="session-progress-bar"
-              [style.width.%]="
-        session.totalActivities > 0
-          ? (session.completedActivities / session.totalActivities) * 100
-          : 0
-      ">
-            </div>
-          </div>
-
-          <div class="session-card-footer">
-    <span>
-      Dificuldade média:
-      {{ difficultyFeedbackLabel(session.averageDifficulty) }}
-    </span>
+            <p>
+              Dificuldade média:
+              <strong
+                [class.easy]="session.averageDifficulty === 'EASY'"
+                [class.medium]="session.averageDifficulty === 'OK'"
+                [class.hard]="
+              session.averageDifficulty === 'HARD' ||
+              session.averageDifficulty === 'TOO_HARD'
+            ">
+                {{ difficultyFeedbackLabel(session.averageDifficulty) }}
+              </strong>
+            </p>
 
             <button
               type="button"
-              (click)="openSessionDetails(session); $event.stopPropagation()">
+              class="action-button primary details-button"
+              (click)="openSessionDetails(session)">
               Ver detalhes
             </button>
           </div>
+
         </div>
       </div>
     </section>
