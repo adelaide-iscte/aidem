@@ -202,13 +202,13 @@
             <p>
               Dificuldade média:
               <strong
-                [class.easy]="session.averageDifficulty === 'EASY'"
-                [class.medium]="session.averageDifficulty === 'OK'"
+                [class.easy]="session.averageDifficulty === 'Fácil'"
+                [class.medium]="session.averageDifficulty === 'Média'"
                 [class.hard]="
-              session.averageDifficulty === 'HARD' ||
-              session.averageDifficulty === 'TOO_HARD'
-            ">
-                {{ difficultyFeedbackLabel(session.averageDifficulty) }}
+      session.averageDifficulty === 'Difícil' ||
+      session.averageDifficulty === 'Muito difícil'
+    ">
+                {{ session.averageDifficulty }}
               </strong>
             </p>
 
