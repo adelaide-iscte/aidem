@@ -230,20 +230,42 @@ export class ProfileComponent {
     }
   }
 
+  effectiveExerciseStatus(
+    exercise: SessionHistoryExercise
+  ): SessionHistoryExercise['status'] {
+
+    if (exercise.status === 'SKIPPED') {
+      return 'SKIPPED';
+    }
+
+    if (
+      exercise.completed === false ||
+      exercise.emotionFeedback?.toLowerCase() === 'no' ||
+      exercise.emotionFeedback?.toLowerCase() === 'nao' ||
+      exercise.emotionFeedback?.toLowerCase() === 'não'
+    ) {
+      return 'FAILED';
+    }
+
+    return exercise.status;
+  }
+
   exerciseStatusReason(exercise: SessionHistoryExercise): string {
-    if (exercise.status === 'FAILED') {
+    const status = this.effectiveExerciseStatus(exercise);
+
+    if (status === 'FAILED') {
       return exercise.caregiverReason
         ? `Observações: ${exercise.caregiverReason}`
         : 'O exercício foi realizado, mas não foi concluído.';
     }
 
-    if (exercise.status === 'SKIPPED') {
+    if (status === 'SKIPPED') {
       return exercise.caregiverReason
         ? `Motivo para não realizar: ${exercise.caregiverReason}`
         : 'O cuidador decidiu não realizar este exercício.';
     }
 
-    if (exercise.status === 'COMPLETED') {
+    if (status === 'COMPLETED') {
       return exercise.caregiverReason
         ? `Observações: ${exercise.caregiverReason}`
         : 'Exercício realizado.';

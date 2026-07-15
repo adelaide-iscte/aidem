@@ -318,11 +318,11 @@
 
             <span
               class="exercise-pill"
-              [class.completed]="exercise.status === 'COMPLETED'"
-              [class.failed]="exercise.status === 'FAILED'"
-              [class.skipped]="exercise.status === 'SKIPPED'">
-            {{ exerciseStatusLabel(exercise.status) }}
-          </span>
+              [class.completed]="effectiveExerciseStatus(exercise) === 'COMPLETED'"
+              [class.failed]="effectiveExerciseStatus(exercise) === 'FAILED'"
+              [class.skipped]="effectiveExerciseStatus(exercise) === 'SKIPPED'">
+              {{ exerciseStatusLabel(effectiveExerciseStatus(exercise)) }}
+            </span>
           </div>
 
           <div class="exercise-modal-details">
