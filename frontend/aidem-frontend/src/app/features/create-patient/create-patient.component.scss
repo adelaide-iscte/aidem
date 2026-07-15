@@ -264,6 +264,13 @@ textarea:focus {
   padding: 32px 0 16px;
 }
 
+.calculated-input {
+  background: #eef3fb;
+  color: #303030;
+  font-weight: 700;
+  cursor: default;
+}
+
 .save-button-large {
   min-width: 360px;
   height: 80px;

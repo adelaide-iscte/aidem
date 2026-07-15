@@ -156,6 +156,9 @@
             type="number"
             min="0"
             [(ngModel)]="row.score"
+            (ngModelChange)="recalculateEgpSummary()"
+            [readonly]="isSummaryRow(row.domain)"
+            [class.calculated-input]="isSummaryRow(row.domain)"
             [class.invalid-input]="hasError('EGP - ' + row.domain + ' - PD')" />
 
           <input

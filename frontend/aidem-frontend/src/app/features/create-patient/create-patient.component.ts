@@ -118,11 +118,108 @@ export class CreatePatientComponent {
 
   constructor(private patientService: PatientService) {}
 
+  isSummaryRow(domain: string): boolean {
+    return [
+      'Constrangimentos físicos',
+      'Prevalência motora',
+      'Prevalência cognitiva',
+      'Total'
+    ].includes(domain);
+  }
+
+  private findEgpRow(domain: string): EgpFormRow | undefined {
+    return this.egpRows.find(row => row.domain === domain);
+  }
+
+  private calculateSum(domains: string[]): number | null {
+    const rows = domains.map(domain => this.findEgpRow(domain));
+
+    /*
+     * Não apresenta um resultado parcial.
+     * Só calcula quando todos os campos necessários estiverem preenchidos.
+     */
+    const hasMissingValue = rows.some(
+      row => row?.score === null || row?.score === undefined
+    );
+
+    if (hasMissingValue) {
+      return null;
+    }
+
+    return rows.reduce(
+      (total, row) => total + Number(row?.score ?? 0),
+      0
+    );
+  }
+
+  recalculateEgpSummary(): void {
+    const physicalConstraints = this.calculateSum([
+      'Mobilização articular dos membros superiores',
+      'Mobilização articular dos membros inferiores'
+    ]);
+
+    const motorPrevalence = this.calculateSum([
+      'Equilíbrio Estático I',
+      'Equilíbrio Estático II',
+      'Equilíbrio Dinâmico I',
+      'Equilíbrio Dinâmico II',
+      'Motricidade fina dos membros inferiores'
+    ]);
+
+    const cognitivePrevalence = this.calculateSum([
+      'Motricidade fina dos membros superiores',
+      'Praxias',
+      'Conhecimento das partes do corpo',
+      'Vigilância',
+      'Memória Percetiva',
+      'Domínio Espacial',
+      'Memória Verbal',
+      'Perceção',
+      'Domínio Temporal',
+      'Comunicação'
+    ]);
+
+    const physicalRow = this.findEgpRow('Constrangimentos físicos');
+    const motorRow = this.findEgpRow('Prevalência motora');
+    const cognitiveRow = this.findEgpRow('Prevalência cognitiva');
+    const totalRow = this.findEgpRow('Total');
+
+    if (physicalRow) {
+      physicalRow.score = physicalConstraints;
+    }
+
+    if (motorRow) {
+      motorRow.score = motorPrevalence;
+    }
+
+    if (cognitiveRow) {
+      cognitiveRow.score = cognitivePrevalence;
+    }
+
+    if (totalRow) {
+      const summaries = [
+        physicalConstraints,
+        motorPrevalence,
+        cognitivePrevalence
+      ];
+
+      if (summaries.some(value => value === null)) {
+        totalRow.score = null;
+      } else {
+        totalRow.score = summaries.reduce(
+          (total: number, value) => total + (value ?? 0),
+          0
+        );
+      }
+    }
+  }
+
   hasError(label: string): boolean {
     return this.fieldErrors.includes(label);
   }
 
   validate(): boolean {
+    this.recalculateEgpSummary();
     const errors: string[] = [];
 
     if (!this.form.fullName.trim()) errors.push('Nome');
@@ -160,6 +257,7 @@ export class CreatePatientComponent {
 
   async save(): Promise<void> {
     this.submitError = '';
+    this.recalculateEgpSummary();
 
     if (!this.validate()) {
       this.submitError = 'Existem campos obrigatórios por preencher.';

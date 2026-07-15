@@ -15,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.aidem.backend.model.Assessment;
 import com.aidem.backend.model.DomainScore;
@@ -142,17 +145,70 @@ public class PatientController {
 
         var assessment = assessmentOpt.get();
 
-        var rows = domainScoreRepository
-                .findByAssessment_IdOrderByDisplayOrderAscIdAsc(assessment.getId())
-                .stream()
-                .map(score -> new EgpRowResponse(
-                        score.getDomain(),
-                        score.getScore(),
-                        score.getNormalizedScore() != null ? score.getNormalizedScore() : score.getScore(),
-                        score.getRiskLevel().name(),
-                        score.getDisplayOrder(),
-                        isEgpSummaryRow(score.getDomain())
-                ))
+        var scores = domainScoreRepository
+                .findByAssessment_IdOrderByDisplayOrderAscIdAsc(assessment.getId());
+
+        Map<String, BigDecimal> scoresByDomain = scores.stream()
+                .collect(Collectors.toMap(
+                        DomainScore::getDomain,
+                        DomainScore::getScore,
+                        (first, second) -> first
+                ));
+
+        BigDecimal physicalConstraints = sumScores(
+                scoresByDomain,
+                "Mobilização articular dos membros superiores",
+                "Mobilização articular dos membros inferiores"
+        );
+
+        BigDecimal motorPrevalence = sumScores(
+                scoresByDomain,
+                "Equilíbrio Estático I",
+                "Equilíbrio Estático II",
+                "Equilíbrio Dinâmico I",
+                "Equilíbrio Dinâmico II",
+                "Motricidade fina dos membros inferiores"
+        );
+
+        BigDecimal cognitivePrevalence = sumScores(
+                scoresByDomain,
+                "Motricidade fina dos membros superiores",
+                "Praxias",
+                "Conhecimento das partes do corpo",
+                "Vigilância",
+                "Memória Percetiva",
+                "Domínio Espacial",
+                "Memória Verbal",
+                "Perceção",
+                "Domínio Temporal",
+                "Comunicação"
+        );
+
+        BigDecimal total = physicalConstraints
+                .add(motorPrevalence)
+                .add(cognitivePrevalence);
+
+        var rows = scores.stream()
+                .map(score -> {
+                    BigDecimal pd = switch (score.getDomain()) {
+                        case "Constrangimentos físicos" -> physicalConstraints;
+                        case "Prevalência motora" -> motorPrevalence;
+                        case "Prevalência cognitiva" -> cognitivePrevalence;
+                        case "Total" -> total;
+                        default -> score.getScore();
+                    };
+
+                    return new EgpRowResponse(
+                            score.getDomain(),
+                            pd,
+                            score.getNormalizedScore() != null
+                                    ? score.getNormalizedScore()
+                                    : score.getScore(),
+                            score.getRiskLevel().name(),
+                            score.getDisplayOrder(),
+                            isEgpSummaryRow(score.getDomain())
+                    );
+                })
                 .toList();
 
         return ResponseEntity.ok(
@@ -162,6 +218,23 @@ public class PatientController {
                         rows
                 )
         );
+    }
+
+    private BigDecimal sumScores(
+            Map<String, BigDecimal> scoresByDomain,
+            String... domains
+    ) {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (String domain : domains) {
+            BigDecimal value = scoresByDomain.get(domain);
+
+            if (value != null) {
+                total = total.add(value);
+            }
+        }
+
+        return total;
     }
 
     private boolean isEgpSummaryRow(String domain) {
