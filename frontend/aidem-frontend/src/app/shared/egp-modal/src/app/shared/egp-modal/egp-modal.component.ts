@@ -44,6 +44,7 @@ export class EgpModalComponent {
   @Input() error = '';
 
   showGraphModal = false;
+  showGraphMaintenanceModal = false;
 
   get visibleRows(): EgpEntry[] {
     return this.rows
@@ -128,6 +129,10 @@ export class EgpModalComponent {
       .join(' ');
   }
 
+  closeGraphMaintenance(): void {
+    this.showGraphMaintenanceModal = false;
+  }
+
   pointX(value: number): number {
     return (Math.max(0, Math.min(6, value)) / 6) * 556;
   }
@@ -161,9 +166,10 @@ export class EgpModalComponent {
   }
 
   openGraph(): void {
-    if (this.rows.length > 0) {
-      this.showGraphModal = true;
-    }
+    // if (this.rows.length > 0) {
+    //   this.showGraphModal = true;
+    // }
+    this.showGraphMaintenanceModal = true;
   }
 
   closeGraph(): void {

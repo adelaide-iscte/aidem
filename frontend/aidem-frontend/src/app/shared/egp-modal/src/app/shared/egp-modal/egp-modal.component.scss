@@ -731,3 +731,42 @@
     min-height: 56px;
   }
 }
+
+.maintenance-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 480px;
+  max-width: calc(100vw - 32px);
+
+  background: #fff;
+  border-radius: 22px;
+
+  padding: 32px;
+
+  z-index: 2001;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  text-align: center;
+}
+
+.maintenance-modal h2 {
+  margin: 0;
+
+  color: #4677e8;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.maintenance-modal p {
+  margin: 0;
+
+  color: #555;
+  font-size: 17px;
+  line-height: 1.5;
+}

@@ -200,4 +200,38 @@
       </div>
     </section>
   </div>
+  <div
+    class="graph-overlay"
+    *ngIf="showGraphMaintenanceModal">
+
+    <div
+      class="graph-backdrop"
+      (click)="closeGraphMaintenance()">
+    </div>
+
+    <section class="maintenance-modal">
+
+      <h2>Gráfico EGP</h2>
+
+      <p>
+        Esta funcionalidade encontra-se temporariamente em manutenção.
+      </p>
+
+      <p>
+        Estamos a proceder a melhorias para garantir uma representação gráfica
+        mais correta dos resultados.
+      </p>
+
+      <button
+        type="button"
+        class="close-graph-button"
+        (click)="closeGraphMaintenance()">
+
+        Fechar
+
+      </button>
+
+    </section>
+
+  </div>
 </div>
