@@ -455,6 +455,7 @@
 .chart-svg {
   position: absolute;
   inset: 0;
+  overflow: hidden;
 }
 
 .vertical-grid {
@@ -488,7 +489,7 @@
 }
 
 .chart-svg {
-  overflow: visible;
+  overflow: hidden;
 }
 
 .chart-svg polyline {

@@ -151,14 +151,16 @@ export class EgpModalComponent {
   pointY(index: number): number {
     const chartHeight = 800;
     const numberOfRows = this.chartRows.length;
+    const verticalInset = 6;
 
     if (numberOfRows === 0) {
       return 0;
     }
 
-    const rowHeight = chartHeight / numberOfRows;
+    const usableHeight = chartHeight - verticalInset * 2;
+    const rowHeight = usableHeight / numberOfRows;
 
-    return rowHeight * index + rowHeight / 2;
+    return verticalInset + rowHeight * (index + 0.5);
   }
 
   openGraph(): void {
