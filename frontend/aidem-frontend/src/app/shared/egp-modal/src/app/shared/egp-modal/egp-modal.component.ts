@@ -117,16 +117,13 @@ export class EgpModalComponent {
     }).format(value);
   }
 
-  get polylinePoints(): string {
-    const usableWidth = 556;
-
+  get chartPath(): string {
     return this.chartRows
       .map((row, index) => {
-        const clampedValue = Math.max(0, Math.min(6, row.nr));
-        const x = (clampedValue / 6) * usableWidth;
+        const x = this.pointX(row.nr);
         const y = this.pointY(index);
 
-        return `${x},${y}`;
+        return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
       })
       .join(' ');
   }
