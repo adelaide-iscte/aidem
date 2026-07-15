@@ -119,16 +119,27 @@ export class EgpModalComponent {
 
   get polylinePoints(): string {
     const usableWidth = 556;
+    const chartHeight = 800;
 
-    return this.chartRows
-      .map((row, index) => {
-        const clampedValue = Math.max(0, Math.min(6, row.nr));
-        const x = (clampedValue / 6) * usableWidth;
-        const y = this.pointY(index);
+    const points = this.chartRows.map((row, index) => {
+      const clampedValue = Math.max(0, Math.min(6, row.nr));
+      const x = (clampedValue / 6) * usableWidth;
+      const y = this.pointY(index);
 
-        return `${x},${y}`;
-      })
-      .join(' ');
+      return `${x},${y}`;
+    });
+
+    const lastRow = this.chartRows[this.chartRows.length - 1];
+
+    if (lastRow) {
+      const lastValue = Math.max(0, Math.min(6, lastRow.nr));
+      const lastX = (lastValue / 6) * usableWidth;
+
+      // Prolonga a linha desde a última bolinha até ao eixo inferior.
+      points.push(`${lastX},${chartHeight}`);
+    }
+
+    return points.join(' ');
   }
 
   pointX(value: number): number {
