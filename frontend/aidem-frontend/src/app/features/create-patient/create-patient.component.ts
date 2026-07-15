@@ -78,7 +78,42 @@ export class CreatePatientComponent {
     { domain: 'Domínio Espacial', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 13 },
     { domain: 'Memória Verbal', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 14 },
     { domain: 'Perceção', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 15 },
-    { domain: 'Domínio Temporal', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 16 }
+    { domain: 'Domínio Temporal', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 16 },
+    {
+      domain: 'Comunicação',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 17
+    },
+    {
+      domain: 'Constrangimentos físicos',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 18
+    },
+    {
+      domain: 'Prevalência motora',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 19
+    },
+    {
+      domain: 'Prevalência cognitiva',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 20
+    },
+    {
+      domain: 'Total',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 21
+    }
   ];
 
   constructor(private patientService: PatientService) {}

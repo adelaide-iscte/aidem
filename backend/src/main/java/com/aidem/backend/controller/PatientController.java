@@ -151,7 +151,7 @@ public class PatientController {
                         score.getNormalizedScore() != null ? score.getNormalizedScore() : score.getScore(),
                         score.getRiskLevel().name(),
                         score.getDisplayOrder(),
-                        "Total".equalsIgnoreCase(score.getDomain())
+                        isEgpSummaryRow(score.getDomain())
                 ))
                 .toList();
 
@@ -162,6 +162,17 @@ public class PatientController {
                         rows
                 )
         );
+    }
+
+    private boolean isEgpSummaryRow(String domain) {
+        if (domain == null) {
+            return false;
+        }
+
+        return "Constrangimentos físicos".equalsIgnoreCase(domain)
+                || "Prevalência motora".equalsIgnoreCase(domain)
+                || "Prevalência cognitiva".equalsIgnoreCase(domain)
+                || "Total".equalsIgnoreCase(domain);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
