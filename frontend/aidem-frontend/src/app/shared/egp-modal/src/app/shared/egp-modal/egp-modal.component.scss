@@ -603,6 +603,11 @@
 }
 
 @media (max-width: 1200px) and (max-height: 900px) {
+  .egp-modal {
+    width: 1080px;
+    height: 760px;   // ou 780px, conforme o que já tens
+    max-height: 95vh;
+  }
 
   .egp-row {
     min-height: 34px;
