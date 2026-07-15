@@ -116,6 +116,19 @@ export class EgpModalComponent {
     return (Math.max(0, Math.min(6, value)) / 6) * 556;
   }
 
+  isSummaryRow(label: string): boolean {
+    const normalizedLabel = label
+      .trim()
+      .toLocaleLowerCase('pt-PT');
+
+    return [
+      'constrangimentos físicos',
+      'prevalência motora',
+      'prevalência cognitiva',
+      'total'
+    ].includes(normalizedLabel);
+  }
+
   pointY(index: number): number {
     const chartHeight = 800;
     const numberOfRows = this.chartRows.length;
