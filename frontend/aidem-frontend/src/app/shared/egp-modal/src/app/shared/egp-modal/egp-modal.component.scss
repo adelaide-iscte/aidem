@@ -336,7 +336,7 @@
 }
 
 .graph-table-body {
-  height: calc(100% - 32px);
+  height: calc(100% - 58px);
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -405,7 +405,7 @@
 .chart-panel {
   height: 100%;
   min-height: 0;
-  padding-top: 34px;
+  padding-top: 32px;
 
   display: flex;
   flex-direction: column;
