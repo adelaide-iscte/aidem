@@ -99,15 +99,14 @@ export class EgpModalComponent {
   }
 
   get polylinePoints(): string {
-    const topPadding = 18;
-    const rowHeight = 39.2;
     const usableWidth = 556;
 
     return this.chartRows
       .map((row, index) => {
         const clampedValue = Math.max(0, Math.min(6, row.nr));
         const x = (clampedValue / 6) * usableWidth;
-        const y = topPadding + index * rowHeight;
+        const y = this.pointY(index);
+
         return `${x},${y}`;
       })
       .join(' ');
@@ -118,7 +117,16 @@ export class EgpModalComponent {
   }
 
   pointY(index: number): number {
-    return 18 + index * 39.2;
+    const chartHeight = 800;
+    const numberOfRows = this.chartRows.length;
+
+    if (numberOfRows === 0) {
+      return 0;
+    }
+
+    const rowHeight = chartHeight / numberOfRows;
+
+    return rowHeight * index + rowHeight / 2;
   }
 
   openGraph(): void {
