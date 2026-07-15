@@ -48,16 +48,43 @@ export class EgpModalComponent {
   get visibleRows(): EgpEntry[] {
     return this.rows
       .slice()
-      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
-      .slice(0, 21);
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
   }
 
   get firstColumnRows(): EgpEntry[] {
-    return this.visibleRows.slice(0, 10);
+    return this.visibleRows.slice(0, this.columnSplitIndex);
   }
 
   get secondColumnRows(): EgpEntry[] {
-    return this.visibleRows.slice(10, 21);
+    return this.visibleRows.slice(this.columnSplitIndex);
+  }
+
+  private get columnSplitIndex(): number {
+    const totalWeight = this.visibleRows.reduce(
+      (total, row) => total + this.rowWeight(row),
+      0
+    );
+
+    const targetWeight = totalWeight / 2;
+    let currentWeight = 0;
+
+    for (let index = 0; index < this.visibleRows.length; index++) {
+      currentWeight += this.rowWeight(this.visibleRows[index]);
+
+      if (currentWeight >= targetWeight) {
+        return index + 1;
+      }
+    }
+
+    return Math.ceil(this.visibleRows.length / 2);
+  }
+
+  private rowWeight(row: EgpEntry): number {
+    /*
+     * Os nomes maiores quebram em duas linhas e ocupam mais espaço.
+     * Por isso contam como duas linhas ao equilibrar as colunas.
+     */
+    return row.label.length > 34 ? 2 : 1;
   }
 
   get chartRows(): EgpEntry[] {
