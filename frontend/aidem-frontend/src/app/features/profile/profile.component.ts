@@ -218,10 +218,13 @@ export class ProfileComponent {
     switch (status) {
       case 'COMPLETED':
         return 'Concluído';
+
       case 'FAILED':
-        return 'Não conseguido';
+        return 'Não concluído';
+
       case 'SKIPPED':
         return 'Não realizado';
+
       default:
         return 'Pendente';
     }
@@ -230,8 +233,8 @@ export class ProfileComponent {
   exerciseStatusReason(exercise: SessionHistoryExercise): string {
     if (exercise.status === 'FAILED') {
       return exercise.caregiverReason
-        ? `Motivo indicado: ${exercise.caregiverReason}`
-        : 'O exercício foi tentado, mas não foi conseguido.';
+        ? `Observações: ${exercise.caregiverReason}`
+        : 'O exercício foi realizado, mas não foi concluído.';
     }
 
     if (exercise.status === 'SKIPPED') {
