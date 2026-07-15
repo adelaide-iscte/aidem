@@ -60,23 +60,42 @@ export class EgpModalComponent {
   }
 
   private get columnSplitIndex(): number {
-    const totalWeight = this.visibleRows.reduce(
+    const rows = this.visibleRows;
+    const totalRows = rows.length;
+
+    if (totalRows === 0) {
+      return 0;
+    }
+
+    const totalWeight = rows.reduce(
       (total, row) => total + this.rowWeight(row),
       0
     );
 
     const targetWeight = totalWeight / 2;
     let currentWeight = 0;
+    let weightedSplitIndex = Math.ceil(totalRows / 2);
 
-    for (let index = 0; index < this.visibleRows.length; index++) {
-      currentWeight += this.rowWeight(this.visibleRows[index]);
+    for (let index = 0; index < totalRows; index++) {
+      currentWeight += this.rowWeight(rows[index]);
 
       if (currentWeight >= targetWeight) {
-        return index + 1;
+        weightedSplitIndex = index + 1;
+        break;
       }
     }
 
-    return Math.ceil(this.visibleRows.length / 2);
+    /*
+     * Mantém as colunas equilibradas em número de linhas.
+     * Com 21 registos, o índice só pode ficar entre 10 e 11.
+     */
+    const minimumSplitIndex = Math.floor(totalRows / 2);
+    const maximumSplitIndex = Math.ceil(totalRows / 2);
+
+    return Math.max(
+      minimumSplitIndex,
+      Math.min(weightedSplitIndex, maximumSplitIndex)
+    );
   }
 
   private rowWeight(row: EgpEntry): number {
