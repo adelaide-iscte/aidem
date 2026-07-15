@@ -224,7 +224,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
 
         this.selectedActivity.sessionPlanExerciseId,
         {
-          completed: true,
+          completed: completed,
           difficultyFeedback: event.difficulty,
           emotionFeedback: event.completion,
           notes: event.reason
