@@ -45,6 +45,17 @@ export class EgpModalComponent {
 
   showGraphModal = false;
 
+  private readonly chartWidth = 600;
+  private readonly chartRowHeight = 40;
+
+  get chartHeight(): number {
+    return this.chartRows.length * this.chartRowHeight;
+  }
+
+  get chartViewBox(): string {
+    return `0 0 ${this.chartWidth} ${this.chartHeight}`;
+  }
+
   get visibleRows(): EgpEntry[] {
     return this.rows
       .slice()
@@ -129,7 +140,13 @@ export class EgpModalComponent {
   }
 
   pointX(value: number): number {
-    return (Math.max(0, Math.min(6, value)) / 6) * 556;
+    const clampedValue = Math.max(0, Math.min(6, value));
+
+    return (clampedValue / 6) * this.chartWidth;
+  }
+
+  pointY(index: number): number {
+    return index * this.chartRowHeight + this.chartRowHeight / 2;
   }
 
   isSummaryRow(label: string): boolean {
@@ -143,20 +160,6 @@ export class EgpModalComponent {
       'prevalência cognitiva',
       'total'
     ].includes(normalizedLabel);
-  }
-
-  pointY(index: number): number {
-    const chartHeight = 800;
-    const numberOfRows = this.chartRows.length;
-
-    if (numberOfRows === 0) {
-      return 0;
-    }
-
-    const rowHeight = chartHeight / numberOfRows;
-
-    // Centro da faixa correspondente à linha.
-    return rowHeight * (index + 0.5);
   }
 
   openGraph(): void {
