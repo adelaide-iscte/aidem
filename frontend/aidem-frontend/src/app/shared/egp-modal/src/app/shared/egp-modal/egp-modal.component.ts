@@ -107,7 +107,9 @@ export class EgpModalComponent {
   }
 
   get chartRows(): EgpEntry[] {
-    return this.visibleRows;
+    return this.visibleRows.filter(
+      row => !this.isSummaryRow(row.label)
+    );
   }
 
   formatScore(value: number): string {
