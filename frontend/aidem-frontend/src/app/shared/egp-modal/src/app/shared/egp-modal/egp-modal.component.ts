@@ -107,9 +107,7 @@ export class EgpModalComponent {
   }
 
   get chartRows(): EgpEntry[] {
-    return this.visibleRows.filter(
-      row => !this.isSummaryRow(row.label)
-    );
+    return this.visibleRows;
   }
 
   formatScore(value: number): string {
@@ -157,6 +155,7 @@ export class EgpModalComponent {
 
     const rowHeight = chartHeight / numberOfRows;
 
+    // Centro da faixa correspondente à linha.
     return rowHeight * (index + 0.5);
   }
 
