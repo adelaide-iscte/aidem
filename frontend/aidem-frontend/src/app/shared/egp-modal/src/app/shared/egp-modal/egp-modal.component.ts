@@ -45,17 +45,6 @@ export class EgpModalComponent {
 
   showGraphModal = false;
 
-  private readonly chartWidth = 600;
-  private readonly chartRowHeight = 40;
-
-  get chartHeight(): number {
-    return this.chartRows.length * this.chartRowHeight;
-  }
-
-  get chartViewBox(): string {
-    return `0 0 ${this.chartWidth} ${this.chartHeight}`;
-  }
-
   get visibleRows(): EgpEntry[] {
     return this.rows
       .slice()
@@ -128,15 +117,14 @@ export class EgpModalComponent {
     }).format(value);
   }
 
-  get chartPath(): string {
-    return this.chartRows
-      .map((row, index) => {
-        const x = this.pointX(row.nr);
-        const y = this.pointY(index);
 
-        return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
-      })
-      .join(' ');
+  private readonly chartWidth = 600;
+  private readonly rowUnit = 100;
+
+  get chartViewBox(): string {
+    const height = this.chartRows.length * this.rowUnit;
+
+    return `0 0 ${this.chartWidth} ${height}`;
   }
 
   pointX(value: number): number {
@@ -146,7 +134,17 @@ export class EgpModalComponent {
   }
 
   pointY(index: number): number {
-    return index * this.chartRowHeight + this.chartRowHeight / 2;
+    return index * this.rowUnit + this.rowUnit / 2;
+  }
+
+  get chartPath(): string {
+    return this.chartRows
+      .map((row, index) => {
+        const command = index === 0 ? 'M' : 'L';
+
+        return `${command} ${this.pointX(row.nr)} ${this.pointY(index)}`;
+      })
+      .join(' ');
   }
 
   isSummaryRow(label: string): boolean {
