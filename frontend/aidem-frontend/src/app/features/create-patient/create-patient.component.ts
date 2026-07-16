@@ -226,8 +226,6 @@ export class CreatePatientComponent {
     if (!this.form.birthDate) errors.push('Data de nascimento');
     if (!this.form.gender) errors.push('Sexo');
     if (!this.form.diagnosisType.trim()) errors.push('Diagnóstico');
-    if (!this.form.phone.trim()) errors.push('Telefone');
-    if (!this.form.email.trim()) errors.push('Email');
     if (!this.form.address.trim()) errors.push('Morada');
     if (!this.form.education.trim()) errors.push('Escolaridade');
     if (!this.form.profession.trim()) errors.push('Profissão');
