@@ -118,14 +118,10 @@ export class EgpModalComponent {
   }
 
 
+
   private readonly chartWidth = 600;
+  private readonly chartHeight = 2100;
   private readonly rowUnit = 100;
-
-  get chartViewBox(): string {
-    const height = this.chartRows.length * this.rowUnit;
-
-    return `0 0 ${this.chartWidth} ${height}`;
-  }
 
   pointX(value: number): number {
     const clampedValue = Math.max(0, Math.min(6, value));
@@ -146,6 +142,7 @@ export class EgpModalComponent {
       })
       .join(' ');
   }
+
 
   isSummaryRow(label: string): boolean {
     const normalizedLabel = label
