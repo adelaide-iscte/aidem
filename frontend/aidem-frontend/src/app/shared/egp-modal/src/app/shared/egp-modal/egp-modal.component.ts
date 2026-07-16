@@ -44,7 +44,6 @@ export class EgpModalComponent {
   @Input() error = '';
 
   showGraphModal = false;
-  showGraphMaintenanceModal = false;
 
   get visibleRows(): EgpEntry[] {
     return this.rows
@@ -129,10 +128,6 @@ export class EgpModalComponent {
       .join(' ');
   }
 
-  closeGraphMaintenance(): void {
-    this.showGraphMaintenanceModal = false;
-  }
-
   pointX(value: number): number {
     return (Math.max(0, Math.min(6, value)) / 6) * 556;
   }
@@ -153,23 +148,20 @@ export class EgpModalComponent {
   pointY(index: number): number {
     const chartHeight = 800;
     const numberOfRows = this.chartRows.length;
-    const verticalInset = 6;
 
     if (numberOfRows === 0) {
       return 0;
     }
 
-    const usableHeight = chartHeight - verticalInset * 2;
-    const rowHeight = usableHeight / numberOfRows;
+    const rowHeight = chartHeight / numberOfRows;
 
-    return verticalInset + rowHeight * (index + 0.5);
+    return rowHeight * (index + 0.5);
   }
 
   openGraph(): void {
-    // if (this.rows.length > 0) {
-    //   this.showGraphModal = true;
-    // }
-    this.showGraphMaintenanceModal = true;
+    if (this.rows.length > 0) {
+      this.showGraphModal = true;
+    }
   }
 
   closeGraph(): void {
