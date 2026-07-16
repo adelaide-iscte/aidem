@@ -72,12 +72,16 @@
 
         <div class="contact-row">
           <img src="/icons/Phone_2.svg" />
-          <span>{{ patient.phone }}</span>
+          <span [class.empty-contact]="!patient.phone">
+            {{ patient.phone || 'Não disponível' }}
+          </span>
         </div>
 
         <div class="contact-row">
           <img src="/icons/Message.svg" />
-          <span>{{ patient.email }}</span>
+          <span [class.empty-contact]="!patient.email">
+            {{ patient.email || 'Não disponível' }}
+          </span>
         </div>
 
         <div class="contact-row">
