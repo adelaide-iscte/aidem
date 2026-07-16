@@ -173,17 +173,21 @@
 
             <svg
               class="chart-svg"
-              viewBox="0 0 600 2100"
+              viewBox="0 0 600 21"
               preserveAspectRatio="none">
 
-              <path [attr.d]="chartPath"></path>
+              <path
+                [attr.d]="chartPath"
+                vector-effect="non-scaling-stroke">
+              </path>
 
-              <circle
+              <ellipse
                 *ngFor="let row of chartRows; let i = index"
                 [attr.cx]="pointX(row.nr)"
                 [attr.cy]="pointY(i)"
-                r="7">
-              </circle>
+                rx="6"
+                ry="0.18">
+              </ellipse>
             </svg>
           </div>
 

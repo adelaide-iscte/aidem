@@ -455,6 +455,8 @@
 .chart-svg {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -486,18 +488,6 @@
 
 .horizontal-grid span {
   border-top: 1px solid rgba(98, 122, 66, 0.18);
-}
-
-.chart-svg {
-  overflow: hidden;
-}
-
-.chart-svg path {
-  fill: none;
-  stroke: #101010;
-  stroke-width: 3.4;
-  stroke-linejoin: round;
-  stroke-linecap: round;
 }
 
 .chart-svg circle {
@@ -769,4 +759,17 @@
   color: #555;
   font-size: 17px;
   line-height: 1.5;
+}
+
+.chart-svg path {
+  fill: none;
+  stroke: #101010;
+  stroke-width: 3.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.chart-svg ellipse {
+  fill: #0e0e0e;
 }

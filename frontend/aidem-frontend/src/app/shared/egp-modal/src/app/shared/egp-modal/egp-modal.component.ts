@@ -44,6 +44,7 @@ export class EgpModalComponent {
   @Input() error = '';
 
   showGraphModal = false;
+  private readonly chartWidth = 600;
 
   get visibleRows(): EgpEntry[] {
     return this.rows
@@ -117,12 +118,6 @@ export class EgpModalComponent {
     }).format(value);
   }
 
-
-
-  private readonly chartWidth = 600;
-  private readonly chartHeight = 2100;
-  private readonly rowUnit = 100;
-
   pointX(value: number): number {
     const clampedValue = Math.max(0, Math.min(6, value));
 
@@ -130,7 +125,7 @@ export class EgpModalComponent {
   }
 
   pointY(index: number): number {
-    return index * this.rowUnit + this.rowUnit / 2;
+    return index + 0.5;
   }
 
   get chartPath(): string {
