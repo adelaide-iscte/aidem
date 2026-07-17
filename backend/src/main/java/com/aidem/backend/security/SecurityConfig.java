@@ -109,8 +109,22 @@ public class SecurityConfig {
                                 HttpMethod.DELETE,
                                 "/api/exercises/**"
                         ).hasAuthority("ADMIN")
+                        .requestMatchers(
+                                HttpMethod.PATCH,
+                                "/api/session-plan-exercises/reset-completed"
+                        )
+                        .hasAuthority("ADMIN")
 
                         .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/api/admin/**")
+                        .hasAuthority("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/patients",
+                                "/api/patients/"
+                        )
+                        .hasAnyAuthority("ADMIN", "FORMAL_CAREGIVER")
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 ->

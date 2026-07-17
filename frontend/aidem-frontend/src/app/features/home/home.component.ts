@@ -52,6 +52,9 @@ export class HomeComponent implements OnChanges, OnInit {
   @Output() openContents = new EventEmitter<void>();
   @Output() openAdminActivities = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();
+  @Output()
+  openUserManagement =
+    new EventEmitter<void>();
 
   showNotifications = false;
   todayActivities: SessionPlanExercise[] = [];

@@ -41,6 +41,15 @@
   </button>
 
   <button
+    *ngIf="isAdmin"
+    class="side-menu-item"
+    type="button"
+    (click)="openUserManagement.emit()">
+
+    Gestão de utilizadores
+  </button>
+
+  <button
     type="button"
     class="side-menu-item logout-item"
     (click)="logout.emit()">

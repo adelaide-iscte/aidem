@@ -33,7 +33,9 @@ export class ProfileComponent {
   @Output()
   openAdminActivities =
     new EventEmitter<void>();
-
+  @Output()
+  openUserManagement =
+    new EventEmitter<void>();
   @Output()
   logout = new EventEmitter<void>();
 

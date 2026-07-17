@@ -13,6 +13,7 @@ import {CreatePatientComponent} from './features/create-patient/create-patient.c
 import {ContentsComponent} from './features/contents/contents.component';
 import {ExerciseNotificationService} from './core/services/exercise-notification.service';
 import { Subscription } from 'rxjs';
+import {  UserManagementComponent } from './features/user-management/user-management.component';
 
 import {
   AdminExercisesComponent
@@ -48,6 +49,7 @@ type AppPage =
   | 'createPatient'
   | 'contents'
   | 'adminActivities'
+  | 'adminUsers'
   | 'exerciseForm';
 
 @Component({
@@ -65,7 +67,8 @@ type AppPage =
   CreatePatientComponent,
   ContentsComponent,
   AdminExercisesComponent,
-  ExerciseFormComponent
+  ExerciseFormComponent,
+  UserManagementComponent
 ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -89,6 +92,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private isLoadingPatientsRequest = false;
   private pageBeforeAdminActivities: AppPage = 'patients';
   private pageBeforeContents: AppPage = 'home';
+  private pageBeforeAdminUsers: AppPage = 'patients';
 
   constructor(
     private patientService: PatientService,
@@ -112,6 +116,23 @@ export class AppComponent implements OnInit, OnDestroy {
     this.sessionExpiredSubscription?.unsubscribe();
   }
 
+
+  openUserManagement(): void {
+    if (!this.isAdmin) {
+      return;
+    }
+
+    this.pageBeforeAdminUsers =
+      this.currentPage;
+
+    this.currentPage =
+      'adminUsers';
+  }
+
+  closeUserManagement(): void {
+    this.currentPage =
+      this.pageBeforeAdminUsers;
+  }
 
   private async restoreSession(): Promise<void> {
     const token =
@@ -229,7 +250,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   openCreatePatient(): void {
-    this.currentPage = 'createPatient';
+    if (this.userRole === 'informal') {
+      return;
+    }
+
+    this.currentPage =
+      'createPatient';
   }
 
   get isAdmin(): boolean {
@@ -292,49 +318,57 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
 
-  private async loadInformalCaregiverPatient(): Promise<void> {
+  private async loadInformalCaregiverPatient():
+    Promise<void> {
+
     if (!this.currentUser?.email) {
-      this.selectedPatientError = 'Não foi possível identificar o cuidador.';
+      this.selectedPatientError =
+        'Não foi possível identificar o cuidador.';
+
       return;
     }
 
     this.isLoadingSelectedPatient = true;
     this.selectedPatientError = '';
+
     this.cdr.detectChanges();
 
     try {
-      const patients = await this.patientService.getPatients();
+      /*
+       * Para um informal, o backend devolve
+       * apenas o utente que lhe foi associado.
+       */
+      const patients =
+        await this.patientService
+          .getPatients();
 
-      const normalizedUserEmail =
-        this.currentUser.email.trim().toLowerCase();
+      const associatedPatient =
+        patients[0];
 
-      for (const patient of patients) {
+      if (associatedPatient) {
         const patientProfile =
-          await this.patientService.getPatient(patient.id);
+          await this.patientService
+            .getPatient(
+              associatedPatient.id
+            );
 
-        const caregiverEmail =
-          patientProfile.informalCaregiverEmail
-            ?.trim()
-            .toLowerCase();
+        this.selectedPatient =
+          patientProfile;
 
-        if (caregiverEmail === normalizedUserEmail) {
-          this.selectedPatient = patientProfile;
+        this.notificationService.start(
+          patientProfile.id
+        );
 
-          console.log(
-            'A iniciar notificações para o utente informal:',
-            patientProfile.id
-          );
+        this.currentPage = 'home';
 
-          this.notificationService.start(patientProfile.id);
-
-          this.currentPage = 'home';
-          return;
-        }
+        return;
       }
 
       this.selectedPatient = null;
+
       this.selectedPatientError =
         'Não foi encontrado nenhum utente associado a este cuidador informal.';
+
     } catch (error) {
       console.error(
         'Erro ao carregar utente do cuidador informal:',
@@ -345,6 +379,7 @@ export class AppComponent implements OnInit, OnDestroy {
         error instanceof Error
           ? error.message
           : 'Erro ao carregar o utente associado.';
+
     } finally {
       this.isLoadingSelectedPatient = false;
       this.cdr.detectChanges();

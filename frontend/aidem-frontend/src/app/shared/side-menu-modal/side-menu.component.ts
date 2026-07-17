@@ -15,8 +15,8 @@ export class SideMenuComponent {
   @Output() changePatient = new EventEmitter<void>();
   @Output() openContents = new EventEmitter<void>();
   @Output() openAdminActivities = new EventEmitter<void>();
-  @Output()
-  logout = new EventEmitter<void>();
+  @Output() logout = new EventEmitter<void>();
+  @Output() openUserManagement = new EventEmitter<void>();
 
   showSideMenu = false;
 
@@ -24,8 +24,6 @@ export class SideMenuComponent {
     this.showSideMenu = true;
   }
 
-
-  closeSideMenu(): void {
-    this.showSideMenu = false;
+  closeSideMenu(): void { this.showSideMenu = false;
   }
 }

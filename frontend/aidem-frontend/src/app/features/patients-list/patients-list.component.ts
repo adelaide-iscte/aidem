@@ -27,6 +27,10 @@ export class PatientsListComponent {
     new EventEmitter<void>();
 
   @Output()
+  openUserManagement =
+    new EventEmitter<void>();
+
+  @Output()
   logout = new EventEmitter<void>();
 
   showSideMenu = false;

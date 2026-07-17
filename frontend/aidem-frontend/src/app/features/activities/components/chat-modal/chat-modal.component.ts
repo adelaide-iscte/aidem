@@ -51,6 +51,9 @@ export class ChatModalComponent {
   @Output() openChat = new EventEmitter<void>();
   @Output() openContents = new EventEmitter<void>();
   showSideMenu = false;
+  @Output()
+  openUserManagement =
+    new EventEmitter<void>();
 
   @Output()
   openAdminActivities =

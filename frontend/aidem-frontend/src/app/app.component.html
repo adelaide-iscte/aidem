@@ -34,6 +34,7 @@
     (openPatients)="goToPatients()"
     (openContents)="goToContents()"
     (openAdminActivities)="openAdminActivities()"
+    (openUserManagement)="openUserManagement()"
     (logout)="handleLogout()"
   >
   </app-patients-list>
@@ -78,6 +79,7 @@
   (openPatients)="goToPatients()"
   (openContents)="goToContents()"
   (openAdminActivities)="openAdminActivities()"
+  (openUserManagement)="openUserManagement()"
   (logout)="handleLogout()">
 </app-home>
 
@@ -97,6 +99,7 @@
   (openProfile)="goToProfile()"
   (openContents)="goToContents()"
   (openAdminActivities)="openAdminActivities()"
+  (openUserManagement)="openUserManagement()"
   (logout)="handleLogout()">
 </app-activities>
 
@@ -114,7 +117,8 @@
   (close)="goToActivities()"
   (openPatients)="goToPatients()"
   (goHome)="goToHome()"
-  (openProfile)="goToProfile()">
+  (openProfile)="goToProfile()"
+  (openUserManagement)="openUserManagement()">
 </app-chat-modal>
 
 <app-profile
@@ -133,6 +137,7 @@
   (openPatients)="goToPatients()"
   (openContents)="goToContents()"
   (openAdminActivities)="openAdminActivities()"
+  (openUserManagement)="openUserManagement()"
   (logout)="handleLogout()">
 </app-profile>
 
@@ -148,6 +153,15 @@
   (createExercise)="openCreateExercise()"
   (editExercise)="openEditExercise($event)">
 </app-admin-exercises>
+
+<app-user-management
+  *ngIf="
+    isLoggedIn &&
+    isAdmin &&
+    currentPage === 'adminUsers'
+  "
+  (goBack)="closeUserManagement()">
+</app-user-management>
 
 <app-exercise-form
   *ngIf="

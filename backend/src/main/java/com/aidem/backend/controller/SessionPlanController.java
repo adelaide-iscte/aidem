@@ -3,6 +3,7 @@ package com.aidem.backend.controller;
 import com.aidem.backend.dto.session.ExerciseFeedbackRequest;
 import com.aidem.backend.dto.session.SessionPlanExerciseResponse;
 import com.aidem.backend.dto.session.SessionPlanResponse;
+import com.aidem.backend.service.PatientAccessService;
 import com.aidem.backend.service.SessionPlanService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,65 +16,181 @@ import java.util.Map;
 public class SessionPlanController {
 
     private final SessionPlanService sessionPlanService;
+    private final PatientAccessService patientAccessService;
 
-    public SessionPlanController(SessionPlanService sessionPlanService) {
-        this.sessionPlanService = sessionPlanService;
+    public SessionPlanController(
+            SessionPlanService sessionPlanService,
+            PatientAccessService patientAccessService
+    ) {
+        this.sessionPlanService =
+                sessionPlanService;
+
+        this.patientAccessService =
+                patientAccessService;
     }
 
-    @GetMapping("/api/patients/{patientId}/session-plans/today")
-    public ResponseEntity<SessionPlanResponse> getTodaySessionPlan(
+    @GetMapping(
+            "/api/patients/{patientId}/session-plans/today"
+    )
+    public ResponseEntity<SessionPlanResponse>
+    getTodaySessionPlan(
             @PathVariable Long patientId,
             Authentication authentication
     ) {
-        String email = authentication == null ? null : authentication.getName();
-        return ResponseEntity.ok(sessionPlanService.getOrGenerateTodayPlan(patientId, email));
+        patientAccessService.requirePatientAccess(
+                patientId,
+                authentication
+        );
+
+        String email =
+                authentication == null
+                        ? null
+                        : authentication.getName();
+
+        return ResponseEntity.ok(
+                sessionPlanService
+                        .getOrGenerateTodayPlan(
+                                patientId,
+                                email
+                        )
+        );
     }
 
-    @PostMapping("/api/patients/{patientId}/session-plans/today/regenerate")
-    public ResponseEntity<SessionPlanResponse> regenerateTodaySessionPlan(
+    @PostMapping(
+            "/api/patients/{patientId}/session-plans/today/regenerate"
+    )
+    public ResponseEntity<SessionPlanResponse>
+    regenerateTodaySessionPlan(
             @PathVariable Long patientId,
             Authentication authentication
     ) {
-        String email = authentication == null ? null : authentication.getName();
-        return ResponseEntity.ok(sessionPlanService.regenerateTodayPlan(patientId, email));
+        patientAccessService.requirePatientAccess(
+                patientId,
+                authentication
+        );
+
+        String email =
+                authentication == null
+                        ? null
+                        : authentication.getName();
+
+        return ResponseEntity.ok(
+                sessionPlanService
+                        .regenerateTodayPlan(
+                                patientId,
+                                email
+                        )
+        );
     }
 
-    @PostMapping("/api/session-plan-exercises/{sessionPlanExerciseId}/feedback")
-    public ResponseEntity<SessionPlanExerciseResponse> submitFeedback(
+    @PostMapping(
+            "/api/session-plan-exercises/{sessionPlanExerciseId}/feedback"
+    )
+    public ResponseEntity<SessionPlanExerciseResponse>
+    submitFeedback(
             @PathVariable Long sessionPlanExerciseId,
-            @RequestBody ExerciseFeedbackRequest request
+            @RequestBody ExerciseFeedbackRequest request,
+            Authentication authentication
     ) {
-        return ResponseEntity.ok(sessionPlanService.submitFeedback(sessionPlanExerciseId, request));
+        patientAccessService
+                .requireSessionExerciseAccess(
+                        sessionPlanExerciseId,
+                        authentication
+                );
+
+        return ResponseEntity.ok(
+                sessionPlanService.submitFeedback(
+                        sessionPlanExerciseId,
+                        request
+                )
+        );
     }
 
-    @PostMapping("/api/session-plan-exercises/{sessionPlanExerciseId}/skip")
-    public ResponseEntity<SessionPlanExerciseResponse> skipExercise(
+    @PostMapping(
+            "/api/session-plan-exercises/{sessionPlanExerciseId}/skip"
+    )
+    public ResponseEntity<SessionPlanExerciseResponse>
+    skipExercise(
             @PathVariable Long sessionPlanExerciseId,
-            @RequestBody(required = false) Map<String, String> body
+            @RequestBody(required = false)
+            Map<String, String> body,
+            Authentication authentication
     ) {
-        String notes = body == null ? null : body.get("notes");
-        return ResponseEntity.ok(sessionPlanService.skipExercise(sessionPlanExerciseId, notes));
+        patientAccessService
+                .requireSessionExerciseAccess(
+                        sessionPlanExerciseId,
+                        authentication
+                );
+
+        String notes =
+                body == null
+                        ? null
+                        : body.get("notes");
+
+        return ResponseEntity.ok(
+                sessionPlanService.skipExercise(
+                        sessionPlanExerciseId,
+                        notes
+                )
+        );
     }
 
-    @PatchMapping("/api/session-plan-exercises/{sessionPlanExerciseId}/reset")
-    public ResponseEntity<SessionPlanExerciseResponse> resetExercise(
-            @PathVariable Long sessionPlanExerciseId
+    @PatchMapping(
+            "/api/session-plan-exercises/{sessionPlanExerciseId}/reset"
+    )
+    public ResponseEntity<SessionPlanExerciseResponse>
+    resetExercise(
+            @PathVariable Long sessionPlanExerciseId,
+            Authentication authentication
     ) {
-        return ResponseEntity.ok(sessionPlanService.resetExercise(sessionPlanExerciseId));
+        patientAccessService
+                .requireSessionExerciseAccess(
+                        sessionPlanExerciseId,
+                        authentication
+                );
+
+        return ResponseEntity.ok(
+                sessionPlanService.resetExercise(
+                        sessionPlanExerciseId
+                )
+        );
     }
 
-    @PatchMapping("/api/patients/{patientId}/session-plan-exercises/reset-completed")
-    public ResponseEntity<Void> resetCompletedExercises(@PathVariable Long patientId) {
-        sessionPlanService.resetCompletedExercises(patientId);
-        return ResponseEntity.noContent().build();
+    @PatchMapping(
+            "/api/patients/{patientId}/session-plan-exercises/reset-completed"
+    )
+    public ResponseEntity<Void> resetCompletedExercises(
+            @PathVariable Long patientId,
+            Authentication authentication
+    ) {
+        patientAccessService.requirePatientAccess(
+                patientId,
+                authentication
+        );
+
+        sessionPlanService
+                .resetCompletedExercises(patientId);
+
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
-    @PatchMapping("/api/session-plan-exercises/reset-completed")
-    public ResponseEntity<Void> resetAllCompletedExercises() {
+    /*
+     * Este endpoint atua sobre todos os utentes.
+     * A regra do SecurityConfig permite apenas ADMIN.
+     */
+    @PatchMapping(
+            "/api/session-plan-exercises/reset-completed"
+    )
+    public ResponseEntity<Void>
+    resetAllCompletedExercises() {
 
-        sessionPlanService.resetAllCompletedExercises();
+        sessionPlanService
+                .resetAllCompletedExercises();
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
-
 }

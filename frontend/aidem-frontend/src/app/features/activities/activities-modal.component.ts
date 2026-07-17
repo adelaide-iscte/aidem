@@ -60,6 +60,9 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   @Output() openContents = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();
   @Output() openAdminActivities = new EventEmitter<void>();
+  @Output()
+  openUserManagement =
+    new EventEmitter<void>();
 
   sessionPlan: SessionPlan | null = null;
   activities: SessionPlanExercise[] = [];

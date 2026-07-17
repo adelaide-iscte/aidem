@@ -15,6 +15,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import com.aidem.backend.model.PatientCaregiver;
+import com.aidem.backend.model.User;
+import com.aidem.backend.model.enums.CaregiverRelationshipType;
+import com.aidem.backend.repository.PatientCaregiverRepository;
+import com.aidem.backend.repository.UserRepository;
+
+import com.aidem.backend.service.PatientAccessService;
+import org.springframework.security.core.Authentication;
+
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,27 +48,57 @@ public class PatientController {
     private final DomainScoreRepository domainScoreRepository;
     private final AssessmentRepository assessmentRepository;
     private final SessionPlanService sessionPlanService;
+    private final PatientAccessService patientAccessService;
+    private final UserRepository userRepository;
 
+    private final PatientCaregiverRepository patientCaregiverRepository;
     public PatientController(
             PatientRepository patientRepository,
             SessionHistoryRepository sessionHistoryRepository,
             DomainScoreRepository domainScoreRepository,
             AssessmentRepository assessmentRepository,
-            SessionPlanService sessionPlanService
+            SessionPlanService sessionPlanService,
+            PatientAccessService patientAccessService,
+            UserRepository userRepository,
+            PatientCaregiverRepository patientCaregiverRepository
     ) {
-        this.patientRepository = patientRepository;
-        this.sessionHistoryRepository = sessionHistoryRepository;
-        this.domainScoreRepository = domainScoreRepository;
-        this.assessmentRepository = assessmentRepository;
-        this.sessionPlanService = sessionPlanService;
+        this.patientRepository =
+                patientRepository;
+
+        this.sessionHistoryRepository =
+                sessionHistoryRepository;
+
+        this.domainScoreRepository =
+                domainScoreRepository;
+
+        this.assessmentRepository =
+                assessmentRepository;
+
+        this.sessionPlanService =
+                sessionPlanService;
+
+        this.patientAccessService =
+                patientAccessService;
+
+        this.userRepository =
+                userRepository;
+
+        this.patientCaregiverRepository =
+                patientCaregiverRepository;
     }
 
     @Transactional(readOnly = true)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PatientListResponse>> getAllPatients() {
+    public ResponseEntity<List<PatientListResponse>> getAllPatients(
+            Authentication authentication
+    ) {
         log.info("GET /api/patients START");
 
-        List<Patient> patients = patientRepository.findAll();
+        List<Patient> patients =
+                patientAccessService
+                        .getAccessiblePatients(
+                                authentication
+                        );
         log.info("GET /api/patients DB returned {} rows", patients.size());
 
         List<PatientListResponse> response = patients.stream()
@@ -73,10 +112,17 @@ public class PatientController {
 
     @GetMapping("/{id}")
     public PatientProfileResponse getPatient(
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        patientAccessService.requirePatientAccess(
+                id,
+                authentication
+        );
 
-        Patient patient = patientRepository.findById(id)
-                .orElseThrow();
+        Patient patient =
+                patientRepository.findById(id)
+                        .orElseThrow();
 
         Integer age =
                 Period.between(
@@ -125,13 +171,29 @@ public class PatientController {
 
     @GetMapping("/{id}/session-history")
     public List<SessionHistoryResponse> getSessionHistory(
-            @PathVariable Long id
+            @PathVariable Long id,
+            Authentication authentication
     ) {
-        return sessionPlanService.getPatientSessionHistory(id);
+        patientAccessService.requirePatientAccess(
+                id,
+                authentication
+        );
+
+        return sessionPlanService
+                .getPatientSessionHistory(id);
     }
+
     @GetMapping("/{id}/egp/latest")
     @Transactional(readOnly = true)
-    public ResponseEntity<EgpAssessmentResponse> getLatestEgp(@PathVariable Long id) {
+    public ResponseEntity<EgpAssessmentResponse> getLatestEgp(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        patientAccessService.requirePatientAccess(
+                id,
+                authentication
+        );
+
         if (!patientRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -248,9 +310,15 @@ public class PatientController {
                 || "Total".equalsIgnoreCase(domain);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @Transactional
-    public ResponseEntity<PatientProfileResponse> createPatient(@RequestBody CreatePatientRequest request) {
+    public ResponseEntity<PatientProfileResponse> createPatient(
+            @RequestBody CreatePatientRequest request,
+            Authentication authentication
+    ) {
         validateCreatePatient(request);
 
         Patient patient = Patient.builder()
@@ -272,6 +340,10 @@ public class PatientController {
                 .build();
 
         Patient savedPatient = patientRepository.save(patient);
+        associateFormalCreator(
+                savedPatient,
+                authentication
+        );
 
         Assessment assessment = Assessment.builder()
                 .patient(savedPatient)
@@ -294,7 +366,12 @@ public class PatientController {
 
         domainScoreRepository.saveAll(scores);
 
-        return ResponseEntity.ok(getPatient(savedPatient.getId()));
+        return ResponseEntity.ok(
+                getPatient(
+                        savedPatient.getId(),
+                        authentication
+                )
+        );
     }
 
     private void validateCreatePatient(CreatePatientRequest request) {
@@ -327,6 +404,58 @@ public class PatientController {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "NR do domínio " + row.domain() + " é obrigatório.");
             }
         }
+    }
+
+    private void associateFormalCreator(
+            Patient patient,
+            Authentication authentication
+    ) {
+        if (authentication == null) {
+            return;
+        }
+
+        boolean isFormalCaregiver =
+                authentication
+                        .getAuthorities()
+                        .stream()
+                        .anyMatch(authority ->
+                                "FORMAL_CAREGIVER".equals(
+                                        authority.getAuthority()
+                                )
+                        );
+
+        /*
+         * Se foi o administrador que criou,
+         * não fazemos uma associação automática.
+         */
+        if (!isFormalCaregiver) {
+            return;
+        }
+
+        User formalCaregiver =
+                userRepository
+                        .findByEmailIgnoreCase(
+                                authentication.getName()
+                        )
+                        .orElseThrow(() ->
+                                new ResponseStatusException(
+                                        HttpStatus.NOT_FOUND,
+                                        "Profissional de saúde não encontrado."
+                                )
+                        );
+
+        PatientCaregiver association =
+                PatientCaregiver.builder()
+                        .patient(patient)
+                        .user(formalCaregiver)
+                        .relationshipType(
+                                CaregiverRelationshipType.FORMAL
+                        )
+                        .build();
+
+        patientCaregiverRepository.save(
+                association
+        );
     }
 
     private RiskLevel parseRiskLevel(String value) {
