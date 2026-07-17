@@ -373,7 +373,7 @@ public class AdminUserController {
 
         if (!existing.isEmpty()) {
             patientCaregiverRepository
-                    .deleteAllInBatch(existing);
+                    .deleteAll(existing);
 
             patientCaregiverRepository.flush();
         }
