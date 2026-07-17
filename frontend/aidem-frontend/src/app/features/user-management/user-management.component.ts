@@ -87,6 +87,14 @@ export class UserManagementComponent
   isLoading = false;
   isSaving = false;
 
+  showDeleteModal = false;
+
+  userToDelete:
+    CaregiverUser | null = null;
+
+  deletingId:
+    number | null = null;
+
   errorMessage = '';
   formError = '';
 
@@ -481,6 +489,64 @@ export class UserManagementComponent
 
     } finally {
       this.isSaving = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  openDeleteModal(
+    user: CaregiverUser
+  ): void {
+    this.userToDelete = user;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    if (this.deletingId !== null) {
+      return;
+    }
+
+    this.showDeleteModal = false;
+    this.userToDelete = null;
+  }
+
+  async confirmDelete(): Promise<void> {
+    if (!this.userToDelete) {
+      return;
+    }
+
+    const user =
+      this.userToDelete;
+
+    this.deletingId = user.id;
+    this.errorMessage = '';
+
+    try {
+      await this
+        .userManagementService
+        .deleteCaregiver(user.id);
+
+      this.caregivers =
+        this.caregivers.filter(
+          (caregiver) =>
+            caregiver.id !== user.id
+        );
+
+      this.showDeleteModal = false;
+      this.userToDelete = null;
+
+    } catch (error) {
+      console.error(
+        'Erro ao apagar utilizador:',
+        error
+      );
+
+      this.errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível apagar o utilizador.';
+
+    } finally {
+      this.deletingId = null;
       this.cdr.detectChanges();
     }
   }

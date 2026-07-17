@@ -254,18 +254,33 @@
         </div>
 
 
-        <button
-          type="button"
-          class="edit-button"
-          (click)="openEditForm(user)">
+        <div class="user-actions">
 
-          <img
-            src="/icons/Edit.svg"
-            alt=""
-          />
+          <button
+            type="button"
+            class="edit-button"
+            (click)="openEditForm(user)">
 
-          Editar
-        </button>
+            <img
+              src="/icons/Edit.svg"
+              alt=""
+            />
+
+            Editar
+          </button>
+
+          <button
+            type="button"
+            class="delete-user-button"
+            [attr.aria-label]="
+      'Apagar ' + user.fullName
+    "
+            (click)="openDeleteModal(user)">
+
+            Apagar
+          </button>
+
+        </div>
 
       </article>
 
@@ -659,5 +674,47 @@
     </form>
 
   </main>
+
+  <div
+    *ngIf="showDeleteModal"
+    class="delete-modal-backdrop"
+    (click)="closeDeleteModal()">
+
+    <section
+      class="delete-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-user-modal-title"
+      (click)="$event.stopPropagation()">
+
+      <h2 id="delete-user-modal-title">
+        Remover utilizador?
+      </h2>
+
+      <button
+        type="button"
+        class="confirm-delete-button"
+        [disabled]="deletingId !== null"
+        (click)="confirmDelete()">
+
+        {{
+          deletingId !== null
+            ? 'A remover...'
+            : 'Sim'
+        }}
+      </button>
+
+      <button
+        type="button"
+        class="cancel-delete-button"
+        [disabled]="deletingId !== null"
+        (click)="closeDeleteModal()">
+
+        Cancelar
+      </button>
+
+    </section>
+
+  </div>
 
 </div>

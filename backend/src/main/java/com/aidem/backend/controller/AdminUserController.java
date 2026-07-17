@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.aidem.backend.repository.AssessmentRepository;
+import com.aidem.backend.repository.SessionPlanRepository;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -32,9 +35,12 @@ public class AdminUserController {
 
     private final UserRepository userRepository;
     private final PatientRepository patientRepository;
+    private final AssessmentRepository
+            assessmentRepository;
 
-    private final PatientCaregiverRepository
-            patientCaregiverRepository;
+    private final SessionPlanRepository
+            sessionPlanRepository;
+    private final PatientCaregiverRepository patientCaregiverRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -42,6 +48,8 @@ public class AdminUserController {
             UserRepository userRepository,
             PatientRepository patientRepository,
             PatientCaregiverRepository patientCaregiverRepository,
+            AssessmentRepository assessmentRepository,
+            SessionPlanRepository sessionPlanRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
@@ -49,6 +57,12 @@ public class AdminUserController {
 
         this.patientCaregiverRepository =
                 patientCaregiverRepository;
+
+        this.assessmentRepository =
+                assessmentRepository;
+
+        this.sessionPlanRepository =
+                sessionPlanRepository;
 
         this.passwordEncoder = passwordEncoder;
     }
@@ -184,6 +198,45 @@ public class AdminUserController {
         );
 
         return toResponse(savedUser);
+    }
+
+    /*
+     * Remove uma conta de cuidador.
+     * Mantém as avaliações e os planos antigos,
+     * retirando apenas a referência ao utilizador.
+     */
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
+    public void deleteCaregiver(
+            @PathVariable Long id
+    ) {
+        User user = userRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Utilizador não encontrado."
+                        )
+                );
+
+        if (user.getRole() == UserRole.ADMIN) {
+            throw badRequest(
+                    "A conta de administrador não pode ser apagada."
+            );
+        }
+
+        patientCaregiverRepository
+                .deleteByUserId(id);
+
+        assessmentRepository
+                .clearPerformedByUser(id);
+
+        sessionPlanRepository
+                .clearGeneratedByUser(id);
+
+        userRepository.delete(user);
+        userRepository.flush();
     }
 
     private UserRole validateRequest(

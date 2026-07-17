@@ -173,4 +173,23 @@ export class UserManagementService {
       'Erro ao atualizar utilizador'
     );
   }
+
+  async deleteCaregiver(
+    id: number
+  ): Promise<void> {
+
+    const response =
+      await fetch(
+        `${this.apiUrl}/${id}`,
+        {
+          method: 'DELETE',
+          headers: this.getHeaders()
+        }
+      );
+
+    await this.handleResponse<void>(
+      response,
+      'Erro ao apagar utilizador'
+    );
+  }
 }

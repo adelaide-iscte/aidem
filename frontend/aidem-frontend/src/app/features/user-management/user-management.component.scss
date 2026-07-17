@@ -789,9 +789,14 @@
     height: 56px;
   }
 
-  .edit-button {
+  .user-actions {
     grid-column: 1 / -1;
     width: 100%;
+  }
+
+  .edit-button,
+  .delete-user-button {
+    flex: 1;
   }
 
   .password-grid,
@@ -962,5 +967,135 @@
   .back-arrow {
     font-size: 27px;
     line-height: 1;
+  }
+}
+
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.delete-user-button {
+  min-width: 108px;
+  min-height: 45px;
+  padding: 0 17px;
+
+  border: 2px solid #c83232;
+  border-radius: 11px;
+
+  background: #ffffff;
+  color: #c83232;
+
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.delete-user-button:hover {
+  background: #fff4f4;
+}
+
+/* Modal de remoção */
+
+.delete-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  padding: 24px;
+
+  background: rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(2px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-modal {
+  width: min(470px, 100%);
+  min-height: 310px;
+  padding: 48px 52px;
+
+  border-radius: 44px;
+  background: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  animation: deleteModalOpen 0.18s ease-out;
+}
+
+.delete-modal h2 {
+  margin: 0 0 4px;
+  color: #25252a;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.confirm-delete-button,
+.cancel-delete-button {
+  width: 170px;
+  min-height: 54px;
+  padding: 0 24px;
+
+  border: none;
+  border-radius: 9px;
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 27px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.confirm-delete-button {
+  background: #4b80e4;
+}
+
+.cancel-delete-button {
+  background: #bd3434;
+}
+
+.confirm-delete-button:hover:not(:disabled),
+.cancel-delete-button:hover:not(:disabled) {
+  transform: scale(1.02);
+}
+
+.confirm-delete-button:active:not(:disabled),
+.cancel-delete-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.confirm-delete-button:disabled,
+.cancel-delete-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@keyframes deleteModalOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
