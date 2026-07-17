@@ -914,3 +914,53 @@
     font-size: 15px;
   }
 }
+
+@media (min-width: 701px) {
+  .header {
+    min-height: 110px;
+    height: auto;
+    padding: 0 38px;
+
+    grid-template-columns:
+      auto
+      minmax(0, 1fr)
+      auto;
+
+    column-gap: 32px;
+  }
+
+  .header h1 {
+    justify-self: start;
+    margin: 0;
+    font-size: 34px;
+    font-weight: 800;
+    text-align: left;
+  }
+
+  .back-button {
+    min-width: 145px;
+    min-height: 54px;
+    padding: 0 22px;
+
+    border: 2px solid #407ce2;
+    border-radius: 14px;
+
+    background: #ffffff;
+    color: #407ce2;
+
+    font-size: 19px;
+    font-weight: 700;
+
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .back-button:hover {
+    background: #f3f7ff;
+  }
+
+  .back-arrow {
+    font-size: 27px;
+    line-height: 1;
+  }
+}
