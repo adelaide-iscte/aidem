@@ -814,3 +814,103 @@
     min-width: 0;
   }
 }
+
+@media (min-width: 901px) {
+  /* Cabeçalho */
+  .header h1 {
+    font-size: 32px;
+  }
+
+  .back-button {
+    font-size: 21px;
+  }
+
+  /* Título e texto introdutório */
+  .list-heading h2,
+  .form-introduction h2 {
+    font-size: 35px;
+  }
+
+  .list-heading p,
+  .form-introduction p {
+    font-size: 19px;
+  }
+
+  /* Títulos dos cartões */
+  .account-panel > h3,
+  .patients-heading h3 {
+    font-size: 26px;
+  }
+
+  /* Formulário */
+  .account-panel label > span,
+  .role-selection legend {
+    font-size: 19px;
+  }
+
+  .account-panel input,
+  .search-wrapper input,
+  .patient-search input {
+    font-size: 19px;
+  }
+
+  /* Tipo de cuidador */
+  .role-option {
+    min-height: 100px;
+  }
+
+  .role-option strong {
+    font-size: 18px;
+  }
+
+  .role-option small {
+    font-size: 14px;
+  }
+
+  /* Lista de utentes */
+  .patients-heading p {
+    font-size: 16px;
+  }
+
+  .selected-count {
+    font-size: 14px;
+  }
+
+  .patient-option {
+    min-height: 78px;
+  }
+
+  .patient-copy strong {
+    font-size: 18px;
+  }
+
+  .patient-copy small {
+    font-size: 15px;
+  }
+
+  /* Botões */
+  .save-button,
+  .cancel-button,
+  .primary-button,
+  .edit-button {
+    font-size: 19px;
+  }
+
+  /* Lista principal de utilizadores */
+  .user-title-row h3 {
+    font-size: 24px;
+  }
+
+  .email {
+    font-size: 17px;
+  }
+
+  .role-badge,
+  .patient-tags span {
+    font-size: 14px;
+  }
+
+  .associations > strong {
+    font-size: 15px;
+  }
+}
