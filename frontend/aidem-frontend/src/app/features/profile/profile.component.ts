@@ -2,9 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectorRef, EventEmitter, Input, Output } from '@angular/core';
 import { EgpModalComponent } from '../../shared/egp-modal/src/app/shared/egp-modal/egp-modal.component';
 import { NotificationsPopoverComponent } from '../../shared/notifications-popover-modal/notifications-popover.component';
-import {EgpAssessment, PatientProfile, PatientService, SessionHistory, SessionHistoryExercise} from '../../core/services/patient.service';
-import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
+import {
+  EgpAssessment,
+  PatientProfile,
+  PatientService,
+  SessionHistory,
+  SessionHistoryExercise,
+  UpdatePatientRequest
+} from '../../core/services/patient.service';import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
 import {LoadingSpinnerComponent} from '../../shared/laoding-spinner-modal/loading-spinner.component';
+import { FormsModule } from '@angular/forms';
 
 type ProfileTab = 'dados' | 'sessoes';
 type UserRole = 'informal' | 'formal';
@@ -16,7 +23,14 @@ type UserDataRow = [
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, EgpModalComponent, NotificationsPopoverComponent, SideMenuComponent, LoadingSpinnerComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    EgpModalComponent,
+    NotificationsPopoverComponent,
+    SideMenuComponent,
+    LoadingSpinnerComponent
+  ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
@@ -30,17 +44,20 @@ export class ProfileComponent {
   @Output() openPatients = new EventEmitter<void>();
   @Output() openChat = new EventEmitter<void>();
   @Output() openContents = new EventEmitter<void>();
-  @Output()
-  openAdminActivities =
-    new EventEmitter<void>();
-  @Output()
-  openUserManagement =
-    new EventEmitter<void>();
-  @Output()
-  logout = new EventEmitter<void>();
+  @Output() openAdminActivities = new EventEmitter<void>();
+  @Output() openUserManagement = new EventEmitter<void>();
+  @Output() logout = new EventEmitter<void>();
+  @Output() patientUpdated = new EventEmitter<PatientProfile>();
 
   showSideMenu = false;
   selectedSession: SessionHistory | null = null;
+  isEditing = false;
+  isSavingProfile = false;
+  editError = '';
+
+  readonly maxBirthDate = new Date().toISOString().slice(0, 10);
+
+  editForm: UpdatePatientRequest = this.createEmptyEditForm();
 
   get headerAvatar(): string {
     if (this.isAdmin) {
@@ -50,6 +67,193 @@ export class ProfileComponent {
     return this.role === 'formal'
       ? '/icons/professional.svg'
       : '/icons/generic_user.svg';
+  }
+
+  get canEditProfile(): boolean {
+    return (
+      this.isAdmin ||
+      this.role === 'formal'
+    );
+  }
+
+  get patientGenderLabel(): string {
+    switch (this.patient.gender) {
+      case 'MALE':
+        return 'Masculino';
+
+      case 'FEMALE':
+        return 'Feminino';
+
+      case 'OTHER':
+        return 'Outro';
+
+      default:
+        return this.patient.gender || '-';
+    }
+  }
+
+  startEditing(): void {
+    if (!this.canEditProfile) {
+      return;
+    }
+
+    this.activeTab = 'dados';
+    this.editError = '';
+
+    this.editForm =
+      this.createEditForm(
+        this.patient
+      );
+
+    this.isEditing = true;
+  }
+
+  cancelEditing(): void {
+    if (this.isSavingProfile) {
+      return;
+    }
+
+    this.isEditing = false;
+    this.editError = '';
+
+    this.editForm =
+      this.createEditForm(
+        this.patient
+      );
+  }
+
+  async saveProfile(): Promise<void> {
+    if (
+      !this.canEditProfile ||
+      !this.patient?.id ||
+      this.isSavingProfile
+    ) {
+      return;
+    }
+
+    this.editError = '';
+
+    if (!this.hasRequiredEditFields()) {
+      this.editError =
+        'Preencha todos os campos obrigatórios.';
+
+      return;
+    }
+
+    if (
+      this.editForm.email.trim() &&
+      !this.isValidEmail(
+        this.editForm.email
+      )
+    ) {
+      this.editError =
+        'Indique um email válido para o utente.';
+
+      return;
+    }
+
+    if (
+      !this.isValidEmail(
+        this.editForm
+          .informalCaregiverEmail
+      )
+    ) {
+      this.editError =
+        'Indique um email válido para o cuidador.';
+
+      return;
+    }
+
+    const payload:
+      UpdatePatientRequest = {
+
+      fullName:
+        this.editForm.fullName.trim(),
+
+      birthDate:
+      this.editForm.birthDate,
+
+      gender:
+      this.editForm.gender,
+
+      diagnosisType:
+        this.editForm
+          .diagnosisType
+          .trim(),
+
+      phone:
+        this.editForm.phone.trim(),
+
+      email:
+        this.editForm.email.trim(),
+
+      address:
+        this.editForm.address.trim(),
+
+      education:
+        this.editForm.education.trim(),
+
+      profession:
+        this.editForm.profession.trim(),
+
+      sessionType:
+        this.editForm.sessionType.trim(),
+
+      informalCaregiverName:
+        this.editForm
+          .informalCaregiverName
+          .trim(),
+
+      informalCaregiverPhone:
+        this.editForm
+          .informalCaregiverPhone
+          .trim(),
+
+      informalCaregiverEmail:
+        this.editForm
+          .informalCaregiverEmail
+          .trim()
+    };
+
+    this.isSavingProfile = true;
+
+    try {
+      const updatedPatient =
+        await this.patientService
+          .updatePatient(
+            this.patient.id,
+            payload
+          );
+
+      this.patient =
+        updatedPatient;
+
+      this.patientUpdated.emit(
+        updatedPatient
+      );
+
+      this.editForm =
+        this.createEditForm(
+          updatedPatient
+        );
+
+      this.isEditing = false;
+
+    } catch (error) {
+      console.error(
+        'Erro ao atualizar perfil do utente:',
+        error
+      );
+
+      this.editError =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível guardar as alterações.';
+
+    } finally {
+      this.isSavingProfile = false;
+      this.cdr.detectChanges();
+    }
   }
 
   openSideMenu(): void {
@@ -128,9 +332,7 @@ export class ProfileComponent {
         },
         {
           label: 'Sexo',
-          value: this.patient.gender === 'MALE'
-            ? 'Masculino'
-            : 'Feminino'
+          value: this.patientGenderLabel
         }
       ],
 
@@ -323,6 +525,108 @@ export class ProfileComponent {
       month: 'long',
       year: 'numeric'
     }).format(parsedDate);
+  }
+
+  private hasRequiredEditFields():
+    boolean {
+
+    return Boolean(
+      this.editForm.fullName.trim() &&
+      this.editForm.birthDate &&
+      this.editForm.gender &&
+      this.editForm
+        .diagnosisType
+        .trim() &&
+      this.editForm.address.trim() &&
+      this.editForm.education.trim() &&
+      this.editForm.profession.trim() &&
+      this.editForm.sessionType.trim() &&
+      this.editForm
+        .informalCaregiverName
+        .trim() &&
+      this.editForm
+        .informalCaregiverPhone
+        .trim() &&
+      this.editForm
+        .informalCaregiverEmail
+        .trim()
+    );
+  }
+
+  private isValidEmail(
+    value: string
+  ): boolean {
+
+    return (
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        .test(value.trim())
+    );
+  }
+
+  private createEditForm(
+    patient: PatientProfile
+  ): UpdatePatientRequest {
+
+    return {
+      fullName:
+        patient.fullName ?? '',
+
+      birthDate:
+        patient.birthDate ?? '',
+
+      gender:
+        patient.gender ?? '',
+
+      diagnosisType:
+        patient.diagnosisType ?? '',
+
+      phone:
+        patient.phone ?? '',
+
+      email:
+        patient.email ?? '',
+
+      address:
+        patient.address ?? '',
+
+      education:
+        patient.education ?? '',
+
+      profession:
+        patient.profession ?? '',
+
+      sessionType:
+        patient.sessionType ?? '',
+
+      informalCaregiverName:
+        patient.informalCaregiverName ?? '',
+
+      informalCaregiverPhone:
+        patient.informalCaregiverPhone ?? '',
+
+      informalCaregiverEmail:
+        patient.informalCaregiverEmail ?? ''
+    };
+  }
+
+  private createEmptyEditForm():
+    UpdatePatientRequest {
+
+    return {
+      fullName: '',
+      birthDate: '',
+      gender: '',
+      diagnosisType: '',
+      phone: '',
+      email: '',
+      address: '',
+      education: '',
+      profession: '',
+      sessionType: '',
+      informalCaregiverName: '',
+      informalCaregiverPhone: '',
+      informalCaregiverEmail: ''
+    };
   }
 
 }

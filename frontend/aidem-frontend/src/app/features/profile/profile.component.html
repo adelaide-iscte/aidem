@@ -23,26 +23,134 @@
   <main class="profile-content">
 
     <div class="accessibility-row">
+
+      <div
+        *ngIf="
+      canEditProfile &&
+      activeTab === 'dados'
+    "
+        class="profile-edit-actions">
+
+        <!-- Botão apresentado inicialmente -->
+
+        <button
+          *ngIf="!isEditing"
+          type="button"
+          class="
+        action-button
+        outline
+        profile-edit-button
+      "
+          (click)="startEditing()">
+
+          <img
+            src="/icons/Edit.svg"
+            alt=""
+          />
+
+          <span>Editar perfil</span>
+        </button>
+
+
+        <!-- Botões apresentados durante a edição -->
+
+        <ng-container *ngIf="isEditing">
+
+          <button
+            type="button"
+            class="
+          action-button
+          outline
+          cancel-edit-button
+        "
+            [disabled]="isSavingProfile"
+            (click)="cancelEditing()">
+
+            Cancelar
+          </button>
+
+
+          <button
+            type="button"
+            class="
+          action-button
+          primary
+          save-profile-button
+        "
+            [disabled]="isSavingProfile"
+            (click)="saveProfile()">
+
+            {{
+              isSavingProfile
+                ? 'A guardar...'
+                : 'Guardar alterações'
+            }}
+          </button>
+
+        </ng-container>
+
+      </div>
+
+
       <button
         class="accessibility-button"
         type="button"
-        aria-label="Ler conteúdo da página inicial em voz alta">
+        aria-label="
+      Ler conteúdo da página em voz alta
+    ">
 
         <img
           src="/icons/volume-blue.svg"
           class="accessibility-icon"
-          alt="">
+          alt=""
+        />
 
         <span>Ouvir página</span>
 
       </button>
+
     </div>
     <section class="profile-hero">
       <img [src]="patient.avatar" class="patient-avatar" />
 
       <div class="patient-info">
-        <h1>{{ patient.name }}</h1>
-        <p>{{ patientSubtitle }}</p>
+        <h1 *ngIf="!isEditing">
+          {{ patient.name }}
+        </h1>
+
+
+        <input
+          *ngIf="isEditing"
+          type="text"
+          class="hero-name-input"
+          [(ngModel)]="editForm.fullName"
+          aria-label="Nome completo do utente"
+        />
+
+
+        <p *ngIf="!isEditing">
+          {{ patientSubtitle }}
+        </p>
+
+
+        <label
+          *ngIf="isEditing"
+          class="hero-diagnosis-field">
+
+          <span>Diagnóstico *</span>
+
+          <input
+            type="text"
+            [(ngModel)]="
+      editForm.diagnosisType
+    "
+          />
+
+        </label>
+
+
+        <!-- O código é gerado pelo sistema -->
+
         <span>{{ patient.code }}</span>
 
         <div class="profile-tabs">
@@ -56,63 +164,248 @@
           <button
             type="button"
             [class.active]="activeTab === 'sessoes'"
+            [disabled]="isEditing"
             (click)="setTab('sessoes')">
+
             Sessões
           </button>
         </div>
       </div>
     </section>
 
+    <div
+      *ngIf="isEditing"
+      class="profile-edit-feedback">
+
+      <p>
+        Os campos assinalados com *
+        são obrigatórios.
+
+        O código do utente é gerado
+        automaticamente e não pode
+        ser alterado.
+      </p>
+
+
+      <p
+        *ngIf="editError"
+        class="profile-edit-error">
+
+        {{ editError }}
+      </p>
+
+    </div>
+
     <section class="dados-section" *ngIf="activeTab === 'dados'">
-      <div class="contacts-card">
-        <div class="card-title">
-          <img src="/icons/Info.svg" />
-          <h2>Contactos do Utente</h2>
-        </div>
-
-        <div class="contact-row">
-          <img src="/icons/Phone_2.svg" />
-          <span [class.empty-contact]="!patient.phone">
-            {{ patient.phone || 'Não disponível' }}
-          </span>
-        </div>
-
-        <div class="contact-row">
-          <img src="/icons/Message.svg" />
-          <span [class.empty-contact]="!patient.email">
-            {{ patient.email || 'Não disponível' }}
-          </span>
-        </div>
-
-        <div class="contact-row">
-          <img src="/icons/location.svg" />
-          <span>{{ patient.address }}</span>
-        </div>
-      </div>
+      contacts-card
 
       <div class="user-data-card">
+
         <h2>Dados do Utente</h2>
 
         <div class="data-grid">
+
+
+          <!-- Código: não editável -->
+
           <div>
-            <strong>Examinando:</strong> {{ patient.code }}
+
+            <strong>Examinando:</strong>
+
+            {{ patient.code }}
+
           </div>
-          <div>
-            <strong>Sexo:</strong> {{ patient.gender === 'MALE' ? 'Masculino' : 'Feminino' }}
+
+
+          <!-- Sexo -->
+
+          <div
+            [class.editing-cell]="isEditing">
+
+            <strong>
+              Sexo{{ isEditing ? ' *' : ':' }}
+            </strong>
+
+            <span *ngIf="!isEditing">
+        {{ patientGenderLabel }}
+      </span>
+
+            <select
+              *ngIf="isEditing"
+              class="data-edit-input"
+              [(ngModel)]="editForm.gender">
+
+              <option value="">
+                Selecionar
+              </option>
+
+              <option value="FEMALE">
+                Feminino
+              </option>
+
+              <option value="MALE">
+                Masculino
+              </option>
+
+              <option value="OTHER">
+                Outro
+              </option>
+
+            </select>
+
           </div>
-          <div>
-            <strong>Sessão:</strong> {{ patient.sessionType }}
+
+
+          <!-- Sessão -->
+
+          <div
+            [class.editing-cell]="isEditing">
+
+            <strong>
+              Sessão{{ isEditing ? ' *' : ':' }}
+            </strong>
+
+            <span *ngIf="!isEditing">
+        {{ patient.sessionType }}
+      </span>
+
+            <select
+              *ngIf="isEditing"
+              class="data-edit-input"
+              [(ngModel)]="
+          editForm.sessionType
+        ">
+
+              <option value="">
+                Selecionar
+              </option>
+
+              <option value="Formação">
+                Formação
+              </option>
+
+            </select>
+
           </div>
-          <div>
-            <strong>Escolaridade:</strong> {{ patient.education }}
+
+
+          <!-- Escolaridade -->
+
+          <div
+            [class.editing-cell]="isEditing">
+
+            <strong>
+              Escolaridade{{
+                isEditing ? ' *' : ':'
+              }}
+            </strong>
+
+            <span *ngIf="!isEditing">
+        {{ patient.education }}
+      </span>
+
+            <select
+              *ngIf="isEditing"
+              class="data-edit-input"
+              [(ngModel)]="
+          editForm.education
+        ">
+
+              <option value="">
+                Selecionar
+              </option>
+
+              <option value="1.º ano">1.º ano</option>
+              <option value="2.º ano">2.º ano</option>
+              <option value="3.º ano">3.º ano</option>
+              <option value="4.º ano">4.º ano</option>
+              <option value="5.º ano">5.º ano</option>
+              <option value="6.º ano">6.º ano</option>
+              <option value="7.º ano">7.º ano</option>
+              <option value="8.º ano">8.º ano</option>
+              <option value="9.º ano">9.º ano</option>
+
+              <option value="Secundário">
+                Secundário
+              </option>
+
+              <option value="Licenciatura">
+                Licenciatura
+              </option>
+
+              <option value="Mestrado">
+                Mestrado
+              </option>
+
+              <option value="Doutoramento">
+                Doutoramento
+              </option>
+
+            </select>
+
           </div>
-          <div>
-            <strong>Idade:</strong> {{ patient.age }} anos
+
+
+          <!-- Idade/Data de nascimento -->
+
+          <div
+            [class.editing-cell]="isEditing">
+
+            <strong>
+
+              {{
+                isEditing
+                  ? 'Data de nascimento *'
+                  : 'Idade:'
+              }}
+
+            </strong>
+
+            <span *ngIf="!isEditing">
+        {{ patient.age }} anos
+      </span>
+
+            <input
+              *ngIf="isEditing"
+              type="date"
+              class="data-edit-input"
+              [(ngModel)]="
+          editForm.birthDate
+        "
+              [max]="maxBirthDate"
+            />
+
           </div>
-          <div>
-            <strong>Profissão:</strong> {{ patient.profession }}
+
+
+          <!-- Profissão -->
+
+          <div
+            [class.editing-cell]="isEditing">
+
+            <strong>
+              Profissão{{
+                isEditing ? ' *' : ':'
+              }}
+            </strong>
+
+            <span *ngIf="!isEditing">
+        {{ patient.profession }}
+      </span>
+
+            <input
+              *ngIf="isEditing"
+              type="text"
+              class="data-edit-input"
+              [(ngModel)]="
+          editForm.profession
+        "
+            />
+
           </div>
+
         </div>
+
       </div>
 
       <button
@@ -123,28 +416,118 @@
       </button>
 
       <div class="caregiver-card">
+
         <div class="caregiver-title">
-          <img src="/icons/person_selected.svg" />
+
+          <img
+            src="/icons/person_selected.svg"
+            alt=""
+          />
+
           <span>Cuidador/a</span>
+
         </div>
 
-        <div class="caregiver-content">
-          <img src="/icons/generic_user.svg" class="caregiver-avatar" />
 
-          <div>
-            <h3>{{ patient.informalCaregiverName }}</h3>
+        <div
+          class="caregiver-content"
+          [class.editing]="isEditing">
+
+          <img
+            src="/icons/generic_user.svg"
+            class="caregiver-avatar"
+            alt="Cuidador"
+          />
+
+
+          <!-- Modo normal -->
+
+          <div *ngIf="!isEditing">
+
+            <h3>
+              {{ patient.informalCaregiverName }}
+            </h3>
 
             <p>
-              <img src="/icons/Phone_2.svg" />
-              {{ patient.informalCaregiverPhone }}
+
+              <img
+                src="/icons/Phone_2.svg"
+                alt=""
+              />
+
+              {{
+                patient.informalCaregiverPhone
+              }}
+
             </p>
 
             <p>
-              <img src="/icons/Message.svg" />
-              {{ patient.informalCaregiverEmail }}
+
+              <img
+                src="/icons/Message.svg"
+                alt=""
+              />
+
+              {{
+                patient.informalCaregiverEmail
+              }}
+
             </p>
+
           </div>
+
+
+          <!-- Modo de edição -->
+
+          <div
+            *ngIf="isEditing"
+            class="caregiver-edit-fields">
+
+            <label>
+
+              Nome do cuidador *
+
+              <input
+                type="text"
+                [(ngModel)]="
+            editForm.informalCaregiverName
+          "
+              />
+
+            </label>
+
+
+            <label>
+
+              Telefone do cuidador *
+
+              <input
+                type="text"
+                [(ngModel)]="
+            editForm.informalCaregiverPhone
+          "
+              />
+
+            </label>
+
+
+            <label>
+
+              Email do cuidador *
+
+              <input
+                type="email"
+                [(ngModel)]="
+            editForm.informalCaregiverEmail
+          "
+              />
+
+            </label>
+
+          </div>
+
         </div>
+
       </div>
     </section>
 
@@ -363,16 +746,7 @@
   (changePatient)="openPatients.emit(); closeSideMenu()"
   (openContents)="openContents.emit(); closeSideMenu()"
   [isAdmin]="isAdmin"
-  (openAdminActivities)="
-    openAdminActivities.emit();
-    closeSideMenu()
-  "
-  (openUserManagement)="
-  openUserManagement.emit();
-  closeSideMenu()
-"
-  (logout)="
-    logout.emit();
-    closeSideMenu()
-  ">
+  (openAdminActivities)="openAdminActivities.emit(); closeSideMenu()"
+  (openUserManagement)="openUserManagement.emit();closeSideMenu()"
+  (logout)="logout.emit();closeSideMenu()">
 </app-side-menu>

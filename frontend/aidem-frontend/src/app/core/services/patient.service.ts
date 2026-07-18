@@ -24,6 +24,25 @@ export type SessionHistoryExercise = {
   caregiverReason: string | null;
 };
 
+export interface UpdatePatientRequest {
+  fullName: string;
+  birthDate: string;
+  gender: string;
+  diagnosisType: string;
+
+  phone: string;
+  email: string;
+  address: string;
+
+  education: string;
+  profession: string;
+  sessionType: string;
+
+  informalCaregiverName: string;
+  informalCaregiverPhone: string;
+  informalCaregiverEmail: string;
+}
+
 export type SessionHistory = {
   id: number;
   patientId: number;
@@ -331,4 +350,28 @@ export class PatientService {
 
     return JSON.parse(raw) as PatientProfile;
   }
+
+  async updatePatient(
+    id: number,
+    payload: UpdatePatientRequest
+  ): Promise<PatientProfile> {
+
+    const response = await fetch(
+      `${this.apiUrl}/${id}`,
+      {
+        method: 'PUT',
+        headers: this.getHeaders(true),
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const raw =
+      await this.handleResponse(
+        response,
+        'Erro ao atualizar utente'
+      );
+
+    return JSON.parse(raw) as PatientProfile;
+  }
+
 }

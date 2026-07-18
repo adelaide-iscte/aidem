@@ -2,7 +2,7 @@ package com.aidem.backend.controller;
 
 import com.aidem.backend.dto.patient.*;
 import com.aidem.backend.model.Patient;
-import com.aidem.backend.model.SessionHistory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.aidem.backend.repository.AssessmentRepository;
 import com.aidem.backend.repository.DomainScoreRepository;
 import com.aidem.backend.repository.PatientRepository;
@@ -166,6 +166,101 @@ public class PatientController {
                 "IP" + patient.getId(),
                 "/icons/generic_user.svg",
                 age + " anos - Paciente com demência"
+        );
+    }
+
+    @PutMapping(
+            value = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize(
+            "hasAnyAuthority('ADMIN', 'FORMAL_CAREGIVER')"
+    )
+    @Transactional
+    public PatientProfileResponse updatePatient(
+            @PathVariable Long id,
+            @RequestBody UpdatePatientRequest request,
+            Authentication authentication
+    ) {
+        /*
+         * O administrador pode editar qualquer utente.
+         * O cuidador formal só pode editar os utentes
+         * que lhe estão associados.
+         */
+        patientAccessService.requirePatientAccess(
+                id,
+                authentication
+        );
+
+        validateUpdatePatient(request);
+
+        Patient patient = patientRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Utente não encontrado."
+                        )
+                );
+
+        patient.setFullName(
+                request.fullName().trim()
+        );
+
+        patient.setBirthDate(
+                request.birthDate()
+        );
+
+        patient.setGender(
+                request.gender().trim()
+        );
+
+        patient.setDiagnosisType(
+                request.diagnosisType().trim()
+        );
+
+        patient.setPhone(
+                cleanOptional(request.phone())
+        );
+
+        patient.setEmail(
+                cleanOptional(request.email())
+        );
+
+        patient.setAddress(
+                request.address().trim()
+        );
+
+        patient.setEducation(
+                request.education().trim()
+        );
+
+        patient.setProfession(
+                request.profession().trim()
+        );
+
+        patient.setSessionType(
+                request.sessionType().trim()
+        );
+
+        patient.setInformalCaregiverName(
+                request.informalCaregiverName().trim()
+        );
+
+        patient.setInformalCaregiverPhone(
+                request.informalCaregiverPhone().trim()
+        );
+
+        patient.setInformalCaregiverEmail(
+                request.informalCaregiverEmail().trim()
+        );
+
+        patientRepository.saveAndFlush(patient);
+
+        return getPatient(
+                patient.getId(),
+                authentication
         );
     }
 
@@ -404,6 +499,132 @@ public class PatientController {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "NR do domínio " + row.domain() + " é obrigatório.");
             }
         }
+    }
+
+    private void validateUpdatePatient(
+            UpdatePatientRequest request
+    ) {
+        if (request == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Os dados do utente são obrigatórios."
+            );
+        }
+
+        requireText(
+                request.fullName(),
+                "Nome é obrigatório."
+        );
+
+        if (request.birthDate() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Data de nascimento é obrigatória."
+            );
+        }
+
+        if (request.birthDate().isAfter(LocalDate.now())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A data de nascimento não pode ser futura."
+            );
+        }
+
+        requireText(
+                request.gender(),
+                "Sexo é obrigatório."
+        );
+
+        requireText(
+                request.diagnosisType(),
+                "Diagnóstico é obrigatório."
+        );
+
+        requireText(
+                request.address(),
+                "Morada é obrigatória."
+        );
+
+        requireText(
+                request.education(),
+                "Escolaridade é obrigatória."
+        );
+
+        requireText(
+                request.profession(),
+                "Profissão é obrigatória."
+        );
+
+        requireText(
+                request.sessionType(),
+                "Sessão é obrigatória."
+        );
+
+        requireText(
+                request.informalCaregiverName(),
+                "Nome do cuidador é obrigatório."
+        );
+
+        requireText(
+                request.informalCaregiverPhone(),
+                "Telefone do cuidador é obrigatório."
+        );
+
+        requireText(
+                request.informalCaregiverEmail(),
+                "Email do cuidador é obrigatório."
+        );
+
+        if (
+                request.email() != null &&
+                        !request.email().isBlank() &&
+                        !isValidEmail(request.email())
+        ) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Email do utente inválido."
+            );
+        }
+
+        if (
+                !isValidEmail(
+                        request.informalCaregiverEmail()
+                )
+        ) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Email do cuidador inválido."
+            );
+        }
+    }
+
+    private void requireText(
+            String value,
+            String message
+    ) {
+        if (value == null || value.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    message
+            );
+        }
+    }
+
+    private boolean isValidEmail(
+            String value
+    ) {
+        return value != null &&
+                value.trim().matches(
+                        "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"
+                );
+    }
+
+    private String cleanOptional(
+            String value
+    ) {
+        return value == null
+                ? ""
+                : value.trim();
     }
 
     private void associateFormalCreator(

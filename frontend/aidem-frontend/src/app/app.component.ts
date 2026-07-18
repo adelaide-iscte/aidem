@@ -483,6 +483,57 @@ export class AppComponent implements OnInit, OnDestroy {
     this.currentPage = 'profile';
   }
 
+  onPatientUpdated(
+    updatedPatient: PatientProfile
+  ): void {
+
+    /*
+     * Atualiza o utente selecionado.
+     *
+     * Assim, a Home, o Perfil e as
+     * Atividades recebem imediatamente
+     * os novos dados.
+     */
+    this.selectedPatient =
+      updatedPatient;
+
+
+    /*
+     * Atualiza também a informação
+     * apresentada na lista de utentes.
+     */
+    this.patients =
+      this.patients.map(
+        (patient) =>
+
+          patient.id ===
+          updatedPatient.id
+
+            ? {
+              ...patient,
+
+              name:
+              updatedPatient.name,
+
+              birthDate:
+              updatedPatient.birthDate,
+
+              age:
+              updatedPatient.age,
+
+              avatar:
+              updatedPatient.avatar,
+
+              subtitle:
+              updatedPatient.subtitle
+            }
+
+            : patient
+      );
+
+    this.cdr.detectChanges();
+  }
+
   goToActivities(): void {
     this.currentPage = 'activities';
   }

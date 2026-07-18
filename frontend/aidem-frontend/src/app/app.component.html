@@ -138,7 +138,8 @@
   (openContents)="goToContents()"
   (openAdminActivities)="openAdminActivities()"
   (openUserManagement)="openUserManagement()"
-  (logout)="handleLogout()">
+  (logout)="handleLogout()"
+  (patientUpdated)="onPatientUpdated($event)">
 </app-profile>
 
 <app-contents
@@ -164,16 +165,8 @@
 </app-user-management>
 
 <app-exercise-form
-  *ngIf="
-    isLoggedIn &&
-    isAdmin &&
-    currentPage === 'exerciseForm'
-  "
-  [exerciseToEdit]="
-    selectedExerciseToEdit
-  "
-
+  *ngIf="isLoggedIn && isAdmin && currentPage === 'exerciseForm'"
+  [exerciseToEdit]="selectedExerciseToEdit"
   (cancel)="closeExerciseForm()"
-
   (saved)="onExerciseSaved()">
 </app-exercise-form>
