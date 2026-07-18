@@ -1033,3 +1033,96 @@
     width: 100%;
   }
 }
+
+/* Cabeçalho do perfil */
+
+.patient-info {
+  min-width: 650px;
+}
+
+.patient-heading-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.patient-heading-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.patient-heading-row
+.profile-edit-actions {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.patient-heading-row
+.profile-edit-button,
+.patient-heading-row
+.cancel-edit-button,
+.patient-heading-row
+.save-profile-button {
+  min-height: 48px;
+  padding: 0 16px;
+  font-size: 16px;
+}
+
+.patient-heading-row
+.profile-edit-button {
+  min-width: 166px;
+}
+
+.patient-heading-row
+.profile-edit-button img {
+  width: 20px;
+  height: 20px;
+}
+
+
+/* Quando aparecem Guardar e Cancelar */
+
+.patient-heading-row
+.profile-edit-actions:has(
+  .save-profile-button
+) {
+  align-items: stretch;
+  flex-direction: column-reverse;
+}
+
+.patient-heading-row
+.cancel-edit-button,
+.patient-heading-row
+.save-profile-button {
+  width: 205px;
+}
+
+
+/* Ecrãs mais pequenos */
+
+@media (max-width: 900px) {
+
+  .patient-info {
+    min-width: 0;
+  }
+
+  .patient-heading-row {
+    flex-direction: column;
+  }
+
+  .patient-heading-row
+  .profile-edit-actions {
+    width: 100%;
+  }
+
+  .patient-heading-row
+  .profile-edit-button,
+  .patient-heading-row
+  .cancel-edit-button,
+  .patient-heading-row
+  .save-profile-button {
+    width: 100%;
+  }
+}
+

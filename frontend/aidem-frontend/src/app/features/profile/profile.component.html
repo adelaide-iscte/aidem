@@ -23,153 +23,159 @@
   <main class="profile-content">
 
     <div class="accessibility-row">
-
-      <div
-        *ngIf="
-      canEditProfile &&
-      activeTab === 'dados'
-    "
-        class="profile-edit-actions">
-
-        <!-- Botão apresentado inicialmente -->
-
-        <button
-          *ngIf="!isEditing"
-          type="button"
-          class="
-        action-button
-        outline
-        profile-edit-button
-      "
-          (click)="startEditing()">
-
-          <img
-            src="/icons/Edit.svg"
-            alt=""
-          />
-
-          <span>Editar perfil</span>
-        </button>
-
-
-        <!-- Botões apresentados durante a edição -->
-
-        <ng-container *ngIf="isEditing">
-
-          <button
-            type="button"
-            class="
-          action-button
-          outline
-          cancel-edit-button
-        "
-            [disabled]="isSavingProfile"
-            (click)="cancelEditing()">
-
-            Cancelar
-          </button>
-
-
-          <button
-            type="button"
-            class="
-          action-button
-          primary
-          save-profile-button
-        "
-            [disabled]="isSavingProfile"
-            (click)="saveProfile()">
-
-            {{
-              isSavingProfile
-                ? 'A guardar...'
-                : 'Guardar alterações'
-            }}
-          </button>
-
-        </ng-container>
-
-      </div>
-
-
-      <button
-        class="accessibility-button"
-        type="button"
-        aria-label="
-      Ler conteúdo da página em voz alta
-    ">
-
-        <img
-          src="/icons/volume-blue.svg"
-          class="accessibility-icon"
-          alt=""
-        />
-
-        <span>Ouvir página</span>
-
-      </button>
-
-    </div>
     <section class="profile-hero">
       <img [src]="patient.avatar" class="patient-avatar" />
 
       <div class="patient-info">
-        <h1 *ngIf="!isEditing">
-          {{ patient.name }}
-        </h1>
+
+        <div class="patient-heading-row">
+
+          <div class="patient-heading-copy">
+
+            <!-- Nome -->
+
+            <h1 *ngIf="!isEditing">
+              {{ patient.name }}
+            </h1>
+
+            <input
+              *ngIf="isEditing"
+              type="text"
+              class="hero-name-input"
+              [(ngModel)]="
+          editForm.fullName
+        "
+              aria-label="
+          Nome completo do utente
+        "
+            />
 
 
-        <input
-          *ngIf="isEditing"
-          type="text"
-          class="hero-name-input"
-          [(ngModel)]="editForm.fullName"
-          aria-label="Nome completo do utente"
-        />
+            <!-- Diagnóstico -->
+
+            <p *ngIf="!isEditing">
+              {{ patientSubtitle }}
+            </p>
+
+            <label
+              *ngIf="isEditing"
+              class="hero-diagnosis-field">
+
+              <span>Diagnóstico *</span>
+
+              <input
+                type="text"
+                [(ngModel)]="
+            editForm.diagnosisType
+          "
+              />
+
+            </label>
 
 
-        <p *ngIf="!isEditing">
-          {{ patientSubtitle }}
-        </p>
+            <!-- Código não editável -->
+
+            <span>{{ patient.code }}</span>
+
+          </div>
 
 
-        <label
-          *ngIf="isEditing"
-          class="hero-diagnosis-field">
+          <!-- Ações de edição -->
 
-          <span>Diagnóstico *</span>
+          <div
+            *ngIf="
+        canEditProfile &&
+        activeTab === 'dados'
+      "
+            class="profile-edit-actions">
 
-          <input
-            type="text"
-            [(ngModel)]="
-      editForm.diagnosisType
-    "
-          />
+            <button
+              *ngIf="!isEditing"
+              type="button"
+              class="
+          action-button
+          outline
+          profile-edit-button
+        "
+              (click)="startEditing()">
 
-        </label>
+              <img
+                src="/icons/Edit.svg"
+                alt=""
+              />
+
+              Editar perfil
+            </button>
 
 
-        <!-- O código é gerado pelo sistema -->
+            <ng-container *ngIf="isEditing">
 
-        <span>{{ patient.code }}</span>
+              <button
+                type="button"
+                class="
+            action-button
+            outline
+            cancel-edit-button
+          "
+                [disabled]="isSavingProfile"
+                (click)="cancelEditing()">
+
+                Cancelar
+              </button>
+
+
+              <button
+                type="button"
+                class="
+            action-button
+            primary
+            save-profile-button
+          "
+                [disabled]="isSavingProfile"
+                (click)="saveProfile()">
+
+                {{
+                  isSavingProfile
+                    ? 'A guardar...'
+                    : 'Guardar alterações'
+                }}
+              </button>
+
+            </ng-container>
+
+          </div>
+
+        </div>
+
+
+        <!-- Separadores -->
 
         <div class="profile-tabs">
+
           <button
             type="button"
-            [class.active]="activeTab === 'dados'"
+            [class.active]="
+        activeTab === 'dados'
+      "
             (click)="setTab('dados')">
+
             Dados
           </button>
 
+
           <button
             type="button"
-            [class.active]="activeTab === 'sessoes'"
+            [class.active]="
+        activeTab === 'sessoes'
+      "
             [disabled]="isEditing"
             (click)="setTab('sessoes')">
 
             Sessões
           </button>
+
         </div>
+
       </div>
     </section>
 
