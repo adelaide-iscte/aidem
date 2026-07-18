@@ -197,7 +197,69 @@
     </div>
 
     <section class="dados-section" *ngIf="activeTab === 'dados'">
-      contacts-card
+      <div class="contacts-card">
+
+        <div class="card-title">
+          <img src="/icons/Info.svg" alt="" />
+          <h2>Contactos do Utente</h2>
+        </div>
+
+        <div class="contact-row">
+          <img src="/icons/Phone_2.svg" alt="" />
+
+          <span
+            *ngIf="!isEditing"
+            [class.empty-contact]="!patient.phone">
+      {{ patient.phone || 'Não disponível' }}
+    </span>
+
+          <input
+            *ngIf="isEditing"
+            type="text"
+            class="inline-edit-input"
+            [(ngModel)]="editForm.phone"
+            placeholder="Telefone"
+            aria-label="Telefone do utente"
+          />
+        </div>
+
+        <div class="contact-row">
+          <img src="/icons/Message.svg" alt="" />
+
+          <span
+            *ngIf="!isEditing"
+            [class.empty-contact]="!patient.email">
+      {{ patient.email || 'Não disponível' }}
+    </span>
+
+          <input
+            *ngIf="isEditing"
+            type="email"
+            class="inline-edit-input"
+            [(ngModel)]="editForm.email"
+            placeholder="Email"
+            aria-label="Email do utente"
+          />
+        </div>
+
+        <div class="contact-row">
+          <img src="/icons/location.svg" alt="" />
+
+          <span *ngIf="!isEditing">
+      {{ patient.address }}
+    </span>
+
+          <input
+            *ngIf="isEditing"
+            type="text"
+            class="inline-edit-input"
+            [(ngModel)]="editForm.address"
+            placeholder="Morada *"
+            aria-label="Morada do utente"
+          />
+        </div>
+
+      </div>
 
       <div class="user-data-card">
 
