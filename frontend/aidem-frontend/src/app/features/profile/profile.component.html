@@ -99,24 +99,56 @@
 
           </div>
 
+        </div>
 
-          <!-- Ações de edição -->
+
+        <div class="profile-tabs-row">
+
+          <div class="profile-tabs">
+
+            <button
+              type="button"
+              [class.active]="
+        activeTab === 'dados'
+      "
+              (click)="setTab('dados')">
+
+              Dados
+            </button>
+
+
+            <button
+              type="button"
+              [class.active]="
+        activeTab === 'sessoes'
+      "
+              [disabled]="isEditing"
+              (click)="setTab('sessoes')">
+
+              Sessões
+            </button>
+
+          </div>
+
+
+          <!-- Editar/Guardar -->
 
           <div
             *ngIf="
-        canEditProfile &&
-        activeTab === 'dados'
-      "
-            class="profile-edit-actions">
+      canEditProfile &&
+      activeTab === 'dados'
+    "
+            class="profile-edit-actions"
+            [class.editing]="isEditing">
 
             <button
               *ngIf="!isEditing"
               type="button"
               class="
-          action-button
-          outline
-          profile-edit-button
-        "
+        action-button
+        outline
+        profile-edit-button
+      "
               (click)="startEditing()">
 
               <img
@@ -133,24 +165,10 @@
               <button
                 type="button"
                 class="
-            action-button
-            outline
-            cancel-edit-button
-          "
-                [disabled]="isSavingProfile"
-                (click)="cancelEditing()">
-
-                Cancelar
-              </button>
-
-
-              <button
-                type="button"
-                class="
-            action-button
-            primary
-            save-profile-button
-          "
+          action-button
+          primary
+          save-profile-button
+        "
                 [disabled]="isSavingProfile"
                 (click)="saveProfile()">
 
@@ -161,6 +179,20 @@
                 }}
               </button>
 
+
+              <button
+                type="button"
+                class="
+          action-button
+          outline
+          cancel-edit-button
+        "
+                [disabled]="isSavingProfile"
+                (click)="cancelEditing()">
+
+                Cancelar
+              </button>
+
             </ng-container>
 
           </div>
@@ -168,33 +200,6 @@
         </div>
 
 
-        <!-- Separadores -->
-
-        <div class="profile-tabs">
-
-          <button
-            type="button"
-            [class.active]="
-        activeTab === 'dados'
-      "
-            (click)="setTab('dados')">
-
-            Dados
-          </button>
-
-
-          <button
-            type="button"
-            [class.active]="
-        activeTab === 'sessoes'
-      "
-            [disabled]="isEditing"
-            (click)="setTab('sessoes')">
-
-            Sessões
-          </button>
-
-        </div>
 
       </div>
     </section>

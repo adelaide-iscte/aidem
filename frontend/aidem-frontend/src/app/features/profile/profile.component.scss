@@ -1034,68 +1034,79 @@
   }
 }
 
-/* Cabeçalho do perfil */
+/* Separadores e botão Editar */
 
 .patient-info {
-  min-width: 650px;
-}
-
-.patient-heading-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
+  min-width: 620px;
 }
 
 .patient-heading-copy {
-  flex: 1;
   min-width: 0;
 }
 
-.patient-heading-row
-.profile-edit-actions {
-  flex: 0 0 auto;
-  margin-top: 2px;
+.profile-tabs-row {
+  margin-top: 28px;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
 }
 
-.patient-heading-row
-.profile-edit-button,
-.patient-heading-row
-.cancel-edit-button,
-.patient-heading-row
-.save-profile-button {
-  min-height: 48px;
+.profile-tabs-row
+.profile-tabs {
+  flex: 0 0 384px;
+  margin-top: 0;
+}
+
+.profile-tabs-row
+.profile-edit-actions {
+  min-height: 64px;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+
+/* Botão Editar */
+
+.profile-tabs-row
+.profile-edit-button {
+  min-width: 174px;
+  min-height: 52px;
   padding: 0 16px;
+
   font-size: 16px;
 }
 
-.patient-heading-row
-.profile-edit-button {
-  min-width: 166px;
-}
-
-.patient-heading-row
+.profile-tabs-row
 .profile-edit-button img {
   width: 20px;
   height: 20px;
 }
 
 
-/* Quando aparecem Guardar e Cancelar */
+/* Guardar e Cancelar */
 
-.patient-heading-row
-.profile-edit-actions:has(
-  .save-profile-button
-) {
+.profile-tabs-row
+.profile-edit-actions.editing {
+  min-height: 0;
+
   align-items: stretch;
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 
-.patient-heading-row
-.cancel-edit-button,
-.patient-heading-row
-.save-profile-button {
+.profile-tabs-row
+.save-profile-button,
+.profile-tabs-row
+.cancel-edit-button {
   width: 205px;
+  min-height: 48px;
+  padding: 0 14px;
+
+  font-size: 15px;
 }
 
 
@@ -1107,21 +1118,34 @@
     min-width: 0;
   }
 
-  .patient-heading-row {
+  .profile-tabs-row {
+    align-items: stretch;
     flex-direction: column;
   }
 
-  .patient-heading-row
+  .profile-tabs-row
+  .profile-tabs {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .profile-tabs-row
+  .profile-tabs button {
+    flex: 1;
+    width: auto;
+  }
+
+  .profile-tabs-row
   .profile-edit-actions {
     width: 100%;
   }
 
-  .patient-heading-row
+  .profile-tabs-row
   .profile-edit-button,
-  .patient-heading-row
-  .cancel-edit-button,
-  .patient-heading-row
-  .save-profile-button {
+  .profile-tabs-row
+  .save-profile-button,
+  .profile-tabs-row
+  .cancel-edit-button {
     width: 100%;
   }
 }
