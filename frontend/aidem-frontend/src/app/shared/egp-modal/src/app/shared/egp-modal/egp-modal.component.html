@@ -58,7 +58,9 @@
         </article>
       </div>
 
-      <div class="egp-table-layout">
+      <div
+        class="egp-table-layout"
+        *ngIf="!isLoading && !error && rows.length > 0">
         <section class="egp-column">
           <header class="egp-header">
             <h3>EGP</h3>
@@ -107,7 +109,9 @@
         </section>
       </div>
 
-      <div class="footer-actions">
+      <div
+        class="footer-actions"
+        *ngIf="!isLoading">
 
         <button
           *ngIf="
@@ -129,12 +133,12 @@
         </button>
 
         <button
+          *ngIf="!error && rows.length > 0"
           type="button"
           class="primary-button"
           (click)="openGraph()">
 
           Ver gráfico
-
         </button>
 
         <button
