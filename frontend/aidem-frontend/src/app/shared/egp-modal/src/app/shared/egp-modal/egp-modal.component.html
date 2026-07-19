@@ -108,17 +108,63 @@
       </div>
 
       <div class="footer-actions">
-        <button type="button" class="primary-button" (click)="openGraph()">
-          Ver gráfico
+
+        <button
+          *ngIf="
+      canEdit &&
+      assessmentId !== null &&
+      rows.length > 0
+    "
+          type="button"
+          class="secondary-button"
+          (click)="openEditModal()">
+
+          <img
+            src="/icons/Edit.svg"
+            class="edit-icon"
+            alt="" />
+
+          Editar dados
+
         </button>
 
-        <button type="button" class="secondary-button" (click)="closeModal()">
-          <span class="back-icon">‹</span>
-          Voltar
+        <button
+          type="button"
+          class="primary-button"
+          (click)="openGraph()">
+
+          Ver gráfico
+
         </button>
+
+        <button
+          type="button"
+          class="secondary-button"
+          (click)="closeModal()">
+
+    <span class="back-icon">
+      ‹
+    </span>
+
+          Voltar
+
+        </button>
+
       </div>
     </div>
   </section>
+  <app-egp-edit-modal
+    *ngIf="
+    showEditModal &&
+    patientId !== null &&
+    editableAssessment
+  "
+    [patientId]="patientId"
+    [patientName]="patientCard.name"
+    [assessment]="editableAssessment!"
+    (cancel)="closeEditModal()"
+    (saved)="onEgpSaved($event)">
+  </app-egp-edit-modal>
 
   <div class="graph-overlay" *ngIf="showGraphModal">
     <div class="graph-backdrop" (click)="closeGraph()"></div>

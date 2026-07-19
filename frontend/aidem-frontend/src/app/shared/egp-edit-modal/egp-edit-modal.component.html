@@ -1,0 +1,238 @@
+<div
+  class="edit-egp-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="edit-egp-title">
+
+  <div
+    class="edit-egp-backdrop"
+    (click)="cancelEditing()">
+  </div>
+
+  <section class="edit-egp-modal">
+
+    <header class="modal-header">
+
+      <button
+        type="button"
+        class="back-button"
+        [disabled]="isSaving"
+        (click)="cancelEditing()">
+
+        <span aria-hidden="true">
+          ←
+        </span>
+
+        Cancelar
+      </button>
+
+      <div class="modal-heading">
+
+        <h1 id="edit-egp-title">
+          Editar dados EGP
+        </h1>
+
+        <p *ngIf="patientName">
+          {{ patientName }}
+        </p>
+
+      </div>
+
+      <div class="header-spacer"></div>
+
+    </header>
+
+    <main class="modal-content">
+
+      <p class="required-fields-note">
+        Os campos assinalados com
+        <strong>*</strong>
+        são obrigatórios.
+      </p>
+
+      <section
+        *ngIf="submitError"
+        class="error-card"
+        role="alert">
+
+        <strong>
+          {{ submitError }}
+        </strong>
+
+        <ul *ngIf="fieldErrors.length > 0">
+          <li
+            *ngFor="let error of fieldErrors">
+
+            Verifique: {{ error }}
+
+          </li>
+        </ul>
+
+      </section>
+
+      <section class="form-card">
+
+        <div class="form-heading">
+
+          <div>
+            <h2>Dados EGP</h2>
+
+            <p>
+              Altere os valores de cada domínio.
+            </p>
+          </div>
+
+          <label
+            [class.invalid]="
+              hasError(
+                'Data da avaliação EGP'
+              )
+            ">
+
+            Data da avaliação *
+
+            <input
+              type="date"
+              [(ngModel)]="assessmentDate" />
+
+          </label>
+
+        </div>
+
+        <div class="egp-table">
+
+          <section
+            class="egp-column"
+            *ngFor="
+              let columnRows of
+              [
+                firstColumnRows,
+                secondColumnRows
+              ]
+            ">
+
+            <div class="egp-row egp-head">
+
+              <span>Domínio</span>
+
+              <div class="egp-inputs">
+                <span>PD</span>
+                <span>NR</span>
+                <span>Risco</span>
+              </div>
+
+            </div>
+
+            <div
+              class="egp-row"
+              *ngFor="let row of columnRows"
+              [class.summary-row]="
+                isSummaryRow(row.domain)
+              ">
+
+              <strong>
+                {{ row.domain }}
+              </strong>
+
+              <div class="egp-inputs">
+
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  aria-label="PD de {{ row.domain }}"
+                  [(ngModel)]="row.score"
+                  (ngModelChange)="
+                    recalculateEgpSummary()
+                  "
+                  [readonly]="
+                    isSummaryRow(row.domain)
+                  "
+                  [class.calculated-input]="
+                    isSummaryRow(row.domain)
+                  "
+                  [class.invalid-input]="
+                    hasError(
+                      'EGP - ' +
+                      row.domain +
+                      ' - PD'
+                    )
+                  " />
+
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  aria-label="NR de {{ row.domain }}"
+                  [(ngModel)]="
+                    row.normalizedScore
+                  "
+                  [class.invalid-input]="
+                    hasError(
+                      'EGP - ' +
+                      row.domain +
+                      ' - NR'
+                    )
+                  " />
+
+                <select
+                  aria-label="Risco de {{ row.domain }}"
+                  [(ngModel)]="row.riskLevel">
+
+                  <option value="LOW">
+                    Baixo
+                  </option>
+
+                  <option value="MEDIUM">
+                    Médio
+                  </option>
+
+                  <option value="HIGH">
+                    Elevado
+                  </option>
+
+                </select>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </section>
+
+    </main>
+
+    <footer class="modal-actions">
+
+      <button
+        type="button"
+        class="cancel-button"
+        [disabled]="isSaving"
+        (click)="cancelEditing()">
+
+        Cancelar
+
+      </button>
+
+      <button
+        type="button"
+        class="save-button"
+        [disabled]="isSaving"
+        (click)="save()">
+
+        {{
+          isSaving
+            ? 'A guardar...'
+            : 'Guardar alterações'
+        }}
+
+      </button>
+
+    </footer>
+
+  </section>
+
+</div>

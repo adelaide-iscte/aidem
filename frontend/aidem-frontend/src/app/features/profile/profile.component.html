@@ -724,15 +724,41 @@
 
   <app-egp-modal
     *ngIf="showEgpModal"
+
     [patientCard]="{
     title: 'Perfil do utente',
     name: patient.name,
-    avatar: patient.avatar || '/icons/generic_user.svg'
+    avatar:
+      patient.avatar ||
+      '/icons/generic_user.svg'
   }"
+
     [userData]="egpUserData"
-    [rows]="egpData?.rows ?? []"
+
+    [rows]="
+    egpData?.rows ?? []
+  "
+
+    [patientId]="patient.id"
+
+    [assessmentId]="
+    egpData?.assessmentId ?? null
+  "
+
+    [assessmentDate]="
+    egpData?.assessmentDate ?? ''
+  "
+
+    [canEdit]="canEditProfile"
+
     [isLoading]="isLoadingEgp"
+
     [error]="egpError"
+
+    (updated)="
+    onEgpUpdated($event)
+  "
+
     (close)="closeEgpModal()">
   </app-egp-modal>
 

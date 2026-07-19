@@ -132,6 +132,18 @@ export interface EgpAssessment {
   rows: EgpRow[];
 }
 
+export interface UpdateEgpRequest {
+  assessmentId: number;
+  assessmentDate: string;
+
+  rows: {
+    label: string;
+    pd: number;
+    nr: number;
+    riskLevel: string;
+  }[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -322,6 +334,29 @@ export class PatientService {
     return raw
       ? JSON.parse(raw) as EgpAssessment
       : null;
+  }
+
+  async updateLatestEgp(
+    patientId: number,
+    payload: UpdateEgpRequest
+  ): Promise<EgpAssessment> {
+
+    const response = await fetch(
+      `${this.apiUrl}/${patientId}/egp/latest`,
+      {
+        method: 'PUT',
+        headers: this.getHeaders(true),
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const raw =
+      await this.handleResponse(
+        response,
+        'Erro ao atualizar dados EGP'
+      );
+
+    return JSON.parse(raw) as EgpAssessment;
   }
 
   async createPatient(

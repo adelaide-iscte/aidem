@@ -323,6 +323,20 @@ export class ProfileComponent {
     }
   }
 
+  onEgpUpdated(
+    assessment: EgpAssessment
+  ): void {
+    /*
+     * Atualiza os dados em memória para que
+     * a visualização e o gráfico apresentem
+     * imediatamente os novos valores.
+     */
+    this.egpData = assessment;
+    this.egpError = '';
+
+    this.cdr.detectChanges();
+  }
+
   get egpUserData(): UserDataRow[] {
     return [
       [

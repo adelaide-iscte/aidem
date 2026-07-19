@@ -14,13 +14,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
 import com.aidem.backend.model.PatientCaregiver;
 import com.aidem.backend.model.User;
 import com.aidem.backend.model.enums.CaregiverRelationshipType;
 import com.aidem.backend.repository.PatientCaregiverRepository;
 import com.aidem.backend.repository.UserRepository;
-
+import java.util.LinkedHashMap;
 import com.aidem.backend.service.PatientAccessService;
 import org.springframework.security.core.Authentication;
 
@@ -377,6 +376,159 @@ public class PatientController {
         );
     }
 
+    @PutMapping(
+            value = "/{id}/egp/latest",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize(
+            "hasAnyAuthority('ADMIN', 'FORMAL_CAREGIVER')"
+    )
+    @Transactional
+    public ResponseEntity<EgpAssessmentResponse> updateLatestEgp(
+            @PathVariable Long id,
+            @RequestBody UpdateEgpRequest request,
+            Authentication authentication
+    ) {
+        /*
+         * O administrador pode editar qualquer utente.
+         * O cuidador formal apenas pode editar os utentes
+         * aos quais tem acesso.
+         */
+        patientAccessService.requirePatientAccess(
+                id,
+                authentication
+        );
+
+        Assessment assessment = assessmentRepository
+                .findFirstByPatient_IdOrderByAssessmentDateDescIdDesc(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Este utente ainda não tem uma avaliação EGP."
+                        )
+                );
+
+        validateUpdateEgpRequest(
+                request,
+                assessment.getId()
+        );
+
+        List<DomainScore> scores = domainScoreRepository
+                .findByAssessment_IdOrderByDisplayOrderAscIdAsc(
+                        assessment.getId()
+                );
+
+        Map<String, UpdateEgpRequest.EgpScoreRequest> requestedRows =
+                new LinkedHashMap<>();
+
+        for (
+                UpdateEgpRequest.EgpScoreRequest row :
+                request.rows()
+        ) {
+            String label = row.label().trim();
+
+            if (
+                    requestedRows.putIfAbsent(
+                            label,
+                            row
+                    ) != null
+            ) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "O domínio EGP '" +
+                                label +
+                                "' está repetido."
+                );
+            }
+        }
+
+        if (requestedRows.size() != scores.size()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A avaliação EGP está incompleta."
+            );
+        }
+
+        for (DomainScore score : scores) {
+            UpdateEgpRequest.EgpScoreRequest requestedRow =
+                    requestedRows.remove(
+                            score.getDomain()
+                    );
+
+            if (requestedRow == null) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Falta o domínio EGP '" +
+                                score.getDomain() +
+                                "'."
+                );
+            }
+
+            /*
+             * Os PD das linhas de resumo não são aceites
+             * diretamente: serão recalculados no backend.
+             */
+            if (!isEgpSummaryRow(score.getDomain())) {
+                score.setScore(
+                        requestedRow.pd()
+                );
+            }
+
+            score.setNormalizedScore(
+                    requestedRow.nr()
+            );
+
+            score.setRiskLevel(
+                    parseRiskLevel(
+                            requestedRow.riskLevel()
+                    )
+            );
+        }
+
+        if (!requestedRows.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Foram enviados domínios que não pertencem a esta avaliação EGP."
+            );
+        }
+
+        updateEgpSummaryScores(scores);
+
+        assessment.setAssessmentDate(
+                request.assessmentDate()
+        );
+
+        assessmentRepository.save(assessment);
+        domainScoreRepository.saveAllAndFlush(scores);
+
+        List<EgpRowResponse> responseRows =
+                scores.stream()
+                        .map(score ->
+                                new EgpRowResponse(
+                                        score.getDomain(),
+                                        score.getScore(),
+                                        score.getNormalizedScore() != null
+                                                ? score.getNormalizedScore()
+                                                : score.getScore(),
+                                        score.getRiskLevel().name(),
+                                        score.getDisplayOrder(),
+                                        isEgpSummaryRow(
+                                                score.getDomain()
+                                        )
+                                )
+                        )
+                        .toList();
+
+        return ResponseEntity.ok(
+                new EgpAssessmentResponse(
+                        assessment.getId(),
+                        assessment.getAssessmentDate(),
+                        responseRows
+                )
+        );
+    }
+
     private BigDecimal sumScores(
             Map<String, BigDecimal> scoresByDomain,
             String... domains
@@ -403,6 +555,119 @@ public class PatientController {
                 || "Prevalência motora".equalsIgnoreCase(domain)
                 || "Prevalência cognitiva".equalsIgnoreCase(domain)
                 || "Total".equalsIgnoreCase(domain);
+    }
+
+    private void validateUpdateEgpRequest(
+            UpdateEgpRequest request,
+            Long latestAssessmentId
+    ) {
+        if (request == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Os dados EGP são obrigatórios."
+            );
+        }
+
+        if (request.assessmentId() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A avaliação EGP é obrigatória."
+            );
+        }
+
+        /*
+         * Impede que o utilizador grave dados de uma
+         * avaliação antiga entretanto substituída.
+         */
+        if (
+                !request.assessmentId()
+                        .equals(latestAssessmentId)
+        ) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Existe uma avaliação EGP mais recente. " +
+                            "Feche e volte a abrir os dados EGP."
+            );
+        }
+
+        if (request.assessmentDate() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A data da avaliação EGP é obrigatória."
+            );
+        }
+
+        if (
+                request.rows() == null ||
+                        request.rows().isEmpty()
+        ) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Os valores EGP são obrigatórios."
+            );
+        }
+
+        for (
+                UpdateEgpRequest.EgpScoreRequest row :
+                request.rows()
+        ) {
+            if (
+                    row == null ||
+                            row.label() == null ||
+                            row.label().isBlank()
+            ) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "O domínio EGP é obrigatório."
+                );
+            }
+
+            if (
+                    row.pd() == null ||
+                            row.pd().signum() < 0
+            ) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "O PD de '" +
+                                row.label() +
+                                "' deve ser igual ou superior a zero."
+                );
+            }
+
+            if (
+                    row.nr() == null ||
+                            row.nr().signum() < 0
+            ) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "O NR de '" +
+                                row.label() +
+                                "' deve ser igual ou superior a zero."
+                );
+            }
+
+            String riskLevel =
+                    row.riskLevel() == null
+                            ? ""
+                            : row.riskLevel()
+                            .trim()
+                            .toUpperCase();
+
+            if (
+                    !List.of(
+                            "LOW",
+                            "MEDIUM",
+                            "HIGH"
+                    ).contains(riskLevel)
+            ) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Selecione o risco de '" +
+                                row.label() +
+                                "'."
+                );
+            }
+        }
     }
 
     @PostMapping(
@@ -689,6 +954,86 @@ public class PatientController {
             case "MEDIUM", "MEDIO", "MÉDIO" -> RiskLevel.MEDIUM;
             default -> RiskLevel.LOW;
         };
+    }
+
+    private void updateEgpSummaryScores(
+            List<DomainScore> scores
+    ) {
+        Map<String, BigDecimal> scoresByDomain =
+                scores.stream()
+                        .collect(
+                                Collectors.toMap(
+                                        DomainScore::getDomain,
+                                        DomainScore::getScore,
+                                        (first, second) -> first
+                                )
+                        );
+
+        BigDecimal physicalConstraints =
+                sumScores(
+                        scoresByDomain,
+                        "Mobilização articular dos membros superiores",
+                        "Mobilização articular dos membros inferiores"
+                );
+
+        BigDecimal motorPrevalence =
+                sumScores(
+                        scoresByDomain,
+                        "Equilíbrio Estático I",
+                        "Equilíbrio Estático II",
+                        "Equilíbrio Dinâmico I",
+                        "Equilíbrio Dinâmico II",
+                        "Motricidade fina dos membros inferiores"
+                );
+
+        BigDecimal cognitivePrevalence =
+                sumScores(
+                        scoresByDomain,
+                        "Motricidade fina dos membros superiores",
+                        "Praxias",
+                        "Conhecimento das partes do corpo",
+                        "Vigilância",
+                        "Memória Percetiva",
+                        "Domínio Espacial",
+                        "Memória Verbal",
+                        "Perceção",
+                        "Domínio Temporal",
+                        "Comunicação"
+                );
+
+        BigDecimal total =
+                physicalConstraints
+                        .add(motorPrevalence)
+                        .add(cognitivePrevalence);
+
+        for (DomainScore score : scores) {
+            switch (score.getDomain()) {
+                case "Constrangimentos físicos" ->
+                        score.setScore(
+                                physicalConstraints
+                        );
+
+                case "Prevalência motora" ->
+                        score.setScore(
+                                motorPrevalence
+                        );
+
+                case "Prevalência cognitiva" ->
+                        score.setScore(
+                                cognitivePrevalence
+                        );
+
+                case "Total" ->
+                        score.setScore(total);
+
+                default -> {
+                    /*
+                     * Os restantes valores PD já foram
+                     * atualizados pelo endpoint.
+                     */
+                }
+            }
+        }
     }
 
 }

@@ -1,15 +1,24 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {LoadingSpinnerComponent} from '../../../../../laoding-spinner-modal/loading-spinner.component';
 
-type EgpEntry = {
-  label: string;
-  pd: number;
-  nr: number;
-  riskLevel?: string;
-  displayOrder?: number;
-  summary?: boolean;
-};
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
+
+import {
+  LoadingSpinnerComponent
+} from '../../../../../laoding-spinner-modal/loading-spinner.component';
+
+import {
+  EgpEditModalComponent
+} from '../../../../../egp-edit-modal/egp-edit-modal.component';
+
+import type {
+  EgpAssessment,
+  EgpRow
+} from '../../../../../../core/services/patient.service';
 
 type PatientCard = {
   title: string;
@@ -18,46 +27,98 @@ type PatientCard = {
 };
 
 type UserDataRow = [
-  { label: string; value: string },
-  { label: string; value: string }
+  {
+    label: string;
+    value: string;
+  },
+  {
+    label: string;
+    value: string;
+  }
 ];
 
 @Component({
   selector: 'app-egp-modal',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent],
-  templateUrl: './egp-modal.component.html',
-  styleUrl: './egp-modal.component.scss'
+
+  imports: [
+    CommonModule,
+    LoadingSpinnerComponent,
+    EgpEditModalComponent
+  ],
+
+  templateUrl:
+    './egp-modal.component.html',
+
+  styleUrl:
+    './egp-modal.component.scss'
 })
 export class EgpModalComponent {
-  @Output() close = new EventEmitter<void>();
 
-  @Input() patientCard: PatientCard = {
+  @Output()
+  close = new EventEmitter<void>();
+
+  @Output()
+  updated =
+    new EventEmitter<EgpAssessment>();
+
+  @Input()
+  patientCard: PatientCard = {
     title: 'Perfil do utente',
     name: '',
     avatar: '/icons/generic_user.svg'
   };
 
-  @Input() userData: UserDataRow[] = [];
-  @Input() rows: EgpEntry[] = [];
-  @Input() isLoading = false;
-  @Input() error = '';
+  @Input()
+  userData: UserDataRow[] = [];
+
+  @Input()
+  rows: EgpRow[] = [];
+
+  @Input()
+  patientId: number | null = null;
+
+  @Input()
+  assessmentId: number | null = null;
+
+  @Input()
+  assessmentDate = '';
+
+  @Input()
+  canEdit = false;
+
+  @Input()
+  isLoading = false;
+
+  @Input()
+  error = '';
 
   showGraphModal = false;
+  showEditModal = false;
+
   private readonly chartWidth = 600;
 
-  get visibleRows(): EgpEntry[] {
+  get visibleRows(): EgpRow[] {
     return this.rows
       .slice()
-      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0));
+      .sort(
+        (first, second) =>
+          (first.displayOrder ?? 0) -
+          (second.displayOrder ?? 0)
+      );
   }
 
-  get firstColumnRows(): EgpEntry[] {
-    return this.visibleRows.slice(0, this.columnSplitIndex);
+  get firstColumnRows(): EgpRow[] {
+    return this.visibleRows.slice(
+      0,
+      this.columnSplitIndex
+    );
   }
 
-  get secondColumnRows(): EgpEntry[] {
-    return this.visibleRows.slice(this.columnSplitIndex);
+  get secondColumnRows(): EgpRow[] {
+    return this.visibleRows.slice(
+      this.columnSplitIndex
+    );
   }
 
   private get columnSplitIndex(): number {
@@ -69,59 +130,92 @@ export class EgpModalComponent {
     }
 
     const totalWeight = rows.reduce(
-      (total, row) => total + this.rowWeight(row),
+      (total, row) =>
+        total + this.rowWeight(row),
       0
     );
 
-    const targetWeight = totalWeight / 2;
+    const targetWeight =
+      totalWeight / 2;
+
     let currentWeight = 0;
-    let weightedSplitIndex = Math.ceil(totalRows / 2);
 
-    for (let index = 0; index < totalRows; index++) {
-      currentWeight += this.rowWeight(rows[index]);
+    let weightedSplitIndex =
+      Math.ceil(totalRows / 2);
 
-      if (currentWeight >= targetWeight) {
-        weightedSplitIndex = index + 1;
+    for (
+      let index = 0;
+      index < totalRows;
+      index++
+    ) {
+      currentWeight +=
+        this.rowWeight(rows[index]);
+
+      if (
+        currentWeight >=
+        targetWeight
+      ) {
+        weightedSplitIndex =
+          index + 1;
+
         break;
       }
     }
 
-    /*
-     * Mantém as colunas equilibradas em número de linhas.
-     * Com 21 registos, o índice só pode ficar entre 10 e 11.
-     */
-    const minimumSplitIndex = Math.floor(totalRows / 2);
-    const maximumSplitIndex = Math.ceil(totalRows / 2);
+    const minimumSplitIndex =
+      Math.floor(totalRows / 2);
+
+    const maximumSplitIndex =
+      Math.ceil(totalRows / 2);
 
     return Math.max(
       minimumSplitIndex,
-      Math.min(weightedSplitIndex, maximumSplitIndex)
+
+      Math.min(
+        weightedSplitIndex,
+        maximumSplitIndex
+      )
     );
   }
 
-  private rowWeight(row: EgpEntry): number {
+  private rowWeight(
+    row: EgpRow
+  ): number {
     /*
-     * Os nomes maiores quebram em duas linhas e ocupam mais espaço.
-     * Por isso contam como duas linhas ao equilibrar as colunas.
+     * Os nomes maiores podem ocupar
+     * duas linhas.
      */
-    return row.label.length > 34 ? 2 : 1;
+    return row.label.length > 34
+      ? 2
+      : 1;
   }
 
-  get chartRows(): EgpEntry[] {
+  get chartRows(): EgpRow[] {
     return this.visibleRows;
   }
 
-  formatScore(value: number): string {
-    return new Intl.NumberFormat('pt-PT', {
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1
-    }).format(value);
+  formatScore(
+    value: number
+  ): string {
+    return new Intl.NumberFormat(
+      'pt-PT',
+      {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+      }
+    ).format(value);
   }
 
   pointX(value: number): number {
-    const clampedValue = Math.max(0, Math.min(6, value));
+    const clampedValue =
+      Math.max(
+        0,
+        Math.min(6, value)
+      );
 
-    return (clampedValue / 6) * this.chartWidth;
+    return (
+      clampedValue / 6
+    ) * this.chartWidth;
   }
 
   pointY(index: number): number {
@@ -130,19 +224,32 @@ export class EgpModalComponent {
 
   get chartPath(): string {
     return this.chartRows
-      .map((row, index) => {
-        const command = index === 0 ? 'M' : 'L';
+      .map(
+        (row, index) => {
+          const command =
+            index === 0
+              ? 'M'
+              : 'L';
 
-        return `${command} ${this.pointX(row.nr)} ${this.pointY(index)}`;
-      })
+          return (
+            `${command} ` +
+            `${this.pointX(row.nr)} ` +
+            `${this.pointY(index)}`
+          );
+        }
+      )
       .join(' ');
   }
 
-
-  isSummaryRow(label: string): boolean {
-    const normalizedLabel = label
-      .trim()
-      .toLocaleLowerCase('pt-PT');
+  isSummaryRow(
+    label: string
+  ): boolean {
+    const normalizedLabel =
+      label
+        .trim()
+        .toLocaleLowerCase(
+          'pt-PT'
+        );
 
     return [
       'constrangimentos físicos',
@@ -162,9 +269,69 @@ export class EgpModalComponent {
     this.showGraphModal = false;
   }
 
+  /*
+   * Constrói a avaliação que será
+   * enviada para o modal de edição.
+   */
+  get editableAssessment():
+    EgpAssessment | null {
+
+    if (this.assessmentId === null) {
+      return null;
+    }
+
+    return {
+      assessmentId:
+      this.assessmentId,
+
+      assessmentDate:
+      this.assessmentDate,
+
+      rows:
+      this.rows
+    };
+  }
+
+  openEditModal(): void {
+    if (
+      !this.canEdit ||
+      this.patientId === null ||
+      this.editableAssessment === null
+    ) {
+      return;
+    }
+
+    this.showEditModal = true;
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+  }
+
+  onEgpSaved(
+    assessment: EgpAssessment
+  ): void {
+    /*
+     * Atualiza imediatamente os valores
+     * apresentados e utilizados no gráfico.
+     */
+    this.assessmentId =
+      assessment.assessmentId;
+
+    this.assessmentDate =
+      assessment.assessmentDate;
+
+    this.rows =
+      assessment.rows;
+
+    this.showEditModal = false;
+
+    this.updated.emit(
+      assessment
+    );
+  }
+
   closeModal(): void {
     this.close.emit();
   }
-
 }
-
