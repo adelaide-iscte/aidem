@@ -60,6 +60,7 @@ export class EgpEditModalComponent
 
   assessmentDate = '';
   egpRows: EgpFormRow[] = [];
+  egpColumns: EgpFormRow[][] = [];
 
   isSaving = false;
   submitError = '';
@@ -96,23 +97,21 @@ export class EgpEditModalComponent
         }));
 
     this.recalculateEgpSummary();
-  }
 
-  get firstColumnRows(): EgpFormRow[] {
-    return this.egpRows.slice(
-      0,
-      Math.ceil(
-        this.egpRows.length / 2
-      )
+    const splitIndex = Math.ceil(
+      this.egpRows.length / 2
     );
-  }
 
-  get secondColumnRows(): EgpFormRow[] {
-    return this.egpRows.slice(
-      Math.ceil(
-        this.egpRows.length / 2
+    this.egpColumns = [
+      this.egpRows.slice(
+        0,
+        splitIndex
+      ),
+
+      this.egpRows.slice(
+        splitIndex
       )
-    );
+    ];
   }
 
   isSummaryRow(
