@@ -920,6 +920,21 @@
   }
 }
 
+@media (max-width: 1200px) {
+  .form-content {
+    width: min(900px, calc(100% - 40px));
+  }
+
+  .form-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .account-panel,
+  .patients-panel {
+    min-width: 0;
+  }
+}
+
 @media (min-width: 701px) {
   .header {
     min-height: 110px;
