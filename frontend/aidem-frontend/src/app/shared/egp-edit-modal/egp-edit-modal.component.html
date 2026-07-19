@@ -13,6 +13,18 @@
 
     <header class="modal-header">
 
+      <button
+        type="button"
+        class="back-button"
+        [disabled]="isSaving"
+        (click)="cancelEditing()">
+
+        <span aria-hidden="true">
+          ←
+        </span>
+
+        Cancelar
+      </button>
 
       <div class="modal-heading">
 
