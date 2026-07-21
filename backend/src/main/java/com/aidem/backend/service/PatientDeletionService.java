@@ -1,14 +1,7 @@
 package com.aidem.backend.service;
 
-import com.aidem.backend.model.Assessment;
-import com.aidem.backend.model.DomainScore;
-import com.aidem.backend.model.ExerciseFeedback;
-import com.aidem.backend.model.Patient;
-import com.aidem.backend.model.PatientCaregiver;
-import com.aidem.backend.model.RecommendationExplanation;
-import com.aidem.backend.model.SessionHistory;
-import com.aidem.backend.model.SessionPlan;
-import com.aidem.backend.model.SessionPlanExercise;
+import com.aidem.backend.model.*;
+import jakarta.persistence.EntityManager;
 import com.aidem.backend.repository.AssessmentRepository;
 import com.aidem.backend.repository.DomainScoreRepository;
 import com.aidem.backend.repository.ExerciseFeedbackRepository;
@@ -37,6 +30,7 @@ public class PatientDeletionService {
     private final RecommendationExplanationRepository recommendationExplanationRepository;
     private final AssessmentRepository assessmentRepository;
     private final DomainScoreRepository domainScoreRepository;
+    private final EntityManager entityManager;
 
     public PatientDeletionService(
             PatientRepository patientRepository,
@@ -47,7 +41,8 @@ public class PatientDeletionService {
             ExerciseFeedbackRepository exerciseFeedbackRepository,
             RecommendationExplanationRepository recommendationExplanationRepository,
             AssessmentRepository assessmentRepository,
-            DomainScoreRepository domainScoreRepository
+            DomainScoreRepository domainScoreRepository,
+            EntityManager entityManager
     ) {
         this.patientRepository = patientRepository;
         this.patientCaregiverRepository = patientCaregiverRepository;
@@ -59,6 +54,7 @@ public class PatientDeletionService {
                 recommendationExplanationRepository;
         this.assessmentRepository = assessmentRepository;
         this.domainScoreRepository = domainScoreRepository;
+        this.entityManager = entityManager;
     }
 
     @Transactional
@@ -133,7 +129,9 @@ public class PatientDeletionService {
                     .deleteAllInBatch(sessionHistory);
         }
 
-        patientRepository.delete(patient);
+        entityManager.clear();
+
+        patientRepository.deleteById(patientId);
         patientRepository.flush();
     }
 

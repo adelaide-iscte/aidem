@@ -787,12 +787,8 @@
     class="delete-modal-backdrop"
     (click)="closeDeleteModal()">
 
-    <section
-      class="delete-modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="delete-patient-modal-title"
-      (click)="$event.stopPropagation()">
+    <ng-container
+      *ngIf="!isDeletingPatient; else deletingPatient">
 
       <h2 id="delete-patient-modal-title">
         Remover utente?
@@ -808,25 +804,28 @@
       <button
         type="button"
         class="confirm-delete-button"
-        [disabled]="isDeletingPatient"
         (click)="confirmDelete()">
 
-        {{
-          isDeletingPatient
-            ? 'A remover...'
-            : 'Sim'
-        }}
+        Sim
       </button>
 
       <button
         type="button"
         class="cancel-delete-button"
-        [disabled]="isDeletingPatient"
         (click)="closeDeleteModal()">
 
         Cancelar
       </button>
-    </section>
+    </ng-container>
+
+    <ng-template #deletingPatient>
+      <app-loading-spinner
+        class="delete-loading"
+        [compact]="true"
+        message="A remover utente..."
+        subMessage="Aguarde um momento.">
+      </app-loading-spinner>
+    </ng-template>
   </div>
   <app-notifications-popover
     *ngIf="
