@@ -787,45 +787,53 @@
     class="delete-modal-backdrop"
     (click)="closeDeleteModal()">
 
-    <ng-container
-      *ngIf="!isDeletingPatient; else deletingPatient">
+    <section
+      class="delete-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-patient-modal-title"
+      (click)="$event.stopPropagation()">
 
-      <h2 id="delete-patient-modal-title">
-        Remover utente?
-      </h2>
+      <ng-container
+        *ngIf="!isDeletingPatient; else deletingPatient">
 
-      <p
-        *ngIf="deleteError"
-        class="delete-error"
-        role="alert">
-        {{ deleteError }}
-      </p>
+        <h2 id="delete-patient-modal-title">
+          Remover utente?
+        </h2>
 
-      <button
-        type="button"
-        class="confirm-delete-button"
-        (click)="confirmDelete()">
+        <p
+          *ngIf="deleteError"
+          class="delete-error"
+          role="alert">
+          {{ deleteError }}
+        </p>
 
-        Sim
-      </button>
+        <button
+          type="button"
+          class="confirm-delete-button"
+          (click)="confirmDelete()">
+          Sim
+        </button>
 
-      <button
-        type="button"
-        class="cancel-delete-button"
-        (click)="closeDeleteModal()">
+        <button
+          type="button"
+          class="cancel-delete-button"
+          (click)="closeDeleteModal()">
+          Cancelar
+        </button>
 
-        Cancelar
-      </button>
-    </ng-container>
+      </ng-container>
 
-    <ng-template #deletingPatient>
-      <app-loading-spinner
-        class="delete-loading"
-        [compact]="true"
-        message="A remover utente..."
-        subMessage="Aguarde um momento.">
-      </app-loading-spinner>
-    </ng-template>
+      <ng-template #deletingPatient>
+        <app-loading-spinner
+          class="delete-loading"
+          [compact]="true"
+          message="A remover utente..."
+          subMessage="Aguarde um momento.">
+        </app-loading-spinner>
+      </ng-template>
+
+    </section>
   </div>
   <app-notifications-popover
     *ngIf="
