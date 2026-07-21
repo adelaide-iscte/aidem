@@ -20,7 +20,7 @@
         />
       </div>
 
-      <div class="input-wrapper" [class.input-error]="errorMessage">
+      <div class="input-wrapper" [class.input-error]="errorMessage()">
         <img src="/icons/Lock.svg" class="icon">
 
         <input
@@ -41,19 +41,23 @@
         </button>
       </div>
 
-      <p class="password-error" *ngIf="errorMessage">
-        {{ errorMessage }}
+      <p class="password-error" *ngIf="errorMessage()">
+        {{ errorMessage() }}
       </p>
 
 
-      <button type="submit" class="login-button" [disabled]="isLoading">
+      <button
+        type="submit"
+        class="login-button"
+        [disabled]="isLoading()">
+
         <app-loading-spinner
-          *ngIf="isLoading"
+          *ngIf="isLoading()"
           size="small"
           message="">
         </app-loading-spinner>
 
-        <span *ngIf="!isLoading">Entrar</span>
+        <span *ngIf="!isLoading()">Entrar</span>
       </button>
     </form>
 

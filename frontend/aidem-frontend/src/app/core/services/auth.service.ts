@@ -34,16 +34,34 @@ export type LoginResponse = {
   user: AuthUser;
 };
 
+export type LoginErrorCode =
+  | 'INVALID_CREDENTIALS'
+  | 'REQUEST_TIMEOUT'
+  | 'SERVER_UNAVAILABLE';
+
+export class LoginError extends Error {
+  constructor(readonly code: LoginErrorCode) {
+    super(code);
+    this.name = 'LoginError';
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // private readonly apiUrl =
-  //   'http://localhost:8080/api/auth';
+  // Local:
+  // private readonly backendUrl =
+  //   'http://localhost:8080';
 
-  // Produção:
+// Produção:
+  private readonly backendUrl =
+    'https://aidem-backend.onrender.com';
+
   private readonly apiUrl =
-    'https://aidem-backend.onrender.com/api/auth';
+    `${this.backendUrl}/api/auth`;
+
+  private readonly loginTimeoutMs = 90_000;
 
   private readonly tokenKey =
     'aidem_token';
@@ -68,43 +86,88 @@ export class AuthService {
     );
   }
 
+  warmUpBackend(): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    void fetch(
+      `${this.backendUrl}/api/health`
+    ).catch(() => undefined);
+  }
+
   async login(
     email: string,
     password: string
   ): Promise<LoginResponse> {
-    /*
-     * Limpa qualquer sessão anterior antes
-     * de guardar o novo utilizador.
-     */
     this.clearSession();
 
-    const response = await fetch(
-      `${this.apiUrl}/login`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type':
-            'application/json'
-        },
-        body: JSON.stringify({
-          email: email.trim(),
-          password
-        })
+    const controller = new AbortController();
+
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      this.loginTimeoutMs
+    );
+
+    try {
+      const response = await fetch(
+        `${this.apiUrl}/login`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: email.trim(),
+            password
+          }),
+          signal: controller.signal
+        }
+      );
+
+      if (response.status === 401) {
+        throw new LoginError(
+          'INVALID_CREDENTIALS'
+        );
       }
-    );
 
-    if (!response.ok) {
-      throw new Error('LOGIN_FAILED');
+      if (!response.ok) {
+        throw new LoginError(
+          'SERVER_UNAVAILABLE'
+        );
+      }
+
+      const data =
+        await response.json() as LoginResponse;
+
+      this.saveSession(
+        data.token,
+        data.user
+      );
+
+      return data;
+
+    } catch (error: unknown) {
+      if (error instanceof LoginError) {
+        throw error;
+      }
+
+      if (
+        error instanceof Error &&
+        error.name === 'AbortError'
+      ) {
+        throw new LoginError(
+          'REQUEST_TIMEOUT'
+        );
+      }
+
+      throw new LoginError(
+        'SERVER_UNAVAILABLE'
+      );
+
+    } finally {
+      clearTimeout(timeoutId);
     }
-
-    const data = await response.json() as LoginResponse;
-
-    this.saveSession(
-      data.token,
-      data.user
-    );
-
-    return data;
   }
 
   toFrontendRole(
