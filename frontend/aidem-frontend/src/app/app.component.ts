@@ -542,4 +542,24 @@ export class AppComponent implements OnInit, OnDestroy {
     this.currentPage = 'chat';
   }
 
+  onPatientDeleted(
+    patientId: number
+  ): void {
+    this.patients =
+      this.patients.filter(
+        (patient) =>
+          patient.id !== patientId
+      );
+
+    if (
+      this.selectedPatient?.id ===
+      patientId
+    ) {
+      this.notificationService.stop();
+      this.selectedPatient = null;
+    }
+
+    this.cdr.detectChanges();
+  }
+
 }

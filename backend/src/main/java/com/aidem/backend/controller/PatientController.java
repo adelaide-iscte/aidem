@@ -23,6 +23,8 @@ import java.util.LinkedHashMap;
 import com.aidem.backend.service.PatientAccessService;
 import org.springframework.security.core.Authentication;
 
+import com.aidem.backend.service.PatientDeletionService;
+
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -49,6 +51,7 @@ public class PatientController {
     private final SessionPlanService sessionPlanService;
     private final PatientAccessService patientAccessService;
     private final UserRepository userRepository;
+    private final PatientDeletionService patientDeletionService;
 
     private final PatientCaregiverRepository patientCaregiverRepository;
     public PatientController(
@@ -59,7 +62,8 @@ public class PatientController {
             SessionPlanService sessionPlanService,
             PatientAccessService patientAccessService,
             UserRepository userRepository,
-            PatientCaregiverRepository patientCaregiverRepository
+            PatientCaregiverRepository patientCaregiverRepository,
+            PatientDeletionService patientDeletionService
     ) {
         this.patientRepository =
                 patientRepository;
@@ -84,6 +88,9 @@ public class PatientController {
 
         this.patientCaregiverRepository =
                 patientCaregiverRepository;
+
+        this.patientDeletionService =
+                patientDeletionService;
     }
 
     @Transactional(readOnly = true)
@@ -166,6 +173,28 @@ public class PatientController {
                 "/icons/generic_user.svg",
                 age + " anos - Paciente com demência"
         );
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize(
+            "hasAnyAuthority('ADMIN', 'FORMAL_CAREGIVER')"
+    )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePatient(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        /*
+         * O administrador pode remover qualquer utente.
+         * O cuidador formal só pode remover utentes
+         * que lhe estejam associados.
+         */
+        patientAccessService.requirePatientAccess(
+                id,
+                authentication
+        );
+
+        patientDeletionService.deletePatient(id);
     }
 
     @PutMapping(

@@ -36,6 +36,10 @@
     (openAdminActivities)="openAdminActivities()"
     (openUserManagement)="openUserManagement()"
     (logout)="handleLogout()"
+    [canDeletePatients]="
+  userRole === 'formal' || isAdmin
+"
+    (patientDeleted)="onPatientDeleted($event)"
   >
   </app-patients-list>
 </div>

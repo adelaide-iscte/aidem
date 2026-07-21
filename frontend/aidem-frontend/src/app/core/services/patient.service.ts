@@ -409,4 +409,21 @@ export class PatientService {
     return JSON.parse(raw) as PatientProfile;
   }
 
+  async deletePatient(
+    id: number
+  ): Promise<void> {
+    const response = await fetch(
+      `${this.apiUrl}/${id}`,
+      {
+        method: 'DELETE',
+        headers: this.getHeaders()
+      }
+    );
+
+    await this.handleResponse(
+      response,
+      'Erro ao remover utente'
+    );
+  }
+
 }

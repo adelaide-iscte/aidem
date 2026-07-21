@@ -114,7 +114,14 @@ public class SecurityConfig {
                                 "/api/session-plan-exercises/reset-completed"
                         )
                         .hasAuthority("ADMIN")
-
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/patients/**"
+                        )
+                        .hasAnyAuthority(
+                                "ADMIN",
+                                "FORMAL_CAREGIVER"
+                        )
                         .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/api/admin/**")
                         .hasAuthority("ADMIN")

@@ -44,4 +44,8 @@ public interface PatientCaregiverRepository
     int deleteByUserId(
             @Param("userId") Long userId
     );
+
+    List<PatientCaregiver> findByPatient_Id(
+            Long patientId
+    );
 }
