@@ -1,22 +1,9 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  Output
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-  NotificationsPopoverComponent
-} from '../../shared/notifications-popover-modal/notifications-popover.component';
-import {
-  AppPatient,
-  PatientService
-} from '../../core/services/patient.service';
-import {
-  SideMenuComponent
-} from '../../shared/side-menu-modal/side-menu.component';
+import { NotificationsPopoverComponent } from '../../shared/notifications-popover-modal/notifications-popover.component';
+import { AppPatient } from '../../core/services/patient.service';
+import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
 
 type SortMode = 'recent' | 'alphabetical';
 
@@ -43,12 +30,10 @@ export class PatientsListComponent {
   openUserManagement =
     new EventEmitter<void>();
 
-  showSideMenu = false;
+  @Output()
+  logout = new EventEmitter<void>();
 
-  constructor(
-    private patientService: PatientService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  showSideMenu = false;
 
   openSideMenu(): void {
     this.showSideMenu = true;

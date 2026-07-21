@@ -176,24 +176,18 @@
   min-height: 82px;
   border: none;
   background: transparent;
-
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: 74px minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
-
-  padding: 7px 8px 7px 12px;
+  gap: 18px;
+  padding: 7px 12px;
+  text-align: left;
+  cursor: pointer;
   border-radius: 10px;
 }
 
 .patient-item:hover {
   background: #f4f7ff;
-}
-
-
-
-.patient-copy {
-  min-width: 0;
 }
 
 .patient-avatar {
@@ -229,7 +223,6 @@
   margin: 0 5px;
 }
 
-
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -259,132 +252,4 @@
 
 .bottom-nav .active {
   color: #4079e8;
-}
-
-.delete-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-  padding: 24px;
-
-  background: rgba(0, 0, 0, 0.42);
-  backdrop-filter: blur(2px);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.delete-modal {
-  width: min(470px, 100%);
-  min-height: 310px;
-  box-sizing: border-box;
-  padding: 48px 52px;
-
-  border-radius: 44px;
-  background: #ffffff;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-
-  animation: deleteModalOpen 0.18s ease-out;
-}
-
-.delete-modal h2 {
-  margin: 0 0 4px;
-  color: #25252a;
-  font-size: 28px;
-  font-weight: 700;
-  text-align: center;
-}
-
-.delete-error {
-  margin: -4px 0 0;
-  color: #bd3434;
-  font-size: 15px;
-  font-weight: 600;
-  text-align: center;
-}
-
-.confirm-delete-button,
-.cancel-delete-button {
-  width: 170px;
-  min-height: 54px;
-  padding: 0 24px;
-
-  border: none;
-  border-radius: 9px;
-  color: #ffffff;
-
-  font: inherit;
-  font-size: 27px;
-  font-weight: 500;
-
-  cursor: pointer;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  transition:
-    transform 0.15s ease,
-    opacity 0.15s ease;
-}
-
-.confirm-delete-button {
-  background: #4b80e4;
-}
-
-.cancel-delete-button {
-  background: #bd3434;
-}
-
-.confirm-delete-button:hover:not(:disabled),
-.cancel-delete-button:hover:not(:disabled) {
-  transform: scale(1.02);
-}
-
-.confirm-delete-button:active:not(:disabled),
-.cancel-delete-button:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-.confirm-delete-button:disabled,
-.cancel-delete-button:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
-@keyframes deleteModalOpen {
-  from {
-    opacity: 0;
-    transform: scale(0.92);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@media (max-width: 900px) {
-  .delete-modal {
-    min-height: 280px;
-    padding: 38px 28px;
-    border-radius: 34px;
-  }
-
-  .delete-modal h2 {
-    font-size: 24px;
-  }
-
-  .confirm-delete-button,
-  .cancel-delete-button {
-    width: 100%;
-    min-height: 58px;
-    font-size: 23px;
-  }
 }
