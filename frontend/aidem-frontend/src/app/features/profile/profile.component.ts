@@ -48,12 +48,16 @@ export class ProfileComponent {
   @Output() openUserManagement = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();
   @Output() patientUpdated = new EventEmitter<PatientProfile>();
+  @Output() patientDeleted = new EventEmitter<number>();
 
   showSideMenu = false;
   selectedSession: SessionHistory | null = null;
   isEditing = false;
   isSavingProfile = false;
   editError = '';
+  showDeleteModal = false;
+  isDeletingPatient = false;
+  deleteError = '';
 
   readonly maxBirthDate = new Date().toISOString().slice(0, 10);
 
@@ -70,6 +74,13 @@ export class ProfileComponent {
   }
 
   get canEditProfile(): boolean {
+    return (
+      this.isAdmin ||
+      this.role === 'formal'
+    );
+  }
+
+  get canDeletePatient(): boolean {
     return (
       this.isAdmin ||
       this.role === 'formal'
@@ -120,6 +131,67 @@ export class ProfileComponent {
       this.createEditForm(
         this.patient
       );
+  }
+
+  openDeleteModal(): void {
+    if (
+      !this.canDeletePatient ||
+      this.isEditing
+    ) {
+      return;
+    }
+
+    this.deleteError = '';
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    if (this.isDeletingPatient) {
+      return;
+    }
+
+    this.showDeleteModal = false;
+    this.deleteError = '';
+  }
+
+  async confirmDelete(): Promise<void> {
+    if (
+      !this.canDeletePatient ||
+      !this.patient?.id ||
+      this.isDeletingPatient
+    ) {
+      return;
+    }
+
+    const patientId = this.patient.id;
+
+    this.isDeletingPatient = true;
+    this.deleteError = '';
+    this.cdr.detectChanges();
+
+    try {
+      await this.patientService
+        .deletePatient(patientId);
+
+      this.showDeleteModal = false;
+      this.isDeletingPatient = false;
+
+      this.patientDeleted.emit(patientId);
+
+    } catch (error) {
+      console.error(
+        'Erro ao remover utente:',
+        error
+      );
+
+      this.deleteError =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível remover o utente.';
+
+      this.isDeletingPatient = false;
+      this.cdr.detectChanges();
+    }
   }
 
   async saveProfile(): Promise<void> {

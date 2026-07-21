@@ -47,48 +47,22 @@
 
     <section class="patients-card">
       <div class="patients-scroll">
-        <div
+        <button
+          type="button"
           class="patient-item"
-          *ngFor="
-    let patient of filteredPatients;
-    trackBy: trackByPatientCode
-  ">
+          *ngFor="let patient of filteredPatients; trackBy: trackByPatientCode"
+          (click)="openPatient(patient)">
+          <img [src]="patient.avatar" class="patient-avatar" />
 
-          <button
-            type="button"
-            class="patient-details"
-            (click)="openPatient(patient)">
-
-            <img
-              [src]="patient.avatar"
-              class="patient-avatar"
-              alt="" />
-
-            <div class="patient-copy">
-              <h2>{{ patient.name }}</h2>
-
-              <p>
-                <span>{{ patient.age }} anos</span>
-                <strong>|</strong>
-                {{ patient.code }}
-              </p>
-            </div>
-          </button>
-
-          <button
-            *ngIf="canDeletePatients"
-            type="button"
-            class="delete-patient-button"
-            [attr.aria-label]="'Remover ' + patient.name"
-            [attr.title]="'Remover ' + patient.name"
-            (click)="openDeleteModal(patient)">
-
-            <img
-              src="/icons/trash.svg"
-              alt=""
-              aria-hidden="true" />
-          </button>
-        </div>
+          <div class="patient-copy">
+            <h2>{{ patient.name }}</h2>
+            <p>
+              <span>{{ patient.age }} anos</span>
+              <strong>|</strong>
+              {{ patient.code }}
+            </p>
+          </div>
+        </button>
       </div>
     </section>
   </main>
@@ -104,53 +78,6 @@
     *ngIf="showNotifications"
     (close)="closeNotifications()">
   </app-notifications-popover>
-
-  <div
-    *ngIf="showDeleteModal"
-    class="delete-modal-backdrop"
-    (click)="closeDeleteModal()">
-
-    <section
-      class="delete-modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="delete-patient-modal-title"
-      (click)="$event.stopPropagation()">
-
-      <h2 id="delete-patient-modal-title">
-        Remover utente?
-      </h2>
-
-      <p
-        *ngIf="deleteError"
-        class="delete-error"
-        role="alert">
-        {{ deleteError }}
-      </p>
-
-      <button
-        type="button"
-        class="confirm-delete-button"
-        [disabled]="deletingPatientId !== null"
-        (click)="confirmDelete()">
-
-        {{
-          deletingPatientId !== null
-            ? 'A remover...'
-            : 'Sim'
-        }}
-      </button>
-
-      <button
-        type="button"
-        class="cancel-delete-button"
-        [disabled]="deletingPatientId !== null"
-        (click)="closeDeleteModal()">
-
-        Cancelar
-      </button>
-    </section>
-  </div>
 </div>
 
 <app-side-menu

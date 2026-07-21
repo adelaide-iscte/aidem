@@ -551,13 +551,9 @@ export class AppComponent implements OnInit, OnDestroy {
           patient.id !== patientId
       );
 
-    if (
-      this.selectedPatient?.id ===
-      patientId
-    ) {
-      this.notificationService.stop();
-      this.selectedPatient = null;
-    }
+    this.notificationService.stop();
+    this.selectedPatient = null;
+    this.currentPage = 'patients';
 
     this.cdr.detectChanges();
   }

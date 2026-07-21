@@ -159,6 +159,27 @@
               Editar perfil
             </button>
 
+            <button
+              *ngIf="
+    !isEditing &&
+    canDeletePatient
+  "
+              type="button"
+              class="profile-delete-button"
+              [attr.aria-label]="
+    'Remover ' + patient.name
+  "
+              [attr.title]="
+    'Remover ' + patient.name
+  "
+              (click)="openDeleteModal()">
+
+              <img
+                src="/icons/trash.svg"
+                alt=""
+                aria-hidden="true" />
+            </button>
+
 
             <ng-container *ngIf="isEditing">
 
@@ -761,7 +782,52 @@
 
     (close)="closeEgpModal()">
   </app-egp-modal>
+  <div
+    *ngIf="showDeleteModal"
+    class="delete-modal-backdrop"
+    (click)="closeDeleteModal()">
 
+    <section
+      class="delete-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-patient-modal-title"
+      (click)="$event.stopPropagation()">
+
+      <h2 id="delete-patient-modal-title">
+        Remover utente?
+      </h2>
+
+      <p
+        *ngIf="deleteError"
+        class="delete-error"
+        role="alert">
+        {{ deleteError }}
+      </p>
+
+      <button
+        type="button"
+        class="confirm-delete-button"
+        [disabled]="isDeletingPatient"
+        (click)="confirmDelete()">
+
+        {{
+          isDeletingPatient
+            ? 'A remover...'
+            : 'Sim'
+        }}
+      </button>
+
+      <button
+        type="button"
+        class="cancel-delete-button"
+        [disabled]="isDeletingPatient"
+        (click)="closeDeleteModal()">
+
+        Cancelar
+      </button>
+    </section>
+  </div>
   <app-notifications-popover
     *ngIf="
     showNotifications &&

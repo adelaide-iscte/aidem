@@ -43,17 +43,7 @@ export class PatientsListComponent {
   openUserManagement =
     new EventEmitter<void>();
 
-  @Output()
-  logout = new EventEmitter<void>();
-  @Input() canDeletePatients = false;
-  @Output() patientDeleted =
-    new EventEmitter<number>();
-
   showSideMenu = false;
-  showDeleteModal = false;
-  patientToDelete: AppPatient | null = null;
-  deletingPatientId: number | null = null;
-  deleteError = '';
 
   constructor(
     private patientService: PatientService,
@@ -122,64 +112,6 @@ export class PatientsListComponent {
 
   openPatient(patient: AppPatient): void {
     this.selectPatient.emit(patient);
-  }
-  openDeleteModal(
-    patient: AppPatient
-  ): void {
-    if (!this.canDeletePatients) {
-      return;
-    }
-
-    this.patientToDelete = patient;
-    this.deleteError = '';
-    this.showDeleteModal = true;
-  }
-
-  closeDeleteModal(): void {
-    if (this.deletingPatientId !== null) {
-      return;
-    }
-
-    this.showDeleteModal = false;
-    this.patientToDelete = null;
-    this.deleteError = '';
-  }
-
-  async confirmDelete(): Promise<void> {
-    if (
-      !this.canDeletePatients ||
-      !this.patientToDelete
-    ) {
-      return;
-    }
-
-    const patient = this.patientToDelete;
-
-    this.deletingPatientId = patient.id;
-    this.deleteError = '';
-
-    try {
-      await this.patientService
-        .deletePatient(patient.id);
-
-      this.patientDeleted.emit(patient.id);
-
-      this.showDeleteModal = false;
-      this.patientToDelete = null;
-    } catch (error) {
-      console.error(
-        'Erro ao remover utente:',
-        error
-      );
-
-      this.deleteError =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível remover o utente.';
-    } finally {
-      this.deletingPatientId = null;
-      this.cdr.detectChanges();
-    }
   }
 
   trackByPatientCode(_: number, patient: AppPatient): string {
