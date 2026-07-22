@@ -159,14 +159,21 @@ export class HomeComponent implements OnChanges, OnInit {
 
   get sessionSummaryTitle(): string {
     if (this.sessionTotalActivities === 0) {
-      return 'Sem atividades para hoje';
+      return 'Sem sessão preparada';
     }
 
-    if (this.sessionTotalActivities === 1) {
-      return '1 atividade preparada';
+    if (this.todayPlan?.status === 'COMPLETED') {
+      return 'Sessão concluída';
     }
 
-    return `${this.sessionTotalActivities} atividades preparadas`;
+    if (
+      this.todayPlan?.status === 'IN_PROGRESS' ||
+      this.sessionRegisteredActivities > 0
+    ) {
+      return 'Sessão em curso';
+    }
+
+    return 'Sessão pronta para começar';
   }
 
   get sessionStatusLabel(): string {
