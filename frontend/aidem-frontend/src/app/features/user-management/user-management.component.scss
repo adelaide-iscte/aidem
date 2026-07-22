@@ -796,8 +796,25 @@
 
 .password-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
   gap: 15px;
+}
+
+.password-grid label {
+  min-width: 0;
+  height: 100%;
+}
+
+.password-grid label > span {
+  min-height: 52px;
+
+  display: flex;
+  align-items: flex-end;
+}
+
+.password-grid input {
+  min-width: 0;
 }
 
 
@@ -1080,19 +1097,19 @@
 /* Ações do formulário */
 
 .form-actions {
-  padding: 21px 24px;
+  margin-top: 4px;
+  padding: 4px 0 0;
 
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 14px;
 
-  border: 1px solid #dfe6f0;
-  border-radius: 16px;
+  border: none;
+  border-radius: 0;
 
-  background: #ffffff;
-
-  box-shadow: 0 8px 24px rgba(54, 83, 126, 0.07);
+  background: transparent;
+  box-shadow: none;
 }
 
 .save-button,
@@ -1356,10 +1373,14 @@
 
 /* Tablet */
 
-@media (max-width: 1100px) {
+@media (max-width: 1280px) {
   .list-content,
   .form-content {
     width: calc(100% - 64px);
+  }
+
+  .form-content {
+    max-width: 960px;
   }
 
   .form-columns {
@@ -1557,8 +1578,7 @@
   }
 
   .form-actions {
-    padding: 18px;
-
+    padding: 0;
     flex-direction: column;
   }
 
