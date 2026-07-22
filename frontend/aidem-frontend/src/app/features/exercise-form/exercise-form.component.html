@@ -2,12 +2,12 @@
   <header class="header">
     <button
       type="button"
-      class="menu-button"
-      aria-label="Cancelar"
+      class="back-button"
+      aria-label="Voltar à lista de atividades"
       (click)="cancel.emit()">
-      <span></span>
-      <span></span>
-      <span></span>
+
+      <span class="back-arrow" aria-hidden="true">←</span>
+      <span>Voltar</span>
     </button>
 
     <h1>{{ pageTitle }}</h1>
@@ -231,7 +231,7 @@
                 [placeholder]="
     isEditing
       ? 'exercicios/nome.png'
-      : 'Indispoível'
+      : 'Indisponível'
   "
               />
             </label>
