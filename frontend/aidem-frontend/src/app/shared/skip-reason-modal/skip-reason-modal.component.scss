@@ -1,69 +1,122 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 :host {
   position: fixed;
   inset: 0;
   z-index: 5000;
+
   display: block;
-  font-family: 'Poppins', sans-serif;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
 }
 
 * {
   box-sizing: border-box;
 }
 
+button,
+textarea {
+  font: inherit;
+}
+
+
+/* Fundo do modal */
+
 .skip-overlay {
   position: fixed;
   inset: 0;
+
+  padding: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow-y: auto;
 }
 
 .skip-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+
+  background: rgba(26, 36, 52, 0.56);
+
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
 }
+
+
+/* Modal */
 
 .skip-modal {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 970px;
-  height: 610px;
-  background: #dce7f8;
-  border-radius: 18px;
-  padding: 46px 50px 34px;
+  position: relative;
+  z-index: 1;
+
+  width: min(900px, 100%);
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+
+  padding: 32px 40px 38px;
+
   display: flex;
   flex-direction: column;
+
+  border: 1px solid #dfe6f0;
+  border-radius: 22px;
+
+  background: #ffffff;
+  color: #263750;
+
+  box-shadow:
+    0 28px 75px rgba(33, 51, 79, 0.26),
+    0 5px 16px rgba(33, 51, 79, 0.1);
+
+  overflow-y: auto;
+
+  animation: skipModalOpen 0.18s ease-out;
 }
 
+
+/* Botão voltar */
+
 .back-button {
-  min-height: 56px;
-  padding: 0 22px;
-
-  border: 2px solid transparent;
-  border-radius: 14px;
-  background: transparent;
-  color: #4079e8;
-
-  font-family: 'Poppins', sans-serif;
-  font-size: 50px;
-  font-weight: 800;
-  line-height: 1;
+  width: fit-content;
+  min-width: 150px;
+  min-height: 54px;
+  padding: 0 20px;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 9px;
 
-  width: fit-content;
+  border: 2px solid #a8c5ff;
+  border-radius: 14px;
+
+  background: #ffffff;
+  color: #407ce2;
+
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+
   white-space: nowrap;
   cursor: pointer;
+
+  box-shadow: 0 3px 10px rgba(64, 124, 226, 0.08);
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .back-button:hover {
-  background: rgba(64, 121, 232, 0.08);
+  border-color: #407ce2;
+  background: #f6faff;
+
+  box-shadow: 0 6px 16px rgba(64, 124, 226, 0.14);
 }
 
 .back-button:active {
@@ -71,65 +124,226 @@
 }
 
 
+/* Instrução */
+
 .skip-modal h1 {
-  margin: 58px 0 36px;
-  max-width: 840px;
-  color: #4079e8;
-  font-size: 50px;
-  font-weight: 300;
-  line-height: 1.2;
+  margin: 28px 0 22px;
+  padding: 20px 22px;
+
+  border: 1px solid #cfe0fa;
+  border-left: 5px solid #407ce2;
+  border-radius: 14px;
+
+  background: #edf4ff;
+  color: #34445c;
+
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
+
+/* Campo do motivo */
+
 .skip-modal textarea {
-  width: calc(100% - 28px);
-  height: 96px;
-  margin: 0 auto;
-  border: none;
-  border-radius: 16px;
-  background: #ffffff;
-  padding: 28px 30px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 27px;
-  font-weight: 600;
-  color: #555;
-  resize: none;
+  width: 100%;
+  min-height: 170px;
+  padding: 20px 22px;
+
+  border: 1.5px solid #d8e1ed;
+  border-radius: 14px;
   outline: none;
-  display: block;
+
+  background: #fbfcfe;
+  color: #34445c;
+
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.5;
+
+  resize: none;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.skip-modal textarea:hover {
+  border-color: #b8c9df;
+}
+
+.skip-modal textarea:focus {
+  border-color: #407ce2;
+  background: #ffffff;
+
+  box-shadow: 0 0 0 4px rgba(64, 124, 226, 0.12);
 }
 
 .skip-modal textarea::placeholder {
-  color: #a8a8a8;
+  color: #98a4b5;
+  font-weight: 500;
+  opacity: 1;
 }
 
+
+/* Botão concluir */
+
 .submit-button {
-  margin: 40px auto 0;
-
-  min-width: 230px;
-  min-height: 56px;
+  min-width: 220px;
+  min-height: 58px;
+  margin: 28px 0 0 auto;
   padding: 0 28px;
-
-  border: 2px solid transparent;
-  border-radius: 14px;
-
-  background: #4079e8;
-  color: #ffffff;
-
-  font-family: 'Poppins', sans-serif;
-  font-size: 35px;
-  font-weight: 800;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
+  border: 2px solid #407ce2;
+  border-radius: 14px;
+
+  background: #407ce2;
+  color: #ffffff;
+
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+
   white-space: nowrap;
   cursor: pointer;
+
+  box-shadow: 0 7px 16px rgba(64, 124, 226, 0.22);
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .submit-button:hover {
-  background: #356bd0;
+  border-color: #326ed2;
+  background: #326ed2;
+
+  box-shadow: 0 10px 22px rgba(64, 124, 226, 0.27);
 }
 
 .submit-button:active {
   transform: scale(0.98);
+}
+
+
+/* Foco por teclado */
+
+.back-button:focus-visible,
+.submit-button:focus-visible {
+  outline: 4px solid rgba(64, 124, 226, 0.24);
+  outline-offset: 3px;
+}
+
+
+@keyframes skipModalOpen {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+/* Tablet com pouca altura */
+
+@media (max-height: 700px) and (min-width: 651px) {
+  .skip-overlay {
+    align-items: flex-start;
+    padding: 16px 24px;
+  }
+
+  .skip-modal {
+    max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
+
+    padding: 24px 32px 28px;
+  }
+
+  .skip-modal h1 {
+    margin: 20px 0 17px;
+    padding: 16px 19px;
+
+    font-size: 23px;
+  }
+
+  .skip-modal textarea {
+    min-height: 120px;
+  }
+
+  .submit-button {
+    min-height: 54px;
+    margin-top: 20px;
+  }
+}
+
+
+/* Telemóvel */
+
+@media (max-width: 650px) {
+  .skip-overlay {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .skip-modal {
+    max-height: calc(100vh - 28px);
+    max-height: calc(100dvh - 28px);
+
+    padding: 22px;
+    border-radius: 18px;
+  }
+
+  .back-button {
+    min-width: 130px;
+    min-height: 50px;
+
+    font-size: 17px;
+  }
+
+  .skip-modal h1 {
+    margin: 20px 0 18px;
+    padding: 17px 18px;
+
+    font-size: 22px;
+  }
+
+  .skip-modal textarea {
+    min-height: 150px;
+    padding: 17px 18px;
+
+    font-size: 18px;
+  }
+
+  .submit-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 58px;
+
+    margin-top: 22px;
+  }
+}
+
+
+/* Respeita a preferência por menos movimento */
+
+@media (prefers-reduced-motion: reduce) {
+  .skip-modal {
+    animation: none;
+  }
+
+  .back-button,
+  .submit-button {
+    transition: none;
+  }
 }
