@@ -1147,72 +1147,150 @@ h2 {
     height: 31px;
   }
 }
+/* Tipografia grande e acessível */
 
-/* Aumentar a legibilidade da página */
+/* Cartão principal */
 
 .hero-card h1 {
-  font-size: 38px;
+  font-size: 44px;
+  line-height: 1.1;
 }
 
 .patient-meta {
-  font-size: 20px;
-}
-
-.hero-card p {
-  font-size: 26px;
-}
-
-.hero-action-button {
   font-size: 23px;
 }
 
+.patient-meta img {
+  width: 27px;
+  height: 27px;
+}
+
+.hero-card p {
+  font-size: 29px;
+  line-height: 1.35;
+}
+
+.hero-action-button {
+  min-height: 72px;
+  font-size: 25px;
+}
+
 .accessibility-button {
-  font-size: 19px;
+  height: 58px;
+  padding: 0 28px;
+  font-size: 21px;
+}
+
+.accessibility-icon {
+  width: 30px;
+  height: 30px;
 }
 
 
-/* Resumo da sessão */
+/* Cabeçalho do resumo */
 
 .session-summary-label {
-  font-size: 16px;
+  font-size: 19px;
+  letter-spacing: 0.06em;
+}
+
+.session-summary-label::before {
+  width: 10px;
+  height: 10px;
 }
 
 .session-summary-header h2 {
-  font-size: 32px;
+  font-size: 38px;
+  line-height: 1.2;
 }
 
 .session-status {
-  padding: 10px 16px;
-  font-size: 16px;
+  padding: 12px 19px;
+  gap: 10px;
+  font-size: 18px;
+}
+
+.session-status::before {
+  width: 9px;
+  height: 9px;
+}
+
+
+/* Cartões com número e duração */
+
+.session-information-item {
+  min-height: 116px;
+  padding: 23px 26px 23px 30px;
 }
 
 .session-information-item span {
-  font-size: 17px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  line-height: 1.3;
 }
 
 .session-information-item strong {
-  font-size: 31px;
+  font-size: 40px;
+  line-height: 1;
+}
+
+
+/* Progresso */
+
+.session-progress {
+  margin-top: 30px;
 }
 
 .session-progress-labels {
-  font-size: 17px;
+  font-size: 20px;
+  line-height: 1.3;
 }
 
+.session-progress-labels strong {
+  font-size: 20px;
+}
+
+.session-progress-track {
+  height: 15px;
+  margin-top: 15px;
+}
+
+
+/* Mensagem informativa */
+
 .session-guidance {
-  min-height: 64px;
-  font-size: 17px;
+  min-height: 78px;
+  padding: 20px 24px 20px 66px;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.session-guidance::before {
+  left: 21px;
+  width: 31px;
+  height: 31px;
+  font-size: 18px;
+}
+
+.session-guidance strong {
+  margin: 0 5px;
 }
 
 
 /* Menu inferior */
 
+.bottom-nav {
+  height: 100px;
+}
+
 .bottom-nav div {
-  font-size: 16px;
+  min-width: 110px;
+  font-size: 18px;
 }
 
 .bottom-nav img {
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
 }
 
 
@@ -1220,25 +1298,47 @@ h2 {
 
 @media (max-width: 900px) {
   .hero-card h1 {
-    font-size: 34px;
+    font-size: 38px;
   }
 
   .patient-meta {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .hero-card p {
-    font-size: 23px;
+    font-size: 25px;
+  }
+
+  .hero-action-button {
+    min-height: 66px;
+    font-size: 22px;
+  }
+
+  .session-summary-label {
+    font-size: 17px;
   }
 
   .session-summary-header h2 {
-    font-size: 29px;
+    font-size: 33px;
+  }
+
+  .session-status {
+    font-size: 17px;
   }
 
   .session-information-item span,
   .session-progress-labels,
+  .session-progress-labels strong,
   .session-guidance {
-    font-size: 16px;
+    font-size: 18px;
+  }
+
+  .session-information-item strong {
+    font-size: 35px;
+  }
+
+  .bottom-nav div {
+    font-size: 17px;
   }
 }
 
@@ -1247,44 +1347,76 @@ h2 {
 
 @media (max-width: 700px) {
   .hero-card h1 {
-    font-size: 27px;
+    font-size: 30px;
   }
 
   .patient-meta {
-    font-size: 16px;
+    font-size: 18px;
+  }
+
+  .patient-meta img {
+    width: 22px;
+    height: 22px;
   }
 
   .hero-card p {
-    font-size: 20px;
+    font-size: 22px;
   }
 
   .hero-action-button {
-    font-size: 20px;
+    font-size: 22px;
+  }
+
+  .accessibility-button {
+    height: 52px;
+    padding: 0 20px;
+    font-size: 18px;
   }
 
   .session-summary-label {
-    font-size: 15px;
+    font-size: 17px;
   }
 
   .session-summary-header h2 {
-    font-size: 26px;
+    font-size: 30px;
   }
 
   .session-status {
-    font-size: 15px;
+    padding: 10px 15px;
+    font-size: 16px;
+  }
+
+  .session-information-item {
+    min-height: 105px;
   }
 
   .session-information-item span,
   .session-progress-labels,
+  .session-progress-labels strong,
   .session-guidance {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .session-information-item strong {
-    font-size: 28px;
+    font-size: 34px;
+  }
+
+  .session-guidance {
+    padding: 18px 18px 18px 58px;
+  }
+
+  .session-guidance::before {
+    left: 17px;
+    width: 29px;
+    height: 29px;
   }
 
   .bottom-nav div {
-    font-size: 15px;
+    font-size: 16px;
+  }
+
+  .bottom-nav img {
+    width: 38px;
+    height: 38px;
   }
 }
