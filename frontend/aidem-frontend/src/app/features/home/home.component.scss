@@ -1147,3 +1147,144 @@ h2 {
     height: 31px;
   }
 }
+
+/* Aumentar a legibilidade da página */
+
+.hero-card h1 {
+  font-size: 38px;
+}
+
+.patient-meta {
+  font-size: 20px;
+}
+
+.hero-card p {
+  font-size: 26px;
+}
+
+.hero-action-button {
+  font-size: 23px;
+}
+
+.accessibility-button {
+  font-size: 19px;
+}
+
+
+/* Resumo da sessão */
+
+.session-summary-label {
+  font-size: 16px;
+}
+
+.session-summary-header h2 {
+  font-size: 32px;
+}
+
+.session-status {
+  padding: 10px 16px;
+  font-size: 16px;
+}
+
+.session-information-item span {
+  font-size: 17px;
+}
+
+.session-information-item strong {
+  font-size: 31px;
+}
+
+.session-progress-labels {
+  font-size: 17px;
+}
+
+.session-guidance {
+  min-height: 64px;
+  font-size: 17px;
+}
+
+
+/* Menu inferior */
+
+.bottom-nav div {
+  font-size: 16px;
+}
+
+.bottom-nav img {
+  width: 40px;
+  height: 40px;
+}
+
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .hero-card h1 {
+    font-size: 34px;
+  }
+
+  .patient-meta {
+    font-size: 18px;
+  }
+
+  .hero-card p {
+    font-size: 23px;
+  }
+
+  .session-summary-header h2 {
+    font-size: 29px;
+  }
+
+  .session-information-item span,
+  .session-progress-labels,
+  .session-guidance {
+    font-size: 16px;
+  }
+}
+
+
+/* Telemóvel */
+
+@media (max-width: 700px) {
+  .hero-card h1 {
+    font-size: 27px;
+  }
+
+  .patient-meta {
+    font-size: 16px;
+  }
+
+  .hero-card p {
+    font-size: 20px;
+  }
+
+  .hero-action-button {
+    font-size: 20px;
+  }
+
+  .session-summary-label {
+    font-size: 15px;
+  }
+
+  .session-summary-header h2 {
+    font-size: 26px;
+  }
+
+  .session-status {
+    font-size: 15px;
+  }
+
+  .session-information-item span,
+  .session-progress-labels,
+  .session-guidance {
+    font-size: 16px;
+  }
+
+  .session-information-item strong {
+    font-size: 28px;
+  }
+
+  .bottom-nav div {
+    font-size: 15px;
+  }
+}
