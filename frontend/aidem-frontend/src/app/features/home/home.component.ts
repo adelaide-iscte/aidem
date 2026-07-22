@@ -62,7 +62,7 @@ export class HomeComponent implements OnChanges, OnInit {
   showNotifications = false;
   todayPlan: SessionPlan | null = null;
   todayActivities: SessionPlanExercise[] = [];
-  isLoadingActivities = false;
+  isLoadingActivities = true;
   showSideMenu = false;
   days: HomeDay[] = [];
 

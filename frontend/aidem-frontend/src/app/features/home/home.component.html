@@ -73,9 +73,11 @@
         aria-hidden="true">
 
       <button
+        *ngIf="!isLoadingActivities"
         class="action-button primary hero-action-button"
         type="button"
         (click)="openActivities.emit()">
+
         <span>{{ sessionActionLabel }}</span>
       </button>
     </section>
@@ -87,7 +89,9 @@
           <span class="session-summary-label">
   Sessão de hoje | {{ todayFormatted }}
 </span>
-          <h2>{{ sessionSummaryTitle }}</h2>
+          <h2 *ngIf="!isLoadingActivities">
+            {{ sessionSummaryTitle }}
+          </h2>
         </div>
 
         <span
