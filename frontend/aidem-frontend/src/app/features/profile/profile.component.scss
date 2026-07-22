@@ -25,27 +25,6 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-.menu-icon {
-  width: 42px;
-  height: 42px;
-}
-
-.top-icons {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.top-icon {
-  width: 42px;
-  height: 42px;
-}
-
-.avatar {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-}
 
 .profile-content {
   width: min(1130px, calc(100% - 120px));
@@ -1289,24 +1268,6 @@
   box-shadow: 0 2px 10px rgba(43, 61, 88, 0.04);
 }
 
-.menu-icon,
-.top-icon {
-  border-radius: 12px;
-  cursor: pointer;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
-}
-
-.menu-icon:hover,
-.top-icon:hover {
-  opacity: 0.78;
-}
-
-.menu-icon:active,
-.top-icon:active {
-  transform: scale(0.95);
-}
 
 .avatar {
   border: 2px solid #e3eaf5;
