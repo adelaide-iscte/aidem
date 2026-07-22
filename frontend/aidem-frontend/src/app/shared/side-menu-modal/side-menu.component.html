@@ -1,58 +1,209 @@
 <div
   class="side-menu-overlay"
+  aria-hidden="true"
   (click)="close.emit()">
 </div>
 
-<aside class="side-menu">
-  <button
-    class="side-menu-back"
-    type="button"
-    (click)="close.emit()">
-    ‹ Voltar
-  </button>
+<aside
+  class="side-menu"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="side-menu-title">
 
-  <button
-    *ngIf="canChangePatient"
-    class="side-menu-item"
-    type="button"
-    (click)="changePatient.emit()">
-    Trocar utente
-  </button>
+  <header class="side-menu-header">
+    <div class="side-menu-heading">
+      <span>Navegação</span>
+      <h2 id="side-menu-title">Menu principal</h2>
+    </div>
 
-  <button
-    class="side-menu-item"
-    type="button">
-    Mensagens
-  </button>
+    <button
+      class="side-menu-back"
+      type="button"
+      aria-label="Fechar menu"
+      (click)="close.emit()">
 
-  <button
-    class="side-menu-item"
-    type="button"
-    (click)="openContents.emit()">
-    Conteúdos
-  </button>
+      <span aria-hidden="true">←</span>
+      <span>Voltar</span>
+    </button>
+  </header>
 
-  <button
-    *ngIf="isAdmin"
-    class="side-menu-item"
-    type="button"
-    (click)="openAdminActivities.emit()">
-    Atividades
-  </button>
 
-  <button
-    *ngIf="isAdmin"
-    class="side-menu-item"
-    type="button"
-    (click)="openUserManagement.emit()">
+  <nav
+    class="side-menu-navigation"
+    aria-label="Navegação principal">
 
-    Gestão de utilizadores
-  </button>
+    <span class="side-menu-section-title">
+      Geral
+    </span>
 
-  <button
-    type="button"
-    class="side-menu-item logout-item"
-    (click)="logout.emit()">
-    Terminar sessão
-  </button>
+
+    <button
+      *ngIf="canChangePatient"
+      class="side-menu-item"
+      type="button"
+      (click)="changePatient.emit()">
+
+      <span class="side-menu-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <circle cx="9" cy="7.5" r="3"></circle>
+
+          <path
+            d="M3.5 18c.7-3.3 2.5-4.8 5.5-4.8s4.8 1.5 5.5 4.8">
+          </path>
+
+          <path d="M15.5 8h5"></path>
+          <path d="m18.4 5.2 2.8 2.8-2.8 2.8"></path>
+        </svg>
+      </span>
+
+      <span class="side-menu-item-copy">
+        <strong>Trocar utente</strong>
+        <small>Selecionar outro utente</small>
+      </span>
+
+      <span class="side-menu-chevron" aria-hidden="true">
+        ›
+      </span>
+    </button>
+
+
+    <button
+      class="side-menu-item"
+      type="button">
+
+      <span class="side-menu-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M5 5.5h14v10H9L5 19V5.5Z"></path>
+          <path d="M8 9h8"></path>
+          <path d="M8 12h5"></path>
+        </svg>
+      </span>
+
+      <span class="side-menu-item-copy">
+        <strong>Mensagens</strong>
+        <small>Consultar e enviar mensagens</small>
+      </span>
+
+      <span class="side-menu-chevron" aria-hidden="true">
+        ›
+      </span>
+    </button>
+
+
+    <button
+      class="side-menu-item"
+      type="button"
+      (click)="openContents.emit()">
+
+      <span class="side-menu-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M4 5.5c2.8-.9 5.4-.4 8 1.5v12c-2.6-1.9-5.2-2.4-8-1.5v-12Z">
+          </path>
+
+          <path
+            d="M20 5.5c-2.8-.9-5.4-.4-8 1.5v12c2.6-1.9 5.2-2.4 8-1.5v-12Z">
+          </path>
+        </svg>
+      </span>
+
+      <span class="side-menu-item-copy">
+        <strong>Conteúdos</strong>
+        <small>Livros, filmes e peças recomendadas</small>
+      </span>
+
+      <span class="side-menu-chevron" aria-hidden="true">
+        ›
+      </span>
+    </button>
+
+
+    <ng-container *ngIf="isAdmin">
+
+      <span class="side-menu-section-title admin-section-title">
+        Administração
+      </span>
+
+
+      <button
+        class="side-menu-item admin-item"
+        type="button"
+        (click)="openAdminActivities.emit()">
+
+        <span class="side-menu-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M8 4h8"></path>
+            <path d="M9 3h6v3H9V3Z"></path>
+            <path d="M6 5h12v16H6V5Z"></path>
+            <path d="M9 10h6"></path>
+            <path d="M9 14h6"></path>
+            <path d="M9 18h4"></path>
+          </svg>
+        </span>
+
+        <span class="side-menu-item-copy">
+          <strong>Atividades</strong>
+          <small>Gerir as atividades disponíveis</small>
+        </span>
+
+        <span class="side-menu-chevron" aria-hidden="true">
+          ›
+        </span>
+      </button>
+
+
+      <button
+        class="side-menu-item admin-item"
+        type="button"
+        (click)="openUserManagement.emit()">
+
+        <span class="side-menu-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <circle cx="9" cy="8" r="3"></circle>
+            <circle cx="17" cy="9" r="2.5"></circle>
+
+            <path
+              d="M3.5 19c.7-3.5 2.5-5 5.5-5s4.8 1.5 5.5 5">
+            </path>
+
+            <path
+              d="M14.5 14.5c3.3-.8 5.3.7 6 3.5">
+            </path>
+          </svg>
+        </span>
+
+        <span class="side-menu-item-copy">
+          <strong>Gestão de utilizadores</strong>
+          <small>Criar e gerir contas de acesso</small>
+        </span>
+
+        <span class="side-menu-chevron" aria-hidden="true">
+          ›
+        </span>
+      </button>
+
+    </ng-container>
+  </nav>
+
+
+  <footer class="side-menu-footer">
+    <button
+      type="button"
+      class="logout-item"
+      (click)="logout.emit()">
+
+      <span class="logout-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M10 4H5v16h5"></path>
+          <path d="M13 8l4 4-4 4"></path>
+          <path d="M7 12h10"></path>
+        </svg>
+      </span>
+
+      <span class="logout-copy">
+        <strong>Terminar sessão</strong>
+        <small>Sair da sua conta</small>
+      </span>
+    </button>
+  </footer>
 </aside>

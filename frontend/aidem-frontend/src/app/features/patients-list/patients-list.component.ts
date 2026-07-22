@@ -28,6 +28,7 @@ type SortMode = 'recent' | 'alphabetical';
   styleUrl: './patients-list.component.scss'
 })
 export class PatientsListComponent {
+
   @Input() patients: AppPatient[] = [];
   @Input() isAdmin = false;
   @Output() selectPatient = new EventEmitter<AppPatient>();
@@ -35,17 +36,14 @@ export class PatientsListComponent {
   @Output() openChat = new EventEmitter<void>();
   @Output() createPatient = new EventEmitter<void>();
   @Output() openContents = new EventEmitter<void>();
-  @Output()
-  openAdminActivities =
-    new EventEmitter<void>();
-
+  @Output() openAdminActivities = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();
-
-  @Output()
-  openUserManagement =
-    new EventEmitter<void>();
+  @Output() openUserManagement = new EventEmitter<void>();
 
   showSideMenu = false;
+  searchTerm = '';
+  sortMode: SortMode = 'recent';
+  showNotifications = false;
 
   constructor(
     private patientService: PatientService,
@@ -62,20 +60,11 @@ export class PatientsListComponent {
 
   @Output() openCreateExercise = new EventEmitter<void>();
 
-  changePatient(): void {
-    this.openPatients.emit();
-    this.closeSideMenu();
-  }
   get headerAvatar(): string {
     return this.isAdmin
       ? '/icons/adm.svg'
       : '/icons/professional.svg';
   }
-
-
-  searchTerm = '';
-  sortMode: SortMode = 'recent';
-  showNotifications = false;
 
   get filteredPatients(): AppPatient[] {
     const normalizedSearch = this.searchTerm.trim().toLowerCase();
