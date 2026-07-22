@@ -215,7 +215,10 @@ public class ChatService {
                     "Não existe nenhum cuidador formal associado a este utente."
                 );
 
-            case ADMIN -> null;
+            case ADMIN -> throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "O chat da administração ainda não está configurado."
+            );
             case FORMAL_CAREGIVER ->
                 findAssociatedCaregiver(
                     patientId,
@@ -224,7 +227,7 @@ public class ChatService {
                     "Não existe nenhum cuidador informal associado a este utente."
                 );
 
-            
+
         };
     }
 
