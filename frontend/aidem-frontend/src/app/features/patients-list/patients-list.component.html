@@ -1,22 +1,44 @@
 <div class="patients-page">
   <header class="header">
-    <img src="/icons/menu.svg" class="menu-icon" (click)="openSideMenu()" />
+    <img
+      src="/icons/menu.svg"
+      class="menu-icon"
+      alt="Abrir menu"
+      (click)="openSideMenu()" />
 
     <div class="top-icons">
       <img
         src="/icons/bell.svg"
         class="top-icon"
-        (click)="toggleNotifications()"
-      />
+        alt="Notificações"
+        (click)="toggleNotifications()" />
+
       <img
         [src]="headerAvatar"
         class="avatar"
-        alt="Perfil"
-      />
+        alt="Perfil" />
     </div>
   </header>
 
+
   <main class="content">
+
+    <section class="page-heading">
+      <div>
+        <span class="page-label">Gestão de utentes</span>
+
+        <h1>Lista de utentes</h1>
+
+        <p>Selecione o utente que pretende acompanhar.</p>
+      </div>
+
+      <span class="patients-count">
+        {{ filteredPatients.length }}
+        {{ filteredPatients.length === 1 ? 'utente' : 'utentes' }}
+      </span>
+    </section>
+
+
     <section class="toolbar">
       <div class="search-wrapper">
         <span class="search-icon" aria-hidden="true"></span>
@@ -24,61 +46,118 @@
         <input
           type="text"
           [(ngModel)]="searchTerm"
-          placeholder="Pesquisar"
-        />
+          placeholder="Pesquisar utente"
+          aria-label="Pesquisar utente" />
 
         <button
           *ngIf="searchTerm"
           type="button"
           class="clear-button"
+          aria-label="Limpar pesquisa"
           (click)="clearSearch()">
           ×
         </button>
       </div>
 
-      <button type="button" class="sort-button" (click)="toggleSortMode()">
-        <span>{{ sortMode === 'recent' ? 'Mais recentes' : 'A-Z' }}</span>
+      <button
+        type="button"
+        class="sort-button"
+        (click)="toggleSortMode()">
+
+        <span>
+          {{ sortMode === 'recent' ? 'Mais recentes' : 'A–Z' }}
+        </span>
       </button>
 
-      <button type="button" class="add-button" (click)="createPatient.emit()">
-        + Adicionar paciente
+      <button
+        type="button"
+        class="add-button"
+        (click)="createPatient.emit()">
+
+        <span class="add-icon" aria-hidden="true">+</span>
+        <span>Adicionar utente</span>
       </button>
     </section>
 
-    <section class="patients-card">
-      <div class="patients-scroll">
+
+    <section
+      class="patients-card"
+      aria-label="Lista de utentes">
+
+      <div
+        class="patients-grid"
+        *ngIf="filteredPatients.length > 0">
+
         <button
           type="button"
           class="patient-item"
-          *ngFor="let patient of filteredPatients; trackBy: trackByPatientCode"
+          *ngFor="
+            let patient of filteredPatients;
+            trackBy: trackByPatientCode
+          "
           (click)="openPatient(patient)">
-          <img [src]="patient.avatar" class="patient-avatar" />
+
+          <img
+            [src]="patient.avatar"
+            class="patient-avatar"
+            [alt]="'Fotografia de ' + patient.name" />
 
           <div class="patient-copy">
             <h2>{{ patient.name }}</h2>
+
             <p>
-              <span>{{ patient.age }} anos</span>
-              <strong>|</strong>
-              {{ patient.code }}
+              <span class="patient-age">
+                {{ patient.age }} anos
+              </span>
+
+              <span class="patient-separator" aria-hidden="true">
+                •
+              </span>
+
+              <span class="patient-code">
+                {{ patient.code }}
+              </span>
             </p>
           </div>
+
+          <span class="patient-arrow" aria-hidden="true">
+            ›
+          </span>
         </button>
       </div>
+
+
+      <div
+        class="empty-state"
+        *ngIf="filteredPatients.length === 0">
+
+        <span class="empty-icon" aria-hidden="true">⌕</span>
+
+        <h2>Nenhum utente encontrado</h2>
+
+        <p>
+          Tente pesquisar por outro nome, idade ou código.
+        </p>
+      </div>
     </section>
+
   </main>
 
+
   <footer class="bottom-nav">
-    <div class="active">
-      <img src="/icons/doctor.svg" />
+    <div class="active" aria-current="page">
+      <img src="/icons/doctor.svg" alt="" />
       <span>Profissional</span>
     </div>
   </footer>
+
 
   <app-notifications-popover
     *ngIf="showNotifications"
     (close)="closeNotifications()">
   </app-notifications-popover>
 </div>
+
 
 <app-side-menu
   *ngIf="showSideMenu"
@@ -91,9 +170,9 @@
     closeSideMenu()
   "
   (openUserManagement)="
-  openUserManagement.emit();
-  closeSideMenu()
-"
+    openUserManagement.emit();
+    closeSideMenu()
+  "
   (logout)="
     logout.emit();
     closeSideMenu()
