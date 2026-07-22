@@ -7,13 +7,17 @@ import java.time.Instant;
 
 @Entity
 @Table(
-    name = "chat_messages",
-    indexes = {
-        @Index(
-            name = "idx_chat_messages_conversation",
-            columnList = "patient_id,sender_id,recipient_id,id"
-        )
-    }
+        name = "chat_messages",
+        indexes = {
+                @Index(
+                        name = "idx_chat_messages_sender_recipient",
+                        columnList = "sender_id,recipient_id,id"
+                ),
+                @Index(
+                        name = "idx_chat_messages_recipient_sender",
+                        columnList = "recipient_id,sender_id,id"
+                )
+        }
 )
 @Getter
 @Setter
@@ -26,22 +30,36 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "patient_id", nullable = false)
-    private Patient patient;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "sender_id", nullable = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false
+    )
+    @JoinColumn(
+            name = "sender_id",
+            nullable = false
+    )
     private User sender;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "recipient_id", nullable = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false
+    )
+    @JoinColumn(
+            name = "recipient_id",
+            nullable = false
+    )
     private User recipient;
 
-    @Column(nullable = false, columnDefinition = "text")
+    @Column(
+            nullable = false,
+            columnDefinition = "text"
+    )
     private String content;
 
-    @Column(nullable = false, updatable = false)
+    @Column(
+            nullable = false,
+            updatable = false
+    )
     private Instant sentAt;
 
     @PrePersist

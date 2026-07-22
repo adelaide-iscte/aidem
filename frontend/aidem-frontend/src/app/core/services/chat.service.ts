@@ -12,6 +12,15 @@ export type ChatContact = {
   role: ChatContactRole;
 };
 
+export type ChatConversation = {
+  contactId: number;
+  contactName: string;
+  contactRole: ChatContactRole;
+  lastMessage: string;
+  lastMessageAt: string;
+  lastMessageMine: boolean;
+};
+
 export type ChatMessage = {
   id: number;
   senderId: number;
@@ -38,33 +47,50 @@ export class ChatService {
     private authService: AuthService
   ) {}
 
-  async getContact(
-    patientId: number
-  ): Promise<ChatContact> {
+  async getContacts(): Promise<ChatContact[]> {
     const response = await fetch(
-      `${this.apiUrl}/patients/${patientId}/contact`,
+      `${this.apiUrl}/contacts`,
       {
-        headers: this.getHeaders()
+        headers: this.getHeaders(),
+        cache: 'no-store'
       }
     );
 
-    return this.handleResponse<ChatContact>(
+    return this.handleResponse<ChatContact[]>(
       response,
-      'Erro ao carregar o contacto da conversa'
+      'Erro ao carregar os utilizadores'
+    );
+  }
+
+  async getConversations():
+    Promise<ChatConversation[]> {
+
+    const response = await fetch(
+      `${this.apiUrl}/conversations`,
+      {
+        headers: this.getHeaders(),
+        cache: 'no-store'
+      }
+    );
+
+    return this.handleResponse<ChatConversation[]>(
+      response,
+      'Erro ao carregar as conversas'
     );
   }
 
   async getMessages(
-    patientId: number,
+    contactId: number,
     afterId?: number
   ): Promise<ChatMessage[]> {
+
     const query =
       afterId !== undefined
         ? `?afterId=${afterId}`
         : '';
 
     const response = await fetch(
-      `${this.apiUrl}/patients/${patientId}/messages${query}`,
+      `${this.apiUrl}/conversations/${contactId}/messages${query}`,
       {
         headers: this.getHeaders(),
         cache: 'no-store'
@@ -78,11 +104,12 @@ export class ChatService {
   }
 
   async sendMessage(
-    patientId: number,
+    contactId: number,
     content: string
   ): Promise<ChatMessage> {
+
     const response = await fetch(
-      `${this.apiUrl}/patients/${patientId}/messages`,
+      `${this.apiUrl}/conversations/${contactId}/messages`,
       {
         method: 'POST',
         headers: this.getHeaders(true),
@@ -101,7 +128,9 @@ export class ChatService {
   private getHeaders(
     includeContentType = false
   ): HeadersInit {
-    const token = this.authService.getToken();
+
+    const token =
+      this.authService.getToken();
 
     if (!token) {
       throw new Error('TOKEN_MISSING');
@@ -122,6 +151,7 @@ export class ChatService {
     response: Response,
     defaultError: string
   ): Promise<T> {
+
     const raw = await response.text();
 
     if (response.status === 401) {
@@ -147,6 +177,7 @@ export class ChatService {
   private readErrorMessage(
     raw: string
   ): string {
+
     if (!raw) {
       return '';
     }

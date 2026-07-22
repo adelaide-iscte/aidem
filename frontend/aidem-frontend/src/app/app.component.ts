@@ -93,6 +93,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private pageBeforeAdminActivities: AppPage = 'patients';
   private pageBeforeContents: AppPage = 'home';
   private pageBeforeAdminUsers: AppPage = 'patients';
+  private pageBeforeChat: AppPage = 'home';
 
   constructor(
     private patientService: PatientService,
@@ -539,7 +540,21 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   goToChat(): void {
+    if (this.currentPage !== 'chat') {
+      this.pageBeforeChat =
+        this.currentPage;
+    }
+
     this.currentPage = 'chat';
+  }
+
+  closeChat(): void {
+    this.currentPage =
+      this.pageBeforeChat === 'chat'
+        ? this.selectedPatient
+          ? 'home'
+          : 'patients'
+        : this.pageBeforeChat;
   }
 
   onPatientDeleted(

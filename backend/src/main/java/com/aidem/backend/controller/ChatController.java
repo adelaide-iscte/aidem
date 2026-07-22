@@ -1,6 +1,7 @@
 package com.aidem.backend.controller;
 
 import com.aidem.backend.dto.chat.ChatContactResponse;
+import com.aidem.backend.dto.chat.ChatConversationResponse;
 import com.aidem.backend.dto.chat.ChatMessageResponse;
 import com.aidem.backend.dto.chat.SendChatMessageRequest;
 import com.aidem.backend.service.ChatService;
@@ -12,52 +13,80 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/chat/patients/{patientId}")
+@RequestMapping("/api/chat")
 public class ChatController {
 
     private final ChatService chatService;
 
     public ChatController(
-        ChatService chatService
+            ChatService chatService
     ) {
         this.chatService = chatService;
     }
 
-    @GetMapping("/contact")
-    public ChatContactResponse getContact(
-        @PathVariable Long patientId,
-        Authentication authentication
+    /*
+     * Utilizadores disponíveis para iniciar
+     * uma conversa.
+     */
+    @GetMapping("/contacts")
+    public List<ChatContactResponse> getContacts(
+            Authentication authentication
     ) {
-        return chatService.getContact(
-            patientId,
-            authentication
+        return chatService.getContacts(
+                authentication
         );
     }
 
-    @GetMapping("/messages")
+    /*
+     * Conversas que já possuem mensagens.
+     */
+    @GetMapping("/conversations")
+    public List<ChatConversationResponse>
+    getConversations(
+            Authentication authentication
+    ) {
+        return chatService.getConversations(
+                authentication
+        );
+    }
+
+    /*
+     * Mensagens privadas com um contacto.
+     */
+    @GetMapping(
+            "/conversations/{contactId}/messages"
+    )
     public List<ChatMessageResponse> getMessages(
-        @PathVariable Long patientId,
-        @RequestParam(required = false) Long afterId,
-        Authentication authentication
+            @PathVariable Long contactId,
+            @RequestParam(required = false)
+            Long afterId,
+            Authentication authentication
     ) {
         return chatService.getMessages(
-            patientId,
-            afterId,
-            authentication
+                contactId,
+                afterId,
+                authentication
         );
     }
 
-    @PostMapping("/messages")
+    /*
+     * Envio de uma nova mensagem.
+     */
+    @PostMapping(
+            "/conversations/{contactId}/messages"
+    )
     @ResponseStatus(HttpStatus.CREATED)
     public ChatMessageResponse sendMessage(
-        @PathVariable Long patientId,
-        @Valid @RequestBody SendChatMessageRequest request,
-        Authentication authentication
+            @PathVariable Long contactId,
+            @Valid
+            @RequestBody
+            SendChatMessageRequest request,
+            Authentication authentication
     ) {
         return chatService.sendMessage(
-            patientId,
-            request,
-            authentication
+                contactId,
+                request,
+                authentication
         );
     }
 }

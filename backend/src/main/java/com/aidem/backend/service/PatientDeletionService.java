@@ -15,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import com.aidem.backend.repository.ChatMessageRepository;
-
 import java.util.List;
 
 @Service
@@ -32,7 +30,6 @@ public class PatientDeletionService {
     private final AssessmentRepository assessmentRepository;
     private final DomainScoreRepository domainScoreRepository;
     private final EntityManager entityManager;
-    private final ChatMessageRepository chatMessageRepository;
 
     public PatientDeletionService(
             PatientRepository patientRepository,
@@ -43,7 +40,6 @@ public class PatientDeletionService {
             ExerciseFeedbackRepository exerciseFeedbackRepository,
             RecommendationExplanationRepository recommendationExplanationRepository,
             AssessmentRepository assessmentRepository,
-            ChatMessageRepository chatMessageRepository,
             DomainScoreRepository domainScoreRepository,
             EntityManager entityManager
     ) {
@@ -53,7 +49,6 @@ public class PatientDeletionService {
         this.sessionPlanRepository = sessionPlanRepository;
         this.sessionPlanExerciseRepository = sessionPlanExerciseRepository;
         this.exerciseFeedbackRepository = exerciseFeedbackRepository;
-        this.chatMessageRepository = chatMessageRepository;
         this.recommendationExplanationRepository = recommendationExplanationRepository;
         this.assessmentRepository = assessmentRepository;
         this.domainScoreRepository = domainScoreRepository;
@@ -70,7 +65,6 @@ public class PatientDeletionService {
                                 "Utente não encontrado."
                         )
                 );
-        chatMessageRepository.deleteByPatientId(patientId);
 
         List<SessionPlan> sessionPlans =
                 sessionPlanRepository

@@ -1,17 +1,32 @@
 <div class="modal-backdrop">
   <div class="chat-page">
+
     <header class="header">
       <div class="left-actions">
-        <img src="/icons/menu.svg" class="menu-icon" (click)="openSideMenu()" />
+        <img
+          src="/icons/menu.svg"
+          class="menu-icon"
+          alt="Abrir menu"
+          (click)="openSideMenu()"
+        />
 
-        <button class="back-button" type="button" (click)="closeModal()">
+        <button
+          class="back-button"
+          type="button"
+          (click)="closeModal()">
+
           <span class="back-arrow">‹</span>
           <span>Voltar</span>
         </button>
       </div>
 
       <div class="top-icons">
-        <img src="/icons/bell.svg" class="top-icon" />
+        <img
+          src="/icons/bell.svg"
+          class="top-icon"
+          alt="Notificações"
+        />
+
         <img
           [src]="headerAvatar"
           class="avatar"
@@ -20,164 +35,527 @@
       </div>
     </header>
 
-    <section class="professional-card">
-      <img
-        [src]="contactAvatar"
-        class="professional-avatar"
-        [alt]="contactName"
-      />
 
-      <div class="professional-info">
-        <div class="professional-name-row">
-          <h1>{{ contactName }}</h1>
+    <div
+      class="chat-workspace"
+      [class.conversation-open]="selectedContact">
 
-          <span
-            *ngIf="contact"
-            class="online-dot">
-      </span>
 
-          <span
-            *ngIf="contact"
-            class="online-text">
-        Disponível
-      </span>
+      <!-- Lista de conversas -->
+
+      <aside
+        class="conversations-panel"
+        aria-label="Conversas">
+
+        <div class="conversations-heading">
+          <div>
+            <span class="section-label">
+              Mensagens
+            </span>
+
+            <h1>Conversas</h1>
+          </div>
+
+          <button
+            class="new-message-button"
+            type="button"
+            (click)="openNewMessagePicker()">
+
+            <span aria-hidden="true">+</span>
+            <span>Nova mensagem</span>
+          </button>
         </div>
 
-        <p>{{ contactRole }}</p>
-      </div>
-
-      <img
-        src="/icons/Phone_2.svg"
-        class="call-icon"
-        [class.disabled]="!contact"
-        alt="Iniciar chamada"
-        (click)="openCallOverlay()"
-      />
-    </section>
-
-    <section class="chat-main">
-      <main
-        #messagesContainer
-        class="chat-content"
-        aria-live="polite">
 
         <div
-          *ngIf="isLoadingChat"
-          class="chat-state">
-          A carregar mensagens...
+          *ngIf="isLoadingConversations"
+          class="panel-state">
+
+          A carregar conversas...
         </div>
 
-        <div
-          *ngIf="!isLoadingChat && chatError"
-          class="chat-state error-state">
-          {{ chatError }}
-        </div>
 
         <div
           *ngIf="
-        !isLoadingChat &&
-        !chatError &&
-        messages.length === 0
-      "
-          class="chat-state empty-state">
+            !isLoadingConversations &&
+            conversationsError
+          "
+          class="panel-state error-state">
 
-          <strong>Ainda não existem mensagens.</strong>
-          <span>Envie a primeira mensagem desta conversa.</span>
+          {{ conversationsError }}
         </div>
 
-        <article
-          *ngFor="
-        let chatMessage of messages;
-        trackBy: trackByMessageId
-      "
-          class="message-row"
-          [class.sent]="chatMessage.mine"
-          [class.received]="!chatMessage.mine">
 
-          <p class="message">
-            {{ chatMessage.content }}
-          </p>
+        <div
+          *ngIf="
+            !isLoadingConversations &&
+            !conversationsError &&
+            conversations.length === 0
+          "
+          class="panel-state empty-state">
 
-          <time
-            class="time"
-            [attr.datetime]="chatMessage.sentAt">
-            {{ formatMessageTime(chatMessage.sentAt) }}
-          </time>
-        </article>
-      </main>
+          <strong>
+            Ainda não existem conversas.
+          </strong>
 
-      <section class="chat-input-area">
-        <p
-          *ngIf="sendError"
-          class="send-error">
-          {{ sendError }}
-        </p>
+          <span>
+            Selecione “Nova mensagem” para começar.
+          </span>
+        </div>
 
-        <div class="chat-input-shell">
-          <input
-            [(ngModel)]="message"
-            maxlength="2000"
-            [disabled]="
-          isLoadingChat ||
-          isSendingMessage ||
-          !contact
-        "
-            placeholder="Escreva uma mensagem..."
-            (keyup.enter)="sendMessage()"
-          />
+
+        <div
+          *ngIf="conversations.length > 0"
+          class="conversation-list">
 
           <button
+            *ngFor="
+              let conversation of conversations;
+              trackBy: trackByConversation
+            "
+            class="conversation-item"
+            [class.active]="
+              selectedContact?.id ===
+              conversation.contactId
+            "
             type="button"
-            aria-label="Enviar mensagem"
-            [disabled]="!canSendMessage"
-            (click)="sendMessage()">
+            (click)="selectConversation(conversation)">
 
             <img
-              src="/icons/send.svg"
-              alt=""
+              [src]="
+                avatarForRole(
+                  conversation.contactRole
+                )
+              "
+              class="conversation-avatar"
+              [alt]="conversation.contactName"
             />
+
+            <span class="conversation-copy">
+              <span class="conversation-name-row">
+                <strong>
+                  {{ conversation.contactName }}
+                </strong>
+
+                <time
+                  [attr.datetime]="
+                    conversation.lastMessageAt
+                  ">
+                  {{
+                    formatConversationTime(
+                      conversation.lastMessageAt
+                    )
+                  }}
+                </time>
+              </span>
+
+              <span class="conversation-role">
+                {{
+                  roleLabel(
+                    conversation.contactRole
+                  )
+                }}
+              </span>
+
+              <span class="conversation-preview">
+                <ng-container
+                  *ngIf="conversation.lastMessageMine">
+
+                  Você:
+                </ng-container>
+
+                {{ conversation.lastMessage }}
+              </span>
+            </span>
           </button>
         </div>
+      </aside>
+
+
+      <!-- Conversa selecionada -->
+
+      <section
+        class="conversation-panel"
+        aria-label="Conversa selecionada">
+
+        <div
+          *ngIf="!selectedContact"
+          class="no-conversation">
+
+          <div
+            class="no-conversation-icon"
+            aria-hidden="true">
+
+            <img
+              src="/icons/Message.svg"
+              alt=""
+            />
+          </div>
+
+          <h2>Selecione uma conversa</h2>
+
+          <p>
+            Escolha uma conversa existente ou envie
+            uma nova mensagem.
+          </p>
+
+          <button
+            class="primary-button"
+            type="button"
+            (click)="openNewMessagePicker()">
+
+            Nova mensagem
+          </button>
+        </div>
+
+
+        <ng-container *ngIf="selectedContact">
+
+          <section class="professional-card">
+            <button
+              class="mobile-list-button"
+              type="button"
+              aria-label="Voltar à lista de conversas"
+              (click)="returnToConversationList()">
+
+              ‹
+            </button>
+
+            <img
+              [src]="
+                avatarForRole(
+                  selectedContact.role
+                )
+              "
+              class="professional-avatar"
+              [alt]="selectedContact.fullName"
+            />
+
+            <div class="professional-info">
+              <h2>
+                {{ selectedContact.fullName }}
+              </h2>
+
+              <p>
+                {{
+                  roleLabel(
+                    selectedContact.role
+                  )
+                }}
+              </p>
+            </div>
+
+            <button
+              class="call-button"
+              type="button"
+              aria-label="Iniciar chamada"
+              (click)="openCallOverlay()">
+
+              <img
+                src="/icons/Phone_2.svg"
+                alt=""
+              />
+            </button>
+          </section>
+
+
+          <section class="chat-main">
+            <main
+              #messagesContainer
+              class="chat-content"
+              aria-live="polite">
+
+
+              <div
+                *ngIf="isLoadingMessages"
+                class="chat-state">
+
+                A carregar mensagens...
+              </div>
+
+
+              <div
+                *ngIf="
+                  !isLoadingMessages &&
+                  messagesError
+                "
+                class="chat-state error-state">
+
+                {{ messagesError }}
+              </div>
+
+
+              <div
+                *ngIf="
+                  !isLoadingMessages &&
+                  !messagesError &&
+                  messages.length === 0
+                "
+                class="chat-state empty-state">
+
+                <strong>
+                  Ainda não existem mensagens.
+                </strong>
+
+                <span>
+                  Envie a primeira mensagem desta conversa.
+                </span>
+              </div>
+
+
+              <article
+                *ngFor="
+                  let chatMessage of messages;
+                  trackBy: trackByMessageId
+                "
+                class="message-row"
+                [class.sent]="chatMessage.mine"
+                [class.received]="!chatMessage.mine">
+
+                <p class="message">
+                  {{ chatMessage.content }}
+                </p>
+
+                <time
+                  class="time"
+                  [attr.datetime]="chatMessage.sentAt">
+
+                  {{
+                    formatMessageTime(
+                      chatMessage.sentAt
+                    )
+                  }}
+                </time>
+              </article>
+            </main>
+
+
+            <section class="chat-input-area">
+              <p
+                *ngIf="sendError"
+                class="send-error">
+
+                {{ sendError }}
+              </p>
+
+              <div class="chat-input-shell">
+                <input
+                  [(ngModel)]="message"
+                  maxlength="2000"
+                  [disabled]="
+                    isLoadingMessages ||
+                    isSendingMessage
+                  "
+                  placeholder="Escreva uma mensagem..."
+                  (keyup.enter)="sendMessage()"
+                />
+
+                <button
+                  type="button"
+                  aria-label="Enviar mensagem"
+                  [disabled]="!canSendMessage"
+                  (click)="sendMessage()">
+
+                  <img
+                    src="/icons/send.svg"
+                    alt=""
+                  />
+                </button>
+              </div>
+            </section>
+          </section>
+        </ng-container>
       </section>
-    </section>
+    </div>
+
 
     <footer class="bottom-nav">
-      <div class="active" (click)="openActivities.emit()">
-        <img src="/icons/atividade_marked.svg" />
-        <span>Atividades</span>
+      <div (click)="closeModal()">
+        <img
+          src="/icons/Home_unmarked.svg"
+          alt=""
+        />
+
+        <span>Voltar</span>
       </div>
 
-      <div (click)="goHome.emit()">
-        <img src="/icons/Home_unmarked.svg" />
-        <span>Início</span>
-      </div>
+      <div
+        class="active"
+        aria-current="page">
 
-      <div>
-        <div (click)="openProfile.emit()">
-          <img src="/icons/person.svg" />
-        <span>Perfil</span>
-        </div>
+        <img
+          src="/icons/Message.svg"
+          alt=""
+        />
+
+        <span>Mensagens</span>
       </div>
     </footer>
   </div>
 
+
+  <!-- Modal para escolher destinatário -->
+
+  <div
+    *ngIf="showNewMessage"
+    class="contact-picker-backdrop"
+    (click)="closeNewMessagePicker()">
+
+    <section
+      class="contact-picker"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="new-message-title"
+      (click)="$event.stopPropagation()">
+
+      <header class="contact-picker-header">
+        <div>
+          <span class="section-label">
+            Nova mensagem
+          </span>
+
+          <h2 id="new-message-title">
+            Escolher destinatário
+          </h2>
+        </div>
+
+        <button
+          type="button"
+          aria-label="Fechar"
+          (click)="closeNewMessagePicker()">
+
+          ×
+        </button>
+      </header>
+
+
+      <div class="contact-search">
+        <span aria-hidden="true">⌕</span>
+
+        <input
+          [(ngModel)]="contactSearch"
+          type="search"
+          placeholder="Pesquisar utilizador"
+          aria-label="Pesquisar utilizador"
+        />
+      </div>
+
+
+      <div
+        *ngIf="isLoadingContacts"
+        class="panel-state">
+
+        A carregar utilizadores...
+      </div>
+
+
+      <div
+        *ngIf="
+          !isLoadingContacts &&
+          contactsError
+        "
+        class="panel-state error-state">
+
+        {{ contactsError }}
+      </div>
+
+
+      <div
+        *ngIf="
+          !isLoadingContacts &&
+          !contactsError &&
+          filteredContacts.length === 0
+        "
+        class="panel-state empty-state">
+
+        Nenhum utilizador encontrado.
+      </div>
+
+
+      <div class="contact-list">
+        <button
+          *ngFor="
+            let contact of filteredContacts;
+            trackBy: trackByContact
+          "
+          class="contact-item"
+          type="button"
+          (click)="selectContact(contact)">
+
+          <img
+            [src]="avatarForRole(contact.role)"
+            [alt]="contact.fullName"
+          />
+
+          <span>
+            <strong>
+              {{ contact.fullName }}
+            </strong>
+
+            <small>
+              {{ roleLabel(contact.role) }}
+            </small>
+          </span>
+
+          <span
+            class="contact-arrow"
+            aria-hidden="true">
+
+            ›
+          </span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+
   <app-call-overlay
-    *ngIf="showCallOverlay"
-    [name]="contactName"
+    *ngIf="
+      showCallOverlay &&
+      selectedContact
+    "
+    [name]="selectedContact.fullName"
     status="A chamar ..."
-    [avatar]="contactAvatar"
+    [avatar]="
+      avatarForRole(
+        selectedContact.role
+      )
+    "
     (endCall)="closeCallOverlay()">
   </app-call-overlay>
 
 
   <app-side-menu
     *ngIf="showSideMenu"
-    (close)="closeSideMenu()"
-    (changePatient)="openPatients.emit(); closeSideMenu()"
-    (openContents)="openContents.emit(); closeSideMenu()"
     [isAdmin]="isAdmin"
-    (openAdminActivities)="openAdminActivities.emit();closeSideMenu()"
-    (openMessages)="openChat.emit(); closeSideMenu()"
-    (openUserManagement)="openUserManagement.emit();closeSideMenu()">
+
+    (close)="closeSideMenu()"
+
+    (changePatient)="
+      openPatients.emit();
+      closeSideMenu()
+    "
+
+    (openContents)="
+      openContents.emit();
+      closeSideMenu()
+    "
+
+    (openMessages)="closeSideMenu()"
+
+    (openAdminActivities)="
+      openAdminActivities.emit();
+      closeSideMenu()
+    "
+
+    (openUserManagement)="
+      openUserManagement.emit();
+      closeSideMenu()
+    "
+
+    (logout)="
+      logout.emit();
+      closeSideMenu()
+    ">
   </app-side-menu>
 </div>

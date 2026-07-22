@@ -12,64 +12,86 @@ import java.util.List;
 public interface ChatMessageRepository
         extends JpaRepository<ChatMessage, Long> {
 
+    /*
+     * Últimas mensagens entre dois utilizadores.
+     */
     @Query("""
         select message
         from ChatMessage message
-        where message.patient.id = :patientId
-          and (
+        where (
             (
-              message.sender.id = :currentUserId
-              and message.recipient.id = :contactId
+                message.sender.id = :currentUserId
+                and message.recipient.id = :contactId
             )
             or
             (
-              message.sender.id = :contactId
-              and message.recipient.id = :currentUserId
+                message.sender.id = :contactId
+                and message.recipient.id = :currentUserId
             )
-          )
+        )
         order by message.id desc
         """)
     List<ChatMessage> findLatestConversation(
-        @Param("patientId") Long patientId,
-        @Param("currentUserId") Long currentUserId,
-        @Param("contactId") Long contactId,
-        Pageable pageable
+            @Param("currentUserId")
+            Long currentUserId,
+
+            @Param("contactId")
+            Long contactId,
+
+            Pageable pageable
     );
 
+    /*
+     * Mensagens novas desde o último ID recebido.
+     */
     @Query("""
         select message
         from ChatMessage message
-        where message.patient.id = :patientId
-          and message.id > :afterId
+        where message.id > :afterId
           and (
             (
-              message.sender.id = :currentUserId
-              and message.recipient.id = :contactId
+                message.sender.id = :currentUserId
+                and message.recipient.id = :contactId
             )
             or
             (
-              message.sender.id = :contactId
-              and message.recipient.id = :currentUserId
+                message.sender.id = :contactId
+                and message.recipient.id = :currentUserId
             )
           )
         order by message.id asc
         """)
     List<ChatMessage> findConversationAfter(
-        @Param("patientId") Long patientId,
-        @Param("currentUserId") Long currentUserId,
-        @Param("contactId") Long contactId,
-        @Param("afterId") Long afterId
+            @Param("currentUserId")
+            Long currentUserId,
+
+            @Param("contactId")
+            Long contactId,
+
+            @Param("afterId")
+            Long afterId
     );
 
-    @Modifying(flushAutomatically = true)
+    /*
+     * Todas as mensagens onde o utilizador
+     * participa. Serve para construir a lista
+     * de conversas abertas.
+     */
     @Query("""
-        delete from ChatMessage message
-        where message.patient.id = :patientId
+        select message
+        from ChatMessage message
+        where message.sender.id = :userId
+           or message.recipient.id = :userId
+        order by message.id desc
         """)
-    int deleteByPatientId(
-        @Param("patientId") Long patientId
+    List<ChatMessage> findAllConversationsForUser(
+            @Param("userId")
+            Long userId
     );
 
+    /*
+     * Apaga mensagens antes de apagar uma conta.
+     */
     @Modifying(flushAutomatically = true)
     @Query("""
         delete from ChatMessage message
@@ -77,6 +99,7 @@ public interface ChatMessageRepository
            or message.recipient.id = :userId
         """)
     int deleteByUserId(
-        @Param("userId") Long userId
+            @Param("userId")
+            Long userId
     );
 }

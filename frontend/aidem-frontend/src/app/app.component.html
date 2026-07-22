@@ -106,19 +106,28 @@
 <app-chat-modal
   *ngIf="
     isLoggedIn &&
-    currentPage === 'chat' &&
-    selectedPatient
+    currentPage === 'chat'
   "
   [isAdmin]="isAdmin"
   [role]="componentRole"
-  [patient]="selectedPatient"
 
-  (goBack)="goToActivities()"
-  (close)="goToActivities()"
+  (goBack)="closeChat()"
+  (close)="closeChat()"
+
   (openPatients)="goToPatients()"
   (goHome)="goToHome()"
   (openProfile)="goToProfile()"
-  (openUserManagement)="openUserManagement()">
+  (openContents)="goToContents()"
+
+  (openAdminActivities)="
+    openAdminActivities()
+  "
+
+  (openUserManagement)="
+    openUserManagement()
+  "
+
+  (logout)="handleLogout()">
 </app-chat-modal>
 
 <app-profile
