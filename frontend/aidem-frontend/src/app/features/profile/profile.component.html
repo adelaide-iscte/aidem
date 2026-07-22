@@ -935,6 +935,7 @@
 <app-side-menu
   *ngIf="showSideMenu"
   (close)="closeSideMenu()"
+  [canChangePatient]="role === 'formal' || isAdmin"
   (changePatient)="openPatients.emit(); closeSideMenu()"
   (openContents)="openContents.emit(); closeSideMenu()"
   [isAdmin]="isAdmin"

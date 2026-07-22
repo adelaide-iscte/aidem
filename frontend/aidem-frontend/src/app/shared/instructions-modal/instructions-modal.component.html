@@ -114,31 +114,21 @@
 
       <div class="video-area">
 
-        <div
-          class="video-box"
-          [style.background-image]="getVideoBackground(activity)">
+        <button
+          class="video-preview"
+          type="button"
+          [style.background-image]="getVideoBackground(activity)"
+          aria-label="Abrir demonstração da atividade"
+          (click)="openVideoPlayer()">
 
-          <span class="video-title">Ver vídeo</span>
+          <span class="video-preview-title">Ver vídeo</span>
 
-          <div class="video-controls">
-            <span class="video-time">00:14</span>
-
-            <div class="video-progress">
-              <div class="video-progress-fill"></div>
-              <div class="video-dot"></div>
-            </div>
-
-            <span class="video-time">00:34</span>
-
-            <div class="video-icons">
-              <span>🔊</span>
-              <span>⟲</span>
-              <span class="play-circle">▶</span>
-              <span>⟳</span>
-              <span>⛶</span>
-            </div>
-          </div>
-        </div>
+          <span class="video-preview-play" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M8 5v14l11-7z"></path>
+      </svg>
+    </span>
+        </button>
 
         <button
           class="close-button"
@@ -150,4 +140,162 @@
 
     </section>
   </article>
+  <div
+    *ngIf="isVideoPlayerOpen"
+    class="video-player-backdrop"
+    (click)="closeVideoPlayer()">
+
+    <section
+      class="video-player-dialog"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="
+      'Demonstração da atividade ' +
+      (activity?.title || '')
+    "
+      (click)="$event.stopPropagation()">
+
+      <header class="video-player-header">
+        <div>
+        <span class="video-player-label">
+          Demonstração da atividade
+        </span>
+
+          <h2>{{ activity?.title }}</h2>
+        </div>
+
+        <button
+          class="video-player-close"
+          type="button"
+          aria-label="Fechar player"
+          (click)="closeVideoPlayer()">
+
+          <svg viewBox="0 0 24 24">
+            <path d="M6 6l12 12M18 6L6 18"></path>
+          </svg>
+        </button>
+      </header>
+
+      <div
+        #playerFrame
+        class="demo-player"
+        [style.background-image]="getVideoBackground(activity)">
+
+        <button
+          *ngIf="!isDemoPlaying"
+          class="demo-player-central-play"
+          type="button"
+          aria-label="Reproduzir demonstração"
+          (click)="toggleDemoPlayback()">
+
+          <svg viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"></path>
+          </svg>
+        </button>
+
+        <div class="demo-player-controls">
+
+          <div class="demo-player-progress-row">
+            <span>{{ formatDemoTime(demoCurrentTime) }}</span>
+
+            <input
+              class="demo-player-progress"
+              type="range"
+              min="0"
+              step="1"
+              [max]="demoDuration"
+              [value]="demoCurrentTime"
+              [style.--progress]="demoProgress + '%'"
+              aria-label="Progresso da demonstração"
+              (input)="seekDemo($event)">
+
+            <span>{{ formatDemoTime(demoDuration) }}</span>
+          </div>
+
+          <div class="demo-player-buttons">
+
+            <button
+              class="demo-player-icon-button"
+              type="button"
+              [attr.aria-label]="
+              isDemoMuted
+                ? 'Ativar som'
+                : 'Desativar som'
+            "
+              (click)="toggleDemoMute()">
+
+              <svg
+                *ngIf="!isDemoMuted"
+                viewBox="0 0 24 24">
+
+                <path d="M4 9v6h4l5 4V5L8 9H4"></path>
+                <path d="M16 8a5 5 0 010 8"></path>
+                <path d="M18.5 5.5a9 9 0 010 13"></path>
+              </svg>
+
+              <svg
+                *ngIf="isDemoMuted"
+                viewBox="0 0 24 24">
+
+                <path d="M4 9v6h4l5 4V5L8 9H4"></path>
+                <path d="M17 9l5 5M22 9l-5 5"></path>
+              </svg>
+            </button>
+
+            <div class="demo-player-main-buttons">
+              <button
+                class="demo-player-skip"
+                type="button"
+                aria-label="Recuar 5 segundos"
+                (click)="skipDemo(-5)">
+                −5s
+              </button>
+
+              <button
+                class="demo-player-play-button"
+                type="button"
+                [attr.aria-label]="
+                isDemoPlaying
+                  ? 'Pausar demonstração'
+                  : 'Reproduzir demonstração'
+              "
+                (click)="toggleDemoPlayback()">
+
+                <svg
+                  *ngIf="!isDemoPlaying"
+                  viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"></path>
+                </svg>
+
+                <svg
+                  *ngIf="isDemoPlaying"
+                  viewBox="0 0 24 24">
+                  <path d="M7 5h4v14H7zM13 5h4v14h-4z"></path>
+                </svg>
+              </button>
+
+              <button
+                class="demo-player-skip"
+                type="button"
+                aria-label="Avançar 5 segundos"
+                (click)="skipDemo(5)">
+                +5s
+              </button>
+            </div>
+
+            <button
+              class="demo-player-icon-button demo-player-fullscreen"
+              type="button"
+              aria-label="Ver em ecrã inteiro"
+              (click)="togglePlayerFullscreen(playerFrame)">
+
+              <svg viewBox="0 0 24 24">
+                <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 </div>
