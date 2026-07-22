@@ -165,16 +165,8 @@
   (changePatient)="openPatients.emit(); closeSideMenu()"
   (openContents)="openContents.emit(); closeSideMenu()"
   [isAdmin]="isAdmin"
-  (openAdminActivities)="
-    openAdminActivities.emit();
-    closeSideMenu()
-  "
-  (openUserManagement)="
-    openUserManagement.emit();
-    closeSideMenu()
-  "
-  (logout)="
-    logout.emit();
-    closeSideMenu()
-  ">
+  (openAdminActivities)="openAdminActivities.emit();closeSideMenu()"
+  (openUserManagement)="openUserManagement.emit();closeSideMenu()"
+  (openMessages)="openChat.emit(); closeSideMenu()"
+  (logout)="logout.emit();closeSideMenu()">
 </app-side-menu>

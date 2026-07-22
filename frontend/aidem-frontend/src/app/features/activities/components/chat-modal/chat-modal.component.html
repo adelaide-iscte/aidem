@@ -24,46 +24,118 @@
       <img
         [src]="contactAvatar"
         class="professional-avatar"
+        [alt]="contactName"
       />
 
       <div class="professional-info">
         <div class="professional-name-row">
           <h1>{{ contactName }}</h1>
-          <span class="online-dot"></span>
-          <span class="online-text">Online</span>
+
+          <span
+            *ngIf="contact"
+            class="online-dot">
+      </span>
+
+          <span
+            *ngIf="contact"
+            class="online-text">
+        Disponível
+      </span>
         </div>
 
         <p>{{ contactRole }}</p>
       </div>
 
-      <img src="/icons/Phone_2.svg" class="call-icon" (click)="openCallOverlay()" />
+      <img
+        src="/icons/Phone_2.svg"
+        class="call-icon"
+        [class.disabled]="!contact"
+        alt="Iniciar chamada"
+        (click)="openCallOverlay()"
+      />
     </section>
 
     <section class="chat-main">
-      <main class="chat-content">
-        <div class="message sent large"></div>
-        <span class="time sent-time">9:35</span>
+      <main
+        #messagesContainer
+        class="chat-content"
+        aria-live="polite">
 
-        <div class="message received"></div>
-        <span class="time received-time">9:41</span>
+        <div
+          *ngIf="isLoadingChat"
+          class="chat-state">
+          A carregar mensagens...
+        </div>
 
-        <div class="message sent small"></div>
-        <span class="time sent-time">9:50</span>
+        <div
+          *ngIf="!isLoadingChat && chatError"
+          class="chat-state error-state">
+          {{ chatError }}
+        </div>
 
-        <div class="message received"></div>
-        <span class="time received-time last-time">9:56</span>
+        <div
+          *ngIf="
+        !isLoadingChat &&
+        !chatError &&
+        messages.length === 0
+      "
+          class="chat-state empty-state">
+
+          <strong>Ainda não existem mensagens.</strong>
+          <span>Envie a primeira mensagem desta conversa.</span>
+        </div>
+
+        <article
+          *ngFor="
+        let chatMessage of messages;
+        trackBy: trackByMessageId
+      "
+          class="message-row"
+          [class.sent]="chatMessage.mine"
+          [class.received]="!chatMessage.mine">
+
+          <p class="message">
+            {{ chatMessage.content }}
+          </p>
+
+          <time
+            class="time"
+            [attr.datetime]="chatMessage.sentAt">
+            {{ formatMessageTime(chatMessage.sentAt) }}
+          </time>
+        </article>
       </main>
 
       <section class="chat-input-area">
+        <p
+          *ngIf="sendError"
+          class="send-error">
+          {{ sendError }}
+        </p>
+
         <div class="chat-input-shell">
           <input
             [(ngModel)]="message"
+            maxlength="2000"
+            [disabled]="
+          isLoadingChat ||
+          isSendingMessage ||
+          !contact
+        "
             placeholder="Escreva uma mensagem..."
             (keyup.enter)="sendMessage()"
           />
 
-          <button type="button" (click)="sendMessage()">
-            <img src="/icons/send.svg" alt="Enviar mensagem" />
+          <button
+            type="button"
+            aria-label="Enviar mensagem"
+            [disabled]="!canSendMessage"
+            (click)="sendMessage()">
+
+            <img
+              src="/icons/send.svg"
+              alt=""
+            />
           </button>
         </div>
       </section>
@@ -104,13 +176,8 @@
     (changePatient)="openPatients.emit(); closeSideMenu()"
     (openContents)="openContents.emit(); closeSideMenu()"
     [isAdmin]="isAdmin"
-    (openAdminActivities)="
-    openAdminActivities.emit();
-    closeSideMenu()
-  "
-    (openUserManagement)="
-  openUserManagement.emit();
-  closeSideMenu()
-">
+    (openAdminActivities)="openAdminActivities.emit();closeSideMenu()"
+    (openMessages)="openChat.emit(); closeSideMenu()"
+    (openUserManagement)="openUserManagement.emit();closeSideMenu()">
   </app-side-menu>
 </div>

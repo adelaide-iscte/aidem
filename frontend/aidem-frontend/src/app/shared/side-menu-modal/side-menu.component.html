@@ -66,8 +66,10 @@
 
 
     <button
+      *ngIf="canOpenMessages"
       class="side-menu-item"
-      type="button">
+      type="button"
+      (click)="openMessages.emit()">
 
       <span class="side-menu-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24">

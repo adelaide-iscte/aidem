@@ -11,13 +11,14 @@ import { CommonModule } from '@angular/common';
 export class SideMenuComponent {
   @Input() canChangePatient = true;
   @Input() isAdmin = false;
+  @Input() canOpenMessages = true;
   @Output() close = new EventEmitter<void>();
   @Output() changePatient = new EventEmitter<void>();
   @Output() openContents = new EventEmitter<void>();
   @Output() openAdminActivities = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();
   @Output() openUserManagement = new EventEmitter<void>();
-
+  @Output() openMessages = new EventEmitter<void>();
   showSideMenu = false;
 
   openSideMenu(): void {

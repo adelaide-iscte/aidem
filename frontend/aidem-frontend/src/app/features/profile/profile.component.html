@@ -940,5 +940,6 @@
   [isAdmin]="isAdmin"
   (openAdminActivities)="openAdminActivities.emit(); closeSideMenu()"
   (openUserManagement)="openUserManagement.emit();closeSideMenu()"
-  (logout)="logout.emit();closeSideMenu()">
+  (logout)="logout.emit();closeSideMenu()"
+  (openMessages)="openChat.emit(); closeSideMenu()">
 </app-side-menu>

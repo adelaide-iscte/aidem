@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
+import com.aidem.backend.repository.ChatMessageRepository;
 import com.aidem.backend.repository.AssessmentRepository;
 import com.aidem.backend.repository.SessionPlanRepository;
 
@@ -41,7 +41,7 @@ public class AdminUserController {
     private final SessionPlanRepository
             sessionPlanRepository;
     private final PatientCaregiverRepository patientCaregiverRepository;
-
+    private final ChatMessageRepository chatMessageRepository;
     private final PasswordEncoder passwordEncoder;
 
     public AdminUserController(
@@ -50,21 +50,16 @@ public class AdminUserController {
             PatientCaregiverRepository patientCaregiverRepository,
             AssessmentRepository assessmentRepository,
             SessionPlanRepository sessionPlanRepository,
+            ChatMessageRepository chatMessageRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.patientRepository = patientRepository;
-
-        this.patientCaregiverRepository =
-                patientCaregiverRepository;
-
-        this.assessmentRepository =
-                assessmentRepository;
-
-        this.sessionPlanRepository =
-                sessionPlanRepository;
-
+        this.patientCaregiverRepository = patientCaregiverRepository;
+        this.assessmentRepository = assessmentRepository;
+        this.sessionPlanRepository = sessionPlanRepository;
         this.passwordEncoder = passwordEncoder;
+        this.chatMessageRepository = chatMessageRepository;
     }
 
     /*
@@ -225,16 +220,10 @@ public class AdminUserController {
                     "A conta de administrador não pode ser apagada."
             );
         }
-
-        patientCaregiverRepository
-                .deleteByUserId(id);
-
-        assessmentRepository
-                .clearPerformedByUser(id);
-
-        sessionPlanRepository
-                .clearGeneratedByUser(id);
-
+        chatMessageRepository.deleteByUserId(id);
+        patientCaregiverRepository.deleteByUserId(id);
+        assessmentRepository.clearPerformedByUser(id);
+        sessionPlanRepository.clearGeneratedByUser(id);
         userRepository.delete(user);
         userRepository.flush();
     }
