@@ -1,7 +1,8 @@
 <div class="create-patient-page">
   <header class="header">
     <button type="button" class="back-button" (click)="cancelCreation()">
-      < Cancelar
+      <span aria-hidden="true">←</span>
+      <span>Voltar</span>
     </button>
 
     <h1>Adicionar utente</h1>
@@ -131,7 +132,7 @@
       <div class="egp-header">
         <div>
           <h2>Dados EGP</h2>
-          <p>Preenche os valores de cada domínio.</p>
+          <p>Preencha os valores de cada domínio.</p>
         </div>
 
         <label [class.invalid]="hasError('Data da avaliação EGP')">
