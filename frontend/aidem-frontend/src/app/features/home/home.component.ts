@@ -10,8 +10,11 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationsPopoverComponent } from '../../shared/notifications-popover-modal/notifications-popover.component';
-import { SessionPlanService, SessionPlanExercise } from '../../core/services/session-plan.service';
-import { PatientProfile } from '../../core/services/patient.service';
+import {
+  SessionPlan,
+  SessionPlanExercise,
+  SessionPlanService
+} from '../../core/services/session-plan.service';import { PatientProfile } from '../../core/services/patient.service';
 import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
 import {LoadingSpinnerComponent} from '../../shared/laoding-spinner-modal/loading-spinner.component';
 import {AuthUser} from '../../core/services/auth.service';
@@ -57,6 +60,7 @@ export class HomeComponent implements OnChanges, OnInit {
     new EventEmitter<void>();
 
   showNotifications = false;
+  todayPlan: SessionPlan | null = null;
   todayActivities: SessionPlanExercise[] = [];
   isLoadingActivities = false;
   showSideMenu = false;
@@ -114,12 +118,101 @@ export class HomeComponent implements OnChanges, OnInit {
     }
   }
 
-  getExerciseImage(activity: SessionPlanExercise): string {
-    if (!activity.mediaUrl) {
-      return '/icons/generic_exercise.svg';
+  get sessionTotalActivities(): number {
+    return this.todayActivities.length;
+  }
+
+  get sessionRegisteredActivities(): number {
+    return this.todayActivities.filter(
+      activity => activity.status !== 'PENDING'
+    ).length;
+  }
+
+  get sessionProgressPercent(): number {
+    if (this.sessionTotalActivities === 0) {
+      return 0;
     }
 
-    return `/${activity.mediaUrl}`;
+    return Math.round(
+      (
+        this.sessionRegisteredActivities /
+        this.sessionTotalActivities
+      ) * 100
+    );
+  }
+
+  get sessionDurationMinutes(): number {
+    if (this.todayPlan?.totalDurationMinutes) {
+      return this.todayPlan.totalDurationMinutes;
+    }
+
+    if (this.todayPlan?.targetDurationMinutes) {
+      return this.todayPlan.targetDurationMinutes;
+    }
+
+    return this.todayActivities.reduce(
+      (total, activity) =>
+        total + (activity.durationMinutes ?? 0),
+      0
+    );
+  }
+
+  get sessionSummaryTitle(): string {
+    if (this.sessionTotalActivities === 0) {
+      return 'Sem atividades para hoje';
+    }
+
+    if (this.sessionTotalActivities === 1) {
+      return '1 atividade preparada';
+    }
+
+    return `${this.sessionTotalActivities} atividades preparadas`;
+  }
+
+  get sessionStatusLabel(): string {
+    if (this.sessionTotalActivities === 0) {
+      return 'Sem sessão';
+    }
+
+    if (this.todayPlan?.status === 'COMPLETED') {
+      return 'Concluída';
+    }
+
+    if (
+      this.todayPlan?.status === 'IN_PROGRESS' ||
+      this.sessionRegisteredActivities > 0
+    ) {
+      return 'Em curso';
+    }
+
+    return 'Por iniciar';
+  }
+
+  get sessionStatusClass(): string {
+    if (this.todayPlan?.status === 'COMPLETED') {
+      return 'completed';
+    }
+
+    if (
+      this.todayPlan?.status === 'IN_PROGRESS' ||
+      this.sessionRegisteredActivities > 0
+    ) {
+      return 'in-progress';
+    }
+
+    return 'not-started';
+  }
+
+  get sessionActionLabel(): string {
+    if (this.todayPlan?.status === 'COMPLETED') {
+      return 'Ver sessão';
+    }
+
+    if (this.sessionRegisteredActivities > 0) {
+      return 'Continuar';
+    }
+
+    return 'Iniciar';
   }
 
   async loadTodayActivities(): Promise<void> {
@@ -128,15 +221,20 @@ export class HomeComponent implements OnChanges, OnInit {
     this.isLoadingActivities = true;
 
     try {
-      const plan = await this.sessionPlanService.getTodayPlan(this.patient.id);
-
-      this.todayActivities =
-        (plan.exercises ?? []).filter(
-          exercise => exercise.status !== 'SKIPPED'
+      const plan =
+        await this.sessionPlanService.getTodayPlan(
+          this.patient.id
         );
-      console.log('HOME PLAN:', plan);
+
+      this.todayPlan = plan;
+      this.todayActivities = plan.exercises ?? [];
     } catch (error) {
-      console.error('Erro ao carregar atividades do dia:', error);
+      console.error(
+        'Erro ao carregar atividades do dia:',
+        error
+      );
+
+      this.todayPlan = null;
       this.todayActivities = [];
     } finally {
       this.isLoadingActivities = false;

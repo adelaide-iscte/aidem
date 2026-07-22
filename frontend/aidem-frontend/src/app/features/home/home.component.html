@@ -72,68 +72,91 @@
         class="action-button primary hero-action-button"
         type="button"
         (click)="openActivities.emit()">
-        <span>Iniciar</span>
+        <span>{{ sessionActionLabel }}</span>
       </button>
     </section>
 
-    <section class="days">
-      <div
-        class="day-card"
-        *ngFor="let day of days"
-        [class.active]="day.isToday">
 
-    <span class="day-week">
-      {{ day.label }}
+    <section class="session-summary-card">
+      <div class="session-summary-header">
+        <div>
+          <span class="session-summary-label">Sessão de hoje</span>
+          <h2>{{ sessionSummaryTitle }}</h2>
+        </div>
+
+        <span
+          *ngIf="!isLoadingActivities"
+          class="session-status"
+          [ngClass]="sessionStatusClass">
+      {{ sessionStatusLabel }}
     </span>
-
-        <strong>
-          {{ day.dayNumber }}
-        </strong>
-
-        <span class="day-month">
-      {{ day.monthLabel }}
-    </span>
-
       </div>
-    </section>
-
-    <section class="today-section">
-      <h2>Atividades para a sessão de hoje</h2>
 
       <app-loading-spinner
         *ngIf="isLoadingActivities"
-        message="A preparar os exercícios de hoje...">
+        message="A preparar o resumo da sessão...">
       </app-loading-spinner>
 
-      <p
-        class="empty-activities"
-        *ngIf="!isLoadingActivities && todayActivities.length === 0">
-        Ainda não existem exercícios para hoje.
-      </p>
+      <div
+        class="session-summary-content"
+        *ngIf="!isLoadingActivities && sessionTotalActivities > 0">
+
+        <div class="session-information">
+          <div class="session-information-item">
+            <span>Atividades planeadas</span>
+            <strong>{{ sessionTotalActivities }}</strong>
+          </div>
+
+          <div class="session-information-item">
+            <span>Duração aproximada</span>
+            <strong>
+              {{
+                sessionDurationMinutes > 0
+                  ? sessionDurationMinutes + ' min'
+                  : 'A definir'
+              }}
+            </strong>
+          </div>
+        </div>
+
+        <div class="session-progress">
+          <div class="session-progress-labels">
+            <span>Progresso da sessão</span>
+
+            <strong>
+              {{ sessionRegisteredActivities }}
+              de
+              {{ sessionTotalActivities }}
+              registadas
+            </strong>
+          </div>
+
+          <div
+            class="session-progress-track"
+            role="progressbar"
+            aria-label="Progresso da sessão de hoje"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-valuenow]="sessionProgressPercent">
+
+            <div
+              class="session-progress-fill"
+              [style.width.%]="sessionProgressPercent">
+            </div>
+          </div>
+        </div>
+
+        <p class="session-guidance">
+          Para consultar e realizar as atividades, carregue em
+          “{{ sessionActionLabel }}” ou aceda ao menu “Atividades”.
+        </p>
+      </div>
 
       <div
-        class="activity-row"
-        *ngFor="let activity of todayActivities">
+        class="session-empty"
+        *ngIf="!isLoadingActivities && sessionTotalActivities === 0">
 
-        <img
-          [src]="getExerciseImage(activity)"
-          [alt]="activity.title"
-          class="activity-image">
-
-        <span class="activity-name">
-      {{ activity.title }}
-    </span>
-
-        <img
-          *ngIf="activity.status === 'COMPLETED' || activity.status === 'SKIPPED'"
-          src="/icons/check_completed.svg"
-          class="tick-icon">
-
-        <img
-          *ngIf="activity.status !== 'COMPLETED'"
-          src="/icons/check_incompleted.svg"
-          class="tick-icon">
-
+        <p>Ainda não existem atividades preparadas para hoje.</p>
       </div>
     </section>
 

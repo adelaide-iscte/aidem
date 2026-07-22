@@ -184,92 +184,9 @@
 
 }
 
-.days {
-  margin: 16px 0 10px;
-  display: flex;
-  justify-content: center;
-  gap: 45px;
-}
-
-.day-card {
-  width: 82px;
-  height: 92px;
-  border: 1px solid #b8c7df;
-  border-radius: 16px;
-  color: #a7b5cc;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-}
-
-.day-week {
-  font-size: 20px;
-  line-height: 1;
-}
-
-.day-card strong {
-  font-size: 34px;
-  line-height: 1;
-  color: #111827;
-}
-
-.day-month {
-  margin-top: 2px;
-  font-size: 14px;
-  line-height: 1;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #8fa1bd;
-}
-
-.day-card.active {
-  background: #407ce2;
-  color: white;
-  border-color: #407ce2;
-}
-
-.day-card.active strong {
-  color: white;
-}
-
 h2 {
   font-size: 30px;
   margin: 10px 0 18px;
-}
-
-.activity-row {
-  height: 88px;
-  border: 1px solid #e2e6ed;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  padding: 0 18px;
-  margin-bottom: 12px;
-}
-
-.activity-image {
-  width: 58px;
-  height: 58px;
-  border-radius: 6px;
-  object-fit: cover;
-}
-
-.activity-name {
-  flex: 1;
-  margin-left: 16px;
-  font-size: 24px;
-  font-weight: 700;
-  color: #4b4b4b;
-}
-
-.tick-icon,
-.check-icon {
-  width: 34px;
-  height: 34px;
 }
 
 .bottom-nav {
@@ -399,4 +316,175 @@ h2 {
 
   font-size: 12px;
   font-weight: 800;
+}
+
+.session-summary-card {
+  margin-top: 28px;
+  padding: 28px 32px;
+  border: 1px solid #dfe6f0;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(54, 83, 126, 0.08);
+}
+
+.session-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.session-summary-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #74839a;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.session-summary-header h2 {
+  margin: 0;
+  color: #263750;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.session-status {
+  padding: 9px 15px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.session-status.not-started {
+  background: #eef2f7;
+  color: #5e6b7d;
+}
+
+.session-status.in-progress {
+  background: #fff4d8;
+  color: #8a5a00;
+}
+
+.session-status.completed {
+  background: #e4f7eb;
+  color: #19763a;
+}
+
+.session-summary-content {
+  margin-top: 26px;
+}
+
+.session-information {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.session-information-item {
+  padding: 18px 20px;
+  border-radius: 12px;
+  background: #f4f7fc;
+}
+
+.session-information-item span {
+  display: block;
+  margin-bottom: 7px;
+  color: #6b778a;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.session-information-item strong {
+  color: #33445d;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.session-progress {
+  margin-top: 25px;
+}
+
+.session-progress-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: #5f6f85;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.session-progress-labels strong {
+  color: #34445c;
+}
+
+.session-progress-track {
+  height: 13px;
+  margin-top: 11px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e7edf5;
+}
+
+.session-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+      90deg,
+      #407ce2,
+      #6b9cf0
+  );
+  transition: width 0.35s ease;
+}
+
+.session-guidance {
+  margin: 24px 0 0;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: #edf4ff;
+  color: #425a7c;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.session-empty {
+  margin-top: 24px;
+  padding: 22px;
+  border-radius: 12px;
+  background: #f5f7fa;
+  color: #687386;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.session-empty p {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .session-summary-card {
+    padding: 22px;
+  }
+
+  .session-summary-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .session-information {
+    grid-template-columns: 1fr;
+  }
+
+  .session-progress-labels {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
 }
