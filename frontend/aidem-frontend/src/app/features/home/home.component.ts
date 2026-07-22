@@ -195,6 +195,21 @@ export class HomeComponent implements OnChanges, OnInit {
     return 'Por iniciar';
   }
 
+  get todayFormatted(): string {
+    const today = new Date();
+
+    const dayAndMonth = new Intl.DateTimeFormat('pt-PT', {
+      day: 'numeric',
+      month: 'long'
+    }).format(today);
+
+    const weekDay = new Intl.DateTimeFormat('pt-PT', {
+      weekday: 'long'
+    }).format(today);
+
+    return `${dayAndMonth}, ${weekDay}`;
+  }
+
   get sessionStatusClass(): string {
     if (this.todayPlan?.status === 'COMPLETED') {
       return 'completed';

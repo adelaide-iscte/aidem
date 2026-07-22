@@ -683,3 +683,379 @@ button:disabled {
   grid-template-columns: 210px 180px;
   justify-content: end;
 }
+
+
+// hello
+
+/* Estética alinhada com a página inicial */
+
+.activities-page {
+  background: #f7f9fc;
+  color: #263750;
+}
+
+
+/* Cabeçalho */
+
+.header {
+  border-bottom-color: #e4e9f1;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(43, 61, 88, 0.04);
+}
+
+.menu-icon,
+.top-icon {
+  border-radius: 12px;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.menu-icon:hover,
+.top-icon:hover {
+  opacity: 0.78;
+}
+
+.menu-icon:active,
+.top-icon:active {
+  transform: scale(0.95);
+}
+
+.avatar {
+  border: 2px solid #e3eaf5;
+  background: #ffffff;
+}
+
+
+/* Ouvir página */
+
+.accessibility-button {
+  border-color: #9dbdff;
+  background: #ffffff;
+  color: #356fd2;
+  box-shadow: 0 3px 10px rgba(64, 124, 226, 0.08);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.accessibility-button:hover {
+  border-color: #407ce2;
+  background: #f7faff;
+  box-shadow: 0 6px 16px rgba(64, 124, 226, 0.14);
+}
+
+.accessibility-button:focus-visible,
+.action-button:focus-visible {
+  outline: 3px solid rgba(64, 124, 226, 0.3);
+  outline-offset: 3px;
+}
+
+
+/* Cartão de contacto */
+
+.contact-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #ccdcf4;
+  border-radius: 20px;
+  background:
+    linear-gradient(
+        110deg,
+        #e8f1ff 0%,
+        #dce9fb 100%
+    );
+  box-shadow: 0 10px 28px rgba(58, 91, 138, 0.1);
+}
+
+.contact-card::after {
+  position: absolute;
+  top: -90px;
+  right: -80px;
+  width: 330px;
+  height: 330px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+  content: '';
+}
+
+.contact-icon,
+.contact-text,
+.contact-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.contact-icon {
+  filter: drop-shadow(0 8px 15px rgba(64, 85, 130, 0.1));
+}
+
+.contact-text h1 {
+  color: #3977df;
+}
+
+.contact-text p {
+  color: #46556c;
+}
+
+
+/* Cartão de progresso */
+
+.progress-card {
+  border-color: #dfe6f0;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #43536a;
+  box-shadow: 0 8px 24px rgba(54, 83, 126, 0.07);
+}
+
+.progress-card strong {
+  color: #263750;
+}
+
+.progress-line {
+  overflow: hidden;
+  background: #e6ecf4;
+}
+
+.progress-line div {
+  background:
+    linear-gradient(
+        90deg,
+        #407ce2,
+        #6b9cf0
+    );
+  box-shadow: 0 2px 8px rgba(64, 124, 226, 0.22);
+  transition: width 0.35s ease;
+}
+
+
+/* Cartões das atividades */
+
+.activity-card {
+  position: relative;
+  overflow: hidden;
+  border-color: #dfe6f0;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(54, 83, 126, 0.07);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.activity-card::before {
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  left: 0;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: #6090e6;
+  content: '';
+}
+
+.activity-card:hover {
+  border-color: #cbd9ef;
+  box-shadow: 0 12px 30px rgba(54, 83, 126, 0.12);
+  transform: translateY(-2px);
+}
+
+.activity-number {
+  color: #3977df;
+}
+
+.activity-image {
+  border: 1px solid #dfe6f0;
+  box-shadow: 0 5px 14px rgba(45, 63, 91, 0.1);
+}
+
+.activity-info h2 {
+  color: #2b3c55;
+}
+
+
+/* Atividade com resultado registado */
+
+.activity-card.done {
+  opacity: 1;
+  border-color: #cad8ec;
+  background:
+    linear-gradient(
+        90deg,
+        #f7faff 0%,
+        #ffffff 55%
+    );
+}
+
+.activity-card.done::before {
+  background: #7896c9;
+}
+
+.activity-card.done .activity-number {
+  color: #607ba8;
+}
+
+
+/* Atividade não concluída */
+
+.activity-card.failed {
+  opacity: 1;
+  border-color: #efc8bb;
+  background:
+    linear-gradient(
+        90deg,
+        #fff7f4 0%,
+        #ffffff 55%
+    );
+}
+
+.activity-card.failed::before {
+  background: #d56e52;
+}
+
+.activity-card.failed .activity-number,
+.activity-card.failed .activity-info h2 {
+  color: #9d4935;
+}
+
+
+/* Botões */
+
+.action-button {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.action-button.primary {
+  border-color: #407ce2;
+  background: #407ce2;
+  color: #ffffff;
+  box-shadow: 0 7px 16px rgba(64, 124, 226, 0.2);
+}
+
+.action-button.primary:hover:not(:disabled) {
+  border-color: #326fd4;
+  background: #326fd4;
+  box-shadow: 0 9px 20px rgba(64, 124, 226, 0.28);
+  transform: translateY(-1px);
+}
+
+.action-button.secondary,
+.action-button.outline {
+  border-color: #7fa7ee;
+  background: #ffffff;
+  color: #3977df;
+}
+
+.action-button.secondary:hover:not(:disabled),
+.action-button.outline:hover:not(:disabled) {
+  border-color: #407ce2;
+  background: #f1f6ff;
+  box-shadow: 0 6px 14px rgba(64, 124, 226, 0.12);
+  transform: translateY(-1px);
+}
+
+.action-button.danger {
+  border-color: #b93232;
+  background: #b93232;
+  color: #ffffff;
+  box-shadow: 0 7px 16px rgba(185, 50, 50, 0.16);
+}
+
+.action-button.danger:hover:not(:disabled) {
+  border-color: #a52c2c;
+  background: #a52c2c;
+  box-shadow: 0 9px 20px rgba(185, 50, 50, 0.22);
+  transform: translateY(-1px);
+}
+
+.action-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.action-button:disabled {
+  box-shadow: none;
+  transform: none;
+}
+
+
+/* Botões do cartão de contacto */
+
+.contact-actions .action-button.primary {
+  border-color: #407ce2;
+  background: #407ce2;
+  box-shadow: 0 7px 16px rgba(64, 124, 226, 0.2);
+}
+
+.contact-actions .action-button.outline {
+  border-color: #8aaff0;
+  background: rgba(255, 255, 255, 0.92);
+  color: #3977df;
+}
+
+.contact-actions .action-button.outline:hover {
+  border-color: #407ce2;
+  background: #ffffff;
+}
+
+
+/* Mensagens de carregamento e erro */
+
+.plan-state {
+  padding: 18px 22px;
+  border: 1px solid #dce8fa;
+  border-radius: 14px;
+  background: #f7faff;
+  color: #356fcf;
+}
+
+.plan-state.error {
+  border-color: #efc5c5;
+  background: #fff6f6;
+  color: #a93636;
+}
+
+
+/* Navegação inferior */
+
+.bottom-nav {
+  z-index: 20;
+  border-top-color: #e3e8f0;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 -8px 24px rgba(43, 61, 88, 0.06);
+  backdrop-filter: blur(10px);
+}
+
+.bottom-nav div {
+  min-width: 96px;
+  padding: 7px 14px;
+  border-radius: 13px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.bottom-nav div:hover {
+  background: #f3f7fd;
+  color: #5f86c9;
+}
+
+.bottom-nav .active {
+  background: #edf4ff;
+  color: #3977df;
+}
+
+.bottom-nav .active,
+.bottom-nav .active * {
+  cursor: default;
+}
