@@ -39,7 +39,7 @@ export class PatientsListComponent {
   openAdminActivities =
     new EventEmitter<void>();
 
-  @Output()  logout = new EventEmitter<void>();
+  @Input() logout = new EventEmitter<void>();
 
   @Output()
   openUserManagement =
