@@ -47,6 +47,9 @@
       <div>
         <h2>Contas de cuidadores</h2>
 
+        <p>
+          Crie e faça a gestão das contas e dos utentes associados.
+        </p>
       </div>
 
       <button
@@ -687,34 +690,55 @@
       aria-labelledby="delete-user-modal-title"
       (click)="$event.stopPropagation()">
 
+      <div class="delete-warning-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 8v5"></path>
+          <path d="M12 17h.01"></path>
+          <path d="M10.3 4.8 3.1 17.2A2 2 0 0 0 4.8 20h14.4a2 2 0 0 0 1.7-2.8L13.7 4.8a2 2 0 0 0-3.4 0Z"></path>
+        </svg>
+      </div>
+
       <h2 id="delete-user-modal-title">
         Remover utilizador?
       </h2>
 
-      <button
-        type="button"
-        class="confirm-delete-button"
-        [disabled]="deletingId !== null"
-        (click)="confirmDelete()">
+      <p class="delete-modal-description">
+        Tem a certeza de que pretende remover
 
-        {{
-          deletingId !== null
-            ? 'A remover...'
-            : 'Sim'
-        }}
-      </button>
+        <strong>
+          {{ userToDelete?.fullName }}
+        </strong>?
+      </p>
 
-      <button
-        type="button"
-        class="cancel-delete-button"
-        [disabled]="deletingId !== null"
-        (click)="closeDeleteModal()">
+      <span class="delete-warning-text">
+      Esta ação não pode ser anulada.
+    </span>
 
-        Cancelar
-      </button>
+      <div class="delete-modal-actions">
+        <button
+          type="button"
+          class="cancel-delete-button"
+          [disabled]="deletingId !== null"
+          (click)="closeDeleteModal()">
+
+          Manter utilizador
+        </button>
+
+        <button
+          type="button"
+          class="confirm-delete-button"
+          [disabled]="deletingId !== null"
+          (click)="confirmDelete()">
+
+          {{
+            deletingId !== null
+              ? 'A remover...'
+              : 'Remover utilizador'
+          }}
+        </button>
+      </div>
 
     </section>
-
   </div>
 
 </div>
