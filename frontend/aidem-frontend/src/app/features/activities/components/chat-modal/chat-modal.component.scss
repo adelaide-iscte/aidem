@@ -1395,6 +1395,17 @@ button {
     width: 32px;
     height: 32px;
   }
+
+  .conversations-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .new-message-button {
+    width: 100%;
+    min-height: 50px;
+
+    font-size: 16px;
+  }
 }
 
 
@@ -1414,4 +1425,34 @@ button {
   .chat-content {
     scroll-behavior: auto;
   }
+}
+
+/* Correção do cabeçalho das conversas */
+
+.conversations-heading {
+  padding: 22px;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.new-message-button {
+  min-width: 0;
+  min-height: 46px;
+  padding: 0 13px;
+
+  gap: 6px;
+
+  border-radius: 12px;
+
+  font-size: 14px;
+  white-space: nowrap;
+
+  box-shadow: 0 5px 13px rgba(64, 124, 226, 0.18);
+}
+
+.new-message-button > span:first-child {
+  font-size: 21px;
 }
