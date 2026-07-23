@@ -596,7 +596,8 @@ public class PatientController {
 
         return !"Constrangimentos físicos".equalsIgnoreCase(domain)
                 && !"Prevalência motora".equalsIgnoreCase(domain)
-                && !"Prevalência cognitiva".equalsIgnoreCase(domain);
+                && !"Prevalência cognitiva".equalsIgnoreCase(domain)
+                && !"Total".equalsIgnoreCase(domain);
     }
 
     private RiskLevel riskLevelForStorage(

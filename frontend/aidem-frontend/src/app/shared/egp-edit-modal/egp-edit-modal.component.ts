@@ -133,7 +133,8 @@ export class EgpEditModalComponent
     return ![
       'Constrangimentos físicos',
       'Prevalência motora',
-      'Prevalência cognitiva'
+      'Prevalência cognitiva',
+      'Total'
     ].includes(domain);
   }
 

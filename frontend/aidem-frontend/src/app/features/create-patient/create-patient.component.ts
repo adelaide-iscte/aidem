@@ -111,7 +111,7 @@ export class CreatePatientComponent {
       domain: 'Total',
       score: null,
       normalizedScore: null,
-      riskLevel: 'LOW',
+      riskLevel: null,
       displayOrder: 21
     }
   ];
@@ -131,7 +131,8 @@ export class CreatePatientComponent {
     return ![
       'Constrangimentos físicos',
       'Prevalência motora',
-      'Prevalência cognitiva'
+      'Prevalência cognitiva',
+      'Total'
     ].includes(domain);
   }
 
