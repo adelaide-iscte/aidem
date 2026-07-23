@@ -25,7 +25,7 @@ type EgpFormRow = {
   domain: string;
   score: number | null;
   normalizedScore: number | null;
-  riskLevel: string;
+  riskLevel: string | null;
   displayOrder: number;
 };
 
@@ -90,21 +90,21 @@ export class CreatePatientComponent {
       domain: 'Constrangimentos físicos',
       score: null,
       normalizedScore: null,
-      riskLevel: 'LOW',
+      riskLevel: null,
       displayOrder: 18
     },
     {
       domain: 'Prevalência motora',
       score: null,
       normalizedScore: null,
-      riskLevel: 'LOW',
+      riskLevel: null,
       displayOrder: 19
     },
     {
       domain: 'Prevalência cognitiva',
       score: null,
       normalizedScore: null,
-      riskLevel: 'LOW',
+      riskLevel: null,
       displayOrder: 20
     },
     {
@@ -124,6 +124,14 @@ export class CreatePatientComponent {
       'Prevalência motora',
       'Prevalência cognitiva',
       'Total'
+    ].includes(domain);
+  }
+
+  hasRiskClassification(domain: string): boolean {
+    return ![
+      'Constrangimentos físicos',
+      'Prevalência motora',
+      'Prevalência cognitiva'
     ].includes(domain);
   }
 
@@ -244,7 +252,10 @@ export class CreatePatientComponent {
         errors.push(`EGP - ${row.domain} - NR`);
       }
 
-      if (!row.riskLevel) {
+      if (
+        this.hasRiskClassification(row.domain) &&
+        !row.riskLevel
+      ) {
         errors.push(`EGP - ${row.domain} - Risco`);
       }
     });
@@ -285,7 +296,9 @@ export class CreatePatientComponent {
         domain: row.domain,
         score: Number(row.score),
         normalizedScore: Number(row.normalizedScore),
-        riskLevel: row.riskLevel,
+        riskLevel: this.hasRiskClassification(row.domain)
+          ? row.riskLevel
+          : null,
         displayOrder: row.displayOrder
       }))
     };

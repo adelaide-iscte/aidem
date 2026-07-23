@@ -84,7 +84,7 @@ export interface CreatePatientRequest {
     domain: string;
     score: number;
     normalizedScore: number;
-    riskLevel: string;
+    riskLevel: string | null;
     displayOrder: number;
   }[];
 }
@@ -121,7 +121,7 @@ export interface EgpRow {
   label: string;
   pd: number;
   nr: number;
-  riskLevel: string;
+  riskLevel: string | null;
   displayOrder: number;
   summary: boolean;
 }
@@ -140,7 +140,7 @@ export interface UpdateEgpRequest {
     label: string;
     pd: number;
     nr: number;
-    riskLevel: string;
+    riskLevel: string | null;
   }[];
 }
 

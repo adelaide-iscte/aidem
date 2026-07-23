@@ -389,7 +389,7 @@ public class PatientController {
                             score.getNormalizedScore() != null
                                     ? score.getNormalizedScore()
                                     : score.getScore(),
-                            score.getRiskLevel().name(),
+                            riskLevelForResponse(score),
                             score.getDisplayOrder(),
                             isEgpSummaryRow(score.getDomain())
                     );
@@ -509,7 +509,8 @@ public class PatientController {
             );
 
             score.setRiskLevel(
-                    parseRiskLevel(
+                    riskLevelForStorage(
+                            score.getDomain(),
                             requestedRow.riskLevel()
                     )
             );
@@ -540,7 +541,7 @@ public class PatientController {
                                         score.getNormalizedScore() != null
                                                 ? score.getNormalizedScore()
                                                 : score.getScore(),
-                                        score.getRiskLevel().name(),
+                                        riskLevelForResponse(score),
                                         score.getDisplayOrder(),
                                         isEgpSummaryRow(
                                                 score.getDomain()
@@ -584,6 +585,44 @@ public class PatientController {
                 || "Prevalência motora".equalsIgnoreCase(domain)
                 || "Prevalência cognitiva".equalsIgnoreCase(domain)
                 || "Total".equalsIgnoreCase(domain);
+    }
+
+    private boolean hasEgpRiskClassification(
+            String domain
+    ) {
+        if (domain == null) {
+            return true;
+        }
+
+        return !"Constrangimentos físicos".equalsIgnoreCase(domain)
+                && !"Prevalência motora".equalsIgnoreCase(domain)
+                && !"Prevalência cognitiva".equalsIgnoreCase(domain);
+    }
+
+    private RiskLevel riskLevelForStorage(
+            String domain,
+            String requestedRiskLevel
+    ) {
+        /*
+         * A coluna da base de dados continua obrigatória.
+         * LOW é apenas um valor técnico para os três itens
+         * sem classificação e nunca é devolvido ao frontend.
+         */
+        if (!hasEgpRiskClassification(domain)) {
+            return RiskLevel.LOW;
+        }
+
+        return parseRiskLevel(requestedRiskLevel);
+    }
+
+    private String riskLevelForResponse(
+            DomainScore score
+    ) {
+        if (!hasEgpRiskClassification(score.getDomain())) {
+            return null;
+        }
+
+        return score.getRiskLevel().name();
     }
 
     private void validateUpdateEgpRequest(
@@ -675,26 +714,28 @@ public class PatientController {
                 );
             }
 
-            String riskLevel =
-                    row.riskLevel() == null
-                            ? ""
-                            : row.riskLevel()
-                            .trim()
-                            .toUpperCase();
+            if (hasEgpRiskClassification(row.label())) {
+                String riskLevel =
+                        row.riskLevel() == null
+                                ? ""
+                                : row.riskLevel()
+                                .trim()
+                                .toUpperCase();
 
-            if (
-                    !List.of(
-                            "LOW",
-                            "MEDIUM",
-                            "HIGH"
-                    ).contains(riskLevel)
-            ) {
-                throw new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Selecione o risco de '" +
-                                row.label() +
-                                "'."
-                );
+                if (
+                        !List.of(
+                                "LOW",
+                                "MEDIUM",
+                                "HIGH"
+                        ).contains(riskLevel)
+                ) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST,
+                            "Selecione o risco de '" +
+                                    row.label() +
+                                    "'."
+                    );
+                }
             }
         }
     }
@@ -748,7 +789,12 @@ public class PatientController {
                         .domain(row.domain())
                         .score(row.score())
                         .normalizedScore(row.normalizedScore())
-                        .riskLevel(parseRiskLevel(row.riskLevel()))
+                        .riskLevel(
+                                riskLevelForStorage(
+                                        row.domain(),
+                                        row.riskLevel()
+                                )
+                        )
                         .displayOrder(row.displayOrder())
                         .build())
                 .toList();

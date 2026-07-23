@@ -159,6 +159,7 @@
                   " />
 
                 <select
+                  *ngIf="hasRiskClassification(row.domain)"
                   aria-label="Risco de {{ row.domain }}"
                   [(ngModel)]="row.riskLevel">
 
@@ -173,8 +174,21 @@
                   <option value="HIGH">
                     Elevado
                   </option>
-
                 </select>
+
+                <span
+                  *ngIf="!hasRiskClassification(row.domain)"
+                  class="risk-not-applicable"
+                  aria-label="Sem classificação de risco">
+  —
+</span>
+
+                <span
+                  *ngIf="!hasRiskClassification(row.domain)"
+                  class="risk-not-applicable"
+                  aria-label="Sem classificação de risco">
+                  —
+                </span>
 
               </div>
 

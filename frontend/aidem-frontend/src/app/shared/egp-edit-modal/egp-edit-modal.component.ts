@@ -20,7 +20,7 @@ type EgpFormRow = {
   domain: string;
   score: number | null;
   normalizedScore: number | null;
-  riskLevel: string;
+  riskLevel: string | null;
   displayOrder: number;
 };
 
@@ -90,7 +90,9 @@ export class EgpEditModalComponent
           row.nr,
 
           riskLevel:
-            row.riskLevel || 'LOW',
+            this.hasRiskClassification(row.label)
+              ? row.riskLevel || 'LOW'
+              : null,
 
           displayOrder:
           row.displayOrder
@@ -122,6 +124,16 @@ export class EgpEditModalComponent
       'Prevalência motora',
       'Prevalência cognitiva',
       'Total'
+    ].includes(domain);
+  }
+
+  hasRiskClassification(
+    domain: string
+  ): boolean {
+    return ![
+      'Constrangimentos físicos',
+      'Prevalência motora',
+      'Prevalência cognitiva'
     ].includes(domain);
   }
 
@@ -299,7 +311,12 @@ export class EgpEditModalComponent
         );
       }
 
-      if (!row.riskLevel) {
+      if (
+        this.hasRiskClassification(
+          row.domain
+        ) &&
+        !row.riskLevel
+      ) {
         errors.push(
           `EGP - ${row.domain} - Risco`
         );
@@ -347,7 +364,11 @@ export class EgpEditModalComponent
             ),
 
           riskLevel:
-          row.riskLevel
+            this.hasRiskClassification(
+              row.domain
+            )
+              ? row.riskLevel
+              : null
         })
       )
     };

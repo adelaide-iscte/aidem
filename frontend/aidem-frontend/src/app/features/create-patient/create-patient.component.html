@@ -171,11 +171,21 @@
             [(ngModel)]="row.normalizedScore"
             [class.invalid-input]="hasError('EGP - ' + row.domain + ' - NR')" />
 
-          <select [(ngModel)]="row.riskLevel">
+          <select
+            *ngIf="hasRiskClassification(row.domain)"
+            [(ngModel)]="row.riskLevel">
+
             <option value="LOW">Baixo</option>
             <option value="MEDIUM">Médio</option>
             <option value="HIGH">Elevado</option>
           </select>
+
+          <span
+            *ngIf="!hasRiskClassification(row.domain)"
+            class="risk-not-applicable"
+            aria-label="Sem classificação de risco">
+  —
+</span>
         </div>
       </div>
     </div>
