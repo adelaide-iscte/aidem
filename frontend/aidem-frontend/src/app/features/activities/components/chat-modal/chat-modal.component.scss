@@ -1661,3 +1661,32 @@ button {
     font-size: 14px;
   }
 }
+
+/* Correção definitiva do botão Nova mensagem */
+
+.conversations-heading {
+  min-height: auto;
+  padding: 22px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 16px;
+}
+
+.conversations-heading > div {
+  width: 100%;
+  min-width: 0;
+}
+
+.new-message-button {
+  width: auto;
+  min-width: 200px;
+  min-height: 50px;
+  padding: 0 18px;
+
+  align-self: flex-start;
+
+  font-size: 16px;
+}
