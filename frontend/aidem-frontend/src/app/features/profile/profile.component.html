@@ -849,6 +849,7 @@
     </section>
   </div>
   <app-notifications-popover
+    *ngIf="showNotifications"
     (close)="closeNotifications()">
   </app-notifications-popover>
 
