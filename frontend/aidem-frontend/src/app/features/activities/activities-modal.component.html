@@ -193,6 +193,7 @@
       (endCall)="closeCallOverlay()">
     </app-call-overlay>
     <app-notifications-popover
+      *ngIf="showNotifications"
       (close)="closeNotifications()">
     </app-notifications-popover>
 
