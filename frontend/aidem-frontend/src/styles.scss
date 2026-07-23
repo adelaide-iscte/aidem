@@ -352,3 +352,60 @@
     display: none;
   }
 }
+
+/* ==================================================
+   CONTADOR GLOBAL DE NOTIFICAÇÕES
+   ================================================== */
+
+.header .notification-bell-wrapper,
+.contents-header .notification-bell-wrapper {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header .notification-badge,
+.contents-header .notification-badge {
+  position: absolute;
+  z-index: 2;
+  top: -6px;
+  right: -8px;
+
+  min-width: 23px;
+  height: 23px;
+  padding: 0 6px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+
+  background: #ef4444;
+  color: #ffffff;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+
+  box-shadow: 0 3px 8px rgba(239, 68, 68, 0.25);
+
+  pointer-events: none;
+}
+
+@media (max-width: 700px) {
+  .header .notification-badge,
+  .contents-header .notification-badge {
+    top: -5px;
+    right: -6px;
+
+    min-width: 21px;
+    height: 21px;
+
+    font-size: 11px;
+  }
+}

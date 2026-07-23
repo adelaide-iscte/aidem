@@ -78,8 +78,11 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   showInstructionsModal = false;
   showComplementaryInfoModal = false;
 
-  constructor(private sessionPlanService: SessionPlanService, private notificationService: ExerciseNotificationService,  private cdr: ChangeDetectorRef) {}
-
+  constructor(
+    private sessionPlanService: SessionPlanService,
+    public notificationService: ExerciseNotificationService,
+    private cdr: ChangeDetectorRef
+  ) {}
   ngOnInit(): void {
     void this.loadTodayPlan();
   }
@@ -189,6 +192,10 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
 
     this.showNotifications =
       !this.showNotifications;
+
+    if (this.showNotifications) {
+      this.notificationService.markAsRead();
+    }
   }
   closeNotifications(): void { this.showNotifications = false; }
   openCallOverlay(): void { this.showCallOverlay = true; }

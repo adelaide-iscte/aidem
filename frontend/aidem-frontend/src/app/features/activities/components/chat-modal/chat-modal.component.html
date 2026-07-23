@@ -21,11 +21,26 @@
       </div>
 
       <div class="top-icons">
-        <img
-          src="/icons/bell.svg"
-          class="top-icon"
-          alt="Notificações"
-        />
+        <div class="notification-bell-wrapper">
+          <img
+            src="/icons/bell.svg"
+            class="top-icon"
+            alt="Notificações"
+            (click)="toggleNotifications()"
+          />
+
+          <span
+            *ngIf="
+      !isAdmin &&
+      role === 'informal' &&
+      notificationService.unreadCount() > 0
+    "
+            class="notification-badge"
+            aria-label="Nova notificação">
+
+    {{ notificationService.unreadCount() }}
+  </span>
+        </div>
 
         <img
           [src]="headerAvatar"
@@ -500,6 +515,9 @@
     (endCall)="closeCallOverlay()">
   </app-call-overlay>
 
+  <app-notifications-popover
+    (close)="closeNotifications()">
+  </app-notifications-popover>
 
   <app-side-menu
     *ngIf="showSideMenu"

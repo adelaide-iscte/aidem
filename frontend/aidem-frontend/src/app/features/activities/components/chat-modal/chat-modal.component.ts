@@ -20,7 +20,13 @@ import {
 import {
   SideMenuComponent
 } from '../../../../shared/side-menu-modal/side-menu.component';
+import {
+  ExerciseNotificationService
+} from '../../../../core/services/exercise-notification.service';
 
+import {
+  NotificationsPopoverComponent
+} from '../../../../shared/notifications-popover-modal/notifications-popover.component';
 import {
   ChatContact,
   ChatContactRole,
@@ -36,7 +42,8 @@ import {
     CommonModule,
     FormsModule,
     CallOverlayComponent,
-    SideMenuComponent
+    SideMenuComponent,
+    NotificationsPopoverComponent
   ],
   templateUrl: './chat-modal.component.html',
   styleUrls: ['./chat-modal.component.scss']
@@ -47,43 +54,20 @@ export class ChatModalComponent
   @Input()
   role: 'formal' | 'informal' = 'formal';
 
-  @Input()
-  isAdmin = false;
-
-  @Output()
-  close = new EventEmitter<void>();
-
-  @Output()
-  goBack = new EventEmitter<void>();
-
-  @Output()
-  openPatients = new EventEmitter<void>();
-
-  @Output()
-  goHome = new EventEmitter<void>();
-
-  @Output()
-  openProfile = new EventEmitter<void>();
-
-  @Output()
-  openActivities = new EventEmitter<void>();
-
-  @Output()
-  openChat = new EventEmitter<void>();
-
-  @Output()
-  openContents = new EventEmitter<void>();
-
-  @Output()
-  openUserManagement = new EventEmitter<void>();
-
-  @Output()
-  openAdminActivities = new EventEmitter<void>();
-
-  @Output()
-  logout = new EventEmitter<void>();
-
+  @Input() isAdmin = false;
+  @Output() close = new EventEmitter<void>();
+  @Output() goBack = new EventEmitter<void>();
+  @Output() openPatients = new EventEmitter<void>();
+  @Output() goHome = new EventEmitter<void>();
+  @Output() openProfile = new EventEmitter<void>();
+  @Output() openActivities = new EventEmitter<void>();
+  @Output() openChat = new EventEmitter<void>();
+  @Output() openContents = new EventEmitter<void>();
+  @Output() openUserManagement = new EventEmitter<void>();
+  @Output() openAdminActivities = new EventEmitter<void>();
+  @Output() logout = new EventEmitter<void>();
   @ViewChild('messagesContainer')
+
   private messagesContainer?:
     ElementRef<HTMLElement>;
 
@@ -109,14 +93,14 @@ export class ChatModalComponent
   contactsError = '';
   messagesError = '';
   sendError = '';
+  showNotifications = false;
 
-  private pollingTimer:
-    ReturnType<typeof setInterval> | null = null;
-
+  private pollingTimer: ReturnType<typeof setInterval> | null = null;
   private isPolling = false;
 
   constructor(
     private chatService: ChatService,
+    public notificationService: ExerciseNotificationService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -126,6 +110,26 @@ export class ChatModalComponent
 
   ngOnDestroy(): void {
     this.stopPolling();
+  }
+
+  toggleNotifications(): void {
+    if (
+      this.role !== 'informal' ||
+      this.isAdmin
+    ) {
+      return;
+    }
+
+    this.showNotifications =
+      !this.showNotifications;
+
+    if (this.showNotifications) {
+      this.notificationService.markAsRead();
+    }
+  }
+
+  closeNotifications(): void {
+    this.showNotifications = false;
   }
 
   get headerAvatar(): string {

@@ -12,6 +12,9 @@ import {
 } from '../../core/services/patient.service';import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
 import {LoadingSpinnerComponent} from '../../shared/laoding-spinner-modal/loading-spinner.component';
 import { FormsModule } from '@angular/forms';
+import {
+  ExerciseNotificationService
+} from '../../core/services/exercise-notification.service';
 
 type ProfileTab = 'dados' | 'sessoes';
 type UserRole = 'informal' | 'formal';
@@ -344,14 +347,16 @@ export class ProfileComponent {
 
   showEgpModal = false;
   showNotifications = false;
-  constructor(
-    private patientService: PatientService,
-    private cdr: ChangeDetectorRef
-  ) {}
+
   egpData: EgpAssessment | null = null;
   isLoadingEgp = false;
   egpError = '';
 
+  constructor(
+    private patientService: PatientService,
+    public notificationService: ExerciseNotificationService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   get patientSubtitle(): string {
     return this.patient.subtitle ?? `${this.patient.age} anos - Paciente com demência`;
@@ -367,6 +372,10 @@ export class ProfileComponent {
 
     this.showNotifications =
       !this.showNotifications;
+
+    if (this.showNotifications) {
+      this.notificationService.markAsRead();
+    }
   }
 
   closeNotifications(): void {
