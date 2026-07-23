@@ -51,20 +51,25 @@ button {
 /* Cabeçalho */
 
 .header {
-  position: relative;
-  z-index: 2;
-
+  width: 100%;
+  height: 90px;
+  min-height: 90px;
   padding: 0 48px;
+}
 
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.top-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
 
-  border-bottom: 1px solid #dfe6f0;
-
+.avatar {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #e3eaf5;
+  border-radius: 50%;
   background: #ffffff;
-
-  box-shadow: 0 3px 14px rgba(54, 83, 126, 0.05);
+  object-fit: contain;
 }
 
 .left-actions,
@@ -131,27 +136,6 @@ button {
 
 .top-icons {
   gap: 20px;
-}
-
-.top-icon {
-  width: 36px;
-  height: 36px;
-
-  object-fit: contain;
-}
-
-.avatar {
-  width: 48px;
-  height: 48px;
-
-  border: 3px solid #ffffff;
-  border-radius: 50%;
-
-  object-fit: cover;
-
-  box-shadow:
-    0 0 0 2px #dbe8fb,
-    0 4px 12px rgba(54, 83, 126, 0.12);
 }
 
 
@@ -1278,13 +1262,25 @@ button {
 @media (max-width: 560px) {
   .chat-page {
     grid-template-rows:
-      80px
-      minmax(0, 1fr)
-      82px;
+    76px
+    minmax(0, 1fr)
+    82px;
   }
 
   .header {
-    padding: 0 15px;
+    height: 76px;
+    min-height: 76px;
+    padding: 0 18px;
+  }
+
+  .top-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .avatar {
+    width: 42px;
+    height: 42px;
   }
 
   .left-actions {
@@ -1308,16 +1304,6 @@ button {
 
   .top-icons {
     gap: 11px;
-  }
-
-  .top-icon {
-    width: 31px;
-    height: 31px;
-  }
-
-  .avatar {
-    width: 41px;
-    height: 41px;
   }
 
   .conversations-heading {
