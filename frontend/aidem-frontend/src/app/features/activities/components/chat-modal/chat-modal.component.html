@@ -504,34 +504,14 @@
   <app-side-menu
     *ngIf="showSideMenu"
     [isAdmin]="isAdmin"
-
     (close)="closeSideMenu()"
-
-    (changePatient)="
-      openPatients.emit();
-      closeSideMenu()
-    "
-
-    (openContents)="
-      openContents.emit();
-      closeSideMenu()
-    "
-
+    (changePatient)="openPatients.emit();closeSideMenu()"
+    (openContents)="openContents.emit();closeSideMenu()"
     (openMessages)="closeSideMenu()"
-
     (openAdminActivities)="
-      openAdminActivities.emit();
-      closeSideMenu()
-    "
-
-    (openUserManagement)="
-      openUserManagement.emit();
-      closeSideMenu()
-    "
-
-    (logout)="
-      logout.emit();
-      closeSideMenu()
-    ">
+     openAdminActivities.emit();closeSideMenu()"
+    (openUserManagement)="openUserManagement.emit();closeSideMenu()"
+    [canChangePatient]="role === 'formal' || isAdmin"
+    (logout)="logout.emit();closeSideMenu()">
   </app-side-menu>
 </div>
