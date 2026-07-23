@@ -1458,3 +1458,206 @@ button {
 .new-message-button > span:first-child {
   font-size: 21px;
 }
+
+/* =========================================================
+   Tipografia maior e consistente com o resto da aplicação
+   ========================================================= */
+
+.back-button {
+  font-size: 20px;
+}
+
+.section-label {
+  font-size: 15px;
+}
+
+.conversations-heading h1,
+.contact-picker-header h2 {
+  font-size: 31px;
+}
+
+
+/* Botões */
+
+.new-message-button,
+.primary-button {
+  min-height: 50px;
+
+  font-size: 16px;
+}
+
+
+/* Lista de conversas */
+
+.conversation-item {
+  min-height: 112px;
+}
+
+.conversation-name-row strong {
+  font-size: 19px;
+}
+
+.conversation-name-row time {
+  font-size: 14px;
+}
+
+.conversation-role {
+  font-size: 15px;
+}
+
+.conversation-preview {
+  font-size: 16px;
+}
+
+
+/* Mensagens de estado */
+
+.panel-state,
+.chat-state {
+  font-size: 18px;
+}
+
+.panel-state strong,
+.chat-state strong {
+  font-size: 20px;
+}
+
+
+/* Quando não existe conversa selecionada */
+
+.no-conversation h2 {
+  font-size: 31px;
+}
+
+.no-conversation p {
+  font-size: 19px;
+}
+
+
+/* Cabeçalho da conversa */
+
+.professional-info h2 {
+  font-size: 27px;
+}
+
+.professional-info p {
+  font-size: 17px;
+}
+
+
+/* Balões de mensagens */
+
+.message {
+  padding: 15px 20px;
+
+  font-size: 19px;
+}
+
+.time {
+  font-size: 14px;
+}
+
+
+/* Campo para escrever */
+
+.chat-input-shell input {
+  font-size: 19px;
+}
+
+.send-error {
+  font-size: 16px;
+}
+
+
+/* Modal de nova mensagem */
+
+.contact-search input {
+  font-size: 19px;
+}
+
+.contact-item {
+  min-height: 90px;
+}
+
+.contact-item strong {
+  font-size: 19px;
+}
+
+.contact-item small {
+  font-size: 16px;
+}
+
+
+/* Rodapé */
+
+.bottom-nav div {
+  font-size: 16px;
+}
+
+
+/* Em tablets estreitos, o botão passa para baixo do título */
+
+@media (max-width: 1100px) and (min-width: 901px) {
+  .conversations-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .new-message-button {
+    width: 100%;
+
+    font-size: 17px;
+  }
+}
+
+
+/* Telemóvel */
+
+@media (max-width: 560px) {
+  .section-label {
+    font-size: 14px;
+  }
+
+  .conversations-heading h1 {
+    font-size: 28px;
+  }
+
+  .conversation-name-row strong {
+    font-size: 18px;
+  }
+
+  .conversation-name-row time {
+    font-size: 13px;
+  }
+
+  .conversation-role {
+    font-size: 14px;
+  }
+
+  .conversation-preview {
+    font-size: 15px;
+  }
+
+  .professional-info h2 {
+    font-size: 22px;
+  }
+
+  .professional-info p {
+    font-size: 15px;
+  }
+
+  .message {
+    font-size: 17px;
+  }
+
+  .time {
+    font-size: 13px;
+  }
+
+  .chat-input-shell input {
+    font-size: 17px;
+  }
+
+  .bottom-nav div {
+    font-size: 14px;
+  }
+}
