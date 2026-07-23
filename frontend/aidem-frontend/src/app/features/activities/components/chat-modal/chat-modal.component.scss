@@ -122,9 +122,11 @@ button {
 }
 
 .back-arrow {
-  font-size: 30px;
+  font-size: 27px;
   font-weight: 700;
   line-height: 1;
+
+  transform: translateY(-1px);
 }
 
 .top-icons {
