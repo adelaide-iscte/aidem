@@ -18,6 +18,7 @@ public record CreatePatientRequest(
         String informalCaregiverName,
         String informalCaregiverPhone,
         String informalCaregiverEmail,
+        String avatar,
         String notes,
         LocalDate assessmentDate,
         List<EgpScoreRequest> egpScores

@@ -7,6 +7,7 @@ public record SaveCaregiverUserRequest(
         String email,
         String password,
         String role,
+        String avatar,
         List<Long> patientIds
 ) {
 }

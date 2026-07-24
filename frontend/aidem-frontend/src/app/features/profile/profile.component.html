@@ -56,7 +56,40 @@
 
     </div>
     <section class="profile-hero">
-      <img [src]="patient.avatar" class="patient-avatar" />
+      <section class="profile-hero">
+
+        <div class="patient-avatar-editor">
+
+          <img
+            [src]="
+        isEditing
+          ? editablePatientAvatar
+          : (patient.avatar || '/icons/generic_user.svg')
+      "
+            class="patient-avatar"
+            alt="Fotografia do utente"
+          />
+
+          <label
+            *ngIf="isEditing"
+            class="patient-avatar-camera"
+            aria-label="Alterar fotografia do utente">
+
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              (change)="onPatientAvatarSelected($event)"
+            />
+
+            <img
+              src="/icons/Edit.svg"
+              alt=""
+              aria-hidden="true"
+            />
+
+          </label>
+
+        </div>
 
 
       <div class="patient-info">
@@ -195,7 +228,19 @@
 
 
             <ng-container *ngIf="isEditing">
+              <button
+                *ngIf="editForm.avatar"
+                type="button"
+                class="
+    action-button
+    outline
+    remove-avatar-button
+  "
+                [disabled]="isSavingProfile"
+                (click)="removePatientAvatar()">
 
+                Remover fotografia
+              </button>
               <button
                 type="button"
                 class="

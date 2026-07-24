@@ -110,6 +110,11 @@ public class AdminUserController {
                         )
                 )
                 .role(role)
+                .avatar(
+                        cleanAvatar(
+                                request.avatar()
+                        )
+                )
                 .active(true)
                 .build();
 
@@ -167,6 +172,11 @@ public class AdminUserController {
         );
 
         user.setRole(role);
+        user.setAvatar(
+                cleanAvatar(
+                        request.avatar()
+                )
+        );
 
         /*
          * Na edição, a password é opcional.
@@ -482,9 +492,52 @@ public class AdminUserController {
                 user.getFullName(),
                 user.getEmail(),
                 user.getRole().name(),
+                user.getAvatar(),
                 patients
         );
     }
+    private String cleanAvatar(
+            String avatar
+    ) {
+        if (
+                avatar == null ||
+                        avatar.isBlank()
+        ) {
+            return null;
+        }
+
+        String trimmedAvatar =
+                avatar.trim();
+
+        if (
+                !trimmedAvatar.startsWith(
+                        "data:image/jpeg;base64,"
+                ) &&
+                        !trimmedAvatar.startsWith(
+                                "data:image/png;base64,"
+                        ) &&
+                        !trimmedAvatar.startsWith(
+                                "data:image/webp;base64,"
+                        )
+        ) {
+            throw badRequest(
+                    "A fotografia selecionada não é válida."
+            );
+        }
+
+        /*
+         * Proteção adicional para evitar o envio
+         * de imagens demasiado grandes.
+         */
+        if (trimmedAvatar.length() > 1_500_000) {
+            throw badRequest(
+                    "A fotografia selecionada é demasiado grande."
+            );
+        }
+
+        return trimmedAvatar;
+    }
+
 
     private Set<Long> normalizePatientIds(
             List<Long> patientIds

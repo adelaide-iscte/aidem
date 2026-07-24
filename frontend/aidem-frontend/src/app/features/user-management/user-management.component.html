@@ -195,7 +195,7 @@
         <div class="user-avatar">
 
           <img
-            [src]="userAvatar(user.role)"
+            [src]="userAvatar(user)"
             [alt]="roleLabel(user.role)"
           />
 
@@ -326,7 +326,86 @@
         <!-- DADOS DA CONTA -->
 
         <section class="account-panel">
+          <div class="profile-photo-editor">
 
+            <div class="profile-photo-preview">
+
+              <img
+                [src]="selectedUserAvatar"
+                alt="Fotografia do utilizador"
+              />
+
+              <label
+                class="photo-camera-button"
+                aria-label="Selecionar fotografia">
+
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  (change)="onAvatarSelected($event)"
+                />
+
+                <span aria-hidden="true">
+        📷
+      </span>
+
+              </label>
+
+            </div>
+
+
+            <div class="profile-photo-copy">
+
+              <strong>
+                Fotografia de perfil
+              </strong>
+
+              <span>
+      JPG, PNG ou WEBP. Máximo de 5 MB.
+    </span>
+
+
+              <div class="profile-photo-actions">
+
+                <label class="choose-photo-button">
+
+                  {{
+                    form.avatar
+                      ? 'Alterar fotografia'
+                      : 'Adicionar fotografia'
+                  }}
+
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    (change)="onAvatarSelected($event)"
+                  />
+
+                </label>
+
+
+                <button
+                  *ngIf="form.avatar"
+                  type="button"
+                  class="remove-photo-button"
+                  (click)="removeAvatar()">
+
+                  Remover
+                </button>
+
+              </div>
+
+
+              <p
+                *ngIf="avatarError"
+                class="photo-error">
+
+                {{ avatarError }}
+              </p>
+
+            </div>
+
+          </div>
           <h3>Dados de acesso</h3>
 
 

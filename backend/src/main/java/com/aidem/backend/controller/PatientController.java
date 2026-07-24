@@ -154,7 +154,10 @@ public class PatientController {
                 patient.getInformalCaregiverName(),
                 patient.getInformalCaregiverPhone(),
                 patient.getInformalCaregiverEmail(),
-                patient.getAvatar(),
+                patient.getAvatar() != null &&
+                        !patient.getAvatar().isBlank()
+                        ? patient.getAvatar()
+                        : "/icons/generic_user.svg",
                 age + " anos - " + patient.getDiagnosisType()
         );
     }
@@ -170,7 +173,10 @@ public class PatientController {
                 patient.getBirthDate(),
                 age,
                 "IP" + patient.getId(),
-                "/icons/generic_user.svg",
+                patient.getAvatar() != null &&
+                        !patient.getAvatar().isBlank()
+                        ? patient.getAvatar()
+                        : "/icons/generic_user.svg",
                 age + " anos - Paciente com demência"
         );
     }
@@ -282,6 +288,11 @@ public class PatientController {
 
         patient.setInformalCaregiverEmail(
                 request.informalCaregiverEmail().trim()
+        );
+        patient.setAvatar(
+                cleanAvatar(
+                        request.avatar()
+                )
         );
 
         patientRepository.saveAndFlush(patient);
@@ -767,7 +778,11 @@ public class PatientController {
                 .informalCaregiverPhone(request.informalCaregiverPhone())
                 .informalCaregiverEmail(request.informalCaregiverEmail())
                 .notes(request.notes())
-                .avatar("/icons/generic_user.svg")
+                .avatar(
+                        cleanAvatar(
+                                request.avatar()
+                        )
+                )
                 .build();
 
         Patient savedPatient = patientRepository.save(patient);
@@ -1030,6 +1045,49 @@ public class PatientController {
             case "MEDIUM", "MEDIO", "MÉDIO" -> RiskLevel.MEDIUM;
             default -> RiskLevel.LOW;
         };
+    }
+
+    private String cleanAvatar(
+            String avatar
+    ) {
+        if (
+                avatar == null ||
+                        avatar.isBlank() ||
+                        "/icons/generic_user.svg".equals(
+                                avatar.trim()
+                        )
+        ) {
+            return null;
+        }
+
+        String trimmedAvatar =
+                avatar.trim();
+
+        if (
+                !trimmedAvatar.startsWith(
+                        "data:image/jpeg;base64,"
+                ) &&
+                        !trimmedAvatar.startsWith(
+                                "data:image/png;base64,"
+                        ) &&
+                        !trimmedAvatar.startsWith(
+                                "data:image/webp;base64,"
+                        )
+        ) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A fotografia selecionada não é válida."
+            );
+        }
+
+        if (trimmedAvatar.length() > 1_500_000) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A fotografia selecionada é demasiado grande."
+            );
+        }
+
+        return trimmedAvatar;
     }
 
     private void updateEgpSummaryScores(

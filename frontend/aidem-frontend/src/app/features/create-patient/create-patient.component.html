@@ -24,6 +24,86 @@
     </section>
 
     <section class="form-card">
+
+      <section class="patient-photo-section">
+
+        <div class="patient-photo-preview">
+
+          <img
+            [src]="patientAvatarPreview"
+            alt="Fotografia do utente"
+          />
+
+          <label
+            class="patient-photo-camera"
+            aria-label="Selecionar fotografia">
+
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              (change)="onAvatarSelected($event)"
+            />
+
+            <span aria-hidden="true">
+        📷
+      </span>
+
+          </label>
+
+        </div>
+
+
+        <div class="patient-photo-information">
+
+          <h3>Fotografia do utente</h3>
+
+          <p>
+            A fotografia é opcional. Se não selecionar nenhuma,
+            será utilizada a imagem predefinida.
+          </p>
+
+
+          <div class="patient-photo-actions">
+
+            <label class="select-patient-photo">
+
+              {{
+                form.avatar
+                  ? 'Alterar fotografia'
+                  : 'Adicionar fotografia'
+              }}
+
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                (change)="onAvatarSelected($event)"
+              />
+
+            </label>
+
+
+            <button
+              *ngIf="form.avatar"
+              type="button"
+              class="remove-patient-photo"
+              (click)="removeAvatar()">
+
+              Remover
+            </button>
+
+          </div>
+
+
+          <p
+            *ngIf="avatarError"
+            class="patient-photo-error">
+
+            {{ avatarError }}
+          </p>
+
+        </div>
+
+      </section>
       <h2>Dados do utente</h2>
 
       <div class="form-grid">

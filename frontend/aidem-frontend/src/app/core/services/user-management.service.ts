@@ -16,6 +16,7 @@ export type CaregiverUser = {
   fullName: string;
   email: string;
   role: CaregiverRole;
+  avatar: string | null;
   patients: CaregiverPatient[];
 };
 
@@ -24,6 +25,7 @@ export type SaveCaregiverUserPayload = {
   email: string;
   password: string;
   role: CaregiverRole;
+  avatar: string | null;
   patientIds: number[];
 };
 

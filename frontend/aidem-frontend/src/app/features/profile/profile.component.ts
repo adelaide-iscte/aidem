@@ -22,6 +22,10 @@ type UserDataRow = [
   { label: string; value: string },
   { label: string; value: string }
 ];
+import {
+  DEFAULT_PATIENT_AVATAR,
+  resizeProfileImage
+} from '../../core/utils/image.util';
 
 @Component({
   selector: 'app-profile',
@@ -61,10 +65,51 @@ export class ProfileComponent {
   showDeleteModal = false;
   isDeletingPatient = false;
   deleteError = '';
-
+  avatarError = '';
   readonly maxBirthDate = new Date().toISOString().slice(0, 10);
 
   editForm: UpdatePatientRequest = this.createEmptyEditForm();
+
+  get editablePatientAvatar(): string {
+    return (
+      this.editForm.avatar ||
+      DEFAULT_PATIENT_AVATAR
+    );
+  }
+
+  async onPatientAvatarSelected(
+    event: Event
+  ): Promise<void> {
+    const input =
+      event.target as HTMLInputElement;
+
+    const file =
+      input.files?.[0];
+
+    input.value = '';
+
+    if (!file) {
+      return;
+    }
+
+    this.avatarError = '';
+
+    try {
+      this.editForm.avatar =
+        await resizeProfileImage(file);
+
+    } catch (error) {
+      this.avatarError =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível selecionar a fotografia.';
+    }
+  }
+
+  removePatientAvatar(): void {
+    this.editForm.avatar = null;
+    this.avatarError = '';
+  }
 
   get headerAvatar(): string {
     if (this.isAdmin) {
@@ -270,7 +315,8 @@ export class ProfileComponent {
 
       profession:
         this.editForm.profession.trim(),
-
+      avatar:
+      this.editForm.avatar,
       sessionType:
         this.editForm.sessionType.trim(),
 
@@ -700,7 +746,12 @@ export class ProfileComponent {
         patient.informalCaregiverPhone ?? '',
 
       informalCaregiverEmail:
-        patient.informalCaregiverEmail ?? ''
+        patient.informalCaregiverEmail ?? '',
+
+      avatar:
+        patient.avatar === DEFAULT_PATIENT_AVATAR
+          ? null
+          : patient.avatar
     };
   }
 
@@ -720,7 +771,8 @@ export class ProfileComponent {
       sessionType: '',
       informalCaregiverName: '',
       informalCaregiverPhone: '',
-      informalCaregiverEmail: ''
+      informalCaregiverEmail: '',
+      avatar: null
     };
   }
 

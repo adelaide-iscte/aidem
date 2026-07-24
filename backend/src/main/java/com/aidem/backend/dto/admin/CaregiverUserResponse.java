@@ -7,6 +7,7 @@ public record CaregiverUserResponse(
         String fullName,
         String email,
         String role,
+        String avatar,
         List<CaregiverPatientResponse> patients
 ) {
 }

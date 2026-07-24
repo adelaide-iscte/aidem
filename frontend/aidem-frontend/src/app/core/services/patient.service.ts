@@ -41,6 +41,8 @@ export interface UpdatePatientRequest {
   informalCaregiverName: string;
   informalCaregiverPhone: string;
   informalCaregiverEmail: string;
+
+  avatar: string | null;
 }
 
 export type SessionHistory = {
@@ -87,6 +89,8 @@ export interface CreatePatientRequest {
     riskLevel: string | null;
     displayOrder: number;
   }[];
+
+  avatar: string | null;
 }
 
 export interface PatientProfile {

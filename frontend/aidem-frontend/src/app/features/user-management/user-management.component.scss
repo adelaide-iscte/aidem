@@ -1596,3 +1596,165 @@
     grid-template-columns: 1fr;
   }
 }
+
+.profile-photo-editor {
+  margin-bottom: 28px;
+  padding: 22px;
+
+  display: flex;
+  align-items: center;
+  gap: 22px;
+
+  border: 1px solid #dce4ef;
+  border-radius: 18px;
+
+  background: #f8faff;
+}
+
+.profile-photo-preview {
+  position: relative;
+
+  width: 118px;
+  min-width: 118px;
+  height: 118px;
+}
+
+.profile-photo-preview > img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+
+  background: #eef3fa;
+
+  object-fit: cover;
+
+  box-shadow: 0 6px 18px rgba(42, 67, 104, 0.16);
+}
+
+.photo-camera-button {
+  position: absolute;
+  right: 0;
+  bottom: 3px;
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+
+  background: #477fdc;
+  color: #ffffff;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 12px rgba(42, 84, 153, 0.24);
+}
+
+.photo-camera-button input,
+.choose-photo-button input {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.profile-photo-copy {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.profile-photo-copy strong {
+  color: #2f4058;
+
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.profile-photo-copy > span {
+  margin-top: 3px;
+
+  color: #718098;
+
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.profile-photo-actions {
+  margin-top: 14px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.choose-photo-button,
+.remove-photo-button {
+  min-height: 42px;
+  padding: 0 16px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 750;
+
+  cursor: pointer;
+}
+
+.choose-photo-button {
+  position: relative;
+
+  border: 1px solid #477fdc;
+
+  background: #477fdc;
+  color: #ffffff;
+}
+
+.remove-photo-button {
+  border: 1px solid #e0a5a5;
+
+  background: #ffffff;
+  color: #b43d3d;
+}
+
+.photo-error {
+  margin: 10px 0 0;
+
+  color: #b43d3d;
+
+  font-size: 14px;
+  font-weight: 650;
+}
+
+@media (max-width: 650px) {
+  .profile-photo-editor {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-photo-copy {
+    align-items: center;
+  }
+
+  .profile-photo-actions {
+    justify-content: center;
+  }
+}

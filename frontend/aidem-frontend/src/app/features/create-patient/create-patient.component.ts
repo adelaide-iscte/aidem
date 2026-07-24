@@ -2,6 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CreatePatientRequest, PatientService } from '../../core/services/patient.service';
+import {
+  DEFAULT_PATIENT_AVATAR,
+  resizeProfileImage
+} from '../../core/utils/image.util';
 
 type PatientForm = {
   fullName: string;
@@ -19,6 +23,7 @@ type PatientForm = {
   informalCaregiverEmail: string;
   notes: string;
   assessmentDate: string;
+  avatar: string | null;
 };
 
 type EgpFormRow = {
@@ -43,7 +48,7 @@ export class CreatePatientComponent {
   isSaving = false;
   submitError = '';
   fieldErrors: string[] = [];
-
+  avatarError = '';
   form: PatientForm = {
     fullName: '',
     birthDate: '',
@@ -59,6 +64,7 @@ export class CreatePatientComponent {
     informalCaregiverPhone: '',
     informalCaregiverEmail: '',
     notes: '',
+    avatar: null,
     assessmentDate: new Date().toISOString().slice(0, 10)
   };
 
@@ -118,6 +124,47 @@ export class CreatePatientComponent {
 
   constructor(private patientService: PatientService) {}
 
+
+  get patientAvatarPreview(): string {
+    return (
+      this.form.avatar ||
+      DEFAULT_PATIENT_AVATAR
+    );
+  }
+
+  async onAvatarSelected(
+    event: Event
+  ): Promise<void> {
+    const input =
+      event.target as HTMLInputElement;
+
+    const file =
+      input.files?.[0];
+
+    input.value = '';
+
+    if (!file) {
+      return;
+    }
+
+    this.avatarError = '';
+
+    try {
+      this.form.avatar =
+        await resizeProfileImage(file);
+
+    } catch (error) {
+      this.avatarError =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível selecionar a fotografia.';
+    }
+  }
+
+  removeAvatar(): void {
+    this.form.avatar = null;
+    this.avatarError = '';
+  }
   isSummaryRow(domain: string): boolean {
     return [
       'Constrangimentos físicos',
@@ -293,6 +340,8 @@ export class CreatePatientComponent {
       informalCaregiverEmail: this.form.informalCaregiverEmail.trim(),
       notes: this.form.notes.trim(),
       assessmentDate: this.form.assessmentDate,
+      avatar:
+      this.form.avatar,
       egpScores: this.egpRows.map((row) => ({
         domain: row.domain,
         score: Number(row.score),

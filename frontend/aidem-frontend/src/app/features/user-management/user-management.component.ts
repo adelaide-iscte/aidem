@@ -30,6 +30,12 @@ import {
   LoadingSpinnerComponent
 } from '../../shared/laoding-spinner-modal/loading-spinner.component';
 
+import {
+  DEFAULT_FORMAL_AVATAR,
+  DEFAULT_INFORMAL_AVATAR,
+  resizeProfileImage
+} from '../../core/utils/image.util';
+
 type RoleFilter =
   | 'ALL'
   | CaregiverRole;
@@ -44,6 +50,7 @@ type CaregiverForm = {
   password: string;
   confirmPassword: string;
   role: CaregiverRole;
+  avatar: string | null;
   patientIds: number[];
 };
 
@@ -72,7 +79,7 @@ export class UserManagementComponent
 
   caregivers: CaregiverUser[] = [];
   patients: AppPatient[] = [];
-
+  avatarError = '';
   mode: PageMode = 'list';
 
   editingUser:
@@ -259,6 +266,7 @@ export class UserManagementComponent
 
   openEditForm(
     user: CaregiverUser
+
   ): void {
     this.editingUser = user;
 
@@ -272,7 +280,8 @@ export class UserManagementComponent
       password: '',
 
       confirmPassword: '',
-
+      avatar:
+      user.avatar,
       role:
       user.role,
 
@@ -445,6 +454,9 @@ export class UserManagementComponent
       role:
       this.form.role,
 
+      avatar:
+      this.form.avatar,
+
       patientIds:
       this.form.patientIds
     };
@@ -561,12 +573,16 @@ export class UserManagementComponent
   }
 
   userAvatar(
-    role: CaregiverRole
+    user: CaregiverUser
   ): string {
-    return role ===
+    if (user.avatar) {
+      return user.avatar;
+    }
+
+    return user.role ===
     'FORMAL_CAREGIVER'
-      ? '/icons/Professional_doctor.svg'
-      : '/icons/User.svg';
+      ? DEFAULT_FORMAL_AVATAR
+      : DEFAULT_INFORMAL_AVATAR;
   }
 
   associationLabel(
@@ -606,6 +622,7 @@ export class UserManagementComponent
       email: '',
       password: '',
       confirmPassword: '',
+      avatar: null,
 
       role:
         'FORMAL_CAREGIVER',
@@ -621,5 +638,50 @@ export class UserManagementComponent
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         .test(email.trim())
     );
+  }
+
+  get selectedUserAvatar(): string {
+    if (this.form.avatar) {
+      return this.form.avatar;
+    }
+
+    return this.form.role ===
+    'FORMAL_CAREGIVER'
+      ? DEFAULT_FORMAL_AVATAR
+      : DEFAULT_INFORMAL_AVATAR;
+  }
+
+  async onAvatarSelected(
+    event: Event
+  ): Promise<void> {
+    const input =
+      event.target as HTMLInputElement;
+
+    const file =
+      input.files?.[0];
+
+    input.value = '';
+
+    if (!file) {
+      return;
+    }
+
+    this.avatarError = '';
+
+    try {
+      this.form.avatar =
+        await resizeProfileImage(file);
+
+    } catch (error) {
+      this.avatarError =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível selecionar a fotografia.';
+    }
+  }
+
+  removeAvatar(): void {
+    this.form.avatar = null;
+    this.avatarError = '';
   }
 }

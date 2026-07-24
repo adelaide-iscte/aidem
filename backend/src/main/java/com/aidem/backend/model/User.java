@@ -33,6 +33,9 @@ public class User {
 
     private Boolean active = true;
 
+    @Column(columnDefinition = "TEXT")
+    private String avatar;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
