@@ -660,8 +660,6 @@ export class UserManagementComponent
     const file =
       input.files?.[0];
 
-    input.value = '';
-
     if (!file) {
       return;
     }
@@ -669,19 +667,36 @@ export class UserManagementComponent
     this.avatarError = '';
 
     try {
-      this.form.avatar =
+      const resizedAvatar =
         await resizeProfileImage(file);
+
+      this.form = {
+        ...this.form,
+        avatar: resizedAvatar
+      };
+
+      this.cdr.detectChanges();
 
     } catch (error) {
       this.avatarError =
         error instanceof Error
           ? error.message
           : 'Não foi possível selecionar a fotografia.';
+
+      this.cdr.detectChanges();
+
+    } finally {
+      input.value = '';
     }
   }
 
   removeAvatar(): void {
-    this.form.avatar = null;
+    this.form = {
+      ...this.form,
+      avatar: null
+    };
+
     this.avatarError = '';
+    this.cdr.detectChanges();
   }
 }
