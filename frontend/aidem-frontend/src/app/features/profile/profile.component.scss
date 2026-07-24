@@ -1043,16 +1043,74 @@
   flex-direction: column;
 }
 
+
+.profile-tabs-row
+.profile-edit-button,
 .profile-tabs-row
 .save-profile-button,
 .profile-tabs-row
-.cancel-edit-button {
-  width: 205px;
+.change-avatar-button,
+.profile-tabs-row
+.cancel-edit-button,
+.profile-tabs-row
+.remove-avatar-link {
   min-height: 48px;
   padding: 0 14px;
-
+  width: 100%;
   font-size: 15px;
 }
+
+.change-avatar-button {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  cursor: pointer;
+}
+
+.change-avatar-button input {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.change-avatar-button img {
+  width: 19px;
+  height: 19px;
+}
+
+.change-avatar-button.disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.remove-avatar-link {
+  width: 220px;
+  padding: 4px 8px;
+
+  border: 0;
+  background: transparent;
+  color: #b43d3d;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.remove-avatar-link:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
 
 
 /* Ecrãs mais pequenos */
@@ -1935,49 +1993,6 @@
   object-fit: cover;
 }
 
-.patient-avatar-camera {
-  position: absolute;
-  right: 4px;
-  bottom: 8px;
-
-  width: 44px;
-  height: 44px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 4px solid #ffffff;
-  border-radius: 50%;
-
-  background: #477fdc;
-
-  cursor: pointer;
-
-  box-shadow: 0 5px 14px rgba(43, 80, 139, 0.25);
-}
-
-.patient-avatar-camera:hover {
-  background: #356dc9;
-}
-
-.patient-avatar-camera input {
-  position: absolute;
-
-  width: 1px;
-  height: 1px;
-
-  opacity: 0;
-  pointer-events: none;
-}
-
-.patient-avatar-camera img {
-  width: 21px;
-  height: 21px;
-
-  filter: brightness(0) invert(1);
-}
-
 .remove-avatar-button {
   border-color: #e3aaaa;
   color: #b43d3d;
@@ -1995,8 +2010,4 @@
     height: 135px;
   }
 
-  .patient-avatar-camera {
-    width: 40px;
-    height: 40px;
-  }
 }

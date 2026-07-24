@@ -47,7 +47,10 @@
 
     <section class="hero-card">
       <div class="patient-avatar">
-        <img src="/icons/generic_user.svg" alt="Utente" />
+        <img
+          [src]="patient?.avatar || '/icons/generic_user.svg'"
+          alt="Utente"
+        />
       </div>
 
       <div class="hero-info">
