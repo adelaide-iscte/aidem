@@ -56,7 +56,6 @@
 
     </div>
     <section class="profile-hero">
-      <section class="profile-hero">
 
         <div class="patient-avatar-editor">
 
@@ -294,6 +293,13 @@
         O código do utente é gerado
         automaticamente e não pode
         ser alterado.
+      </p>
+
+      <p
+        *ngIf="avatarError"
+        class="profile-edit-error">
+
+        {{ avatarError }}
       </p>
 
 
@@ -781,7 +787,6 @@
 
         </div>
       </div>
-    </section>
     </section>
   </main>
 

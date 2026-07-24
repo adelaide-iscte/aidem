@@ -158,6 +158,7 @@ export class ProfileComponent {
 
     this.activeTab = 'dados';
     this.editError = '';
+    this.avatarError = '';
 
     this.editForm =
       this.createEditForm(
@@ -168,6 +169,7 @@ export class ProfileComponent {
   }
 
   cancelEditing(): void {
+    this.avatarError = '';
     if (this.isSavingProfile) {
       return;
     }
