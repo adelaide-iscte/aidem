@@ -49,11 +49,12 @@
       <button
         type="submit"
         class="login-button"
+        [class.loading]="isLoading()"
         [disabled]="isLoading()">
 
         <app-loading-spinner
           *ngIf="isLoading()"
-          size="small"
+          [compact]="true"
           message="">
         </app-loading-spinner>
 
@@ -61,18 +62,5 @@
       </button>
     </form>
 
-    <div class="divider">
-      <span></span>
-      <p>OU</p>
-      <span></span>
-    </div>
-
-    <div class="social-buttons">
-      <button>
-        <img src="/icons/Google.svg" class="social-icon">
-        Use a sua Conta Google
-      </button>
-
-    </div>
   </main>
 </div>

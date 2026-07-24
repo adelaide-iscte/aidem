@@ -89,26 +89,38 @@
 }
 
 .loading-shell.compact {
-  padding: 18px 10px;
+  padding: 0;
 }
 
 .loading-shell.compact .loading-card {
   min-width: 0;
   width: 100%;
-  padding: 22px;
-  border-radius: 18px;
+  padding: 0;
+
+  border: none;
+  border-radius: 0;
+
+  background: transparent;
   box-shadow: none;
-  background: #f8fbff;
 }
 
 .loading-shell.compact .logo-orbit {
-  width: 70px;
-  height: 70px;
+  width: 46px;
+  height: 46px;
+}
+
+.loading-shell.compact .orbit-ring-two {
+  inset: 7px;
 }
 
 .loading-shell.compact .loading-logo {
-  width: 38px;
-  height: 38px;
+  width: 28px;
+  height: 28px;
+}
+
+.loading-shell.compact .loading-message:empty,
+.loading-shell.compact .loading-sub-message:empty {
+  display: none;
 }
 
 .loading-shell.compact .loading-message {

@@ -143,7 +143,7 @@ input {
   border: 1.5px solid #d8e1ed;
   border-radius: 14px;
 
-  background: #fbfcfe;
+  background: #ffffff;
 
   transition:
     border-color 0.2s ease,
@@ -154,6 +154,23 @@ input {
 .input-wrapper:hover {
   border-color: #b8c9df;
 }
+
+.input-wrapper input:-webkit-autofill,
+.input-wrapper input:-webkit-autofill:hover,
+.input-wrapper input:-webkit-autofill:focus,
+.input-wrapper input:-webkit-autofill:active {
+  -webkit-text-fill-color: #263750;
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  box-shadow: 0 0 0 1000px #ffffff inset;
+
+  transition: background-color 9999s ease-out 0s;
+}
+.login-button.loading {
+  border-color: #dfe6f0;
+  background: #ffffff;
+  box-shadow: none;
+}
+
 
 .input-wrapper:focus-within {
   border-color: #407ce2;
@@ -352,103 +369,10 @@ input {
 }
 
 
-/* Separador */
-
-.divider {
-  width: 100%;
-  margin: 34px 0 26px;
-
-  display: flex;
-  align-items: center;
-  gap: 15px;
-
-  color: #8a98aa;
-}
-
-.divider span {
-  height: 1px;
-
-  flex: 1;
-
-  background: #dfe6f0;
-}
-
-.divider p {
-  margin: 0;
-
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-
-/* Login social */
-
-.social-buttons {
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.social-buttons button {
-  position: relative;
-
-  width: 100%;
-  min-height: 60px;
-  padding: 0 60px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border: 2px solid #d8e1ed;
-  border-radius: 14px;
-
-  background: #ffffff;
-  color: #34445c;
-
-  font-family: 'Poppins', Inter, Arial, sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
-}
-
-.social-buttons button:hover {
-  border-color: #a8c5ff;
-  background: #f8faff;
-
-  box-shadow: 0 6px 16px rgba(54, 83, 126, 0.08);
-}
-
-.social-buttons button:active {
-  transform: scale(0.98);
-}
-
-.social-icon {
-  position: absolute;
-  left: 22px;
-
-  width: 29px;
-  height: 29px;
-
-  object-fit: contain;
-}
-
-
 /* Foco visível para navegação por teclado */
 
 .login-button:focus-visible,
 .eye-button:focus-visible,
-.social-buttons button:focus-visible,
 .forgot-password:focus-visible {
   outline: 4px solid rgba(64, 124, 226, 0.24);
   outline-offset: 3px;

@@ -807,33 +807,61 @@
       aria-labelledby="delete-patient-modal-title"
       (click)="$event.stopPropagation()">
 
-      <ng-container
-        *ngIf="!isDeletingPatient; else deletingPatient">
+      <ng-container *ngIf="!isDeletingPatient; else deletingPatient">
+
+        <div class="delete-warning-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 8v5"></path>
+            <path d="M12 17h.01"></path>
+            <path
+              d="M10.3 4.8 3.1 17.2A2 2 0 0 0 4.8 20h14.4a2 2 0 0 0 1.7-2.8L13.7 4.8a2 2 0 0 0-3.4 0Z">
+            </path>
+          </svg>
+        </div>
 
         <h2 id="delete-patient-modal-title">
           Remover utente?
         </h2>
 
+        <p class="delete-modal-description">
+          Tem a certeza de que pretende remover
+
+          <strong>
+            {{ patient.name }}
+          </strong>?
+        </p>
+
+        <span class="delete-warning-text">
+        Esta ação não pode ser anulada.
+      </span>
+
         <p
           *ngIf="deleteError"
           class="delete-error"
           role="alert">
+
           {{ deleteError }}
         </p>
 
-        <button
-          type="button"
-          class="confirm-delete-button"
-          (click)="confirmDelete()">
-          Sim
-        </button>
+        <div class="delete-modal-actions">
 
-        <button
-          type="button"
-          class="cancel-delete-button"
-          (click)="closeDeleteModal()">
-          Cancelar
-        </button>
+          <button
+            type="button"
+            class="cancel-delete-button"
+            (click)="closeDeleteModal()">
+
+            Manter utente
+          </button>
+
+          <button
+            type="button"
+            class="confirm-delete-button"
+            (click)="confirmDelete()">
+
+            Remover utente
+          </button>
+
+        </div>
 
       </ng-container>
 
