@@ -27,11 +27,119 @@
   </header>
 
   <main class="form-content">
-    <img
-      [src]="getExerciseImage()"
-      class="form-illustration"
-      [alt]="form.title || 'Atividade'"
-    />
+    <section class="exercise-image-editor">
+
+      <div class="exercise-image-preview">
+
+        <img
+          [src]="getExerciseImage()"
+          [alt]="
+        form.title ||
+        'Imagem da atividade'
+      "
+        />
+
+        <label
+          class="exercise-image-camera"
+          aria-label="Selecionar imagem da atividade">
+
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            [disabled]="
+          isSaving ||
+          isProcessingImage
+        "
+            (change)="
+          onExerciseImageSelected($event)
+        "
+          />
+
+          <img
+            src="/icons/camera.svg"
+            alt=""
+            aria-hidden="true"
+          />
+
+        </label>
+
+      </div>
+
+
+      <div class="exercise-image-information">
+
+        <h2>Imagem da atividade</h2>
+
+        <p>
+          A imagem é opcional. Pode selecionar
+          uma imagem JPG, PNG ou WEBP até 5 MB.
+        </p>
+
+
+        <div class="exercise-image-actions">
+
+          <label
+            class="select-exercise-image"
+            [class.disabled]="
+          isSaving ||
+          isProcessingImage
+        ">
+
+            <img
+              src="/icons/camera.svg"
+              alt=""
+              aria-hidden="true"
+            />
+
+            {{
+              isProcessingImage
+                ? 'A processar imagem...'
+                : hasCustomExerciseImage
+                  ? 'Alterar imagem'
+                  : 'Adicionar imagem'
+            }}
+
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              [disabled]="
+            isSaving ||
+            isProcessingImage
+          "
+              (change)="
+            onExerciseImageSelected($event)
+          "
+            />
+
+          </label>
+
+
+          <button
+            *ngIf="hasCustomExerciseImage"
+            type="button"
+            class="remove-exercise-image"
+            [disabled]="
+          isSaving ||
+          isProcessingImage
+        "
+            (click)="removeExerciseImage()">
+
+            Remover imagem
+          </button>
+
+        </div>
+
+
+        <p
+          *ngIf="imageError"
+          class="exercise-image-error">
+
+          {{ imageError }}
+        </p>
+
+      </div>
+
+    </section>
 
     <form
       class="activity-form"
@@ -219,22 +327,7 @@
               </select>
             </label>
 
-            <label>
-              <span>Imagem</span>
 
-              <input
-                type="text"
-                name="mediaUrl"
-                [(ngModel)]="form.mediaUrl"
-                [readonly]="!isEditing"
-                [disabled]="!isEditing"
-                [placeholder]="
-    isEditing
-      ? 'exercicios/nome.png'
-      : 'Indisponível'
-  "
-              />
-            </label>
           </div>
 
           <label>

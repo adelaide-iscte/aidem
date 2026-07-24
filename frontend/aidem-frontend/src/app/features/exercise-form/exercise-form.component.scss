@@ -150,10 +150,34 @@ textarea {
 
 /* Imagem da atividade */
 
-.form-illustration {
-  width: 140px;
-  height: 110px;
-  margin: 0 auto 24px;
+.exercise-image-editor {
+  margin: 0 auto 26px;
+  padding: 24px;
+
+  display: flex;
+  align-items: center;
+  gap: 26px;
+
+  border: 1px solid #dce5f0;
+  border-radius: 20px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 8px 24px rgba(54, 83, 126, 0.07);
+}
+
+.exercise-image-preview {
+  position: relative;
+
+  width: 220px;
+  min-width: 220px;
+  height: 150px;
+}
+
+.exercise-image-preview > img {
+  width: 100%;
+  height: 100%;
 
   display: block;
 
@@ -167,6 +191,175 @@ textarea {
   box-shadow:
     0 0 0 1px #dce6f2,
     0 8px 22px rgba(54, 83, 126, 0.12);
+}
+
+.exercise-image-camera {
+  position: absolute;
+  right: -7px;
+  bottom: -7px;
+
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+
+  background: #407ce2;
+  color: #ffffff;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 14px rgba(43, 80, 139, 0.25);
+}
+
+.exercise-image-camera:hover {
+  background: #326bc9;
+}
+
+.exercise-image-camera input,
+.select-exercise-image input {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.exercise-image-camera > img {
+  width: 21px;
+  height: 21px;
+
+  filter: brightness(0) invert(1);
+}
+
+.exercise-image-information {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.exercise-image-information h2 {
+  margin: 0;
+
+  color: #263750;
+
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.exercise-image-information p {
+  margin: 6px 0 0;
+
+  color: #718098;
+
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.exercise-image-actions {
+  margin-top: 16px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 11px;
+}
+
+.select-exercise-image,
+.remove-exercise-image {
+  min-height: 46px;
+  padding: 0 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  border-radius: 12px;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.select-exercise-image {
+  position: relative;
+
+  border: 1px solid #407ce2;
+
+  background: #407ce2;
+  color: #ffffff;
+}
+
+.select-exercise-image > img {
+  width: 19px;
+  height: 19px;
+
+  filter: brightness(0) invert(1);
+}
+
+.remove-exercise-image {
+  border: 1px solid #e1a7a7;
+
+  background: #ffffff;
+  color: #b43d3d;
+}
+
+.remove-exercise-image:hover:not(:disabled) {
+  border-color: #ca7777;
+  background: #fff6f6;
+}
+
+.select-exercise-image.disabled,
+.select-exercise-image:has(
+  input:disabled
+) {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.remove-exercise-image:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.exercise-image-error {
+  color: #b43d3d !important;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .exercise-image-editor {
+    flex-direction: column;
+
+    text-align: center;
+  }
+
+  .exercise-image-information {
+    align-items: center;
+  }
+
+  .exercise-image-actions {
+    justify-content: center;
+  }
+
+  .exercise-image-preview {
+    width: min(100%, 260px);
+    min-width: 0;
+    height: 170px;
+  }
 }
 
 

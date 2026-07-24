@@ -161,8 +161,26 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     return `${this.progressPercent}%`;
   }
 
-  activityImage(activity: SessionPlanExercise): string {
-    return activity.mediaUrl || '/icons/activity-balance.svg';
+  activityImage(
+    activity: SessionPlanExercise
+  ): string {
+    const media =
+      activity.mediaUrl?.trim();
+
+    if (!media) {
+      return '/icons/generic_exercise.svg';
+    }
+
+    if (
+      media.startsWith('data:image/') ||
+      media.startsWith('http://') ||
+      media.startsWith('https://') ||
+      media.startsWith('/')
+    ) {
+      return media;
+    }
+
+    return `/${media}`;
   }
 
   difficultyLabel(value: string): string {

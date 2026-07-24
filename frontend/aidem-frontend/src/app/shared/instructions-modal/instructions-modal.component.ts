@@ -149,12 +149,32 @@ export class InstructionsModalComponent implements OnDestroy {
     });
   }
 
-  getVideoBackground(activity?: SessionPlanExercise): string {
-    const imageUrl = activity?.mediaUrl
-      ? `/${activity.mediaUrl}`
-      : '/icons/generic_activity.svg';
+  getVideoBackground(
+    activity?: SessionPlanExercise
+  ): string {
+    const media =
+      activity?.mediaUrl?.trim();
 
-    return `linear-gradient(rgba(0, 0, 0, .35), rgba(0, 0, 0, .35)), url("${imageUrl}")`;
+    let imageUrl =
+      '/icons/generic_exercise.svg';
+
+    if (media) {
+      imageUrl =
+        media.startsWith('data:image/') ||
+        media.startsWith('http://') ||
+        media.startsWith('https://') ||
+        media.startsWith('/')
+          ? media
+          : `/${media}`;
+    }
+
+    return `
+    linear-gradient(
+      rgba(0, 0, 0, .35),
+      rgba(0, 0, 0, .35)
+    ),
+    url("${imageUrl}")
+  `;
   }
 
   ngOnChanges(): void {

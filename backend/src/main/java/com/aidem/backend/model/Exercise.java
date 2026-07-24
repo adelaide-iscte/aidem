@@ -51,10 +51,14 @@ public class Exercise {
     @Column(columnDefinition = "TEXT")
     private String mediaUrl;
 
+    @Column(name = "media_2",columnDefinition = "TEXT")
+    private String media2;
+
     private Boolean active = true;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
 
     @PrePersist
     void onCreate() {

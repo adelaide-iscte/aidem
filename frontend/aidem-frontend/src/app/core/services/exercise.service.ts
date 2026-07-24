@@ -29,7 +29,8 @@ export interface Exercise {
 
   materials: string;
   instructions: string;
-  mediaUrl: string;
+  mediaUrl: string | null;
+  media2: string | null;
 
   active: boolean;
   createdAt?: string;
@@ -50,14 +51,24 @@ export interface ExercisePage {
   empty: boolean;
 }
 
-export type ExercisePayload =
-  Omit<
-    Exercise,
-    'id' |
-    'active' |
-    'createdAt' |
-    'updatedAt'
-  >;
+export type ExercisePayload = {
+  title: string;
+  description: string;
+  domain: string;
+
+  activityType: ActivityType;
+  difficultyLevel: DifficultyLevel;
+
+  durationMinutes: number;
+  sets: number;
+  repetitions: number;
+  restSeconds: number;
+
+  materials: string;
+  instructions: string;
+
+  media2: string | null;
+};
 
 @Injectable({
   providedIn: 'root'

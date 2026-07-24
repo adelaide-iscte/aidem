@@ -10,6 +10,10 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import {
+  DEFAULT_EXERCISE_IMAGE,
+  resizeExerciseImage
+} from '../../core/utils/image.util';
 
 import {
   ActivityType,
@@ -45,6 +49,8 @@ export class ExerciseFormComponent
 
   errorMessage = '';
   successMessage = '';
+  imageError = '';
+  isProcessingImage = false;
 
   form: ExercisePayload =
     this.createEmptyForm();
@@ -86,7 +92,7 @@ export class ExerciseFormComponent
       restSeconds: 0,
       materials: '',
       instructions: '',
-      mediaUrl: ''
+      media2: null
     };
   }
 
@@ -113,19 +119,10 @@ export class ExerciseFormComponent
         this.exerciseToEdit.materials ?? '',
       instructions:
         this.exerciseToEdit.instructions ?? '',
-      mediaUrl:
-        this.exerciseToEdit.mediaUrl ?? ''
+      media2:
+        this.exerciseToEdit.media2 ?? null
     };
 
-    console.log(
-      'IMAGEM RECEBIDA:',
-      this.exerciseToEdit.mediaUrl
-    );
-
-    console.log(
-      'URL FINAL:',
-      this.getExerciseImage()
-    );
   }
 
   increase(
@@ -165,21 +162,50 @@ export class ExerciseFormComponent
   }
 
   getExerciseImage(): string {
-    const mediaUrl = this.form.mediaUrl?.trim();
+    /*
+     * Uma imagem nova ou a marcação explícita
+     * da default tem sempre prioridade.
+     */
+    const uploadedMedia =
+      this.form.media2?.trim();
 
-    if (!mediaUrl) {
-      return '/icons/generic_exercise.svg';
+    if (uploadedMedia) {
+      return this.normalizeImageUrl(
+        uploadedMedia
+      );
     }
 
+    /*
+     * Durante a edição, caso ainda não tenha
+     * sido feito upload, utiliza a imagem antiga.
+     */
+    const originalMedia =
+      this.exerciseToEdit
+        ?.mediaUrl
+        ?.trim();
+
+    if (originalMedia) {
+      return this.normalizeImageUrl(
+        originalMedia
+      );
+    }
+
+    return DEFAULT_EXERCISE_IMAGE;
+  }
+
+  private normalizeImageUrl(
+    media: string
+  ): string {
     if (
-      mediaUrl.startsWith('http://') ||
-      mediaUrl.startsWith('https://') ||
-      mediaUrl.startsWith('/')
+      media.startsWith('data:image/') ||
+      media.startsWith('http://') ||
+      media.startsWith('https://') ||
+      media.startsWith('/')
     ) {
-      return mediaUrl;
+      return media;
     }
 
-    return `/${mediaUrl}`;
+    return `/${media}`;
   }
 
   async save(): Promise<void> {
@@ -274,4 +300,85 @@ export class ExerciseFormComponent
       label: 'Alta'
     }
   ];
+
+  async onExerciseImageSelected(
+    event: Event
+  ): Promise<void> {
+    const input =
+      event.target as HTMLInputElement;
+
+    const file =
+      input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.imageError = '';
+    this.isProcessingImage = true;
+
+    try {
+      const resizedImage =
+        await resizeExerciseImage(file);
+
+      /*
+       * Nova referência ao formulário para
+       * garantir a atualização imediata da imagem.
+       */
+      this.form = {
+        ...this.form,
+        media2: resizedImage
+      };
+
+      this.cdr.detectChanges();
+
+    } catch (error) {
+      this.imageError =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível selecionar a imagem.';
+
+      this.cdr.detectChanges();
+
+    } finally {
+      this.isProcessingImage = false;
+      input.value = '';
+      this.cdr.detectChanges();
+    }
+  }
+
+  removeExerciseImage(): void {
+    /*
+     * Não usamos null porque isso faria um
+     * exercício antigo voltar ao mediaUrl.
+     *
+     * Ao guardar explicitamente a default em
+     * media2, a imagem antiga deixa de ser usada.
+     */
+    this.form = {
+      ...this.form,
+      media2: DEFAULT_EXERCISE_IMAGE
+    };
+
+    this.imageError = '';
+    this.cdr.detectChanges();
+  }
+
+  get hasCustomExerciseImage(): boolean {
+    const media2 =
+      this.form.media2?.trim();
+
+    if (media2) {
+      return (
+        media2 !==
+        DEFAULT_EXERCISE_IMAGE
+      );
+    }
+
+    return Boolean(
+      this.exerciseToEdit
+        ?.mediaUrl
+        ?.trim()
+    );
+  }
 }

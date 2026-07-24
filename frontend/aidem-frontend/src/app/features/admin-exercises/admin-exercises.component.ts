@@ -262,18 +262,24 @@ export class AdminExercisesComponent
   getImage(
     exercise: Exercise
   ): string {
-    if (!exercise.mediaUrl?.trim()) {
+    const media =
+      exercise.media2?.trim() ||
+      exercise.mediaUrl?.trim();
+
+    if (!media) {
       return '/icons/generic_exercise.svg';
     }
 
     if (
-      exercise.mediaUrl.startsWith('http') ||
-      exercise.mediaUrl.startsWith('/')
+      media.startsWith('data:image/') ||
+      media.startsWith('http://') ||
+      media.startsWith('https://') ||
+      media.startsWith('/')
     ) {
-      return exercise.mediaUrl;
+      return media;
     }
 
-    return `/${exercise.mediaUrl}`;
+    return `/${media}`;
   }
 
   getActivitySummary(
