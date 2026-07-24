@@ -41,7 +41,8 @@ export class ExerciseFormComponent
 
   @Output()
   goBack = new EventEmitter<void>();
-
+  @Output()
+  cancel = new EventEmitter<void>();
   @Output()
   saved = new EventEmitter<void>();
 

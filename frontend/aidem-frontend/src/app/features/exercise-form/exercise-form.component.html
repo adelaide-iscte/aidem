@@ -4,7 +4,7 @@
       type="button"
       class="back-button"
       aria-label="Voltar à lista de atividades"
-      (click)="cancel.emit()">
+      (click)="goBack.emit()">
 
       <span class="back-arrow" aria-hidden="true">←</span>
       <span>Voltar</span>
@@ -380,7 +380,7 @@
         <button
           type="button"
           class="cancel-button"
-          (click)="goBack.emit()">
+          (click)="cancel.emit()">
           Cancelar
         </button>
       </div>
