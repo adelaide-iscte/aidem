@@ -138,10 +138,9 @@
 
             <img
               [src]="
-                avatarForRole(
-                  conversation.contactRole
-                )
-              "
+  conversation.contactAvatar ||
+  avatarForRole(conversation.contactRole)
+"
               class="conversation-avatar"
               [alt]="conversation.contactName"
             />
@@ -237,11 +236,7 @@
             </button>
 
             <img
-              [src]="
-                avatarForRole(
-                  selectedContact.role
-                )
-              "
+              [src]="avatarForContact(selectedContact)"
               class="professional-avatar"
               [alt]="selectedContact.fullName"
             />
@@ -474,7 +469,7 @@
           (click)="selectContact(contact)">
 
           <img
-            [src]="avatarForRole(contact.role)"
+            [src]="avatarForContact(contact)"
             [alt]="contact.fullName"
           />
 
@@ -507,11 +502,7 @@
     "
     [name]="selectedContact.fullName"
     status="A chamar ..."
-    [avatar]="
-      avatarForRole(
-        selectedContact.role
-      )
-    "
+    [avatar]="avatarForContact(selectedContact)"
     (endCall)="closeCallOverlay()">
   </app-call-overlay>
 

@@ -201,7 +201,8 @@ export class ChatModalComponent
     await this.openConversation({
       id: conversation.contactId,
       fullName: conversation.contactName,
-      role: conversation.contactRole
+      role: conversation.contactRole,
+      avatar: conversation.contactAvatar
     });
   }
 
@@ -301,6 +302,15 @@ export class ChatModalComponent
       case 'INFORMAL_CAREGIVER':
         return '/icons/generic_user.svg';
     }
+  }
+
+  avatarForContact(
+    contact: ChatContact
+  ): string {
+
+    return contact.avatar?.trim()
+      ? contact.avatar
+      : this.avatarForRole(contact.role);
   }
 
   roleLabel(

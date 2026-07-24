@@ -10,12 +10,14 @@ export type ChatContact = {
   id: number;
   fullName: string;
   role: ChatContactRole;
+  avatar: string | null;
 };
 
 export type ChatConversation = {
   contactId: number;
   contactName: string;
   contactRole: ChatContactRole;
+  contactAvatar: string | null;
   lastMessage: string;
   lastMessageAt: string;
   lastMessageMine: boolean;

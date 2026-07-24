@@ -115,6 +115,7 @@ public class ChatService {
                             contact.getId(),
                             contact.getFullName(),
                             contact.getRole().name(),
+                            contact.getAvatar(),
                             message.getContent(),
                             message.getSentAt(),
                             message.getSender()
@@ -331,7 +332,8 @@ public class ChatService {
         return new ChatContactResponse(
                 user.getId(),
                 user.getFullName(),
-                user.getRole().name()
+                user.getRole().name(),
+                user.getAvatar()
         );
     }
 
