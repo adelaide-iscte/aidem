@@ -255,15 +255,7 @@
 
               </label>
 
-              <button
-                *ngIf="editForm.avatar"
-                type="button"
-                class="remove-avatar-link"
-                [disabled]="isSavingProfile"
-                (click)="removePatientAvatar()">
 
-                Remover fotografia
-              </button>
 
               <button
                 type="button"
@@ -276,6 +268,16 @@
                 (click)="cancelEditing()">
 
                 Cancelar
+              </button>
+
+              <button
+                *ngIf="editForm.avatar"
+                type="button"
+                class="remove-avatar-link"
+                [disabled]="isSavingProfile"
+                (click)="removePatientAvatar()">
+
+                Remover fotografia
               </button>
 
             </ng-container>
