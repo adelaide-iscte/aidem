@@ -41,12 +41,9 @@
 </div>
 
 <app-create-patient
-  *ngIf="
-    isLoggedIn &&
-    currentPage === 'createPatient'
-  "
-  (cancel)="goToPatients()"
-  (created)="onPatientCreated()">
+  *ngIf="isLoggedIn && currentPage === 'createPatient'"
+  (created)="goToPatients()"
+  (goBack)="goToPatients()">
 </app-create-patient>
 
 <app-loading-spinner

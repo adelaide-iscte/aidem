@@ -44,6 +44,7 @@ type EgpFormRow = {
 export class CreatePatientComponent {
   @Output() cancel = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
+  @Output() goBack = new EventEmitter<void>();
 
   isSaving = false;
   submitError = '';
@@ -368,6 +369,6 @@ export class CreatePatientComponent {
   }
 
   cancelCreation(): void {
-    this.cancel.emit();
+    this.goBack.emit();
   }
 }
