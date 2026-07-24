@@ -86,8 +86,6 @@ export class ProfileComponent {
     const file =
       input.files?.[0];
 
-    input.value = '';
-
     if (!file) {
       return;
     }
@@ -95,20 +93,37 @@ export class ProfileComponent {
     this.avatarError = '';
 
     try {
-      this.editForm.avatar =
+      const resizedAvatar =
         await resizeProfileImage(file);
+
+      this.editForm = {
+        ...this.editForm,
+        avatar: resizedAvatar
+      };
+
+      this.cdr.detectChanges();
 
     } catch (error) {
       this.avatarError =
         error instanceof Error
           ? error.message
           : 'Não foi possível selecionar a fotografia.';
+
+      this.cdr.detectChanges();
+
+    } finally {
+      input.value = '';
     }
   }
 
   removePatientAvatar(): void {
-    this.editForm.avatar = null;
+    this.editForm = {
+      ...this.editForm,
+      avatar: null
+    };
+
     this.avatarError = '';
+    this.cdr.detectChanges();
   }
 
   get headerAvatar(): string {
