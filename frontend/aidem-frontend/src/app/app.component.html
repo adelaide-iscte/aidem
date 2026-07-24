@@ -177,6 +177,6 @@
 <app-exercise-form
   *ngIf="isLoggedIn && isAdmin && currentPage === 'exerciseForm'"
   [exerciseToEdit]="selectedExerciseToEdit"
-  (cancel)="closeExerciseForm()"
+  (goBack)="closeExerciseForm()"
   (saved)="onExerciseSaved()">
 </app-exercise-form>

@@ -40,7 +40,7 @@ export class ExerciseFormComponent
   exerciseToEdit: Exercise | null = null;
 
   @Output()
-  cancel = new EventEmitter<void>();
+  goBack = new EventEmitter<void>();
 
   @Output()
   saved = new EventEmitter<void>();
