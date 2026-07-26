@@ -127,6 +127,16 @@ export class EgpEditModalComponent
     ].includes(domain);
   }
 
+  isAutoCalculatedNr(
+    domain: string
+  ): boolean {
+    return [
+      'Constrangimentos físicos',
+      'Prevalência motora',
+      'Prevalência cognitiva'
+    ].includes(domain);
+  }
+
   hasRiskClassification(
     domain: string
   ): boolean {
@@ -182,50 +192,93 @@ export class EgpEditModalComponent
     );
   }
 
+  private calculateNormalizedAverage(
+    domains: string[]
+  ): number | null {
+    const rows = domains.map(
+      domain => this.findEgpRow(domain)
+    );
+
+    const hasMissingValue = rows.some(
+      row =>
+        row?.normalizedScore === null ||
+        row?.normalizedScore === undefined
+    );
+
+    if (hasMissingValue) {
+      return null;
+    }
+
+    const total = rows.reduce(
+      (sum, row) =>
+        sum + Number(row?.normalizedScore ?? 0),
+      0
+    );
+
+    return Math.round(
+      (total / domains.length) * 100
+    ) / 100;
+  }
+
   recalculateEgpSummary(): void {
+    const physicalDomains = [
+      'Mobilização articular dos membros superiores',
+      'Mobilização articular dos membros inferiores'
+    ];
+
+    const motorDomains = [
+      'Equilíbrio Estático I',
+      'Equilíbrio Estático II',
+      'Equilíbrio Dinâmico I',
+      'Equilíbrio Dinâmico II',
+      'Motricidade fina dos membros inferiores'
+    ];
+
+    const cognitiveDomains = [
+      'Motricidade fina dos membros superiores',
+      'Praxias',
+      'Conhecimento das partes do corpo',
+      'Vigilância',
+      'Memória Percetiva',
+      'Domínio Espacial',
+      'Memória Verbal',
+      'Perceção',
+      'Domínio Temporal',
+      'Comunicação'
+    ];
+
     const physicalConstraints =
-      this.calculateSum([
-        'Mobilização articular dos membros superiores',
-        'Mobilização articular dos membros inferiores'
-      ]);
+      this.calculateSum(physicalDomains);
+
+    const physicalConstraintsNr =
+      this.calculateNormalizedAverage(
+        physicalDomains
+      );
 
     const motorPrevalence =
-      this.calculateSum([
-        'Equilíbrio Estático I',
-        'Equilíbrio Estático II',
-        'Equilíbrio Dinâmico I',
-        'Equilíbrio Dinâmico II',
-        'Motricidade fina dos membros inferiores'
-      ]);
+      this.calculateSum(motorDomains);
+
+    const motorPrevalenceNr =
+      this.calculateNormalizedAverage(
+        motorDomains
+      );
 
     const cognitivePrevalence =
-      this.calculateSum([
-        'Motricidade fina dos membros superiores',
-        'Praxias',
-        'Conhecimento das partes do corpo',
-        'Vigilância',
-        'Memória Percetiva',
-        'Domínio Espacial',
-        'Memória Verbal',
-        'Perceção',
-        'Domínio Temporal',
-        'Comunicação'
-      ]);
+      this.calculateSum(cognitiveDomains);
+
+    const cognitivePrevalenceNr =
+      this.calculateNormalizedAverage(
+        cognitiveDomains
+      );
 
     const physicalRow =
-      this.findEgpRow(
-        'Constrangimentos físicos'
-      );
+      this.findEgpRow('Constrangimentos físicos');
 
     const motorRow =
-      this.findEgpRow(
-        'Prevalência motora'
-      );
+      this.findEgpRow('Prevalência motora');
 
     const cognitiveRow =
-      this.findEgpRow(
-        'Prevalência cognitiva'
-      );
+      this.findEgpRow('Prevalência cognitiva');
 
     const totalRow =
       this.findEgpRow('Total');
@@ -233,16 +286,25 @@ export class EgpEditModalComponent
     if (physicalRow) {
       physicalRow.score =
         physicalConstraints;
+
+      physicalRow.normalizedScore =
+        physicalConstraintsNr;
     }
 
     if (motorRow) {
       motorRow.score =
         motorPrevalence;
+
+      motorRow.normalizedScore =
+        motorPrevalenceNr;
     }
 
     if (cognitiveRow) {
       cognitiveRow.score =
         cognitivePrevalence;
+
+      cognitiveRow.normalizedScore =
+        cognitivePrevalenceNr;
     }
 
     if (totalRow) {
@@ -252,22 +314,17 @@ export class EgpEditModalComponent
         cognitivePrevalence
       ];
 
-      const hasMissingSummary =
-        summaries.some(
-          value => value === null
+      if (
+        summaries.some(value => value === null)
+      ) {
+        totalRow.score = null;
+      } else {
+        totalRow.score = summaries.reduce(
+          (total: number, value) =>
+            total + (value ?? 0),
+          0
         );
-
-      totalRow.score =
-        hasMissingSummary
-          ? null
-          : summaries.reduce(
-            (
-              total: number,
-              value
-            ) =>
-              total + (value ?? 0),
-            0
-          );
+      }
     }
   }
 

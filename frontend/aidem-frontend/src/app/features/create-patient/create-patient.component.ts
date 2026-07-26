@@ -175,6 +175,14 @@ export class CreatePatientComponent {
     ].includes(domain);
   }
 
+  isAutoCalculatedNr(domain: string): boolean {
+    return [
+      'Constrangimentos físicos',
+      'Prevalência motora',
+      'Prevalência cognitiva'
+    ].includes(domain);
+  }
+
   hasRiskClassification(domain: string): boolean {
     return ![
       'Constrangimentos físicos',
@@ -207,6 +215,34 @@ export class CreatePatientComponent {
       (total, row) => total + Number(row?.score ?? 0),
       0
     );
+  }
+
+  private calculateNormalizedAverage(
+    domains: string[]
+  ): number | null {
+    const rows = domains.map(
+      domain => this.findEgpRow(domain)
+    );
+
+    const hasMissingValue = rows.some(
+      row =>
+        row?.normalizedScore === null ||
+        row?.normalizedScore === undefined
+    );
+
+    if (hasMissingValue) {
+      return null;
+    }
+
+    const total = rows.reduce(
+      (sum, row) =>
+        sum + Number(row?.normalizedScore ?? 0),
+      0
+    );
+
+    return Math.round(
+      (total / domains.length) * 100
+    ) / 100;
   }
 
   recalculateEgpSummary(): void {

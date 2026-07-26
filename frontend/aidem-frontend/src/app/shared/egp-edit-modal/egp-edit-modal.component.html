@@ -147,16 +147,23 @@
                   min="0"
                   step="0.01"
                   aria-label="NR de {{ row.domain }}"
-                  [(ngModel)]="
-                    row.normalizedScore
-                  "
+                  [(ngModel)]="row.normalizedScore"
+                  (ngModelChange)="
+    recalculateEgpSummary()
+  "
+                  [readonly]="
+    isAutoCalculatedNr(row.domain)
+  "
+                  [class.calculated-input]="
+    isAutoCalculatedNr(row.domain)
+  "
                   [class.invalid-input]="
-                    hasError(
-                      'EGP - ' +
-                      row.domain +
-                      ' - NR'
-                    )
-                  " />
+    hasError(
+      'EGP - ' +
+      row.domain +
+      ' - NR'
+    )
+  " />
 
                 <select
                   *ngIf="hasRiskClassification(row.domain)"
