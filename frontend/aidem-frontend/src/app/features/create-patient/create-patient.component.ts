@@ -247,20 +247,20 @@ export class CreatePatientComponent {
   }
 
   recalculateEgpSummary(): void {
-    const physicalConstraints = this.calculateSum([
+    const physicalDomains = [
       'Mobilização articular dos membros superiores',
       'Mobilização articular dos membros inferiores'
-    ]);
+    ];
 
-    const motorPrevalence = this.calculateSum([
+    const motorDomains = [
       'Equilíbrio Estático I',
       'Equilíbrio Estático II',
       'Equilíbrio Dinâmico I',
       'Equilíbrio Dinâmico II',
       'Motricidade fina dos membros inferiores'
-    ]);
+    ];
 
-    const cognitivePrevalence = this.calculateSum([
+    const cognitiveDomains = [
       'Motricidade fina dos membros superiores',
       'Praxias',
       'Conhecimento das partes do corpo',
@@ -271,40 +271,104 @@ export class CreatePatientComponent {
       'Perceção',
       'Domínio Temporal',
       'Comunicação'
-    ]);
+    ];
 
-    const physicalRow = this.findEgpRow('Constrangimentos físicos');
-    const motorRow = this.findEgpRow('Prevalência motora');
-    const cognitiveRow = this.findEgpRow('Prevalência cognitiva');
-    const totalRow = this.findEgpRow('Total');
+    const physicalConstraints =
+      this.calculateSum(physicalDomains);
+
+    const physicalConstraintsNr =
+      this.calculateNormalizedAverage(
+        physicalDomains
+      );
+
+    const motorPrevalence =
+      this.calculateSum(motorDomains);
+
+    const motorPrevalenceNr =
+      this.calculateNormalizedAverage(
+        motorDomains
+      );
+
+    const cognitivePrevalence =
+      this.calculateSum(cognitiveDomains);
+
+    const cognitivePrevalenceNr =
+      this.calculateNormalizedAverage(
+        cognitiveDomains
+      );
+
+    const physicalRow =
+      this.findEgpRow('Constrangimentos físicos');
+
+    const motorRow =
+      this.findEgpRow('Prevalência motora');
+
+    const cognitiveRow =
+      this.findEgpRow('Prevalência cognitiva');
+
+    const totalRow =
+      this.findEgpRow('Total');
 
     if (physicalRow) {
-      physicalRow.score = physicalConstraints;
+      physicalRow.score =
+        physicalConstraints;
+
+      physicalRow.normalizedScore =
+        physicalConstraintsNr;
     }
 
     if (motorRow) {
-      motorRow.score = motorPrevalence;
+      motorRow.score =
+        motorPrevalence;
+
+      motorRow.normalizedScore =
+        motorPrevalenceNr;
     }
 
     if (cognitiveRow) {
-      cognitiveRow.score = cognitivePrevalence;
+      cognitiveRow.score =
+        cognitivePrevalence;
+
+      cognitiveRow.normalizedScore =
+        cognitivePrevalenceNr;
     }
 
     if (totalRow) {
-      const summaries = [
+      const pdSummaries = [
         physicalConstraints,
         motorPrevalence,
         cognitivePrevalence
       ];
 
-      if (summaries.some(value => value === null)) {
-        totalRow.score = null;
-      } else {
-        totalRow.score = summaries.reduce(
-          (total: number, value) => total + (value ?? 0),
-          0
-        );
-      }
+      const nrSummaries = [
+        physicalConstraintsNr,
+        motorPrevalenceNr,
+        cognitivePrevalenceNr
+      ];
+
+      totalRow.score =
+        pdSummaries.some(
+          value => value === null
+        )
+          ? null
+          : pdSummaries.reduce(
+            (total: number, value) =>
+              total + (value ?? 0),
+            0
+          );
+
+      totalRow.normalizedScore =
+        nrSummaries.some(
+          value => value === null
+        )
+          ? null
+          : Math.round(
+          nrSummaries.reduce(
+            (total: number, value) =>
+              total + (value ?? 0),
+            0
+          ) * 100
+        ) / 100;
     }
   }
 
