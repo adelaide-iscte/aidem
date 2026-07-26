@@ -369,42 +369,64 @@ public class PatientController {
         var assessment = assessmentOpt.get();
 
         var scores = domainScoreRepository
-                .findByAssessment_IdOrderByDisplayOrderAscIdAsc(assessment.getId());
+                .findByAssessment_IdOrderByDisplayOrderAscIdAsc(
+                        assessment.getId()
+                );
 
-        Map<String, BigDecimal> scoresByDomain = scores.stream()
-                .collect(Collectors.toMap(
-                        DomainScore::getDomain,
-                        DomainScore::getScore,
-                        (first, second) -> first
-                ));
+        Map<String, BigDecimal> scoresByDomain =
+                scores.stream()
+                        .collect(Collectors.toMap(
+                                DomainScore::getDomain,
+                                DomainScore::getScore,
+                                (first, second) -> first
+                        ));
+
+        Map<String, BigDecimal> normalizedScoresByDomain =
+                scores.stream()
+                        .filter(
+                                score ->
+                                        score.getNormalizedScore() != null
+                        )
+                        .collect(Collectors.toMap(
+                                DomainScore::getDomain,
+                                DomainScore::getNormalizedScore,
+                                (first, second) -> first
+                        ));
 
         BigDecimal physicalConstraints = sumScores(
                 scoresByDomain,
-                "Mobilização articular dos membros superiores",
-                "Mobilização articular dos membros inferiores"
+                PHYSICAL_CONSTRAINT_DOMAINS
         );
 
         BigDecimal motorPrevalence = sumScores(
                 scoresByDomain,
-                "Equilíbrio Estático I",
-                "Equilíbrio Estático II",
-                "Equilíbrio Dinâmico I",
-                "Equilíbrio Dinâmico II",
-                "Motricidade fina dos membros inferiores"
+                MOTOR_PREVALENCE_DOMAINS
         );
 
         BigDecimal cognitivePrevalence = sumScores(
                 scoresByDomain,
-                "Motricidade fina dos membros superiores",
-                "Praxias",
-                "Conhecimento das partes do corpo",
-                "Vigilância",
-                "Memória Percetiva",
-                "Domínio Espacial",
-                "Memória Verbal",
-                "Perceção",
-                "Domínio Temporal",
-                "Comunicação"
+                COGNITIVE_PREVALENCE_DOMAINS
+        );
+
+        BigDecimal physicalConstraintsNr = averageScores(
+                normalizedScoresByDomain,
+                PHYSICAL_CONSTRAINT_DOMAINS
+        );
+
+        BigDecimal motorPrevalenceNr = averageScores(
+                normalizedScoresByDomain,
+                MOTOR_PREVALENCE_DOMAINS
+        );
+
+        BigDecimal cognitivePrevalenceNr = averageScores(
+                normalizedScoresByDomain,
+                COGNITIVE_PREVALENCE_DOMAINS
+        );
+
+        BigDecimal totalNr = sumIfComplete(
+                physicalConstraintsNr,
+                motorPrevalenceNr,
+                cognitivePrevalenceNr
         );
 
         BigDecimal total = physicalConstraints
@@ -414,19 +436,45 @@ public class PatientController {
         var rows = scores.stream()
                 .map(score -> {
                     BigDecimal pd = switch (score.getDomain()) {
-                        case "Constrangimentos físicos" -> physicalConstraints;
-                        case "Prevalência motora" -> motorPrevalence;
-                        case "Prevalência cognitiva" -> cognitivePrevalence;
-                        case "Total" -> total;
-                        default -> score.getScore();
+                        case "Constrangimentos físicos" ->
+                                physicalConstraints;
+
+                        case "Prevalência motora" ->
+                                motorPrevalence;
+
+                        case "Prevalência cognitiva" ->
+                                cognitivePrevalence;
+
+                        case "Total" ->
+                                total;
+
+                        default ->
+                                score.getScore();
+                    };
+
+                    BigDecimal nr = switch (score.getDomain()) {
+                        case "Constrangimentos físicos" ->
+                                physicalConstraintsNr;
+
+                        case "Prevalência motora" ->
+                                motorPrevalenceNr;
+
+                        case "Prevalência cognitiva" ->
+                                cognitivePrevalenceNr;
+
+                        case "Total" ->
+                                totalNr;
+
+                        default ->
+                                score.getNormalizedScore() != null
+                                        ? score.getNormalizedScore()
+                                        : score.getScore();
                     };
 
                     return new EgpRowResponse(
                             score.getDomain(),
                             pd,
-                            score.getNormalizedScore() != null
-                                    ? score.getNormalizedScore()
-                                    : score.getScore(),
+                            nr,
                             riskLevelForResponse(score),
                             score.getDisplayOrder(),
                             isEgpSummaryRow(score.getDomain())
@@ -652,6 +700,25 @@ public class PatientController {
         );
     }
 
+    private BigDecimal sumIfComplete(
+            BigDecimal... values
+    ) {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (BigDecimal value : values) {
+            if (value == null) {
+                return null;
+            }
+
+            total = total.add(value);
+        }
+
+        return total.setScale(
+                2,
+                RoundingMode.HALF_UP
+        );
+    }
+
     private boolean isEgpSummaryRow(String domain) {
         if (domain == null) {
             return false;
@@ -683,12 +750,10 @@ public class PatientController {
             return false;
         }
 
-        return "Constrangimentos físicos"
-                .equalsIgnoreCase(domain)
-                || "Prevalência motora"
-                .equalsIgnoreCase(domain)
-                || "Prevalência cognitiva"
-                .equalsIgnoreCase(domain);
+        return "Constrangimentos físicos".equalsIgnoreCase(domain)
+                || "Prevalência motora".equalsIgnoreCase(domain)
+                || "Prevalência cognitiva".equalsIgnoreCase(domain)
+                || "Total".equalsIgnoreCase(domain);
     }
 
     private RiskLevel riskLevelForStorage(
@@ -1245,6 +1310,12 @@ public class PatientController {
                         COGNITIVE_PREVALENCE_DOMAINS
                 );
 
+        BigDecimal totalNr = sumIfComplete(
+                physicalConstraintsNr,
+                motorPrevalenceNr,
+                cognitivePrevalenceNr
+        );
+
         BigDecimal total =
                 physicalConstraints
                         .add(motorPrevalence)
@@ -1282,9 +1353,10 @@ public class PatientController {
                     );
                 }
 
-                case "Total" ->
-                        score.setScore(total);
-
+                case "Total" -> {
+                    score.setScore(total);
+                    score.setNormalizedScore(totalNr);
+                }
                 default -> {
                     /*
                      * Os restantes valores já foram atualizados.

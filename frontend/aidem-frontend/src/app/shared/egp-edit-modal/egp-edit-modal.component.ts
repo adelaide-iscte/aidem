@@ -127,13 +127,12 @@ export class EgpEditModalComponent
     ].includes(domain);
   }
 
-  isAutoCalculatedNr(
-    domain: string
-  ): boolean {
+  isAutoCalculatedNr(domain: string): boolean {
     return [
       'Constrangimentos físicos',
       'Prevalência motora',
-      'Prevalência cognitiva'
+      'Prevalência cognitiva',
+      'Total'
     ].includes(domain);
   }
 
@@ -308,23 +307,37 @@ export class EgpEditModalComponent
     }
 
     if (totalRow) {
-      const summaries = [
+      const pdSummaries = [
         physicalConstraints,
         motorPrevalence,
         cognitivePrevalence
       ];
 
-      if (
-        summaries.some(value => value === null)
-      ) {
-        totalRow.score = null;
-      } else {
-        totalRow.score = summaries.reduce(
-          (total: number, value) =>
-            total + (value ?? 0),
-          0
-        );
-      }
+      const nrSummaries = [
+        physicalConstraintsNr,
+        motorPrevalenceNr,
+        cognitivePrevalenceNr
+      ];
+
+      totalRow.score =
+        pdSummaries.some(value => value === null)
+          ? null
+          : pdSummaries.reduce(
+            (total: number, value) =>
+              total + (value ?? 0),
+            0
+          );
+
+      totalRow.normalizedScore =
+        nrSummaries.some(value => value === null)
+          ? null
+          : Math.round(
+          nrSummaries.reduce(
+            (total: number, value) =>
+              total + (value ?? 0),
+            0
+          ) * 100
+        ) / 100;
     }
   }
 
