@@ -12,7 +12,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   DEFAULT_EXERCISE_IMAGE,
-  resizeExerciseImage
+  resizeExerciseImage,
+  resizeInstructionMedia
 } from '../../core/utils/image.util';
 
 import {
@@ -269,7 +270,7 @@ export class ExerciseFormComponent
 
     try {
       const resizedImage =
-        await resizeExerciseImage(file);
+        await resizeInstructionMedia(file);
 
       this.form = {
         ...this.form,

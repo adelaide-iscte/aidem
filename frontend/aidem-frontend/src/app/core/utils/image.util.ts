@@ -257,3 +257,81 @@ function loadExerciseImage(
     }
   );
 }
+
+export async function resizeInstructionMedia(
+  file: File
+): Promise<string> {
+  const allowedTypes = [
+    'image/jpeg',
+    'image/png',
+    'image/webp'
+  ];
+
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error(
+      'Selecione uma imagem JPG, PNG ou WEBP.'
+    );
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error(
+      'A imagem não pode ter mais de 5 MB.'
+    );
+  }
+
+  const imageUrl =
+    URL.createObjectURL(file);
+
+  try {
+    const image =
+      await loadExerciseImage(imageUrl);
+
+    const maxWidth = 1200;
+    const maxHeight = 1200;
+
+    const scale = Math.min(
+      maxWidth / image.naturalWidth,
+      maxHeight / image.naturalHeight,
+      1
+    );
+
+    const outputWidth = Math.round(
+      image.naturalWidth * scale
+    );
+
+    const outputHeight = Math.round(
+      image.naturalHeight * scale
+    );
+
+    const canvas =
+      document.createElement('canvas');
+
+    canvas.width = outputWidth;
+    canvas.height = outputHeight;
+
+    const context =
+      canvas.getContext('2d');
+
+    if (!context) {
+      throw new Error(
+        'Não foi possível processar a imagem.'
+      );
+    }
+
+    context.drawImage(
+      image,
+      0,
+      0,
+      outputWidth,
+      outputHeight
+    );
+
+    return canvas.toDataURL(
+      'image/jpeg',
+      0.85
+    );
+
+  } finally {
+    URL.revokeObjectURL(imageUrl);
+  }
+}
