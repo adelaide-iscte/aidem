@@ -149,27 +149,41 @@ export class InstructionsModalComponent implements OnDestroy {
     });
   }
 
+  hasInstructionImage(
+    activity?: SessionPlanExercise
+  ): boolean {
+    return Boolean(
+      activity?.instructionMediaUrl?.trim()
+    );
+  }
 
-  getVideoBackground(
+  getInstructionMediaUrl(
     activity?: SessionPlanExercise
   ): string {
-
     const media =
       activity?.instructionMediaUrl?.trim() ||
       activity?.mediaUrl?.trim();
 
-    let imageUrl =
-      '/icons/generic_exercise.svg';
-
-    if (media) {
-      imageUrl =
-        media.startsWith('data:image/') ||
-        media.startsWith('http://') ||
-        media.startsWith('https://') ||
-        media.startsWith('/')
-          ? media
-          : `/${media}`;
+    if (!media) {
+      return '/icons/generic_exercise.svg';
     }
+
+    return (
+      media.startsWith('data:') ||
+      media.startsWith('blob:') ||
+      media.startsWith('http://') ||
+      media.startsWith('https://') ||
+      media.startsWith('/')
+    )
+      ? media
+      : `/${media}`;
+  }
+
+  getVideoBackground(
+    activity?: SessionPlanExercise
+  ): string {
+    const imageUrl =
+      this.getInstructionMediaUrl(activity);
 
     return `
     linear-gradient(

@@ -971,3 +971,133 @@
     min-width: 42px;
   }
 }
+
+.image-preview .video-preview-title {
+  margin-bottom: 0;
+}
+
+.image-preview-expand {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.94);
+  color: #407ce2;
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.image-preview-expand svg {
+  width: 29px;
+  height: 29px;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.instruction-image-viewer {
+  position: relative;
+
+  width: 100%;
+  min-height: 420px;
+  max-height: 72vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: 15px;
+
+  background: #101722;
+}
+
+.instruction-image-viewer img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+  max-height: 72vh;
+
+  object-fit: contain;
+}
+
+.instruction-image-fullscreen {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+
+  width: 48px;
+  height: 48px;
+  padding: 11px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: rgba(17, 25, 39, 0.78);
+  color: #ffffff;
+
+  cursor: pointer;
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+}
+
+.instruction-image-fullscreen:hover {
+  background: rgba(17, 25, 39, 0.92);
+}
+
+.instruction-image-fullscreen svg {
+  width: 100%;
+  height: 100%;
+
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.instruction-image-viewer:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-height: none;
+
+  border-radius: 0;
+
+  background: #101722;
+}
+
+.instruction-image-viewer:fullscreen img {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+
+  object-fit: contain;
+}
+
+@media (max-width: 620px) {
+  .instruction-image-viewer {
+    min-height: 280px;
+  }
+
+  .instruction-image-fullscreen {
+    right: 12px;
+    bottom: 12px;
+
+    width: 44px;
+    height: 44px;
+  }
+}
