@@ -917,10 +917,11 @@ input:disabled {
 
 .instruction-media-actions {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   flex-wrap: wrap;
   gap: 11px;
 }
+
 
 @media (max-width: 620px) {
   .instruction-media-header h3 {
@@ -946,7 +947,10 @@ input:disabled {
   .select-exercise-image,
   .instruction-media-actions
   .remove-exercise-image {
-    width: 100%;
+    min-height: 54px;
+    padding: 0 18px;
+
+    font-size: 15px;
   }
 }
 
@@ -1016,6 +1020,73 @@ input:disabled {
 
 .select-instruction-media.disabled {
   opacity: .55;
+
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.extra-fields label.select-instruction-media {
+  width: fit-content;
+  min-width: 210px;
+  min-height: 54px;
+  padding: 0 22px;
+
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  border: 1px solid #407ce2;
+  border-radius: 14px;
+
+  background: #407ce2;
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1;
+
+  cursor: pointer;
+
+  box-shadow: 0 6px 16px rgba(64, 124, 226, 0.18);
+}
+
+.extra-fields label.select-instruction-media > img {
+  width: 19px;
+  height: 19px;
+
+  flex: 0 0 19px;
+
+  display: block;
+
+  filter: brightness(0) invert(1);
+}
+
+.extra-fields label.select-instruction-media input[type='file'] {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+  padding: 0;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.extra-fields label.select-instruction-media:hover:not(.disabled) {
+  border-color: #326ed2;
+  background: #326ed2;
+
+  box-shadow: 0 10px 22px rgba(64, 124, 226, 0.24);
+}
+
+.extra-fields label.select-instruction-media:active:not(.disabled) {
+  transform: scale(0.98);
+}
+
+.extra-fields label.select-instruction-media.disabled {
+  opacity: 0.55;
 
   cursor: not-allowed;
   pointer-events: none;
