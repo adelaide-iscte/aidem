@@ -907,13 +907,6 @@ public class SessionPlanService {
             return exercise.getInstructionMedia2();
         }
 
-        if (
-                exercise.getMediaUrl() != null &&
-                        !exercise.getMediaUrl().isBlank()
-        ) {
-            return exercise.getMediaUrl();
-        }
-
         return null;
     }
 

@@ -219,24 +219,13 @@ export class ExerciseFormComponent
         .instructionMedia2
         ?.trim();
 
-    if (uploadedMedia) {
-      return this.normalizeMediaUrl(
-        uploadedMedia
-      );
+    if (!uploadedMedia) {
+      return null;
     }
 
-    const originalMedia =
-      this.exerciseToEdit
-        ?.mediaUrl
-        ?.trim();
-
-    if (originalMedia) {
-      return this.normalizeMediaUrl(
-        originalMedia
-      );
-    }
-
-    return null;
+    return this.normalizeMediaUrl(
+      uploadedMedia
+    );
   }
 
   private normalizeMediaUrl(
@@ -258,9 +247,6 @@ export class ExerciseFormComponent
     return Boolean(
       this.form
         .instructionMedia2
-        ?.trim() ||
-      this.exerciseToEdit
-        ?.mediaUrl
         ?.trim()
     );
   }

@@ -149,43 +149,34 @@ export class InstructionsModalComponent implements OnDestroy {
     });
   }
 
-  getInstructionMedia(
-    activity?: SessionPlanExercise
-  ): string | null {
-    const media =
-      activity
-        ?.instructionMediaUrl
-        ?.trim();
 
-    if (!media) {
-      return null;
-    }
-
-    if (
-      media.startsWith('data:') ||
-      media.startsWith('http://') ||
-      media.startsWith('https://') ||
-      media.startsWith('/')
-    ) {
-      return media;
-    }
-
-    return `/${media}`;
-  }
-
-  getInstructionBackground(
+  getVideoBackground(
     activity?: SessionPlanExercise
   ): string {
+
     const media =
-      this.getInstructionMedia(activity) ||
+      activity?.instructionMediaUrl?.trim() ||
+      activity?.mediaUrl?.trim();
+
+    let imageUrl =
       '/icons/generic_exercise.svg';
+
+    if (media) {
+      imageUrl =
+        media.startsWith('data:image/') ||
+        media.startsWith('http://') ||
+        media.startsWith('https://') ||
+        media.startsWith('/')
+          ? media
+          : `/${media}`;
+    }
 
     return `
     linear-gradient(
-      rgba(0, 0, 0, .18),
-      rgba(0, 0, 0, .18)
+      rgba(0, 0, 0, .35),
+      rgba(0, 0, 0, .35)
     ),
-    url("${media}")
+    url("${imageUrl}")
   `;
   }
 
