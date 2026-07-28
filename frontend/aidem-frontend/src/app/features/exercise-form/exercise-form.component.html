@@ -350,6 +350,99 @@
               required>
             </textarea>
           </label>
+
+          <div class="instruction-media-editor">
+
+            <div class="instruction-media-header">
+              <div>
+                <h3>Media das instruções</h3>
+
+                <p>
+                  Pode substituir o media atual por uma
+                  imagem JPG, PNG ou WEBP.
+                </p>
+              </div>
+            </div>
+
+            <div
+              *ngIf="getInstructionMedia() as instructionMedia"
+              class="instruction-media-preview">
+
+              <img
+                [src]="instructionMedia"
+                [alt]="
+        'Media das instruções de ' +
+        (form.title || 'atividade')
+      "
+              />
+            </div>
+
+            <div
+              *ngIf="!getInstructionMedia()"
+              class="instruction-media-empty">
+
+              Ainda não existe media associado às instruções.
+            </div>
+
+            <div class="instruction-media-actions">
+
+              <label
+                class="select-exercise-image"
+                [class.disabled]="
+        isSaving ||
+        isProcessingInstructionMedia
+      ">
+
+                <img
+                  src="/icons/camera.svg"
+                  alt=""
+                  aria-hidden="true"
+                />
+
+                {{
+                  isProcessingInstructionMedia
+                    ? 'A processar imagem...'
+                    : hasInstructionMedia
+                      ? 'Substituir media'
+                      : 'Adicionar imagem'
+                }}
+
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  [disabled]="
+          isSaving ||
+          isProcessingInstructionMedia
+        "
+                  (change)="
+          onInstructionMediaSelected($event)
+        "
+                />
+              </label>
+
+              <button
+                *ngIf="form.instructionMedia2"
+                type="button"
+                class="remove-exercise-image"
+                [disabled]="
+        isSaving ||
+        isProcessingInstructionMedia
+      "
+                (click)="removeInstructionMedia()">
+
+                Repor media anterior
+              </button>
+
+            </div>
+
+            <p
+              *ngIf="instructionMediaError"
+              class="exercise-image-error">
+
+              {{ instructionMediaError }}
+            </p>
+
+          </div>
         </section>
       </div>
 

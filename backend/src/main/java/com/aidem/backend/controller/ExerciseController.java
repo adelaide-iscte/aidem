@@ -216,6 +216,12 @@ public class ExerciseController {
                         request.getMedia2()
                 )
         );
+        exercise.setInstructionMedia2(
+                cleanInstructionMedia(
+                        request.getInstructionMedia2()
+                )
+        );
+
     }
 
     private Integer defaultNumber(Integer value) {
@@ -237,11 +243,6 @@ public class ExerciseController {
         String normalized =
                 media.trim();
 
-        /*
-         * A imagem default é também permitida.
-         * É utilizada como marcador quando o
-         * administrador remove uma imagem antiga.
-         */
         if (
                 "/icons/generic_exercise.svg"
                         .equals(normalized)
@@ -269,6 +270,44 @@ public class ExerciseController {
         if (normalized.length() > 2_500_000) {
             throw new IllegalArgumentException(
                     "A imagem selecionada é demasiado grande."
+            );
+        }
+
+        return normalized;
+    }
+
+    private String cleanInstructionMedia(
+            String media
+    ) {
+        if (
+                media == null ||
+                        media.isBlank()
+        ) {
+            return null;
+        }
+
+        String normalized = media.trim();
+
+        boolean isSupportedImage =
+                normalized.startsWith(
+                        "data:image/jpeg;base64,"
+                ) ||
+                        normalized.startsWith(
+                                "data:image/png;base64,"
+                        ) ||
+                        normalized.startsWith(
+                                "data:image/webp;base64,"
+                        );
+
+        if (!isSupportedImage) {
+            throw new IllegalArgumentException(
+                    "A imagem das instruções não é válida."
+            );
+        }
+
+        if (normalized.length() > 4_000_000) {
+            throw new IllegalArgumentException(
+                    "A imagem das instruções é demasiado grande."
             );
         }
 

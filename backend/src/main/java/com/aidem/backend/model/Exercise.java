@@ -54,6 +54,11 @@ public class Exercise {
     @Column(name = "media_2",columnDefinition = "TEXT")
     private String media2;
 
+    @Column(
+            name = "instruction_media_2",
+            columnDefinition = "TEXT"
+    )
+    private String instructionMedia2;
     private Boolean active = true;
 
     private LocalDateTime createdAt;

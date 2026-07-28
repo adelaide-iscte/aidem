@@ -50,6 +50,8 @@ export class ExerciseFormComponent
   successMessage = '';
   imageError = '';
   isProcessingImage = false;
+  instructionMediaError = '';
+  isProcessingInstructionMedia = false;
 
   form: ExercisePayload =
     this.createEmptyForm();
@@ -91,7 +93,8 @@ export class ExerciseFormComponent
       restSeconds: 0,
       materials: '',
       instructions: '',
-      media2: null
+      media2: null,
+      instructionMedia2: null
     };
   }
 
@@ -119,7 +122,10 @@ export class ExerciseFormComponent
       instructions:
         this.exerciseToEdit.instructions ?? '',
       media2:
-        this.exerciseToEdit.media2 ?? null
+        this.exerciseToEdit.media2 ?? null,
+      instructionMedia2:
+        this.exerciseToEdit
+          .instructionMedia2 ?? null
     };
 
   }
@@ -205,6 +211,108 @@ export class ExerciseFormComponent
     }
 
     return `/${media}`;
+  }
+
+  getInstructionMedia(): string | null {
+    const uploadedMedia =
+      this.form
+        .instructionMedia2
+        ?.trim();
+
+    if (uploadedMedia) {
+      return this.normalizeMediaUrl(
+        uploadedMedia
+      );
+    }
+
+    const originalMedia =
+      this.exerciseToEdit
+        ?.mediaUrl
+        ?.trim();
+
+    if (originalMedia) {
+      return this.normalizeMediaUrl(
+        originalMedia
+      );
+    }
+
+    return null;
+  }
+
+  private normalizeMediaUrl(
+    media: string
+  ): string {
+    if (
+      media.startsWith('data:') ||
+      media.startsWith('http://') ||
+      media.startsWith('https://') ||
+      media.startsWith('/')
+    ) {
+      return media;
+    }
+
+    return `/${media}`;
+  }
+
+  get hasInstructionMedia(): boolean {
+    return Boolean(
+      this.form
+        .instructionMedia2
+        ?.trim() ||
+      this.exerciseToEdit
+        ?.mediaUrl
+        ?.trim()
+    );
+  }
+
+  async onInstructionMediaSelected(
+    event: Event
+  ): Promise<void> {
+    const input =
+      event.target as HTMLInputElement;
+
+    const file =
+      input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.instructionMediaError = '';
+    this.isProcessingInstructionMedia = true;
+
+    try {
+      const resizedImage =
+        await resizeExerciseImage(file);
+
+      this.form = {
+        ...this.form,
+        instructionMedia2: resizedImage
+      };
+
+      this.cdr.detectChanges();
+
+    } catch (error) {
+      this.instructionMediaError =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível selecionar a imagem.';
+
+    } finally {
+      this.isProcessingInstructionMedia = false;
+      input.value = '';
+      this.cdr.detectChanges();
+    }
+  }
+
+  removeInstructionMedia(): void {
+    this.form = {
+      ...this.form,
+      instructionMedia2: null
+    };
+
+    this.instructionMediaError = '';
+    this.cdr.detectChanges();
   }
 
   async save(): Promise<void> {

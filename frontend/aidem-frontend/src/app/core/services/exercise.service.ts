@@ -31,6 +31,7 @@ export interface Exercise {
   instructions: string;
   mediaUrl: string | null;
   media2: string | null;
+  instructionMedia2: string | null;
 
   active: boolean;
   createdAt?: string;
@@ -68,6 +69,7 @@ export type ExercisePayload = {
   instructions: string;
 
   media2: string | null;
+  instructionMedia2: string | null;
 };
 
 @Injectable({

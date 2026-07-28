@@ -25,4 +25,5 @@ public class ExerciseRequest {
     private String instructions;
     private String mediaUrl;
     private String media2;
+    private String instructionMedia2;
 }

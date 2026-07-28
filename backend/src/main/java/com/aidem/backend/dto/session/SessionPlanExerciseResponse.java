@@ -16,6 +16,7 @@ public record SessionPlanExerciseResponse(
         String materials,
         String instructions,
         String mediaUrl,
+        String instructionMediaUrl,
         String reason,
         String status
 ) {}

@@ -826,6 +826,7 @@ public class SessionPlanService {
                 ex.getMaterials(),
                 ex.getInstructions(),
                 resolveExerciseMedia(ex),
+                resolveInstructionMedia(ex),
                 item.getReason(),
                 item.getStatus().name()
         );
@@ -892,6 +893,28 @@ public class SessionPlanService {
         }
 
         return "/icons/generic_exercise.svg";
+    }
+
+    private String resolveInstructionMedia(
+            Exercise exercise
+    ) {
+        if (
+                exercise.getInstructionMedia2() != null &&
+                        !exercise
+                                .getInstructionMedia2()
+                                .isBlank()
+        ) {
+            return exercise.getInstructionMedia2();
+        }
+
+        if (
+                exercise.getMediaUrl() != null &&
+                        !exercise.getMediaUrl().isBlank()
+        ) {
+            return exercise.getMediaUrl();
+        }
+
+        return null;
     }
 
 }
