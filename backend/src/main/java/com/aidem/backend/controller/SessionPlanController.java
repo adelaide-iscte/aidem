@@ -203,8 +203,6 @@ public class SessionPlanController {
     public ResponseEntity<List<SessionPlanResponse>>
     getWeekSessionPlans(
             @PathVariable Long patientId,
-            @RequestParam(required = false)
-            String date,
             Authentication authentication
     ) {
         patientAccessService.requirePatientAccess(
@@ -217,17 +215,12 @@ public class SessionPlanController {
                         ? null
                         : authentication.getName();
 
-        LocalDate requestedDate =
-                date == null || date.isBlank()
-                        ? LocalDate.now()
-                        : LocalDate.parse(date);
-
         return ResponseEntity.ok(
                 sessionPlanService
                         .getOrGenerateWeekPlan(
                                 patientId,
                                 email,
-                                requestedDate
+                                LocalDate.now()
                         )
         );
     }

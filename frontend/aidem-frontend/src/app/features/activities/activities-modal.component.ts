@@ -86,8 +86,6 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   showInstructionsModal = false;
   showComplementaryInfoModal = false;
 
-
-  selectedWeekDate = this.formatDateForApi(new Date());
   constructor(
     private sessionPlanService: SessionPlanService,
     public notificationService: ExerciseNotificationService,
@@ -165,8 +163,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     try {
       this.weekPlans =
         await this.sessionPlanService.getWeekPlan(
-          this.selectedPatient.id,
-          this.selectedWeekDate
+          this.selectedPatient.id
         );
 
       const todayPlan =
@@ -206,28 +203,6 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     plan: SessionPlan
   ): void {
     this.selectedWeekPlan = plan;
-  }
-
-  async changeWeek(
-    amount: number
-  ): Promise<void> {
-    const date =
-      new Date(
-        `${this.selectedWeekDate}T00:00:00`
-      );
-
-    date.setDate(
-      date.getDate() +
-      amount * 7
-    );
-
-    this.selectedWeekDate =
-      this.formatDateForApi(date);
-
-    this.weekPlans = [];
-    this.selectedWeekPlan = null;
-
-    await this.loadWeekPlan();
   }
 
   isToday(
@@ -427,27 +402,6 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
 
   openSideMenu(): void { this.showSideMenu = true; }
   closeSideMenu(): void { this.showSideMenu = false; }
-
-  changePatient(): void {
-    this.closeSideMenu();
-    this.openPatients.emit();
-  }
-
-  private formatDateForApi(
-    date: Date
-  ): string {
-    const year = date.getFullYear();
-
-    const month = String(
-      date.getMonth() + 1
-    ).padStart(2, '0');
-
-    const day = String(
-      date.getDate()
-    ).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }
 
   toggleNotifications(): void {
     if (
