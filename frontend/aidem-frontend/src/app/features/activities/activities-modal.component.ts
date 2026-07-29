@@ -21,6 +21,9 @@ import {LoadingSpinnerComponent} from "../../shared/laoding-spinner-modal/loadin
 import { ExerciseNotificationService } from '../../core/services/exercise-notification.service';
 
 type UserRole = 'informal' | 'formal';
+type PlanView =
+  | 'daily'
+  | 'weekly';
 
 type SelectedPatient = {
   id: number;
@@ -68,6 +71,11 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   activities: SessionPlanExercise[] = [];
   isLoadingPlan = false;
   planError = '';
+  planView: PlanView = 'daily';
+  weekPlans: SessionPlan[] = [];
+  selectedWeekPlan: SessionPlan | null = null;
+  isLoadingWeekPlan = false;
+  weekPlanError = '';
 
   selectedActivity: SessionPlanExercise | null = null;
   showSideMenu = false;
@@ -77,8 +85,9 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   showFeedbackModal = false;
   showInstructionsModal = false;
   showComplementaryInfoModal = false;
-  selectedWeekDate =
-    this.formatDateForApi(new Date());
+
+
+  selectedWeekDate = this.formatDateForApi(new Date());
   constructor(
     private sessionPlanService: SessionPlanService,
     public notificationService: ExerciseNotificationService,
@@ -108,11 +117,234 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     return '/icons/professional.svg';
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedPatient'] && !changes['selectedPatient'].firstChange) {
+  ngOnChanges(
+    changes: SimpleChanges
+  ): void {
+    if (
+      changes['selectedPatient'] &&
+      !changes['selectedPatient'].firstChange
+    ) {
+      this.weekPlans = [];
+      this.selectedWeekPlan = null;
+      this.weekPlanError = '';
+
       void this.loadTodayPlan();
+
+      if (this.planView === 'weekly') {
+        void this.loadWeekPlan();
+      }
     }
   }
+
+  async selectPlanView(
+    view: PlanView
+  ): Promise<void> {
+    this.planView = view;
+
+    if (
+      view === 'weekly' &&
+      this.weekPlans.length === 0
+    ) {
+      await this.loadWeekPlan();
+    }
+  }
+
+  async loadWeekPlan(): Promise<void> {
+    if (!this.selectedPatient?.id) {
+      this.weekPlanError =
+        'Escolha um utente para consultar o plano semanal.';
+
+      this.weekPlans = [];
+      this.selectedWeekPlan = null;
+      return;
+    }
+
+    this.isLoadingWeekPlan = true;
+    this.weekPlanError = '';
+
+    try {
+      this.weekPlans =
+        await this.sessionPlanService.getWeekPlan(
+          this.selectedPatient.id,
+          this.selectedWeekDate
+        );
+
+      const todayPlan =
+        this.weekPlans.find(
+          plan =>
+            this.isToday(
+              plan.sessionDate
+            )
+        );
+
+      this.selectedWeekPlan =
+        todayPlan ??
+        this.weekPlans[0] ??
+        null;
+
+    } catch (error) {
+      console.error(
+        'Erro ao carregar plano semanal',
+        error
+      );
+
+      this.weekPlanError =
+        error instanceof Error
+          ? error.message
+          : 'Erro ao carregar o plano semanal.';
+
+      this.weekPlans = [];
+      this.selectedWeekPlan = null;
+
+    } finally {
+      this.isLoadingWeekPlan = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  selectWeekPlan(
+    plan: SessionPlan
+  ): void {
+    this.selectedWeekPlan = plan;
+  }
+
+  async changeWeek(
+    amount: number
+  ): Promise<void> {
+    const date =
+      new Date(
+        `${this.selectedWeekDate}T00:00:00`
+      );
+
+    date.setDate(
+      date.getDate() +
+      amount * 7
+    );
+
+    this.selectedWeekDate =
+      this.formatDateForApi(date);
+
+    this.weekPlans = [];
+    this.selectedWeekPlan = null;
+
+    await this.loadWeekPlan();
+  }
+
+  isToday(
+    sessionDate: string
+  ): boolean {
+    const today = new Date();
+
+    const date =
+      new Date(
+        `${sessionDate}T00:00:00`
+      );
+
+    return (
+      date.getFullYear() ===
+      today.getFullYear() &&
+      date.getMonth() ===
+      today.getMonth() &&
+      date.getDate() ===
+      today.getDate()
+    );
+  }
+
+  weekDayLabel(
+    sessionDate: string
+  ): string {
+    const date =
+      new Date(
+        `${sessionDate}T00:00:00`
+      );
+
+    const label =
+      new Intl.DateTimeFormat(
+        'pt-PT',
+        {
+          weekday: 'short'
+        }
+      ).format(date);
+
+    return (
+      label
+        .replace('.', '')
+        .charAt(0)
+        .toUpperCase() +
+      label
+        .replace('.', '')
+        .slice(1)
+    );
+  }
+
+  weekDayNumber(
+    sessionDate: string
+  ): string {
+    return new Intl.DateTimeFormat(
+      'pt-PT',
+      {
+        day: '2-digit'
+      }
+    ).format(
+      new Date(
+        `${sessionDate}T00:00:00`
+      )
+    );
+  }
+
+  weekMonthLabel(
+    sessionDate: string
+  ): string {
+    return new Intl.DateTimeFormat(
+      'pt-PT',
+      {
+        month: 'short'
+      }
+    )
+      .format(
+        new Date(
+          `${sessionDate}T00:00:00`
+        )
+      )
+      .replace('.', '');
+  }
+
+  get selectedWeekActivities():
+    SessionPlanExercise[] {
+    return (
+      this.selectedWeekPlan?.exercises ??
+      []
+    );
+  }
+
+  get selectedWeekCompletedCount():
+    number {
+    return this.selectedWeekActivities
+      .filter(
+        activity =>
+          activity.status === 'COMPLETED' ||
+          activity.status === 'SKIPPED'
+      )
+      .length;
+  }
+
+  get selectedWeekProgressPercent():
+    number {
+    const total =
+      this.selectedWeekActivities.length;
+
+    if (total === 0) {
+      return 0;
+    }
+
+    return Math.round(
+      (
+        this.selectedWeekCompletedCount /
+        total
+      ) * 100
+    );
+  }
+
 
   async loadTodayPlan(): Promise<void> {
     if (!this.selectedPatient?.id) {

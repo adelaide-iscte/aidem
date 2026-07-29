@@ -47,6 +47,37 @@
 
           </button>
         </div>
+
+        <section
+          class="plan-view-switch"
+          aria-label="Tipo de plano">
+
+          <button
+            type="button"
+            [class.active]="
+      planView === 'daily'
+    "
+            (click)="
+      selectPlanView('daily')
+    ">
+
+            Plano diário
+          </button>
+
+          <button
+            type="button"
+            [class.active]="
+      planView === 'weekly'
+    "
+            (click)="
+      selectPlanView('weekly')
+    ">
+
+            Plano semanal
+          </button>
+
+        </section>
+
         <section class="contact-card">
           <img src="/icons/question_icon.png" class="contact-icon" />
 
@@ -73,7 +104,8 @@
             </button>
           </div>
         </section>
-
+        <ng-container
+          *ngIf="planView === 'daily'">
         <section class="progress-card">
           <strong>Progresso da sessão</strong>
           <span>{{ completedCount }} de {{ activities.length }}</span>
@@ -154,6 +186,257 @@
             </div>
           </div>
         </section>
+
+        </ng-container>
+
+        <ng-container
+          *ngIf="planView === 'weekly'">
+
+          <app-loading-spinner
+            *ngIf="isLoadingWeekPlan"
+            message="A preparar o plano semanal...">
+          </app-loading-spinner>
+
+          <p
+            *ngIf="weekPlanError"
+            class="plan-state error">
+
+            {{ weekPlanError }}
+          </p>
+
+          <ng-container
+            *ngIf="
+      !isLoadingWeekPlan &&
+      !weekPlanError
+    ">
+
+            <section class="weekly-plan-header">
+
+              <div>
+        <span class="section-label">
+          Plano semanal
+        </span>
+
+                <h2>
+                  Sessões previstas para a semana
+                </h2>
+              </div>
+
+              <span class="weekly-plan-count">
+        {{ weekPlans.length }}
+                sessões
+      </span>
+
+            </section>
+
+            <div class="week-navigation">
+
+              <button
+                type="button"
+                (click)="changeWeek(-1)">
+
+                <span aria-hidden="true">‹</span>
+                Semana anterior
+              </button>
+
+              <button
+                type="button"
+                (click)="changeWeek(1)">
+
+                Semana seguinte
+                <span aria-hidden="true">›</span>
+              </button>
+
+            </div>
+
+            <section
+              class="week-days"
+              aria-label="Dias da semana">
+
+              <button
+                *ngFor="
+          let plan of weekPlans
+        "
+                class="week-day-card"
+                type="button"
+                [class.active]="
+          selectedWeekPlan?.id ===
+          plan.id
+        "
+                [class.today]="
+          isToday(plan.sessionDate)
+        "
+                (click)="
+          selectWeekPlan(plan)
+        ">
+
+        <span class="week-day-name">
+          {{
+            weekDayLabel(
+              plan.sessionDate
+            )
+          }}
+        </span>
+
+                <strong>
+                  {{
+                    weekDayNumber(
+                      plan.sessionDate
+                    )
+                  }}
+                </strong>
+
+                <span class="week-day-month">
+          {{
+                    weekMonthLabel(
+                      plan.sessionDate
+                    )
+                  }}
+        </span>
+
+                <span
+                  *ngIf="
+            isToday(plan.sessionDate)
+          "
+                  class="today-label">
+
+          Hoje
+        </span>
+
+              </button>
+
+            </section>
+
+            <section
+              *ngIf="selectedWeekPlan"
+              class="selected-day-summary">
+
+              <div>
+        <span class="section-label">
+          Sessão selecionada
+        </span>
+
+                <h2>
+                  {{
+                    weekDayLabel(
+                      selectedWeekPlan.sessionDate
+                    )
+                  }},
+                  {{
+                    weekDayNumber(
+                      selectedWeekPlan.sessionDate
+                    )
+                  }}
+                  de
+                  {{
+                    weekMonthLabel(
+                      selectedWeekPlan.sessionDate
+                    )
+                  }}
+                </h2>
+              </div>
+
+              <div class="selected-day-duration">
+                <strong>
+                  {{
+                    selectedWeekPlan
+                      .totalDurationMinutes
+                  }}
+                </strong>
+
+                <span>minutos</span>
+              </div>
+
+            </section>
+
+            <section
+              *ngIf="selectedWeekPlan"
+              class="progress-card weekly-progress">
+
+              <strong>
+                Progresso da sessão
+              </strong>
+
+              <span>
+        {{ selectedWeekCompletedCount }}
+                de
+                {{ selectedWeekActivities.length }}
+      </span>
+
+              <div class="progress-line">
+                <div
+                  [style.width.%]="
+            selectedWeekProgressPercent
+          ">
+                </div>
+              </div>
+
+              <span>
+        {{ selectedWeekProgressPercent }}%
+      </span>
+
+            </section>
+
+            <section
+              *ngIf="selectedWeekPlan"
+              class="activity-list">
+
+              <div
+                *ngFor="
+          let activity of
+            selectedWeekActivities;
+          let i = index
+        "
+                class="activity-card">
+
+        <span class="activity-number">
+          {{ i + 1 }}
+        </span>
+
+                <img
+                  [src]="activityImage(activity)"
+                  class="activity-image"
+                  alt="">
+
+                <div class="activity-info">
+
+                  <h2>
+                    {{ activity.title }}
+                  </h2>
+
+                  <div class="bottom-actions">
+
+                    <button
+                      class="action-button outline"
+                      type="button"
+                      (click)="
+                openInstructionsModal(
+                  activity
+                )
+              ">
+
+                      <img
+                        src="/icons/play.svg"
+                        class="small-icon"
+                        alt="">
+
+                      <span>
+                Instruções
+              </span>
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </section>
+
+          </ng-container>
+
+        </ng-container>
       </main>
 
       <footer class="bottom-nav">
