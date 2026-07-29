@@ -19,7 +19,9 @@ import com.aidem.backend.model.User;
 import com.aidem.backend.model.enums.CaregiverRelationshipType;
 import com.aidem.backend.repository.PatientCaregiverRepository;
 import com.aidem.backend.repository.UserRepository;
-import java.util.LinkedHashMap;
+
+import java.util.*;
+
 import com.aidem.backend.service.PatientAccessService;
 import org.springframework.security.core.Authentication;
 
@@ -27,7 +29,6 @@ import com.aidem.backend.service.PatientDeletionService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.aidem.backend.model.Assessment;
@@ -37,7 +38,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/patients")
@@ -423,11 +423,12 @@ public class PatientController {
                 COGNITIVE_PREVALENCE_DOMAINS
         );
 
-        BigDecimal totalNr = sumIfComplete(
-                physicalConstraintsNr,
-                motorPrevalenceNr,
-                cognitivePrevalenceNr
-        );
+        BigDecimal totalNr =
+                averageIfComplete(
+                        physicalConstraintsNr,
+                        motorPrevalenceNr,
+                        cognitivePrevalenceNr
+                );
 
         BigDecimal total = physicalConstraints
                 .add(motorPrevalence)
@@ -488,6 +489,31 @@ public class PatientController {
                         assessment.getAssessmentDate(),
                         rows
                 )
+        );
+    }
+    private BigDecimal averageIfComplete(
+            BigDecimal... values
+    ) {
+        if (
+                values == null ||
+                        values.length == 0 ||
+                        Arrays.stream(values)
+                                .anyMatch(Objects::isNull)
+        ) {
+            return null;
+        }
+
+        BigDecimal total =
+                Arrays.stream(values)
+                        .reduce(
+                                BigDecimal.ZERO,
+                                BigDecimal::add
+                        );
+
+        return total.divide(
+                BigDecimal.valueOf(values.length),
+                2,
+                RoundingMode.HALF_UP
         );
     }
 
@@ -1310,7 +1336,7 @@ public class PatientController {
                         COGNITIVE_PREVALENCE_DOMAINS
                 );
 
-        BigDecimal totalNr = sumIfComplete(
+        BigDecimal totalNr = averageIfComplete(
                 physicalConstraintsNr,
                 motorPrevalenceNr,
                 cognitivePrevalenceNr

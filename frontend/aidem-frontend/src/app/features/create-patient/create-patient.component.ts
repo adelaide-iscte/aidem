@@ -363,10 +363,12 @@ export class CreatePatientComponent {
         )
           ? null
           : Math.round(
-          nrSummaries.reduce(
-            (total: number, value) =>
-              total + (value ?? 0),
-            0
+          (
+            nrSummaries.reduce(
+              (total: number, value) =>
+                total + (value ?? 0),
+              0
+            ) / 3
           ) * 100
         ) / 100;
     }

@@ -329,13 +329,17 @@ export class EgpEditModalComponent
           );
 
       totalRow.normalizedScore =
-        nrSummaries.some(value => value === null)
+        nrSummaries.some(
+          value => value === null
+        )
           ? null
           : Math.round(
-          nrSummaries.reduce(
-            (total: number, value) =>
-              total + (value ?? 0),
-            0
+          (
+            nrSummaries.reduce(
+              (total: number, value) =>
+                total + (value ?? 0),
+              0
+            ) / 3
           ) * 100
         ) / 100;
     }
