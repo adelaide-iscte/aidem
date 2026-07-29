@@ -77,7 +77,8 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   showFeedbackModal = false;
   showInstructionsModal = false;
   showComplementaryInfoModal = false;
-
+  selectedWeekDate =
+    this.formatDateForApi(new Date());
   constructor(
     private sessionPlanService: SessionPlanService,
     public notificationService: ExerciseNotificationService,
@@ -198,6 +199,22 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   changePatient(): void {
     this.closeSideMenu();
     this.openPatients.emit();
+  }
+
+  private formatDateForApi(
+    date: Date
+  ): string {
+    const year = date.getFullYear();
+
+    const month = String(
+      date.getMonth() + 1
+    ).padStart(2, '0');
+
+    const day = String(
+      date.getDate()
+    ).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
   }
 
   toggleNotifications(): void {

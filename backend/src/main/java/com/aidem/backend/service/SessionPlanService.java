@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.time.DayOfWeek;
+import java.time.temporal.TemporalAdjusters;
 
 @Service
 public class SessionPlanService {
@@ -87,15 +89,19 @@ public class SessionPlanService {
     }
 
     @Transactional
-    public SessionPlanResponse getOrGenerateTodayPlan(Long patientId, String userEmail) {
+    public SessionPlanResponse getOrGenerateTodayPlan(
+            Long patientId,
+            String userEmail
+    ) {
         LocalDate today = LocalDate.now();
 
-        List<SessionPlan> existing = sessionPlanRepository.findByPatientIdAndSessionDateOrderByIdDesc(patientId, today);
-        if (!existing.isEmpty()) {
-            return toResponse(existing.get(0));
-        }
-
-        return toResponse(generatePlan(patientId, userEmail, today));
+        return toResponse(
+                getOrGeneratePlan(
+                        patientId,
+                        userEmail,
+                        today
+                )
+        );
     }
 
     @Transactional
@@ -908,6 +914,110 @@ public class SessionPlanService {
         }
 
         return null;
+    }
+
+    private LocalDate getStartOfWeek(
+            LocalDate date
+    ) {
+        return date.with(
+                TemporalAdjusters.previousOrSame(
+                        DayOfWeek.MONDAY
+                )
+        );
+    }
+
+    private SessionPlan getOrGeneratePlan(
+            Long patientId,
+            String userEmail,
+            LocalDate date
+    ) {
+        List<SessionPlan> existing =
+                sessionPlanRepository
+                        .findByPatientIdAndSessionDateOrderByIdDesc(
+                                patientId,
+                                date
+                        );
+
+        if (!existing.isEmpty()) {
+            return existing.get(0);
+        }
+
+        return generatePlan(
+                patientId,
+                userEmail,
+                date
+        );
+    }
+
+    @Transactional
+    public List<SessionPlanResponse>
+    getOrGenerateWeekPlan(
+            Long patientId,
+            String userEmail,
+            LocalDate requestedDate
+    ) {
+        if (!patientRepository.existsById(patientId)) {
+            throw new IllegalArgumentException(
+                    "Utente não encontrado."
+            );
+        }
+
+        LocalDate startOfWeek =
+                getStartOfWeek(requestedDate);
+
+        LocalDate endOfWeek =
+                startOfWeek.plusDays(6);
+
+        Map<LocalDate, SessionPlan> plansByDate =
+                sessionPlanRepository
+                        .findByPatient_IdAndSessionDateBetweenOrderBySessionDateAscIdDesc(
+                                patientId,
+                                startOfWeek,
+                                endOfWeek
+                        )
+                        .stream()
+                        .collect(
+                                Collectors.toMap(
+                                        SessionPlan::getSessionDate,
+                                        plan -> plan,
+                                        (
+                                                first,
+                                                duplicate
+                                        ) -> first,
+                                        TreeMap::new
+                                )
+                        );
+
+        for (
+                LocalDate date = startOfWeek;
+                !date.isAfter(endOfWeek);
+                date = date.plusDays(1)
+        ) {
+            if (!plansByDate.containsKey(date)) {
+                SessionPlan generatedPlan =
+                        generatePlan(
+                                patientId,
+                                userEmail,
+                                date
+                        );
+
+                plansByDate.put(
+                        date,
+                        generatedPlan
+                );
+            }
+        }
+
+        return plansByDate
+                .values()
+                .stream()
+                .sorted(
+                        Comparator.comparing(
+                                SessionPlan::getSessionDate
+                        )
+                )
+                .map(this::toResponse)
+                .toList();
     }
 
 }

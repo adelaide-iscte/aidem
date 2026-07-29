@@ -13,12 +13,26 @@ import java.util.List;
 public interface SessionPlanRepository
         extends JpaRepository<SessionPlan, Long> {
 
-    List<SessionPlan> findByPatientIdAndSessionDateOrderByIdDesc(
+    List<SessionPlan>
+    findByPatientIdAndSessionDateOrderByIdDesc(
             Long patientId,
             LocalDate sessionDate
     );
 
-    List<SessionPlan> findByPatient_IdOrderBySessionDateDescIdDesc(
+    List<SessionPlan>
+    findByPatient_IdAndSessionDateBetweenOrderBySessionDateAscIdDesc(
+            Long patientId,
+            LocalDate startDate,
+            LocalDate endDate
+    );
+
+    boolean existsByPatient_IdAndSessionDate(
+            Long patientId,
+            LocalDate sessionDate
+    );
+
+    List<SessionPlan>
+    findByPatient_IdOrderBySessionDateDescIdDesc(
             Long patientId
     );
 

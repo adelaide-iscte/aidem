@@ -10,6 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.time.LocalDate;
+import java.util.List;
+
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -192,5 +195,40 @@ public class SessionPlanController {
         return ResponseEntity
                 .noContent()
                 .build();
+    }
+
+    @GetMapping(
+            "/api/patients/{patientId}/session-plans/week"
+    )
+    public ResponseEntity<List<SessionPlanResponse>>
+    getWeekSessionPlans(
+            @PathVariable Long patientId,
+            @RequestParam(required = false)
+            String date,
+            Authentication authentication
+    ) {
+        patientAccessService.requirePatientAccess(
+                patientId,
+                authentication
+        );
+
+        String email =
+                authentication == null
+                        ? null
+                        : authentication.getName();
+
+        LocalDate requestedDate =
+                date == null || date.isBlank()
+                        ? LocalDate.now()
+                        : LocalDate.parse(date);
+
+        return ResponseEntity.ok(
+                sessionPlanService
+                        .getOrGenerateWeekPlan(
+                                patientId,
+                                email,
+                                requestedDate
+                        )
+        );
     }
 }

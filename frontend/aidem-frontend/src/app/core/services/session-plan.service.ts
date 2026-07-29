@@ -105,4 +105,18 @@ export class SessionPlanService {
 
     return raw ? JSON.parse(raw) as T : ({} as T);
   }
+
+  async getWeekPlan(
+    patientId: number,
+    date?: string
+  ): Promise<SessionPlan[]> {
+    const query =
+      date
+        ? `?date=${encodeURIComponent(date)}`
+        : '';
+
+    return this.request<SessionPlan[]>(
+      `${this.apiBase}/patients/${patientId}/session-plans/week${query}`
+    );
+  }
 }
