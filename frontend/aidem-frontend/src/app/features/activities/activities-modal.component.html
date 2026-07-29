@@ -383,11 +383,10 @@
 
               <div
                 *ngFor="
-          let activity of
-            selectedWeekActivities;
-          let i = index
-        "
-                class="activity-card">
+    let activity of selectedWeekActivities;
+    let i = index
+  "
+                class="activity-card weekly-activity-card">
 
         <span class="activity-number">
           {{ i + 1 }}

@@ -992,6 +992,324 @@ button:disabled {
   color: #a93636;
 }
 
+/* Alternância plano diário / semanal */
+
+.plan-view-switch {
+  width: fit-content;
+  margin-bottom: 24px;
+  padding: 5px;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  border: 1px solid #dfe6f0;
+  border-radius: 15px;
+
+  background: #f4f7fc;
+
+  box-shadow:
+    0 6px 18px
+    rgba(54, 83, 126, 0.06);
+}
+
+.plan-view-switch button {
+  min-height: 48px;
+  padding: 0 24px;
+
+  border: none;
+  border-radius: 11px;
+
+  background: transparent;
+  color: #5b6a80;
+
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+}
+
+.plan-view-switch button.active {
+  background: #407ce2;
+  color: #ffffff;
+
+  box-shadow:
+    0 7px 16px
+    rgba(64, 124, 226, 0.22);
+}
+
+
+/* Cabeçalho semanal */
+
+.weekly-plan-header,
+.selected-day-summary {
+  margin-top: 26px;
+  padding: 22px 26px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  border: 1px solid #dfe6f0;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 8px 24px
+    rgba(54, 83, 126, 0.07);
+}
+
+.section-label {
+  display: block;
+  margin-bottom: 4px;
+
+  color: #3977df;
+
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.weekly-plan-header h2,
+.selected-day-summary h2 {
+  margin: 0;
+
+  color: #2b3c55;
+
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.weekly-plan-count {
+  flex-shrink: 0;
+  padding: 9px 15px;
+
+  border-radius: 999px;
+
+  background: #edf4ff;
+  color: #3977df;
+
+  font-size: 15px;
+  font-weight: 800;
+}
+
+
+/* Dias da semana */
+
+.week-days {
+  margin-top: 16px;
+
+  display: grid;
+  grid-template-columns:
+    repeat(7, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.week-day-card {
+  min-height: 128px;
+  padding: 15px 10px;
+
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #dfe6f0;
+  border-radius: 16px;
+
+  background: #ffffff;
+  color: #43536a;
+
+  font-family: inherit;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 20px
+    rgba(54, 83, 126, 0.06);
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.week-day-card:hover {
+  border-color: #b8cef0;
+
+  box-shadow:
+    0 11px 25px
+    rgba(54, 83, 126, 0.11);
+
+  transform: translateY(-2px);
+}
+
+.week-day-card.active {
+  border-color: #407ce2;
+
+  background:
+    linear-gradient(
+        180deg,
+        #edf4ff 0%,
+        #ffffff 100%
+    );
+
+  box-shadow:
+    0 10px 25px
+    rgba(64, 124, 226, 0.15);
+}
+
+.week-day-card.today::after {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #407ce2;
+
+  content: '';
+}
+
+.week-day-name {
+  color: #607089;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.week-day-card strong {
+  margin-top: 3px;
+
+  color: #2b3c55;
+
+  font-size: 34px;
+  line-height: 1;
+}
+
+.week-day-month {
+  margin-top: 4px;
+
+  color: #7a8799;
+
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.today-label {
+  margin-top: 8px;
+  padding: 3px 9px;
+
+  border-radius: 999px;
+
+  background: #407ce2;
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+/* Sessão selecionada */
+
+.selected-day-summary {
+  background:
+    linear-gradient(
+        120deg,
+        #f4f8ff 0%,
+        #ffffff 70%
+    );
+}
+
+.selected-day-duration {
+  min-width: 110px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  color: #3977df;
+}
+
+.selected-day-duration strong {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.selected-day-duration span {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.weekly-progress {
+  margin-top: 16px;
+}
+
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .week-days {
+    grid-template-columns:
+      repeat(4, minmax(0, 1fr));
+  }
+}
+
+
+/* Telemóvel */
+
+@media (max-width: 620px) {
+  .plan-view-switch {
+    width: 100%;
+  }
+
+  .plan-view-switch button {
+    flex: 1;
+    padding: 0 12px;
+  }
+
+  .weekly-plan-header,
+  .selected-day-summary {
+    align-items: flex-start;
+  }
+
+  .week-days {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 8px;
+
+    scroll-snap-type: x mandatory;
+  }
+
+  .week-day-card {
+    min-width: 105px;
+
+    scroll-snap-align: start;
+  }
+}
+
 .week-navigation {
   margin-top: 16px;
 
@@ -1055,4 +1373,18 @@ button:disabled {
     flex: 1;
     padding: 0 10px;
   }
+}
+
+.weekly-activity-card .activity-info {
+  grid-template-columns:
+    minmax(0, 1fr) 220px;
+}
+
+.weekly-activity-card .bottom-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.weekly-activity-card .action-button {
+  width: 210px;
 }
