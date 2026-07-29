@@ -125,8 +125,9 @@
 
 .header,
 .contents-header {
-  position: relative !important;
+  position: sticky !important;
   z-index: 1000 !important;
+  top: 0 !important;
 
   width: 100% !important;
   height: 90px !important;
@@ -144,11 +145,15 @@
   align-items: center !important;
 
   border-bottom: 1px solid #e3e8f0 !important;
-  background: #ffffff !important;
 
-  box-shadow: 0 2px 12px rgba(43, 61, 88, 0.04) !important;
+  background: rgba(255, 255, 255, 0.97) !important;
 
-  font-family: 'Poppins', Inter, Arial, sans-serif;
+  box-shadow:
+    0 5px 18px
+    rgba(43, 61, 88, 0.07) !important;
+
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 
