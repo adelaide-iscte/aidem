@@ -194,7 +194,7 @@
 
       <div class="form-grid">
         <label [class.invalid]="hasError('Nome do cuidador')">
-          Nome do cuidador
+          Nome do cuidador *
           <input type="text" [(ngModel)]="form.informalCaregiverName" />
         </label>
 
@@ -204,7 +204,7 @@
         </label>
 
         <label [class.invalid]="hasError('Email do cuidador')">
-          Email do cuidador *
+          Email do cuidador
           <input type="email" [(ngModel)]="form.informalCaregiverEmail" />
         </label>
       </div>
