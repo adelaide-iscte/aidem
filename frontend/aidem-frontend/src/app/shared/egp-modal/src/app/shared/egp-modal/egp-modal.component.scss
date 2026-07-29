@@ -1012,8 +1012,8 @@
 /* Cartão da tabela EGP */
 
 .egp-table-layout {
-  margin-top: 20px;
-  padding: 16px 22px 14px;
+  margin-top: 16px;
+  padding: 12px 22px 10px;
 
   gap: 22px;
 
@@ -1066,7 +1066,7 @@
 .egp-row {
   grid-template-columns: minmax(0, 1fr) 104px;
 
-  min-height: 42px;
+  min-height: 38px;
 
   border-bottom-color: #e3e9f1;
 
