@@ -1310,16 +1310,357 @@ button:disabled {
   }
 }
 
-.weekly-activity-card .activity-info {
-  grid-template-columns:
-    minmax(0, 1fr) 220px;
+/* =====================================================
+   Atividades do plano semanal
+   ===================================================== */
+
+.weekly-activity-card {
+  min-height: 160px;
+
+  border: 1px solid #dfe6f0;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 8px 24px
+    rgba(54, 83, 126, 0.07);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
-.weekly-activity-card .bottom-actions {
-  display: flex;
-  justify-content: flex-end;
+.weekly-activity-card:hover {
+  border-color: #cbd9ef;
+
+  box-shadow:
+    0 12px 30px
+    rgba(54, 83, 126, 0.12);
+
+  transform: translateY(-2px);
 }
+
+
+/*
+ * Dias que não são hoje:
+ * apenas aparece o botão Instruções.
+ */
+
+.weekly-activity-card:not(.today-session)
+.activity-info {
+  grid-template-columns:
+    minmax(0, 1fr) 180px;
+}
+
+.weekly-activity-card:not(.today-session)
+.bottom-actions {
+  display: grid;
+  grid-template-columns: 180px;
+  justify-content: end;
+  gap: 14px;
+}
+
+
+/*
+ * Sessão de hoje — cuidador informal:
+ * Concluir + Instruções.
+ */
+
+.weekly-activity-card.informal-session
+.activity-info {
+  grid-template-columns:
+    minmax(0, 1fr) 404px;
+}
+
+.weekly-activity-card.informal-session
+.bottom-actions {
+  display: grid;
+  grid-template-columns:
+    210px 180px;
+  justify-content: end;
+  gap: 14px;
+}
+
+
+/*
+ * Sessão de hoje — cuidador formal:
+ * Não realizar + Concluir + Instruções.
+ */
+
+.weekly-activity-card.formal-session
+.activity-info {
+  grid-template-columns:
+    minmax(0, 1fr) 620px;
+}
+
+.weekly-activity-card.formal-session
+.bottom-actions {
+  display: grid;
+  grid-template-columns:
+    180px 210px 180px;
+  justify-content: end;
+  gap: 14px;
+}
+
+
+/*
+ * Botões semanais:
+ * usa exatamente o mesmo estilo dos botões diários.
+ */
 
 .weekly-activity-card .action-button {
-  width: 210px;
+  min-height: 56px;
+  width: 100%;
+  padding: 0 14px;
+
+  border: 2px solid transparent;
+  border-radius: 14px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  font-family:
+    'Poppins',
+    Inter,
+    Arial,
+    sans-serif;
+
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* Concluir */
+
+.weekly-activity-card
+.action-button.primary {
+  border-color: #407ce2;
+  background: #407ce2;
+  color: #ffffff;
+
+  box-shadow:
+    0 7px 16px
+    rgba(64, 124, 226, 0.2);
+}
+
+.weekly-activity-card
+.action-button.primary:hover:not(:disabled) {
+  border-color: #326fd4;
+  background: #326fd4;
+
+  box-shadow:
+    0 9px 20px
+    rgba(64, 124, 226, 0.28);
+
+  transform: translateY(-1px);
+}
+
+
+/* Instruções e Cancelar */
+
+.weekly-activity-card
+.action-button.outline,
+.weekly-activity-card
+.action-button.secondary {
+  border-color: #7fa7ee;
+  background: #ffffff;
+  color: #3977df;
+}
+
+.weekly-activity-card
+.action-button.outline:hover:not(:disabled),
+.weekly-activity-card
+.action-button.secondary:hover:not(:disabled) {
+  border-color: #407ce2;
+  background: #f1f6ff;
+
+  box-shadow:
+    0 6px 14px
+    rgba(64, 124, 226, 0.12);
+
+  transform: translateY(-1px);
+}
+
+
+/* Não realizar */
+
+.weekly-activity-card
+.action-button.danger {
+  border-color: #b93232;
+  background: #b93232;
+  color: #ffffff;
+
+  box-shadow:
+    0 7px 16px
+    rgba(185, 50, 50, 0.16);
+}
+
+.weekly-activity-card
+.action-button.danger:hover:not(:disabled) {
+  border-color: #a52c2c;
+  background: #a52c2c;
+
+  box-shadow:
+    0 9px 20px
+    rgba(185, 50, 50, 0.22);
+
+  transform: translateY(-1px);
+}
+
+
+/* Estados desativados */
+
+.weekly-activity-card
+.action-button.muted,
+.weekly-activity-card
+.action-button:disabled {
+  opacity: 0.5;
+
+  cursor: default;
+
+  box-shadow: none;
+  transform: none;
+}
+
+
+/* Ícones */
+
+.weekly-activity-card .small-icon {
+  width: 22px;
+  height: 22px;
+
+  flex-shrink: 0;
+}
+
+.weekly-activity-card .action-icon {
+  font-size: 22px;
+  line-height: 1;
+
+  flex-shrink: 0;
+}
+
+
+/* Atividade concluída */
+
+.weekly-activity-card.done {
+  opacity: 1;
+
+  border-color: #cad8ec;
+
+  background:
+    linear-gradient(
+        90deg,
+        #f7faff 0%,
+        #ffffff 55%
+    );
+}
+
+.weekly-activity-card.done::before {
+  background: #7896c9;
+}
+
+.weekly-activity-card.done
+.activity-number {
+  color: #607ba8;
+}
+
+
+/* Atividade não realizada */
+
+.weekly-activity-card.failed {
+  opacity: 1;
+
+  border-color: #efc8bb;
+
+  background:
+    linear-gradient(
+        90deg,
+        #fff7f4 0%,
+        #ffffff 55%
+    );
+}
+
+.weekly-activity-card.failed::before {
+  background: #d56e52;
+}
+
+.weekly-activity-card.failed
+.activity-number,
+.weekly-activity-card.failed
+.activity-info h2 {
+  color: #9d4935;
+}
+
+@media (max-width: 1050px) {
+  .weekly-activity-card.formal-session
+  .activity-info {
+    grid-template-columns:
+      minmax(0, 1fr);
+  }
+
+  .weekly-activity-card.formal-session
+  .bottom-actions {
+    width: 100%;
+
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .weekly-activity-card.informal-session
+  .activity-info {
+    grid-template-columns:
+      minmax(0, 1fr);
+  }
+
+  .weekly-activity-card.informal-session
+  .bottom-actions {
+    width: 100%;
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .weekly-activity-card {
+    grid-template-columns:
+      36px 90px minmax(0, 1fr);
+  }
+
+  .weekly-activity-card .activity-image {
+    width: 82px;
+    height: 82px;
+  }
+
+  .weekly-activity-card .activity-info {
+    grid-template-columns:
+      minmax(0, 1fr) !important;
+  }
+
+  .weekly-activity-card .bottom-actions {
+    margin-top: 16px;
+
+    grid-template-columns:
+      minmax(0, 1fr) !important;
+  }
+
+  .weekly-activity-card .action-button {
+    width: 100%;
+  }
 }
