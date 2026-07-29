@@ -290,9 +290,9 @@ export class ProfileComponent {
     }
 
     if (
+      this.editForm.informalCaregiverEmail.trim() &&
       !this.isValidEmail(
-        this.editForm
-          .informalCaregiverEmail
+        this.editForm.informalCaregiverEmail
       )
     ) {
       this.editError =
@@ -701,12 +701,6 @@ export class ProfileComponent {
       this.editForm.sessionType.trim() &&
       this.editForm
         .informalCaregiverName
-        .trim() &&
-      this.editForm
-        .informalCaregiverPhone
-        .trim() &&
-      this.editForm
-        .informalCaregiverEmail
         .trim()
     );
   }
