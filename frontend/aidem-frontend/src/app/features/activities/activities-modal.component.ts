@@ -225,6 +225,13 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     );
   }
 
+  get isSelectedWeekPlanToday(): boolean {
+    return !!this.selectedWeekPlan &&
+      this.isToday(
+        this.selectedWeekPlan.sessionDate
+      );
+  }
+
   weekDayLabel(
     sessionDate: string
   ): string {
@@ -491,14 +498,62 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     this.closeSkipModal();
   }
 
-  private updateActivity(updated: SessionPlanExercise): void {
-    this.activities = this.activities.map(activity =>
-      activity.sessionPlanExerciseId === updated.sessionPlanExerciseId ? updated : activity
-    );
+  private updateActivity(
+    updated: SessionPlanExercise
+  ): void {
+    /*
+     * Atualiza o plano diário.
+     */
+    this.activities =
+      this.activities.map(
+        activity =>
+          activity.sessionPlanExerciseId ===
+          updated.sessionPlanExerciseId
+            ? updated
+            : activity
+      );
+
     if (this.sessionPlan) {
-      this.sessionPlan = { ...this.sessionPlan, exercises: this.activities };
+      this.sessionPlan = {
+        ...this.sessionPlan,
+        exercises: this.activities
+      };
     }
+
+    /*
+     * Atualiza os planos da vista semanal.
+     */
+    this.weekPlans =
+      this.weekPlans.map(plan => ({
+        ...plan,
+
+        exercises:
+          plan.exercises.map(
+            activity =>
+              activity.sessionPlanExerciseId ===
+              updated.sessionPlanExerciseId
+                ? updated
+                : activity
+          )
+      }));
+
+    if (this.selectedWeekPlan) {
+      this.selectedWeekPlan = {
+        ...this.selectedWeekPlan,
+
+        exercises:
+          this.selectedWeekPlan.exercises.map(
+            activity =>
+              activity.sessionPlanExerciseId ===
+              updated.sessionPlanExerciseId
+                ? updated
+                : activity
+          )
+      };
+    }
+
     void this.notificationService.refresh();
+
     this.cdr.detectChanges();
   }
 

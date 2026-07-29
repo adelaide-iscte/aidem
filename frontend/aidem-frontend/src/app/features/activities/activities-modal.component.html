@@ -364,16 +364,129 @@
                     {{ activity.title }}
                   </h2>
 
-                  <div class="bottom-actions">
+                  <div
+                    class="bottom-actions"
+                    [class.informal-actions]="
+    !isFormalMode &&
+    isSelectedWeekPlanToday
+  ">
 
+                    <!--
+                      Os botões de alterar o estado
+                      só aparecem na sessão de hoje.
+                    -->
+                    <ng-container
+                      *ngIf="isSelectedWeekPlanToday">
+
+                      <!--
+                        Cuidador formal:
+                        pode marcar como não realizado.
+                      -->
+                      <button
+                        *ngIf="
+        isFormalMode &&
+        !isSkipped(activity)
+      "
+                        class="action-button danger"
+                        type="button"
+                        [disabled]="isLocked(activity)"
+                        (click)="openSkipModal(activity)">
+
+      <span class="action-icon">
+        ✕
+      </span>
+
+                        <span>
+        Não realizar
+      </span>
+
+                      </button>
+
+                      <!--
+                        Estado já marcado
+                        como não realizado.
+                      -->
+                      <button
+                        *ngIf="
+        isFormalMode &&
+        isSkipped(activity)
+      "
+                        class="action-button danger muted"
+                        type="button"
+                        disabled>
+
+      <span class="action-icon">
+        ✕
+      </span>
+
+                        <span>
+        Não realizado
+      </span>
+
+                      </button>
+
+                      <!--
+                        Formal e informal:
+                        podem concluir a atividade.
+                      -->
+                      <button
+                        *ngIf="!isCompleted(activity)"
+                        class="action-button primary"
+                        type="button"
+                        [disabled]="isSkipped(activity)"
+                        (click)="openFeedbackModal(activity)">
+
+                        <img
+                          src="/icons/Check_2.svg"
+                          class="small-icon"
+                          alt="">
+
+                        <span>
+        Concluir
+      </span>
+
+                      </button>
+
+                      <!--
+                        Depois de concluída,
+                        permite cancelar o resultado.
+                      -->
+                      <button
+                        *ngIf="isCompleted(activity)"
+                        class="action-button secondary"
+                        type="button"
+                        (click)="resetExercise(activity)">
+
+      <span class="action-icon">
+        ↺
+      </span>
+
+                        <span>
+        Cancelar
+      </span>
+
+                      </button>
+
+                    </ng-container>
+
+                    <!--
+                      As instruções aparecem
+                      em todos os dias da semana.
+                    -->
                     <button
                       class="action-button outline"
                       type="button"
+                      [disabled]="
+      isSelectedWeekPlanToday &&
+      isLocked(activity)
+    "
                       (click)="
-                openInstructionsModal(
-                  activity
-                )
-              ">
+      (
+        !isSelectedWeekPlanToday ||
+        !isLocked(activity)
+      ) &&
+      openInstructionsModal(activity)
+    ">
 
                       <img
                         src="/icons/play.svg"
@@ -381,8 +494,8 @@
                         alt="">
 
                       <span>
-                Instruções
-              </span>
+      Instruções
+    </span>
 
                     </button>
 
