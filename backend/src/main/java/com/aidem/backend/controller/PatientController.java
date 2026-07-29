@@ -949,8 +949,8 @@ public class PatientController {
                 .profession(request.profession())
                 .sessionType(request.sessionType())
                 .informalCaregiverName(request.informalCaregiverName())
-                .informalCaregiverPhone(request.informalCaregiverPhone())
-                .informalCaregiverEmail(request.informalCaregiverEmail())
+                .informalCaregiverPhone(cleanOptional(request.informalCaregiverPhone()))
+                .informalCaregiverEmail(cleanOptional(request.informalCaregiverEmail()))
                 .notes(request.notes())
                 .avatar(
                         cleanAvatar(
@@ -1104,24 +1104,16 @@ public class PatientController {
                 "Nome do cuidador é obrigatório."
         );
 
-        requireText(
-                request.informalCaregiverPhone(),
-                "Telefone do cuidador é obrigatório."
-        );
-
-        requireText(
-                request.informalCaregiverEmail(),
-                "Email do cuidador é obrigatório."
-        );
-
         if (
-                request.email() != null &&
-                        !request.email().isBlank() &&
-                        !isValidEmail(request.email())
+                request.informalCaregiverEmail() != null &&
+                        !request.informalCaregiverEmail().isBlank() &&
+                        !isValidEmail(
+                                request.informalCaregiverEmail()
+                        )
         ) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Email do utente inválido."
+                    "Email do cuidador inválido."
             );
         }
 

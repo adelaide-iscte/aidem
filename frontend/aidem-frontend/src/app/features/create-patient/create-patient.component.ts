@@ -391,8 +391,6 @@ export class CreatePatientComponent {
     if (!this.form.profession.trim()) errors.push('Profissão');
     if (!this.form.sessionType.trim()) errors.push('Sessão');
     if (!this.form.informalCaregiverName.trim()) errors.push('Nome do cuidador');
-    if (!this.form.informalCaregiverPhone.trim()) errors.push('Telefone do cuidador');
-    if (!this.form.informalCaregiverEmail.trim()) errors.push('Email do cuidador');
     if (!this.form.assessmentDate) errors.push('Data da avaliação EGP');
 
     this.egpRows.forEach((row) => {
