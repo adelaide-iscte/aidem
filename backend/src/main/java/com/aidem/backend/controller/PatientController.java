@@ -310,11 +310,15 @@ public class PatientController {
         );
 
         patient.setInformalCaregiverPhone(
-                request.informalCaregiverPhone().trim()
+                cleanOptional(
+                        request.informalCaregiverPhone()
+                )
         );
 
         patient.setInformalCaregiverEmail(
-                request.informalCaregiverEmail().trim()
+                cleanOptional(
+                        request.informalCaregiverEmail()
+                )
         );
         patient.setAvatar(
                 cleanAvatar(
@@ -1110,17 +1114,6 @@ public class PatientController {
                         !isValidEmail(
                                 request.informalCaregiverEmail()
                         )
-        ) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Email do cuidador inválido."
-            );
-        }
-
-        if (
-                !isValidEmail(
-                        request.informalCaregiverEmail()
-                )
         ) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
