@@ -419,6 +419,7 @@ export class CreatePatientComponent {
       }
     });
 
+
     this.fieldErrors = errors;
     return errors.length === 0;
   }

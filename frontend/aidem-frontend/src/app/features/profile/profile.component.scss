@@ -220,8 +220,16 @@
   border-radius: 16px;
 }
 
-.caregiver-card {
+.caregiver-cards {
   grid-area: caregiver;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.caregiver-card {
+  width: 100%;
 }
 
 .caregiver-title {
