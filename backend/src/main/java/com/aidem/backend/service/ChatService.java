@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import com.aidem.backend.model.enums.UserRole;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -61,6 +62,12 @@ public class ChatService {
                         currentUser.getId()
                 )
                 .stream()
+                .filter(contact ->
+                        canCommunicateWith(
+                                currentUser,
+                                contact
+                        )
+                )
                 .map(this::toContactResponse)
                 .toList();
     }
@@ -104,6 +111,19 @@ public class ChatService {
             if (
                     !Boolean.TRUE.equals(
                             contact.getActive()
+                    )
+            ) {
+                continue;
+            }
+
+            /*
+             * Conversas antigas com utilizadores que já
+             * não são permitidos deixam de aparecer.
+             */
+            if (
+                    !canCommunicateWith(
+                            currentUser,
+                            contact
                     )
             ) {
                 continue;
@@ -311,7 +331,7 @@ public class ChatService {
             );
         }
 
-        return userRepository
+        User contact = userRepository
                 .findById(contactId)
                 .filter(user ->
                         Boolean.TRUE.equals(
@@ -324,6 +344,28 @@ public class ChatService {
                                 "Destinatário não encontrado."
                         )
                 );
+
+        if (
+                !canCommunicateWith(
+                        currentUser,
+                        contact
+                )
+        ) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Nesta fase, apenas é possível comunicar com a Administração."
+            );
+        }
+
+        return contact;
+    }
+
+    private boolean canCommunicateWith(
+            User currentUser,
+            User contact
+    ) {
+        return currentUser.getRole() == UserRole.ADMIN
+                || contact.getRole() == UserRole.ADMIN;
     }
 
     private ChatContactResponse toContactResponse(

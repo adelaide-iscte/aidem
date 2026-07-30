@@ -40,7 +40,7 @@ spring:
 app:
   jwt:
     secret: ${APP_JWT_SECRET:CHANGE_ME_TO_A_LONG_RANDOM_SECRET_WITH_AT_LEAST_32_CHARS}
-    expiration-minutes: 60
+    expiration-minutes: 120
 
 server:
   port: ${PORT:8080}
