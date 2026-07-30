@@ -301,6 +301,21 @@ export class ProfileComponent {
       return;
     }
 
+    if (
+      this.editForm
+        .secondInformalCaregiverEmail
+        .trim() &&
+      !this.isValidEmail(
+        this.editForm
+          .secondInformalCaregiverEmail
+      )
+    ) {
+      this.editError =
+        'Indique um email válido para o segundo cuidador.';
+
+      return;
+    }
+
     const payload:
       UpdatePatientRequest = {
 
@@ -350,8 +365,26 @@ export class ProfileComponent {
       informalCaregiverEmail:
         this.editForm
           .informalCaregiverEmail
+          .trim(),
+
+      secondInformalCaregiverName:
+        this.editForm
+          .secondInformalCaregiverName
+          .trim(),
+
+      secondInformalCaregiverPhone:
+        this.editForm
+          .secondInformalCaregiverPhone
+          .trim(),
+
+      secondInformalCaregiverEmail:
+        this.editForm
+          .secondInformalCaregiverEmail
           .trim()
+
     };
+
+
 
     this.isSavingProfile = true;
 
@@ -759,6 +792,15 @@ export class ProfileComponent {
       informalCaregiverEmail:
         patient.informalCaregiverEmail ?? '',
 
+      secondInformalCaregiverName:
+        patient.secondInformalCaregiverName ?? '',
+
+      secondInformalCaregiverPhone:
+        patient.secondInformalCaregiverPhone ?? '',
+
+      secondInformalCaregiverEmail:
+        patient.secondInformalCaregiverEmail ?? '',
+
       avatar:
         patient.avatar === DEFAULT_PATIENT_AVATAR
           ? null
@@ -783,6 +825,9 @@ export class ProfileComponent {
       informalCaregiverName: '',
       informalCaregiverPhone: '',
       informalCaregiverEmail: '',
+      secondInformalCaregiverName: '',
+      secondInformalCaregiverPhone: '',
+      secondInformalCaregiverEmail: '',
       avatar: null
     };
   }

@@ -181,6 +181,9 @@ public class PatientController {
                 patient.getInformalCaregiverName(),
                 patient.getInformalCaregiverPhone(),
                 patient.getInformalCaregiverEmail(),
+                patient.getSecondInformalCaregiverName(),
+                patient.getSecondInformalCaregiverPhone(),
+                patient.getSecondInformalCaregiverEmail(),
                 patient.getAvatar() != null &&
                         !patient.getAvatar().isBlank()
                         ? patient.getAvatar()
@@ -318,6 +321,24 @@ public class PatientController {
         patient.setInformalCaregiverEmail(
                 cleanOptional(
                         request.informalCaregiverEmail()
+                )
+        );
+
+        patient.setSecondInformalCaregiverName(
+                cleanOptional(
+                        request.secondInformalCaregiverName()
+                )
+        );
+
+        patient.setSecondInformalCaregiverPhone(
+                cleanOptional(
+                        request.secondInformalCaregiverPhone()
+                )
+        );
+
+        patient.setSecondInformalCaregiverEmail(
+                cleanOptional(
+                        request.secondInformalCaregiverEmail()
                 )
         );
         patient.setAvatar(
@@ -955,6 +976,9 @@ public class PatientController {
                 .informalCaregiverName(request.informalCaregiverName())
                 .informalCaregiverPhone(cleanOptional(request.informalCaregiverPhone()))
                 .informalCaregiverEmail(cleanOptional(request.informalCaregiverEmail()))
+                .secondInformalCaregiverName(cleanOptional(request.secondInformalCaregiverName()))
+                .secondInformalCaregiverPhone(cleanOptional(request.secondInformalCaregiverPhone()))
+                .secondInformalCaregiverEmail(cleanOptional(request.secondInformalCaregiverEmail()))
                 .notes(request.notes())
                 .avatar(
                         cleanAvatar(

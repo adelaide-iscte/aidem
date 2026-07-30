@@ -190,7 +190,7 @@
     </section>
 
     <section class="form-card">
-      <h2>Dados do cuidador</h2>
+      <h2>Dados do cuidador principal</h2>
 
       <div class="form-grid">
         <label [class.invalid]="hasError('Nome do cuidador')">
@@ -206,6 +206,46 @@
         <label [class.invalid]="hasError('Email do cuidador')">
           Email do cuidador
           <input type="email" [(ngModel)]="form.informalCaregiverEmail" />
+        </label>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <h2>Dados do segundo cuidador</h2>
+
+      <p class="optional-section-description">
+        Preenchimento opcional.
+      </p>
+
+      <div class="form-grid">
+        <label>
+          Nome do segundo cuidador
+          <input
+            type="text"
+            [(ngModel)]="
+          form.secondInformalCaregiverName
+        "
+          />
+        </label>
+
+        <label>
+          Telefone do segundo cuidador
+          <input
+            type="text"
+            [(ngModel)]="
+          form.secondInformalCaregiverPhone
+        "
+          />
+        </label>
+
+        <label>
+          Email do segundo cuidador
+          <input
+            type="email"
+            [(ngModel)]="
+          form.secondInformalCaregiverEmail
+        "
+          />
         </label>
       </div>
     </section>

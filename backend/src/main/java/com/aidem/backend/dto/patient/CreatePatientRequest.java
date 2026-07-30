@@ -15,9 +15,15 @@ public record CreatePatientRequest(
         String education,
         String profession,
         String sessionType,
+
         String informalCaregiverName,
         String informalCaregiverPhone,
         String informalCaregiverEmail,
+
+        String secondInformalCaregiverName,
+        String secondInformalCaregiverPhone,
+        String secondInformalCaregiverEmail,
+
         String avatar,
         String notes,
         LocalDate assessmentDate,

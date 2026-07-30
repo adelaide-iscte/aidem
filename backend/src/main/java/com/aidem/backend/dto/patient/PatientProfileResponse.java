@@ -20,6 +20,9 @@ public record PatientProfileResponse(
         String informalCaregiverName,
         String informalCaregiverPhone,
         String informalCaregiverEmail,
+        String secondInformalCaregiverName,
+        String secondInformalCaregiverPhone,
+        String secondInformalCaregiverEmail,
         String avatar,
         String subtitle
 ) {}

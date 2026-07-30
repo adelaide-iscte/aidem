@@ -42,6 +42,10 @@ export interface UpdatePatientRequest {
   informalCaregiverPhone: string;
   informalCaregiverEmail: string;
 
+  secondInformalCaregiverName: string;
+  secondInformalCaregiverPhone: string;
+  secondInformalCaregiverEmail: string;
+
   avatar: string | null;
 }
 
@@ -80,6 +84,10 @@ export interface CreatePatientRequest {
   informalCaregiverName: string;
   informalCaregiverPhone: string;
   informalCaregiverEmail: string;
+  secondInformalCaregiverName: string;
+  secondInformalCaregiverPhone: string;
+  secondInformalCaregiverEmail: string;
+
   notes: string;
   assessmentDate: string;
   egpScores: {
@@ -116,6 +124,10 @@ export interface PatientProfile {
   informalCaregiverName: string;
   informalCaregiverPhone: string;
   informalCaregiverEmail: string;
+
+  secondInformalCaregiverName: string | null;
+  secondInformalCaregiverPhone: string | null;
+  secondInformalCaregiverEmail: string | null;
 
   avatar: string;
   subtitle: string;

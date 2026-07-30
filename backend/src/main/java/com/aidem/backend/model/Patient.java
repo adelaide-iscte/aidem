@@ -38,6 +38,10 @@ public class Patient {
     private String informalCaregiverPhone;
     private String informalCaregiverEmail;
 
+    private String secondInformalCaregiverName;
+    private String secondInformalCaregiverPhone;
+    private String secondInformalCaregiverEmail;
+
     @Column(columnDefinition = "TEXT")
     private String avatar;
 

@@ -18,9 +18,15 @@ type PatientForm = {
   education: string;
   profession: string;
   sessionType: string;
+
   informalCaregiverName: string;
   informalCaregiverPhone: string;
   informalCaregiverEmail: string;
+
+  secondInformalCaregiverName: string;
+  secondInformalCaregiverPhone: string;
+  secondInformalCaregiverEmail: string;
+
   notes: string;
   assessmentDate: string;
   avatar: string | null;
@@ -66,7 +72,10 @@ export class CreatePatientComponent {
     informalCaregiverEmail: '',
     notes: '',
     avatar: null,
-    assessmentDate: new Date().toISOString().slice(0, 10)
+    assessmentDate: new Date().toISOString().slice(0, 10),
+    secondInformalCaregiverName: '',
+    secondInformalCaregiverPhone: '',
+    secondInformalCaregiverEmail: '',
   };
 
   egpRows: EgpFormRow[] = [
@@ -440,6 +449,9 @@ export class CreatePatientComponent {
       informalCaregiverName: this.form.informalCaregiverName.trim(),
       informalCaregiverPhone: this.form.informalCaregiverPhone.trim(),
       informalCaregiverEmail: this.form.informalCaregiverEmail.trim(),
+      secondInformalCaregiverName:this.form.secondInformalCaregiverName.trim(),
+      secondInformalCaregiverPhone:this.form.secondInformalCaregiverPhone.trim(),
+      secondInformalCaregiverEmail:this.form.secondInformalCaregiverEmail.trim(),
       notes: this.form.notes.trim(),
       assessmentDate: this.form.assessmentDate,
       avatar:

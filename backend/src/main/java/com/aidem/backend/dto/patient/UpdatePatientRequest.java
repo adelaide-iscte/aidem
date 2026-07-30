@@ -16,5 +16,8 @@ public record UpdatePatientRequest(
         String informalCaregiverName,
         String informalCaregiverPhone,
         String informalCaregiverEmail,
+        String secondInformalCaregiverName,
+        String secondInformalCaregiverPhone,
+        String secondInformalCaregiverEmail,
         String avatar
 ) {}
