@@ -602,23 +602,23 @@
         <span>Ver dados EGP</span>
       </button>
 
+      <!-- Cuidador principal -->
+
       <div class="caregiver-card">
 
         <div class="caregiver-title">
-
           <img
             src="/icons/person_selected.svg"
             alt=""
           />
 
-          <span>Cuidador/a</span>
-
+          <span>Cuidador/a principal</span>
         </div>
-
 
         <div
           class="caregiver-content"
-          [class.editing]="isEditing">
+          [class.editing]="isEditing"
+        >
 
           <img
             src="/icons/generic_user.svg"
@@ -635,136 +635,24 @@
               {{ patient.informalCaregiverName }}
             </h3>
 
-            <p>
-
+            <p *ngIf="patient.informalCaregiverPhone">
               <img
                 src="/icons/Phone_2.svg"
                 alt=""
               />
 
-              {{
-                patient.informalCaregiverPhone
-              }}
-
+              {{ patient.informalCaregiverPhone }}
             </p>
 
-            <p>
-
+            <p *ngIf="patient.informalCaregiverEmail">
               <img
                 src="/icons/Message.svg"
                 alt=""
               />
 
-              {{
-                patient.informalCaregiverEmail
-              }}
-
+              {{ patient.informalCaregiverEmail }}
             </p>
 
-          </div>
-
-          <div
-            class="caregiver-card"
-            *ngIf="
-    isEditing ||
-    patient.secondInformalCaregiverName
-  "
-          >
-            <div class="caregiver-title">
-              <img
-                src="/icons/person_selected.svg"
-                alt=""
-              />
-
-              <span>Segundo cuidador/a</span>
-            </div>
-
-            <div
-              class="caregiver-content"
-              [class.editing]="isEditing"
-            >
-              <img
-                src="/icons/generic_user.svg"
-                class="caregiver-avatar"
-                alt="Segundo cuidador"
-              />
-
-              <div *ngIf="!isEditing">
-                <h3>
-                  {{
-                    patient.secondInformalCaregiverName
-                  }}
-                </h3>
-
-                <p
-                  *ngIf="
-          patient.secondInformalCaregiverPhone
-        "
-                >
-                  <img
-                    src="/icons/Phone_2.svg"
-                    alt=""
-                  />
-
-                  {{
-                    patient.secondInformalCaregiverPhone
-                  }}
-                </p>
-
-                <p
-                  *ngIf="
-          patient.secondInformalCaregiverEmail
-        "
-                >
-                  <img
-                    src="/icons/Message.svg"
-                    alt=""
-                  />
-
-                  {{
-                    patient.secondInformalCaregiverEmail
-                  }}
-                </p>
-              </div>
-
-              <div
-                *ngIf="isEditing"
-                class="caregiver-edit-fields"
-              >
-                <label>
-                  Nome do segundo cuidador
-
-                  <input
-                    type="text"
-                    [(ngModel)]="
-            editForm.secondInformalCaregiverName
-          "
-                  />
-                </label>
-
-                <label>
-                  Telefone do segundo cuidador
-
-                  <input
-                    type="text"
-                    [(ngModel)]="
-            editForm.secondInformalCaregiverPhone
-          "
-                  />
-                </label>
-
-                <label>
-                  Email do segundo cuidador
-
-                  <input
-                    type="email"
-                    [(ngModel)]="
-            editForm.secondInformalCaregiverEmail
-          "
-                  />
-                </label>
-              </div>
-            </div>
           </div>
 
 
@@ -772,10 +660,10 @@
 
           <div
             *ngIf="isEditing"
-            class="caregiver-edit-fields">
+            class="caregiver-edit-fields"
+          >
 
             <label>
-
               Nome do cuidador *
 
               <input
@@ -784,12 +672,9 @@
             editForm.informalCaregiverName
           "
               />
-
             </label>
 
-
             <label>
-
               Telefone do cuidador
 
               <input
@@ -798,12 +683,9 @@
             editForm.informalCaregiverPhone
           "
               />
-
             </label>
 
-
             <label>
-
               Email do cuidador
 
               <input
@@ -812,7 +694,127 @@
             editForm.informalCaregiverEmail
           "
               />
+            </label>
 
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Segundo cuidador -->
+
+      <div
+        class="caregiver-card"
+        *ngIf="
+    isEditing ||
+    patient.secondInformalCaregiverName
+  "
+      >
+
+        <div class="caregiver-title">
+
+          <img
+            src="/icons/person_selected.svg"
+            alt=""
+          />
+
+          <span>Segundo cuidador/a</span>
+
+        </div>
+
+        <div
+          class="caregiver-content"
+          [class.editing]="isEditing"
+        >
+
+          <img
+            src="/icons/generic_user.svg"
+            class="caregiver-avatar"
+            alt="Segundo cuidador"
+          />
+
+
+          <!-- Modo normal -->
+
+          <div *ngIf="!isEditing">
+
+            <h3>
+              {{ patient.secondInformalCaregiverName }}
+            </h3>
+
+            <p
+              *ngIf="
+          patient.secondInformalCaregiverPhone
+        "
+            >
+              <img
+                src="/icons/Phone_2.svg"
+                alt=""
+              />
+
+              {{
+                patient.secondInformalCaregiverPhone
+              }}
+            </p>
+
+            <p
+              *ngIf="
+          patient.secondInformalCaregiverEmail
+        "
+            >
+              <img
+                src="/icons/Message.svg"
+                alt=""
+              />
+
+              {{
+                patient.secondInformalCaregiverEmail
+              }}
+            </p>
+
+          </div>
+
+
+          <!-- Modo de edição -->
+
+          <div
+            *ngIf="isEditing"
+            class="caregiver-edit-fields"
+          >
+
+            <label>
+              Nome do segundo cuidador
+
+              <input
+                type="text"
+                [(ngModel)]="
+            editForm.secondInformalCaregiverName
+          "
+              />
+            </label>
+
+            <label>
+              Telefone do segundo cuidador
+
+              <input
+                type="text"
+                [(ngModel)]="
+            editForm.secondInformalCaregiverPhone
+          "
+              />
+            </label>
+
+            <label>
+              Email do segundo cuidador
+
+              <input
+                type="email"
+                [(ngModel)]="
+            editForm.secondInformalCaregiverEmail
+          "
+              />
             </label>
 
           </div>
