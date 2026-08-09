@@ -2358,3 +2358,68 @@ button:disabled {
     gap: 6px;
   }
 }
+
+/* =========================================================
+   ADMIN - REMOVER ATIVIDADE DO PLANO
+   ========================================================= */
+
+.admin-remove-activity {
+  width: 64px;
+  min-width: 64px;
+  height: 64px;
+  min-height: 64px;
+  padding: 0;
+
+  flex: 0 0 64px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid #d9e2ef;
+  border-radius: 13px;
+
+  background: #f8fafd;
+  color: #687a92;
+
+  box-shadow:
+    0 8px 18px
+    rgba(54, 83, 126, 0.06);
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-remove-activity:hover:not(:disabled) {
+  border-color: #c4d1e2;
+  background: #f1f5fa;
+
+  box-shadow:
+    0 9px 20px
+    rgba(54, 83, 126, 0.1);
+
+  transform: translateY(-1px);
+}
+
+.admin-remove-activity:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.admin-remove-activity:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.remove-plan-icon {
+  width: 25px;
+  height: 25px;
+
+  display: block;
+
+  opacity: 0.72;
+}

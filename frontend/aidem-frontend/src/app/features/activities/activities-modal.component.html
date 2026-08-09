@@ -401,19 +401,17 @@
     activity.status === 'PENDING'
   "
                 type="button"
-                class="activity-action admin-remove-activity"
+                class="action-button admin-remove-activity"
+                aria-label="Remover atividade do plano"
+                title="Remover do plano"
                 [disabled]="isChangingPlan"
                 (click)="openRemoveActivityModal(activity)">
 
-  <span
-    class="remove-icon"
-    aria-hidden="true">
-    ×
-  </span>
-
-                <span>
-    Remover do plano
-  </span>
+                <img
+                  src="/icons/trash.svg"
+                  class="remove-plan-icon"
+                  alt=""
+                  aria-hidden="true">
 
               </button>
 
@@ -834,19 +832,17 @@
     activity.status === 'PENDING'
   "
                   type="button"
-                  class="activity-action admin-remove-activity"
+                  class="action-button admin-remove-activity"
+                  aria-label="Remover atividade do plano"
+                  title="Remover do plano"
                   [disabled]="isChangingPlan"
                   (click)="openRemoveActivityModal(activity)">
 
-  <span
-    class="remove-icon"
-    aria-hidden="true">
-    ×
-  </span>
-
-                  <span>
-    Remover do plano
-  </span>
+                  <img
+                    src="/icons/trash.svg"
+                    class="remove-plan-icon"
+                    alt=""
+                    aria-hidden="true">
 
                 </button>
 
