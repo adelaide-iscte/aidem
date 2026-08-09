@@ -2530,17 +2530,6 @@ button:disabled {
   background: #f5f8fc;
 }
 
-.confirm-remove-activity-button {
-  border: 2px solid #d5e1f5;
-  background: #eef4ff;
-  color: #356fd2;
-}
-
-.confirm-remove-activity-button:hover:not(:disabled) {
-  border-color: #adc6ef;
-  background: #e4eeff;
-}
-
 .keep-activity-button:active:not(:disabled),
 .confirm-remove-activity-button:active:not(:disabled) {
   transform: scale(0.98);
