@@ -1983,3 +1983,365 @@ button:disabled {
   font-size: 22px;
   font-weight: 700;
 }
+
+/* =========================================================
+   ADMIN - AJUSTES FINAIS DE EDIÇÃO DO PLANO
+   ========================================================= */
+
+/* Remover fica visualmente como ação secundária da aplicação. */
+.admin-remove-activity {
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 14px;
+
+  border: 1px solid #d9e2ef;
+  border-radius: 12px;
+
+  background: #f8fafd;
+  color: #687a92;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+
+  box-shadow: none;
+}
+
+.admin-remove-activity:hover:not(:disabled) {
+  border-color: #c9d6e8;
+  background: #f1f5fa;
+  color: #455a75;
+  box-shadow: 0 4px 12px rgba(54, 83, 126, 0.08);
+}
+
+.admin-remove-activity:focus-visible {
+  outline: 3px solid rgba(64, 124, 226, 0.2);
+  outline-offset: 3px;
+}
+
+.remove-icon {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* =========================================================
+   MODAL DE ADICIONAR ATIVIDADE - TIPOGRAFIA E PESQUISA
+   ========================================================= */
+
+.plan-exercise-modal,
+.plan-exercise-modal button,
+.plan-exercise-modal input,
+.plan-exercise-modal select {
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+}
+
+.exercise-search-section {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.exercise-search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.exercise-search-wrapper input {
+  width: 100%;
+  height: 52px;
+  padding: 0 18px 0 46px;
+
+  border: 1px solid #dce4ef;
+  border-radius: 14px;
+
+  background: #f8fafd;
+  color: #263750;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.exercise-search-wrapper input::placeholder {
+  color: #8a98aa;
+}
+
+.exercise-search-wrapper input:focus {
+  border-color: #8db2f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(64, 121, 232, 0.1);
+}
+
+.exercise-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 17px;
+  z-index: 1;
+
+  color: #718098;
+  font-size: 22px;
+
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.exercise-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.secondary-filters {
+  padding-top: 2px;
+}
+
+.filter-label {
+  margin-right: 2px;
+  color: #718098;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.exercise-filter-chip {
+  min-height: 38px;
+  padding: 0 15px;
+
+  border: 1px solid #dce4ef;
+  border-radius: 999px;
+
+  background: #ffffff;
+  color: #61738b;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.exercise-filter-chip.compact {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.exercise-filter-chip:hover:not(.active) {
+  border-color: #abc5f2;
+  background: #f6f9ff;
+}
+
+.exercise-filter-chip.active {
+  border-color: #4079e8;
+  background: #4079e8;
+  color: #ffffff;
+}
+
+.exercise-domain {
+  color: #718098;
+  font-size: 14px;
+}
+
+.plan-exercise-option .exercise-meta {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.plan-exercise-option .exercise-meta span {
+  padding: 3px 8px;
+  border-radius: 999px;
+
+  background: #eef4ff;
+  color: #5272a7;
+
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* =========================================================
+   MODAL CALMO DE REMOÇÃO DE ATIVIDADE
+   ========================================================= */
+
+.remove-activity-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 3100;
+
+  padding: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(25, 35, 50, 0.42);
+
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.remove-activity-modal {
+  width: min(540px, 100%);
+  padding: 36px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  border: 1px solid #e1e7f0;
+  border-radius: 22px;
+
+  background: #ffffff;
+  color: #263750;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  text-align: center;
+
+  box-shadow: 0 24px 65px rgba(33, 51, 79, 0.2);
+}
+
+.remove-activity-icon {
+  width: 68px;
+  height: 68px;
+  margin-bottom: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #eef4ff;
+  color: #4079e8;
+
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.remove-activity-modal h2 {
+  margin: 0;
+  color: #263750;
+  font-size: 27px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.remove-activity-description {
+  margin: 14px 0 0;
+  color: #596b84;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.remove-activity-description strong {
+  color: #34445c;
+  font-weight: 800;
+}
+
+.remove-activity-note {
+  margin: 12px 0 0;
+  color: #718098;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.remove-activity-modal .plan-state {
+  width: 100%;
+  margin: 18px 0 0;
+  font-size: 14px;
+  text-align: center;
+}
+
+.remove-activity-actions {
+  width: 100%;
+  margin-top: 28px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+
+.keep-activity-button,
+.confirm-remove-activity-button {
+  min-height: 56px;
+  padding: 0 18px;
+
+  border-radius: 13px;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.keep-activity-button {
+  border: 2px solid #cbd6e5;
+  background: #ffffff;
+  color: #526780;
+}
+
+.keep-activity-button:hover:not(:disabled) {
+  border-color: #aabbd0;
+  background: #f5f8fc;
+}
+
+.confirm-remove-activity-button {
+  border: 2px solid #d5e1f5;
+  background: #eef4ff;
+  color: #356fd2;
+}
+
+.confirm-remove-activity-button:hover:not(:disabled) {
+  border-color: #adc6ef;
+  background: #e4eeff;
+}
+
+.keep-activity-button:active:not(:disabled),
+.confirm-remove-activity-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.keep-activity-button:disabled,
+.confirm-remove-activity-button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+@media (max-width: 620px) {
+  .remove-activity-modal {
+    padding: 28px 20px;
+  }
+
+  .remove-activity-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .exercise-filter-row {
+    gap: 6px;
+  }
+}

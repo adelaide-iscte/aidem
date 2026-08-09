@@ -268,9 +268,10 @@
             type="button"
             class="admin-remove-activity"
             [disabled]="isChangingPlan"
-            (click)="removeActivityFromPlan(activity)">
+            (click)="openRemoveActivityModal(activity)">
 
-            ✕ Remover
+            <span class="remove-icon" aria-hidden="true">×</span>
+            <span>Remover do plano</span>
 
           </button>
 
@@ -679,9 +680,10 @@
               type="button"
               class="admin-remove-activity"
               [disabled]="isChangingPlan"
-              (click)="removeActivityFromPlan(activity)">
+              (click)="openRemoveActivityModal(activity)">
 
-              ✕ Remover
+              <span class="remove-icon" aria-hidden="true">×</span>
+              <span>Remover do plano</span>
 
             </button>
 
@@ -949,6 +951,101 @@
     </div>
 
 
+    <div class="exercise-search-section">
+
+      <div class="exercise-search-wrapper">
+
+        <span
+          class="exercise-search-icon"
+          aria-hidden="true">
+          ⌕
+        </span>
+
+        <input
+          type="search"
+          [(ngModel)]="exerciseSearch"
+          placeholder="Pesquisar atividade, domínio ou tipo..."
+          aria-label="Pesquisar atividades">
+
+      </div>
+
+      <div class="exercise-filter-row">
+
+        <button
+          type="button"
+          class="exercise-filter-chip"
+          [class.active]="exerciseTypeFilter === 'ALL'"
+          (click)="exerciseTypeFilter = 'ALL'">
+          Todas
+        </button>
+
+        <button
+          type="button"
+          class="exercise-filter-chip"
+          [class.active]="exerciseTypeFilter === 'MOTOR'"
+          (click)="exerciseTypeFilter = 'MOTOR'">
+          Motoras
+        </button>
+
+        <button
+          type="button"
+          class="exercise-filter-chip"
+          [class.active]="exerciseTypeFilter === 'COGNITIVE'"
+          (click)="exerciseTypeFilter = 'COGNITIVE'">
+          Cognitivas
+        </button>
+
+        <button
+          type="button"
+          class="exercise-filter-chip"
+          [class.active]="exerciseTypeFilter === 'MIXED'"
+          (click)="exerciseTypeFilter = 'MIXED'">
+          Mistas
+        </button>
+
+      </div>
+
+      <div class="exercise-filter-row secondary-filters">
+
+        <span class="filter-label">Dificuldade:</span>
+
+        <button
+          type="button"
+          class="exercise-filter-chip compact"
+          [class.active]="exerciseDifficultyFilter === 'ALL'"
+          (click)="exerciseDifficultyFilter = 'ALL'">
+          Todas
+        </button>
+
+        <button
+          type="button"
+          class="exercise-filter-chip compact"
+          [class.active]="exerciseDifficultyFilter === 'LOW'"
+          (click)="exerciseDifficultyFilter = 'LOW'">
+          Baixa
+        </button>
+
+        <button
+          type="button"
+          class="exercise-filter-chip compact"
+          [class.active]="exerciseDifficultyFilter === 'MEDIUM'"
+          (click)="exerciseDifficultyFilter = 'MEDIUM'">
+          Média
+        </button>
+
+        <button
+          type="button"
+          class="exercise-filter-chip compact"
+          [class.active]="exerciseDifficultyFilter === 'HIGH'"
+          (click)="exerciseDifficultyFilter = 'HIGH'">
+          Alta
+        </button>
+
+      </div>
+
+    </div>
+
+
     <app-loading-spinner
       *ngIf="isLoadingExercises"
       message="A carregar atividades...">
@@ -995,9 +1092,21 @@
             {{ exercise.title }}
           </strong>
 
-          <span>
+          <span class="exercise-domain">
             {{ exercise.domain }}
           </span>
+
+          <div class="exercise-meta">
+
+            <span>
+              {{ activityTypeLabel(exercise.activityType) }}
+            </span>
+
+            <span>
+              {{ exerciseDifficultyLabel(exercise.difficultyLevel) }}
+            </span>
+
+          </div>
 
         </div>
 
@@ -1019,14 +1128,81 @@
         "
         class="plan-state">
 
-        Todas as atividades disponíveis
-        já fazem parte deste plano.
+        Não foram encontradas atividades com os filtros selecionados.
 
       </p>
 
     </div>
 
   </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- MODAL ADMIN: CONFIRMAR REMOÇÃO                    -->
+<!-- ================================================= -->
+
+<div
+  *ngIf="showRemoveActivityModal"
+  class="remove-activity-modal-backdrop"
+  (click)="closeRemoveActivityModal()">
+
+  <section
+    class="remove-activity-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="remove-activity-modal-title"
+    (click)="$event.stopPropagation()">
+
+    <div
+      class="remove-activity-icon"
+      aria-hidden="true">
+      −
+    </div>
+
+    <h2 id="remove-activity-modal-title">
+      Remover atividade do plano?
+    </h2>
+
+    <p class="remove-activity-description">
+      Pretende retirar
+      <strong>{{ activityToRemove?.title }}</strong>
+      do plano deste dia?
+    </p>
+
+    <p class="remove-activity-note">
+      A atividade continuará disponível na plataforma
+      e poderá voltar a ser adicionada ao plano mais tarde.
+    </p>
+
+    <p
+      *ngIf="planEditError"
+      class="plan-state error">
+      {{ planEditError }}
+    </p>
+
+    <div class="remove-activity-actions">
+
+      <button
+        type="button"
+        class="keep-activity-button"
+        [disabled]="isChangingPlan"
+        (click)="closeRemoveActivityModal()">
+        Manter atividade
+      </button>
+
+      <button
+        type="button"
+        class="confirm-remove-activity-button"
+        [disabled]="isChangingPlan"
+        (click)="confirmRemoveActivity()">
+        {{ isChangingPlan ? 'A remover...' : 'Remover do plano' }}
+      </button>
+
+    </div>
+
+  </section>
 
 </div>
 

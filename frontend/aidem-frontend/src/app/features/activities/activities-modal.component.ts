@@ -9,6 +9,7 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { FeedbackModalComponent, FeedbackSubmitEvent } from '../../shared/feedback-modal/feedback-modal.component';
 import { InstructionsModalComponent } from '../../shared/instructions-modal/instructions-modal.component';
 import { ComplementaryInfoModalComponent } from '../../shared/complementary-info-modal/complementary-info-modal.component';
@@ -43,6 +44,7 @@ type SelectedPatient = {
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     FeedbackModalComponent,
     InstructionsModalComponent,
     ComplementaryInfoModalComponent,
@@ -94,6 +96,11 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   isLoadingExercises = false;
   isChangingPlan = false;
   planEditError = '';
+  exerciseSearch = '';
+  exerciseTypeFilter: 'ALL' | 'MOTOR' | 'COGNITIVE' | 'MIXED' = 'ALL';
+  exerciseDifficultyFilter: 'ALL' | 'LOW' | 'MEDIUM' | 'HIGH' = 'ALL';
+  showRemoveActivityModal = false;
+  activityToRemove: SessionPlanExercise | null = null;
 
   constructor(
     private sessionPlanService: SessionPlanService,
@@ -156,6 +163,9 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     }
 
     this.planEditError = '';
+    this.exerciseSearch = '';
+    this.exerciseTypeFilter = 'ALL';
+    this.exerciseDifficultyFilter = 'ALL';
     this.isLoadingExercises = true;
     this.showAddExerciseModal = true;
 
@@ -194,6 +204,9 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   closeAddExerciseModal(): void {
     this.showAddExerciseModal = false;
     this.planEditError = '';
+    this.exerciseSearch = '';
+    this.exerciseTypeFilter = 'ALL';
+    this.exerciseDifficultyFilter = 'ALL';
   }
 
   private get editablePlan():
@@ -257,40 +270,54 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     }
   }
 
-  async removeActivityFromPlan(
+  openRemoveActivityModal(
     activity: SessionPlanExercise
-  ): Promise<void> {
-
+  ): void {
     if (!this.isAdmin) {
       return;
     }
 
-    const confirmed =
-      window.confirm(
-        `Remover "${activity.title}" deste plano diário?`
-      );
+    this.activityToRemove = activity;
+    this.showRemoveActivityModal = true;
+    this.planEditError = '';
+  }
 
-    if (!confirmed) {
+  closeRemoveActivityModal(): void {
+    if (this.isChangingPlan) {
       return;
     }
+
+    this.showRemoveActivityModal = false;
+    this.activityToRemove = null;
+    this.planEditError = '';
+  }
+
+  async confirmRemoveActivity(): Promise<void> {
+    if (
+      !this.isAdmin ||
+      !this.activityToRemove
+    ) {
+      return;
+    }
+
+    const activity = this.activityToRemove;
 
     this.planEditError = '';
     this.isChangingPlan = true;
 
     try {
-
       const updatedPlan =
         await this.sessionPlanService
           .removeExerciseFromPlan(
             activity.sessionPlanExerciseId
           );
 
-      this.applyUpdatedPlan(
-        updatedPlan
-      );
+      this.applyUpdatedPlan(updatedPlan);
+
+      this.showRemoveActivityModal = false;
+      this.activityToRemove = null;
 
     } catch (error) {
-
       console.error(
         'Erro ao remover atividade',
         error
@@ -302,7 +329,6 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
           : 'Não foi possível remover a atividade.';
 
     } finally {
-
       this.isChangingPlan = false;
       this.cdr.detectChanges();
     }
@@ -350,29 +376,90 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   }
 
   get selectableExercises(): Exercise[] {
+    const plan = this.editablePlan;
 
-    const plan =
-      this.editablePlan;
+    const existingIds = new Set(
+      plan?.exercises.map(
+        activity => activity.exerciseId
+      ) ?? []
+    );
 
-    if (!plan) {
-      return this.availableExercises;
-    }
-
-    const existingIds =
-      new Set(
-        plan.exercises.map(
-          activity =>
-            activity.exerciseId
-        )
-      );
+    const normalizedSearch =
+      this.exerciseSearch
+        .trim()
+        .toLowerCase();
 
     return this.availableExercises
       .filter(
         exercise =>
-          !existingIds.has(
-            exercise.id
+          !existingIds.has(exercise.id)
+      )
+      .filter(exercise => {
+        if (!normalizedSearch) {
+          return true;
+        }
+
+        const values = [
+          exercise.title,
+          exercise.domain,
+          exercise.description,
+          this.activityTypeLabel(
+            exercise.activityType
+          ),
+          this.exerciseDifficultyLabel(
+            exercise.difficultyLevel
           )
+        ];
+
+        return values.some(
+          value =>
+            value
+              ?.toLowerCase()
+              .includes(normalizedSearch)
+        );
+      })
+      .filter(
+        exercise =>
+          this.exerciseTypeFilter === 'ALL' ||
+          exercise.activityType ===
+          this.exerciseTypeFilter
+      )
+      .filter(
+        exercise =>
+          this.exerciseDifficultyFilter === 'ALL' ||
+          exercise.difficultyLevel ===
+          this.exerciseDifficultyFilter
       );
+  }
+
+  activityTypeLabel(
+    type: string
+  ): string {
+    switch (type) {
+      case 'MOTOR':
+        return 'Motora';
+      case 'COGNITIVE':
+        return 'Cognitiva';
+      case 'MIXED':
+        return 'Mista';
+      default:
+        return type;
+    }
+  }
+
+  exerciseDifficultyLabel(
+    difficulty: string
+  ): string {
+    switch (difficulty) {
+      case 'LOW':
+        return 'Baixa';
+      case 'MEDIUM':
+        return 'Média';
+      case 'HIGH':
+        return 'Alta';
+      default:
+        return difficulty;
+    }
   }
 
   get supportContactName(): string {
@@ -633,7 +720,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
 
   get completedCount(): number {
     return this.activities.filter(activity =>
-        activity.status === 'COMPLETED' || activity.status === 'SKIPPED'
+      activity.status === 'COMPLETED' || activity.status === 'SKIPPED'
     ).length;
   }
 
@@ -730,13 +817,13 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
 
     const updated = await this.sessionPlanService.sendFeedback(
 
-        this.selectedActivity.sessionPlanExerciseId,
-        {
-          completed: completed,
-          difficultyFeedback: event.difficulty,
-          emotionFeedback: event.completion,
-          notes: event.reason
-        }
+      this.selectedActivity.sessionPlanExerciseId,
+      {
+        completed: completed,
+        difficultyFeedback: event.difficulty,
+        emotionFeedback: event.completion,
+        notes: event.reason
+      }
     );
 
     this.updateActivity(updated);
@@ -759,8 +846,8 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     if (!this.selectedActivity) return;
 
     const updated = await this.sessionPlanService.skipExercise(
-        this.selectedActivity.sessionPlanExerciseId,
-        reason
+      this.selectedActivity.sessionPlanExerciseId,
+      reason
     );
 
     this.updateActivity(updated);
