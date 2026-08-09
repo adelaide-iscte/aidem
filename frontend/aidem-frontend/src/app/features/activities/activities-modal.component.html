@@ -290,23 +290,26 @@
 
               <button
                 *ngIf="
-                  isFormalMode &&
-                  activity.status === 'PENDING'
-                "
+    isFormalMode &&
+    !isSkipped(activity)
+  "
                 class="action-button danger"
                 type="button"
-                [disabled]="isLocked(activity)"
+                [disabled]="
+    isLocked(activity)
+  "
                 (click)="
-                  openSkipModal(activity)
-                ">
+    !isLocked(activity) &&
+    openSkipModal(activity)
+  ">
 
-                <span class="action-icon">
-                  ✕
-                </span>
+  <span class="action-icon">
+    ✕
+  </span>
 
                 <span>
-                  Não realizar
-                </span>
+    Não realizar
+  </span>
 
               </button>
 
@@ -794,25 +797,26 @@
 
                   <button
                     *ngIf="
-                      isFormalMode &&
-                      !isSkipped(activity)
-                    "
+    isFormalMode &&
+    !isSkipped(activity)
+  "
                     class="action-button danger"
                     type="button"
                     [disabled]="
-                      isLocked(activity)
-                    "
+    isLocked(activity)
+  "
                     (click)="
-                      openSkipModal(activity)
-                    ">
+    !isLocked(activity) &&
+    openSkipModal(activity)
+  ">
 
-                    <span class="action-icon">
-                      ✕
-                    </span>
+  <span class="action-icon">
+    ✕
+  </span>
 
                     <span>
-                      Não realizar
-                    </span>
+    Não realizar
+  </span>
 
                   </button>
 
