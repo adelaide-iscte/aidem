@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   SimpleChanges
@@ -63,7 +64,7 @@ type SelectedPatient = {
   templateUrl: './activities-modal.component.html',
   styleUrl: './activities-modal.component.scss'
 })
-export class ActivitiesModalComponent implements OnInit, OnChanges {
+export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
   @Input() role: UserRole = 'informal';
   @Input() selectedPatient: SelectedPatient | null = null;
   @Input() isAdmin = false;
@@ -113,6 +114,20 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   showRemoveActivityModal = false;
   activityToRemove: SessionPlanExercise | null = null;
 
+  /*
+   * Guarda a data que o componente considera como "hoje".
+   * Isto evita que a página continue a mostrar o plano do dia
+   * anterior quando fica aberta depois da meia-noite.
+   */
+  private currentLoadedDate =
+    this.toLocalDateString(
+      new Date()
+    );
+
+  private dayChangeInterval:
+    ReturnType<typeof setInterval> | null =
+    null;
+
   constructor(
     private sessionPlanService: SessionPlanService,
     private exerciseService: ExerciseService,
@@ -121,7 +136,89 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    this.currentLoadedDate =
+      this.toLocalDateString(
+        new Date()
+      );
+
     void this.loadTodayPlan();
+
+    /*
+     * Não recarrega o plano a cada minuto.
+     * Apenas verifica se a data mudou e só nessa situação
+     * volta a pedir os dados.
+     */
+    this.dayChangeInterval =
+      setInterval(
+        () => {
+          void this.checkForDayChange();
+        },
+        60_000
+      );
+  }
+
+  ngOnDestroy(): void {
+    if (this.dayChangeInterval) {
+      clearInterval(
+        this.dayChangeInterval
+      );
+
+      this.dayChangeInterval =
+        null;
+    }
+  }
+
+  private async checkForDayChange():
+    Promise<void> {
+
+    const today =
+      this.toLocalDateString(
+        new Date()
+      );
+
+    if (
+      today ===
+      this.currentLoadedDate
+    ) {
+      return;
+    }
+
+    this.currentLoadedDate =
+      today;
+
+    /*
+     * O Plano diário deve acompanhar sempre o dia real.
+     */
+    await this.loadTodayPlan();
+
+    /*
+     * A janela do Plano 14 dias também depende do dia atual.
+     * Ao mudar de dia voltamos à semana que contém o novo "hoje".
+     */
+    this.planWindowStart =
+      this.getStartOfWeekString(
+        today
+      );
+
+    this.selectedWeekDate =
+      null;
+
+    if (
+      this.planView === 'weekly'
+    ) {
+      await this.loadWeekPlan();
+    } else {
+      /*
+       * Se a vista semanal já tinha sido carregada,
+       * limpamos apenas a cache para que seja pedida novamente
+       * quando o utilizador abrir o Plano 14 dias.
+       */
+      this.weekPlans = [];
+      this.visiblePlanDays = [];
+      this.selectedWeekPlan = null;
+    }
+
+    this.cdr.detectChanges();
   }
 
   get headerAvatar(): string {
@@ -525,12 +622,17 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
       changes['selectedPatient'] &&
       !changes['selectedPatient'].firstChange
     ) {
+      this.currentLoadedDate =
+        this.toLocalDateString(
+          new Date()
+        );
+
       this.weekPlans = [];
       this.visiblePlanDays = [];
       this.selectedWeekPlan = null;
       this.selectedWeekDate = null;
       this.planWindowStart = this.getStartOfWeekString(
-        this.toLocalDateString(new Date())
+        this.currentLoadedDate
       );
       this.weekPlanError = '';
 
@@ -545,7 +647,31 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   async selectPlanView(
     view: PlanView
   ): Promise<void> {
+
+    /*
+     * Se o utilizador deixou a aplicação aberta durante a
+     * mudança de dia, sincroniza tudo antes de trocar de vista.
+     */
+    await this.checkForDayChange();
+
     this.planView = view;
+
+    if (
+      view === 'daily'
+    ) {
+      /*
+       * Garante que a vista diária usa sempre o plano do
+       * dia que está atualmente carregado.
+       */
+      if (
+        this.sessionPlan?.sessionDate !==
+        this.currentLoadedDate
+      ) {
+        await this.loadTodayPlan();
+      }
+
+      return;
+    }
 
     if (
       view === 'weekly' &&
@@ -992,6 +1118,15 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
 
 
   async loadTodayPlan(): Promise<void> {
+    /*
+     * Mantém a referência de "hoje" sincronizada sempre que
+     * o plano diário é carregado explicitamente.
+     */
+    this.currentLoadedDate =
+      this.toLocalDateString(
+        new Date()
+      );
+
     if (!this.selectedPatient?.id) {
       this.planError = 'Escolha um utente para gerar o plano diário.';
       this.activities = [];
