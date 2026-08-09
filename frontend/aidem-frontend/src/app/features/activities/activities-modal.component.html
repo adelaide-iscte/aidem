@@ -280,8 +280,12 @@
             <div
               class="bottom-actions"
               [class.informal-actions]="
-                !isFormalMode
-              ">
+    !isFormalMode
+  "
+              [class.admin-actions]="
+    isAdmin &&
+    activity.status === 'PENDING'
+  ">
 
 
               <button
@@ -692,9 +696,13 @@
               <div
                 class="bottom-actions"
                 [class.informal-actions]="
-                  !isFormalMode &&
-                  isSelectedWeekPlanToday
-                ">
+    !isFormalMode &&
+    isSelectedWeekPlanToday
+  "
+                [class.admin-actions]="
+    isAdmin &&
+    activity.status === 'PENDING'
+  ">
 
 
                 <!-- Só se altera estado na sessão de hoje -->

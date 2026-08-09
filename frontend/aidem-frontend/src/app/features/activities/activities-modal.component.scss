@@ -220,6 +220,15 @@
   margin-top: 0;
 }
 
+.bottom-actions.admin-actions {
+  grid-template-columns:
+    180px 210px 180px 64px;
+}
+
+.admin-remove-activity {
+  border: 2px solid #c96666;
+}
+
 //.complete-button,
 //.instructions-button,
 //.skip-button,
