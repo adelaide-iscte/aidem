@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.time.DayOfWeek;
@@ -22,6 +23,14 @@ import java.time.temporal.TemporalAdjusters;
 
 @Service
 public class SessionPlanService {
+
+    /*
+     * A aplicação é usada em Portugal.
+     * O servidor de produção pode estar em UTC, por isso nunca
+     * devemos depender do timezone da máquina para decidir qual é "hoje".
+     */
+    private static final ZoneId LISBON_ZONE =
+            ZoneId.of("Europe/Lisbon");
 
     private static final int TARGET_MINUTES = 45;
     private static final int MIN_MINUTES = 30;
@@ -94,7 +103,7 @@ public class SessionPlanService {
             Long patientId,
             String userEmail
     ) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = today();
 
         return toResponse(
                 getOrGeneratePlan(
@@ -107,7 +116,7 @@ public class SessionPlanService {
 
     @Transactional
     public SessionPlanResponse regenerateTodayPlan(Long patientId, String userEmail) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = today();
         List<SessionPlan> existing = sessionPlanRepository.findByPatientIdAndSessionDateOrderByIdDesc(patientId, today);
         sessionHistoryRepository.deleteByPatientIdAndSessionDate(patientId, today);
         sessionPlanRepository.deleteAll(existing);
@@ -175,7 +184,7 @@ public class SessionPlanService {
         SessionPlanExercise planExercise = sessionPlanExerciseRepository.findById(sessionPlanExerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("Atividade do plano não encontrada."));
 
-        if (!planExercise.getSessionPlan().getSessionDate().equals(LocalDate.now())) {
+        if (!planExercise.getSessionPlan().getSessionDate().equals(today())) {
             throw new IllegalStateException(
                     "Só é possível anular a classificação de atividades do dia atual."
             );
@@ -209,7 +218,7 @@ public class SessionPlanService {
             );
         }
 
-        if (planExercise.getSessionPlan().getSessionDate().isAfter(LocalDate.now())) {
+        if (planExercise.getSessionPlan().getSessionDate().isAfter(today())) {
             throw new IllegalStateException(
                     "Ainda não é possível realizar uma atividade de um dia futuro."
             );
@@ -980,6 +989,10 @@ public class SessionPlanService {
         }
     }
 
+    private LocalDate today() {
+        return LocalDate.now(LISBON_ZONE);
+    }
+
     private LocalDate getStartOfWeek(
             LocalDate date
     ) {
@@ -1058,7 +1071,7 @@ public class SessionPlanService {
                 date = date.plusDays(1)
         ) {
             if (
-                    !date.isBefore(LocalDate.now()) &&
+                    !date.isBefore(today()) &&
                             !plansByDate.containsKey(date)
             ) {
                 SessionPlan generatedPlan =
@@ -1106,7 +1119,7 @@ public class SessionPlanService {
         LocalDate endDate =
                 startDate.plusDays(safeNumberOfDays - 1L);
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = today();
         LocalDate earliestAllowedDate = today.minusDays(14);
         LocalDate latestAllowedDate = today.plusDays(13);
 
@@ -1151,7 +1164,7 @@ public class SessionPlanService {
 
         int safeNumberOfDays = Math.max(1, Math.min(numberOfDays, 31));
         LocalDate endDate = startDate.plusDays(safeNumberOfDays - 1L);
-        LocalDate today = LocalDate.now();
+        LocalDate today = today();
 
         Map<LocalDate, SessionPlan> plansByDate =
                 sessionPlanRepository
@@ -1334,7 +1347,7 @@ public class SessionPlanService {
             SessionPlan plan
     ) {
         LocalDate today =
-                LocalDate.now();
+                today();
 
         if (
                 plan.getSessionDate()
