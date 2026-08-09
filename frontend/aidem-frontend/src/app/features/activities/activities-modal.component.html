@@ -1,592 +1,1117 @@
-    <div class="activities-page" [class.formal-mode]="isFormalMode">
-      <header class="header">
-        <img src="/icons/menu.svg" class="menu-icon" (click)="openSideMenu()" />
+<div
+  class="activities-page"
+  [class.formal-mode]="isFormalMode">
 
-        <div class="top-icons">
-          <div class="notification-bell-wrapper">
-            <img
-              src="/icons/bell.svg"
-              class="top-icon"
-              alt="Notificações"
-              (click)="toggleNotifications()"
-            />
+  <header class="header">
+    <img
+      src="/icons/menu.svg"
+      class="menu-icon"
+      (click)="openSideMenu()"
+    />
+
+    <div class="top-icons">
+
+      <div class="notification-bell-wrapper">
+
+        <img
+          src="/icons/bell.svg"
+          class="top-icon"
+          alt="Notificações"
+          (click)="toggleNotifications()"
+        />
+
+        <span
+          *ngIf="
+            !isAdmin &&
+            role === 'informal' &&
+            notificationService.unreadCount() > 0
+          "
+          class="notification-badge"
+          aria-label="Nova notificação">
+
+          {{ notificationService.unreadCount() }}
+
+        </span>
+
+      </div>
+
+      <img
+        [src]="headerAvatar"
+        class="avatar"
+        alt="Perfil"
+      />
+
+    </div>
+  </header>
+
+
+  <main class="content">
+
+    <div class="accessibility-row">
+
+      <button
+        class="accessibility-button"
+        type="button"
+        aria-label="Ler conteúdo da página inicial em voz alta">
+
+        <img
+          src="/icons/volume-blue.svg"
+          class="accessibility-icon"
+          alt="">
+
+        <span>
+          Ouvir página
+        </span>
+
+      </button>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- SELETOR PLANO DIÁRIO / SEMANAL                     -->
+    <!-- ================================================= -->
+
+    <section
+      class="plan-view-switch"
+      aria-label="Tipo de plano">
+
+      <button
+        type="button"
+        [class.active]="
+          planView === 'daily'
+        "
+        (click)="
+          selectPlanView('daily')
+        ">
+
+        Plano diário
+
+      </button>
+
+      <button
+        type="button"
+        [class.active]="
+          planView === 'weekly'
+        "
+        (click)="
+          selectPlanView('weekly')
+        ">
+
+        Plano semanal
+
+      </button>
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- CONTACTO                                          -->
+    <!-- ================================================= -->
+
+    <section class="contact-card">
+
+      <img
+        src="/icons/question_icon.png"
+        class="contact-icon"
+      />
+
+      <div class="contact-text">
+
+        <h1>
+          Tem alguma questão?
+        </h1>
+
+        <p>
+          {{ supportCopy }}
+        </p>
+
+      </div>
+
+      <div class="contact-actions">
+
+        <button
+          class="action-button outline"
+          type="button"
+          (click)="openChat.emit()">
+
+          <img
+            src="/icons/Message.svg"
+            class="button-icon"
+          />
+
+          <span>
+            Mensagem
+          </span>
+
+        </button>
+
+        <button
+          class="action-button primary"
+          type="button"
+          (click)="openCallOverlay()">
+
+          <img
+            src="/icons/Phone.svg"
+            class="button-icon"
+          />
+
+          <span>
+            Chamada
+          </span>
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- PLANO DIÁRIO                                      -->
+    <!-- ================================================= -->
+
+    <ng-container
+      *ngIf="planView === 'daily'">
+
+      <section class="progress-card">
+
+        <strong>
+          Progresso da sessão
+        </strong>
+
+        <span>
+          {{ completedCount }}
+          de
+          {{ activities.length }}
+        </span>
+
+        <div class="progress-line">
+
+          <div
+            [style.width]="progressBarWidth">
+          </div>
+
+        </div>
+
+        <span>
+          {{ progressPercent }}%
+        </span>
+
+      </section>
+
+
+      <!-- ADMIN: ADICIONAR ATIVIDADE AO PLANO DE HOJE -->
+
+      <section
+        *ngIf="canEditTodayPlan"
+        class="admin-plan-actions">
+
+        <button
+          type="button"
+          class="action-button primary"
+          [disabled]="isChangingPlan"
+          (click)="openAddExerciseModal()">
+
+          + Adicionar atividade
+
+        </button>
+
+      </section>
+
+
+      <app-loading-spinner
+        *ngIf="isLoadingPlan"
+        message="A gerar plano diário inteligente...">
+      </app-loading-spinner>
+
+
+      <p
+        *ngIf="planError"
+        class="plan-state error">
+
+        {{ planError }}
+
+      </p>
+
+
+      <section
+        class="activity-list"
+        *ngIf="
+          !isLoadingPlan &&
+          !planError
+        ">
+
+        <div
+          class="activity-card"
+          *ngFor="
+            let activity of activities;
+            let i = index
+          "
+          [class.done]="
+            activity.status === 'COMPLETED' ||
+            activity.status === 'SKIPPED'
+          "
+          [class.failed]="
+            activity.status === 'FAILED'
+          ">
+
+
+          <!-- ADMIN: REMOVER ATIVIDADE -->
+
+          <button
+            *ngIf="
+              isAdmin &&
+              activity.status === 'PENDING'
+            "
+            type="button"
+            class="action-button danger"
+            [disabled]="isChangingPlan"
+            (click)="
+              removeActivityFromPlan(activity)
+            ">
+
+            Remover
+
+          </button>
+
+
+          <span class="activity-number">
+            {{ i + 1 }}
+          </span>
+
+
+          <img
+            [src]="activityImage(activity)"
+            class="activity-image"
+            alt=""
+          />
+
+
+          <div class="activity-info">
+
+            <h2>
+              {{ activity.title }}
+            </h2>
+
+
+            <div
+              class="bottom-actions"
+              [class.informal-actions]="
+                !isFormalMode
+              ">
+
+
+              <button
+                *ngIf="
+                  isFormalMode &&
+                  !isSkipped(activity)
+                "
+                class="action-button danger"
+                type="button"
+                [disabled]="isLocked(activity)"
+                (click)="
+                  openSkipModal(activity)
+                ">
+
+                <span class="action-icon">
+                  ✕
+                </span>
+
+                <span>
+                  Não realizar
+                </span>
+
+              </button>
+
+
+              <button
+                *ngIf="
+                  isFormalMode &&
+                  isSkipped(activity)
+                "
+                class="action-button danger muted"
+                type="button"
+                disabled>
+
+                <span class="action-icon">
+                  ✕
+                </span>
+
+                <span>
+                  Não realizado
+                </span>
+
+              </button>
+
+
+              <button
+                *ngIf="
+                  !isCompleted(activity)
+                "
+                class="action-button primary"
+                type="button"
+                [disabled]="
+                  isSkipped(activity)
+                "
+                (click)="
+                  openFeedbackModal(activity)
+                ">
+
+                <img
+                  src="/icons/Check_2.svg"
+                  class="small-icon"
+                />
+
+                <span>
+                  Concluir
+                </span>
+
+              </button>
+
+
+              <button
+                *ngIf="
+                  isCompleted(activity)
+                "
+                class="action-button secondary"
+                type="button"
+                (click)="
+                  resetExercise(activity)
+                ">
+
+                <span class="action-icon">
+                  ↺
+                </span>
+
+                <span>
+                  Cancelar
+                </span>
+
+              </button>
+
+
+              <button
+                class="action-button outline"
+                type="button"
+                [disabled]="
+                  isLocked(activity)
+                "
+                (click)="
+                  !isLocked(activity) &&
+                  openInstructionsModal(activity)
+                ">
+
+                <img
+                  src="/icons/play.svg"
+                  class="small-icon"
+                />
+
+                <span>
+                  Instruções
+                </span>
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </ng-container>
+
+
+    <!-- ================================================= -->
+    <!-- PLANO SEMANAL                                     -->
+    <!-- ================================================= -->
+
+    <ng-container
+      *ngIf="planView === 'weekly'">
+
+      <app-loading-spinner
+        *ngIf="isLoadingWeekPlan"
+        message="A preparar o plano semanal...">
+      </app-loading-spinner>
+
+
+      <p
+        *ngIf="weekPlanError"
+        class="plan-state error">
+
+        {{ weekPlanError }}
+
+      </p>
+
+
+      <ng-container
+        *ngIf="
+          !isLoadingWeekPlan &&
+          !weekPlanError
+        ">
+
+
+        <!-- DIAS DA SEMANA -->
+
+        <section
+          class="week-days"
+          aria-label="Dias da semana">
+
+          <button
+            *ngFor="
+              let plan of weekPlans
+            "
+            class="week-day-card"
+            type="button"
+            [class.active]="
+              selectedWeekPlan?.id ===
+              plan.id
+            "
+            [class.today]="
+              isToday(plan.sessionDate)
+            "
+            (click)="
+              selectWeekPlan(plan)
+            ">
+
+            <span class="week-day-name">
+
+              {{
+                weekDayLabel(
+                  plan.sessionDate
+                )
+              }}
+
+            </span>
+
+
+            <strong>
+
+              {{
+                weekDayNumber(
+                  plan.sessionDate
+                )
+              }}
+
+            </strong>
+
+
+            <span class="week-day-month">
+
+              {{
+                weekMonthLabel(
+                  plan.sessionDate
+                )
+              }}
+
+            </span>
+
 
             <span
               *ngIf="
-      !isAdmin &&
-      role === 'informal' &&
-      notificationService.unreadCount() > 0
-    "
-              class="notification-badge"
-              aria-label="Nova notificação">
+                isToday(plan.sessionDate)
+              "
+              class="today-label">
 
-    {{ notificationService.unreadCount() }}
-  </span>
-          </div>
+              Hoje
 
-          <img
-            [src]="headerAvatar"
-            class="avatar"
-            alt="Perfil"
-          />
-        </div>
-      </header>
-      <main class="content">
-        <div class="accessibility-row">
-          <button
-            class="accessibility-button"
-            type="button"
-            aria-label="Ler conteúdo da página inicial em voz alta">
-
-            <img
-              src="/icons/volume-blue.svg"
-              class="accessibility-icon"
-              alt="">
-
-            <span>Ouvir página</span>
+            </span>
 
           </button>
-        </div>
+
+        </section>
+
+
+        <!-- DIA SELECIONADO -->
 
         <section
-          class="plan-view-switch"
-          aria-label="Tipo de plano">
+          *ngIf="selectedWeekPlan"
+          class="selected-day-summary">
+
+
+          <div>
+
+            <span class="section-label">
+              Sessão selecionada
+            </span>
+
+            <h2>
+
+              {{
+                weekDayLabel(
+                  selectedWeekPlan.sessionDate
+                )
+              }},
+              {{
+                weekDayNumber(
+                  selectedWeekPlan.sessionDate
+                )
+              }}
+              de
+              {{
+                weekMonthLabel(
+                  selectedWeekPlan.sessionDate
+                )
+              }}
+
+            </h2>
+
+          </div>
+
+
+          <div class="selected-day-duration">
+
+            <strong>
+
+              {{
+                selectedWeekPlan
+                  .totalDurationMinutes
+              }}
+
+            </strong>
+
+            <span>
+              minutos
+            </span>
+
+          </div>
+
+        </section>
+
+
+        <!-- ADMIN: ADICIONAR NO DIA SELECIONADO -->
+
+        <section
+          *ngIf="canEditSelectedPlan"
+          class="admin-plan-actions">
 
           <button
             type="button"
-            [class.active]="
-      planView === 'daily'
-    "
+            class="action-button primary"
+            [disabled]="isChangingPlan"
             (click)="
-      selectPlanView('daily')
-    ">
+              openAddExerciseModal()
+            ">
 
-            Plano diário
-          </button>
+            + Adicionar atividade
 
-          <button
-            type="button"
-            [class.active]="
-      planView === 'weekly'
-    "
-            (click)="
-      selectPlanView('weekly')
-    ">
-
-            Plano semanal
           </button>
 
         </section>
 
-        <section class="contact-card">
-          <img src="/icons/question_icon.png" class="contact-icon" />
 
-          <div class="contact-text">
-            <h1>Tem alguma questão?</h1>
-            <p>{{ supportCopy }}</p>
-          </div>
+        <!-- PROGRESSO -->
 
-          <div class="contact-actions">
-            <button
-              class="action-button outline"
-              type="button"
-              (click)="openChat.emit()">
-              <img src="/icons/Message.svg" class="button-icon" />
-              <span>Mensagem</span>
-            </button>
+        <section
+          *ngIf="selectedWeekPlan"
+          class="progress-card weekly-progress">
 
-            <button
-              class="action-button primary"
-              type="button"
-              (click)="openCallOverlay()">
-              <img src="/icons/Phone.svg" class="button-icon" />
-              <span>Chamada</span>
-            </button>
-          </div>
-        </section>
-        <ng-container
-          *ngIf="planView === 'daily'">
-        <section class="progress-card">
-          <strong>Progresso da sessão</strong>
-          <span>{{ completedCount }} de {{ activities.length }}</span>
+          <strong>
+            Progresso da sessão
+          </strong>
+
+          <span>
+
+            {{ selectedWeekCompletedCount }}
+            de
+            {{ selectedWeekActivities.length }}
+
+          </span>
 
           <div class="progress-line">
-            <div [style.width]="progressBarWidth"></div>
+
+            <div
+              [style.width.%]="
+                selectedWeekProgressPercent
+              ">
+            </div>
+
           </div>
 
-          <span>{{ progressPercent }}%</span>
+          <span>
+            {{ selectedWeekProgressPercent }}%
+          </span>
+
         </section>
 
-          <app-loading-spinner
-                  *ngIf="isLoadingPlan"
-                  message="A gerar plano diário inteligente...">
-          </app-loading-spinner>
-        <p *ngIf="planError" class="plan-state error">{{ planError }}</p>
 
-        <section class="activity-list" *ngIf="!isLoadingPlan && !planError">
-          <div class="activity-card" *ngFor="let activity of activities; let i = index" [class.done]="activity.status === 'COMPLETED' || activity.status === 'SKIPPED'"
-               [class.failed]="activity.status === 'FAILED'">
-            <span class="activity-number">{{ i + 1 }}</span>
+        <!-- ATIVIDADES DO DIA SELECIONADO -->
 
-            <img [src]="activityImage(activity)" class="activity-image" />
+        <section
+          *ngIf="selectedWeekPlan"
+          class="activity-list">
+
+          <div
+            *ngFor="
+              let activity of selectedWeekActivities;
+              let i = index
+            "
+            class="activity-card weekly-activity-card"
+            [class.today-session]="
+              isSelectedWeekPlanToday
+            "
+            [class.formal-session]="
+              isSelectedWeekPlanToday &&
+              isFormalMode
+            "
+            [class.informal-session]="
+              isSelectedWeekPlanToday &&
+              !isFormalMode
+            "
+            [class.done]="
+              activity.status === 'COMPLETED' ||
+              activity.status === 'SKIPPED'
+            "
+            [class.failed]="
+              activity.status === 'FAILED'
+            ">
+
+
+            <!-- ADMIN: REMOVER ATIVIDADE -->
+
+            <button
+              *ngIf="
+                canEditSelectedPlan &&
+                activity.status === 'PENDING'
+              "
+              type="button"
+              class="action-button danger"
+              [disabled]="isChangingPlan"
+              (click)="
+                removeActivityFromPlan(activity)
+              ">
+
+              Remover
+
+            </button>
+
+
+            <span class="activity-number">
+              {{ i + 1 }}
+            </span>
+
+
+            <img
+              [src]="activityImage(activity)"
+              class="activity-image"
+              alt="">
+
 
             <div class="activity-info">
-              <h2>{{ activity.title }}</h2>
+
+              <h2>
+                {{ activity.title }}
+              </h2>
+
 
               <div
                 class="bottom-actions"
-                [class.informal-actions]="!isFormalMode">
-                <button
-                  *ngIf="isFormalMode && !isSkipped(activity)"
-                  class="action-button danger"
-                  type="button"
-                  [disabled]="isLocked(activity)"
-                  (click)="openSkipModal(activity)">
-                  <span class="action-icon">✕</span>
-                  <span>Não realizar</span>
-                </button>
+                [class.informal-actions]="
+                  !isFormalMode &&
+                  isSelectedWeekPlanToday
+                ">
 
-                <button
-                  *ngIf="isFormalMode && isSkipped(activity)"
-                  class="action-button danger muted"
-                  type="button"
-                  disabled>
-                  <span class="action-icon">✕</span>
-                  <span>Não realizado</span>
-                </button>
 
-                <button
-                  *ngIf="!isCompleted(activity)"
-                  class="action-button primary"
-                  type="button"
-                  [disabled]="isSkipped(activity)"
-                  (click)="openFeedbackModal(activity)">
-                  <img src="/icons/Check_2.svg" class="small-icon" />
-                  <span>Concluir</span>
-                </button>
+                <!-- Só se altera estado na sessão de hoje -->
 
-                <button
-                  *ngIf="isCompleted(activity)"
-                  class="action-button secondary"
-                  type="button"
-                  (click)="resetExercise(activity)">
-                  <span class="action-icon">↺</span>
-                  <span>Cancelar</span>
-                </button>
+                <ng-container
+                  *ngIf="
+                    isSelectedWeekPlanToday
+                  ">
+
+
+                  <button
+                    *ngIf="
+                      isFormalMode &&
+                      !isSkipped(activity)
+                    "
+                    class="action-button danger"
+                    type="button"
+                    [disabled]="
+                      isLocked(activity)
+                    "
+                    (click)="
+                      openSkipModal(activity)
+                    ">
+
+                    <span class="action-icon">
+                      ✕
+                    </span>
+
+                    <span>
+                      Não realizar
+                    </span>
+
+                  </button>
+
+
+                  <button
+                    *ngIf="
+                      isFormalMode &&
+                      isSkipped(activity)
+                    "
+                    class="action-button danger muted"
+                    type="button"
+                    disabled>
+
+                    <span class="action-icon">
+                      ✕
+                    </span>
+
+                    <span>
+                      Não realizado
+                    </span>
+
+                  </button>
+
+
+                  <button
+                    *ngIf="
+                      !isCompleted(activity)
+                    "
+                    class="action-button primary"
+                    type="button"
+                    [disabled]="
+                      isSkipped(activity)
+                    "
+                    (click)="
+                      openFeedbackModal(activity)
+                    ">
+
+                    <img
+                      src="/icons/Check_2.svg"
+                      class="small-icon"
+                      alt="">
+
+                    <span>
+                      Concluir
+                    </span>
+
+                  </button>
+
+
+                  <button
+                    *ngIf="
+                      isCompleted(activity)
+                    "
+                    class="action-button secondary"
+                    type="button"
+                    (click)="
+                      resetExercise(activity)
+                    ">
+
+                    <span class="action-icon">
+                      ↺
+                    </span>
+
+                    <span>
+                      Cancelar
+                    </span>
+
+                  </button>
+
+                </ng-container>
+
+
+                <!-- Instruções disponíveis em todos os dias -->
 
                 <button
                   class="action-button outline"
                   type="button"
-                  [disabled]="isLocked(activity)"
-                  (click)="!isLocked(activity) && openInstructionsModal(activity)">
-                  <img src="/icons/play.svg" class="small-icon" />
-                  <span>Instruções</span>
+                  [disabled]="
+                    isSelectedWeekPlanToday &&
+                    isLocked(activity)
+                  "
+                  (click)="
+                    (
+                      !isSelectedWeekPlanToday ||
+                      !isLocked(activity)
+                    ) &&
+                    openInstructionsModal(activity)
+                  ">
+
+                  <img
+                    src="/icons/play.svg"
+                    class="small-icon"
+                    alt="">
+
+                  <span>
+                    Instruções
+                  </span>
+
                 </button>
+
               </div>
+
             </div>
+
           </div>
+
         </section>
 
-        </ng-container>
+      </ng-container>
 
-        <ng-container
-          *ngIf="planView === 'weekly'">
+    </ng-container>
 
-          <app-loading-spinner
-            *ngIf="isLoadingWeekPlan"
-            message="A preparar o plano semanal...">
-          </app-loading-spinner>
+  </main>
 
-          <p
-            *ngIf="weekPlanError"
-            class="plan-state error">
 
-            {{ weekPlanError }}
-          </p>
+  <!-- ================================================= -->
+  <!-- FOOTER                                            -->
+  <!-- ================================================= -->
 
-          <ng-container
-            *ngIf="
-      !isLoadingWeekPlan &&
-      !weekPlanError
-    ">
+  <footer class="bottom-nav">
 
-            <section
-              class="week-days"
-              aria-label="Dias da semana">
+    <div class="active">
 
-              <button
-                *ngFor="
-          let plan of weekPlans
-        "
-                class="week-day-card"
-                type="button"
-                [class.active]="
-          selectedWeekPlan?.id ===
-          plan.id
-        "
-                [class.today]="
-          isToday(plan.sessionDate)
-        "
-                (click)="
-          selectWeekPlan(plan)
-        ">
+      <img
+        src="/icons/atividade_marked.svg"
+      />
 
-        <span class="week-day-name">
-          {{
-            weekDayLabel(
-              plan.sessionDate
-            )
-          }}
-        </span>
-
-                <strong>
-                  {{
-                    weekDayNumber(
-                      plan.sessionDate
-                    )
-                  }}
-                </strong>
-
-                <span class="week-day-month">
-          {{
-                    weekMonthLabel(
-                      plan.sessionDate
-                    )
-                  }}
-        </span>
-
-                <span
-                  *ngIf="
-            isToday(plan.sessionDate)
-          "
-                  class="today-label">
-
-          Hoje
-        </span>
-
-              </button>
-
-            </section>
-
-            <section
-              *ngIf="selectedWeekPlan"
-              class="selected-day-summary">
-
-              <div>
-        <span class="section-label">
-          Sessão selecionada
-        </span>
-
-                <h2>
-                  {{
-                    weekDayLabel(
-                      selectedWeekPlan.sessionDate
-                    )
-                  }},
-                  {{
-                    weekDayNumber(
-                      selectedWeekPlan.sessionDate
-                    )
-                  }}
-                  de
-                  {{
-                    weekMonthLabel(
-                      selectedWeekPlan.sessionDate
-                    )
-                  }}
-                </h2>
-              </div>
-
-              <div class="selected-day-duration">
-                <strong>
-                  {{
-                    selectedWeekPlan
-                      .totalDurationMinutes
-                  }}
-                </strong>
-
-                <span>minutos</span>
-              </div>
-
-            </section>
-
-            <section
-              *ngIf="selectedWeekPlan"
-              class="progress-card weekly-progress">
-
-              <strong>
-                Progresso da sessão
-              </strong>
-
-              <span>
-        {{ selectedWeekCompletedCount }}
-                de
-                {{ selectedWeekActivities.length }}
+      <span>
+        Atividades
       </span>
-
-              <div class="progress-line">
-                <div
-                  [style.width.%]="
-            selectedWeekProgressPercent
-          ">
-                </div>
-              </div>
-
-              <span>
-        {{ selectedWeekProgressPercent }}%
-      </span>
-
-            </section>
-
-            <section
-              *ngIf="selectedWeekPlan"
-              class="activity-list">
-
-              <div
-                *ngFor="
-    let activity of selectedWeekActivities;
-    let i = index
-  "
-                class="activity-card weekly-activity-card"
-                [class.today-session]="
-    isSelectedWeekPlanToday
-  "
-                [class.formal-session]="
-    isSelectedWeekPlanToday &&
-    isFormalMode
-  "
-                [class.informal-session]="
-    isSelectedWeekPlanToday &&
-    !isFormalMode
-  "
-                [class.done]="
-    activity.status === 'COMPLETED' ||
-    activity.status === 'SKIPPED'
-  "
-                [class.failed]="
-    activity.status === 'FAILED'
-  ">
-
-        <span class="activity-number">
-          {{ i + 1 }}
-        </span>
-
-                <img
-                  [src]="activityImage(activity)"
-                  class="activity-image"
-                  alt="">
-
-                <div class="activity-info">
-
-                  <h2>
-                    {{ activity.title }}
-                  </h2>
-
-                  <div
-                    class="bottom-actions"
-                    [class.informal-actions]="
-    !isFormalMode &&
-    isSelectedWeekPlanToday
-  ">
-
-                    <!--
-                      Os botões de alterar o estado
-                      só aparecem na sessão de hoje.
-                    -->
-                    <ng-container
-                      *ngIf="isSelectedWeekPlanToday">
-
-                      <!--
-                        Cuidador formal:
-                        pode marcar como não realizado.
-                      -->
-                      <button
-                        *ngIf="
-        isFormalMode &&
-        !isSkipped(activity)
-      "
-                        class="action-button danger"
-                        type="button"
-                        [disabled]="isLocked(activity)"
-                        (click)="openSkipModal(activity)">
-
-      <span class="action-icon">
-        ✕
-      </span>
-
-                        <span>
-        Não realizar
-      </span>
-
-                      </button>
-
-                      <!--
-                        Estado já marcado
-                        como não realizado.
-                      -->
-                      <button
-                        *ngIf="
-        isFormalMode &&
-        isSkipped(activity)
-      "
-                        class="action-button danger muted"
-                        type="button"
-                        disabled>
-
-      <span class="action-icon">
-        ✕
-      </span>
-
-                        <span>
-        Não realizado
-      </span>
-
-                      </button>
-
-                      <!--
-                        Formal e informal:
-                        podem concluir a atividade.
-                      -->
-                      <button
-                        *ngIf="!isCompleted(activity)"
-                        class="action-button primary"
-                        type="button"
-                        [disabled]="isSkipped(activity)"
-                        (click)="openFeedbackModal(activity)">
-
-                        <img
-                          src="/icons/Check_2.svg"
-                          class="small-icon"
-                          alt="">
-
-                        <span>
-        Concluir
-      </span>
-
-                      </button>
-
-                      <!--
-                        Depois de concluída,
-                        permite cancelar o resultado.
-                      -->
-                      <button
-                        *ngIf="isCompleted(activity)"
-                        class="action-button secondary"
-                        type="button"
-                        (click)="resetExercise(activity)">
-
-      <span class="action-icon">
-        ↺
-      </span>
-
-                        <span>
-        Cancelar
-      </span>
-
-                      </button>
-
-                    </ng-container>
-
-                    <!--
-                      As instruções aparecem
-                      em todos os dias da semana.
-                    -->
-                    <button
-                      class="action-button outline"
-                      type="button"
-                      [disabled]="
-      isSelectedWeekPlanToday &&
-      isLocked(activity)
-    "
-                      (click)="
-      (
-        !isSelectedWeekPlanToday ||
-        !isLocked(activity)
-      ) &&
-      openInstructionsModal(activity)
-    ">
-
-                      <img
-                        src="/icons/play.svg"
-                        class="small-icon"
-                        alt="">
-
-                      <span>
-      Instruções
-    </span>
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </section>
-
-          </ng-container>
-
-        </ng-container>
-      </main>
-
-      <footer class="bottom-nav">
-        <div class="active">
-          <img src="/icons/atividade_marked.svg" />
-          <span>Atividades</span>
-        </div>
-
-        <div (click)="goHome.emit()">
-          <img src="/icons/Home_unmarked.svg" />
-          <span>Início</span>
-        </div>
-
-        <div (click)="openProfile.emit()">
-          <img src="/icons/person.svg" />
-          <span>Perfil</span>
-        </div>
-      </footer>
 
     </div>
 
-    <app-feedback-modal *ngIf="showFeedbackModal" (submitFeedback)="submitFeedback($event)" (close)="closeFeedbackModal()"></app-feedback-modal>
 
-    <app-instructions-modal
-            *ngIf="showInstructionsModal && selectedActivity"
-            [activity]="selectedActivity"
-            (close)="closeInstructionsModal()">
-    </app-instructions-modal>
+    <div
+      (click)="goHome.emit()">
 
-    <app-complementary-info-modal *ngIf="showComplementaryInfoModal" (close)="closeComplementaryInfoModal()"></app-complementary-info-modal>
+      <img
+        src="/icons/Home_unmarked.svg"
+      />
 
-    <app-call-overlay
-      *ngIf="showCallOverlay"
-      [name]="supportContactName"
-      status="A chamar ..."
-      [avatar]="supportContactAvatar"
-      (endCall)="closeCallOverlay()">
-    </app-call-overlay>
-    <app-notifications-popover
-      *ngIf="showNotifications"
-      (close)="closeNotifications()">
-    </app-notifications-popover>
+      <span>
+        Início
+      </span>
 
-    <app-skip-reason-modal
-            *ngIf="showSkipModal"
-            (submitReason)="submitSkip($event)"
-            (close)="closeSkipModal()">
-    </app-skip-reason-modal>
+    </div>
 
-    <app-side-menu
-            *ngIf="showSideMenu"
-            (close)="closeSideMenu()"
-            [canChangePatient]="role === 'formal' || isAdmin"
-            (changePatient)="openPatients.emit(); closeSideMenu()"
-            (openContents)="openContents.emit(); closeSideMenu()"
-            [isAdmin]="isAdmin"
-            (openAdminActivities)="openAdminActivities.emit();closeSideMenu()"
-            (openUserManagement)="openUserManagement.emit();closeSideMenu()"
-            (openMessages)="openChat.emit(); closeSideMenu()"
-            (logout)="logout.emit();closeSideMenu()">
-    </app-side-menu>
 
+    <div
+      (click)="openProfile.emit()">
+
+      <img
+        src="/icons/person.svg"
+      />
+
+      <span>
+        Perfil
+      </span>
+
+    </div>
+
+  </footer>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- MODAL ADMIN: ADICIONAR ATIVIDADE                  -->
+<!-- ================================================= -->
+
+<div
+  *ngIf="showAddExerciseModal"
+  class="plan-exercise-modal-backdrop"
+  (click)="closeAddExerciseModal()">
+
+  <div
+    class="plan-exercise-modal"
+    (click)="$event.stopPropagation()">
+
+    <div class="plan-exercise-modal-header">
+
+      <div>
+
+        <h2>
+          Adicionar atividade
+        </h2>
+
+        <p>
+          Escolha uma atividade para adicionar
+          ao plano deste dia.
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="modal-close"
+        aria-label="Fechar"
+        (click)="closeAddExerciseModal()">
+
+        ✕
+
+      </button>
+
+    </div>
+
+
+    <app-loading-spinner
+      *ngIf="isLoadingExercises"
+      message="A carregar atividades...">
+    </app-loading-spinner>
+
+
+    <p
+      *ngIf="planEditError"
+      class="plan-state error">
+
+      {{ planEditError }}
+
+    </p>
+
+
+    <div
+      *ngIf="!isLoadingExercises"
+      class="plan-exercise-options">
+
+
+      <button
+        *ngFor="
+          let exercise of selectableExercises
+        "
+        type="button"
+        class="plan-exercise-option"
+        [disabled]="isChangingPlan"
+        (click)="
+          addExerciseToSelectedPlan(exercise)
+        ">
+
+        <img
+          [src]="
+            exercise.media2 ||
+            exercise.mediaUrl ||
+            '/icons/generic_exercise.svg'
+          "
+          [alt]="exercise.title">
+
+
+        <div>
+
+          <strong>
+            {{ exercise.title }}
+          </strong>
+
+          <span>
+            {{ exercise.domain }}
+          </span>
+
+        </div>
+
+
+        <span
+          class="add-symbol"
+          aria-hidden="true">
+
+          +
+
+        </span>
+
+      </button>
+
+
+      <p
+        *ngIf="
+          selectableExercises.length === 0
+        "
+        class="plan-state">
+
+        Todas as atividades disponíveis
+        já fazem parte deste plano.
+
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- MODAIS EXISTENTES                                 -->
+<!-- ================================================= -->
+
+<app-feedback-modal
+  *ngIf="showFeedbackModal"
+  (submitFeedback)="submitFeedback($event)"
+  (close)="closeFeedbackModal()">
+</app-feedback-modal>
+
+
+<app-instructions-modal
+  *ngIf="
+    showInstructionsModal &&
+    selectedActivity
+  "
+  [activity]="selectedActivity"
+  (close)="closeInstructionsModal()">
+</app-instructions-modal>
+
+
+<app-complementary-info-modal
+  *ngIf="showComplementaryInfoModal"
+  (close)="closeComplementaryInfoModal()">
+</app-complementary-info-modal>
+
+
+<app-call-overlay
+  *ngIf="showCallOverlay"
+  [name]="supportContactName"
+  status="A chamar ..."
+  [avatar]="supportContactAvatar"
+  (endCall)="closeCallOverlay()">
+</app-call-overlay>
+
+
+<app-notifications-popover
+  *ngIf="showNotifications"
+  (close)="closeNotifications()">
+</app-notifications-popover>
+
+
+<app-skip-reason-modal
+  *ngIf="showSkipModal"
+  (submitReason)="submitSkip($event)"
+  (close)="closeSkipModal()">
+</app-skip-reason-modal>
+
+
+<app-side-menu
+  *ngIf="showSideMenu"
+  (close)="closeSideMenu()"
+  [canChangePatient]="
+    role === 'formal' ||
+    isAdmin
+  "
+  (changePatient)="
+    openPatients.emit();
+    closeSideMenu()
+  "
+  (openContents)="
+    openContents.emit();
+    closeSideMenu()
+  "
+  [isAdmin]="isAdmin"
+  (openAdminActivities)="
+    openAdminActivities.emit();
+    closeSideMenu()
+  "
+  (openUserManagement)="
+    openUserManagement.emit();
+    closeSideMenu()
+  "
+  (openMessages)="
+    openChat.emit();
+    closeSideMenu()
+  "
+  (logout)="
+    logout.emit();
+    closeSideMenu()
+  ">
+</app-side-menu>

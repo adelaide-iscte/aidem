@@ -8,6 +8,8 @@ import com.aidem.backend.service.SessionPlanService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.aidem.backend.dto.session.AddSessionPlanExerciseRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Map;
 import java.time.LocalDate;
@@ -224,4 +226,48 @@ public class SessionPlanController {
                         )
         );
     }
+
+    @PostMapping(
+            "/api/session-plans/{sessionPlanId}/exercises"
+    )
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<SessionPlanResponse>
+    addExerciseToPlan(
+            @PathVariable Long sessionPlanId,
+            @RequestBody AddSessionPlanExerciseRequest request
+    ) {
+        if (
+                request == null ||
+                        request.exerciseId() == null
+        ) {
+            throw new IllegalArgumentException(
+                    "Indique a atividade a adicionar."
+            );
+        }
+
+        return ResponseEntity.ok(
+                sessionPlanService
+                        .addExerciseToPlan(
+                                sessionPlanId,
+                                request.exerciseId()
+                        )
+        );
+    }
+
+    @DeleteMapping(
+            "/api/session-plan-exercises/{sessionPlanExerciseId}"
+    )
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<SessionPlanResponse>
+    removeExerciseFromPlan(
+            @PathVariable Long sessionPlanExerciseId
+    ) {
+        return ResponseEntity.ok(
+                sessionPlanService
+                        .removeExerciseFromPlan(
+                                sessionPlanExerciseId
+                        )
+        );
+    }
+
 }

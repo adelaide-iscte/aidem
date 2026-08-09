@@ -5,6 +5,7 @@ import com.aidem.backend.dto.patient.SessionHistoryResponse;
 import com.aidem.backend.dto.session.ExerciseFeedbackRequest;
 import com.aidem.backend.dto.session.SessionPlanExerciseResponse;
 import com.aidem.backend.dto.session.SessionPlanResponse;
+import com.aidem.backend.dto.session.AddSessionPlanExerciseRequest;
 import com.aidem.backend.model.*;
 import com.aidem.backend.model.enums.*;
 import com.aidem.backend.repository.*;
@@ -1056,5 +1057,205 @@ public class SessionPlanService {
                 .map(this::toResponse)
                 .toList();
     }
+
+    @Transactional
+    public SessionPlanResponse addExerciseToPlan(
+            Long sessionPlanId,
+            Long exerciseId
+    ) {
+        SessionPlan plan =
+                sessionPlanRepository
+                        .findById(sessionPlanId)
+                        .orElseThrow(
+                                () -> new IllegalArgumentException(
+                                        "Plano não encontrado."
+                                )
+                        );
+
+        validateEditablePlanDate(plan);
+
+        Exercise exercise =
+                exerciseRepository
+                        .findById(exerciseId)
+                        .orElseThrow(
+                                () -> new IllegalArgumentException(
+                                        "Atividade não encontrada."
+                                )
+                        );
+
+        if (!Boolean.TRUE.equals(exercise.getActive())) {
+            throw new IllegalArgumentException(
+                    "Esta atividade já não está ativa."
+            );
+        }
+
+        List<SessionPlanExercise> currentItems =
+                sessionPlanExerciseRepository
+                        .findBySessionPlan_IdOrderByOrderIndexAsc(
+                                plan.getId()
+                        );
+
+        boolean alreadyExists =
+                currentItems.stream()
+                        .anyMatch(
+                                item ->
+                                        item.getExercise()
+                                                .getId()
+                                                .equals(exerciseId)
+                        );
+
+        if (alreadyExists) {
+            throw new IllegalArgumentException(
+                    "Esta atividade já faz parte deste plano."
+            );
+        }
+
+        int nextOrder =
+                currentItems.stream()
+                        .map(SessionPlanExercise::getOrderIndex)
+                        .filter(Objects::nonNull)
+                        .max(Integer::compareTo)
+                        .orElse(0)
+                        + 1;
+
+        SessionPlanExercise newItem =
+                SessionPlanExercise.builder()
+                        .sessionPlan(plan)
+                        .exercise(exercise)
+                        .orderIndex(nextOrder)
+                        .recommendedDurationMinutes(
+                                duration(exercise)
+                        )
+                        .reason(
+                                "Adicionada manualmente pelo administrador."
+                        )
+                        .status(ExerciseStatus.PENDING)
+                        .build();
+
+        sessionPlanExerciseRepository.save(newItem);
+
+        refreshPlanStatusAfterManualChange(plan);
+
+        return toResponse(plan);
+    }
+
+    @Transactional
+    public SessionPlanResponse removeExerciseFromPlan(
+            Long sessionPlanExerciseId
+    ) {
+        SessionPlanExercise item =
+                sessionPlanExerciseRepository
+                        .findById(sessionPlanExerciseId)
+                        .orElseThrow(
+                                () -> new IllegalArgumentException(
+                                        "Atividade do plano não encontrada."
+                                )
+                        );
+
+        SessionPlan plan =
+                item.getSessionPlan();
+
+        validateEditablePlanDate(plan);
+
+        if (
+                item.getStatus()
+                        != ExerciseStatus.PENDING
+        ) {
+            throw new IllegalStateException(
+                    "Só é possível remover atividades que ainda não foram realizadas ou classificadas."
+            );
+        }
+
+        sessionPlanExerciseRepository.delete(item);
+        sessionPlanExerciseRepository.flush();
+
+        reorderPlanExercises(plan.getId());
+
+        refreshPlanStatusAfterManualChange(plan);
+
+        return toResponse(plan);
+    }
+
+    private void validateEditablePlanDate(
+            SessionPlan plan
+    ) {
+        LocalDate today =
+                LocalDate.now();
+
+        if (
+                plan.getSessionDate()
+                        .isBefore(today)
+        ) {
+            throw new IllegalStateException(
+                    "Não é possível alterar planos de dias anteriores."
+            );
+        }
+    }
+
+    private void reorderPlanExercises(
+            Long sessionPlanId
+    ) {
+        List<SessionPlanExercise> items =
+                sessionPlanExerciseRepository
+                        .findBySessionPlan_IdOrderByOrderIndexAsc(
+                                sessionPlanId
+                        );
+
+        for (
+                int index = 0;
+                index < items.size();
+                index++
+        ) {
+            items.get(index)
+                    .setOrderIndex(index + 1);
+        }
+
+        sessionPlanExerciseRepository
+                .saveAll(items);
+    }
+
+    private void refreshPlanStatusAfterManualChange(
+            SessionPlan plan
+    ) {
+        List<SessionPlanExercise> items =
+                sessionPlanExerciseRepository
+                        .findBySessionPlan_IdOrderByOrderIndexAsc(
+                                plan.getId()
+                        );
+
+        boolean hasProgress =
+                items.stream()
+                        .anyMatch(
+                                item ->
+                                        item.getStatus()
+                                                != ExerciseStatus.PENDING
+                        );
+
+        boolean allFinished =
+                !items.isEmpty() &&
+                        items.stream()
+                                .allMatch(
+                                        item ->
+                                                item.getStatus()
+                                                        != ExerciseStatus.PENDING
+                                );
+
+        if (allFinished) {
+            plan.setStatus(
+                    SessionStatus.COMPLETED
+            );
+        } else if (hasProgress) {
+            plan.setStatus(
+                    SessionStatus.IN_PROGRESS
+            );
+        } else {
+            plan.setStatus(
+                    SessionStatus.PLANNED
+            );
+        }
+
+        sessionPlanRepository.save(plan);
+    }
+
 
 }

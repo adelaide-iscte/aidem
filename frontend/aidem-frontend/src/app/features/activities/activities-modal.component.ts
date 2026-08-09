@@ -19,6 +19,10 @@ import { SessionPlan, SessionPlanExercise, SessionPlanService } from '../../core
 import {SideMenuComponent} from "../../shared/side-menu-modal/side-menu.component";
 import {LoadingSpinnerComponent} from "../../shared/laoding-spinner-modal/loading-spinner.component";
 import { ExerciseNotificationService } from '../../core/services/exercise-notification.service';
+import {
+  Exercise,
+  ExerciseService
+} from '../../core/services/exercise.service';
 
 type UserRole = 'informal' | 'formal';
 type PlanView =
@@ -85,12 +89,19 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   showFeedbackModal = false;
   showInstructionsModal = false;
   showComplementaryInfoModal = false;
+  showAddExerciseModal = false;
+  availableExercises: Exercise[] = [];
+  isLoadingExercises = false;
+  isChangingPlan = false;
+  planEditError = '';
 
   constructor(
     private sessionPlanService: SessionPlanService,
+    private exerciseService: ExerciseService,
     public notificationService: ExerciseNotificationService,
     private cdr: ChangeDetectorRef
   ) {}
+
   ngOnInit(): void {
     void this.loadTodayPlan();
   }
@@ -103,6 +114,265 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     return this.role === 'formal'
       ? '/icons/professional.svg'
       : '/icons/generic_user.svg';
+  }
+
+  get canEditSelectedPlan(): boolean {
+    if (
+      !this.isAdmin ||
+      !this.selectedWeekPlan
+    ) {
+      return false;
+    }
+
+    const selectedDate =
+      new Date(
+        `${this.selectedWeekPlan.sessionDate}T00:00:00`
+      );
+
+    const today =
+      new Date();
+
+    today.setHours(
+      0,
+      0,
+      0,
+      0
+    );
+
+    return selectedDate >= today;
+  }
+
+  get canEditTodayPlan(): boolean {
+    return (
+      this.isAdmin &&
+      !!this.sessionPlan
+    );
+  }
+
+  async openAddExerciseModal(): Promise<void> {
+
+    if (!this.isAdmin) {
+      return;
+    }
+
+    this.planEditError = '';
+    this.isLoadingExercises = true;
+    this.showAddExerciseModal = true;
+
+    try {
+
+      const result =
+        await this.exerciseService
+          .getExercises(
+            0,
+            100,
+            ''
+          );
+
+      this.availableExercises =
+        result.content;
+
+    } catch (error) {
+
+      console.error(
+        'Erro ao carregar atividades',
+        error
+      );
+
+      this.planEditError =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível carregar as atividades.';
+
+    } finally {
+
+      this.isLoadingExercises = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  closeAddExerciseModal(): void {
+    this.showAddExerciseModal = false;
+    this.planEditError = '';
+  }
+
+  private get editablePlan():
+    SessionPlan | null {
+
+    if (this.planView === 'daily') {
+      return this.sessionPlan;
+    }
+
+    return this.selectedWeekPlan;
+  }
+
+  async addExerciseToSelectedPlan(
+    exercise: Exercise
+  ): Promise<void> {
+
+    const plan =
+      this.editablePlan;
+
+    if (
+      !this.isAdmin ||
+      !plan
+    ) {
+      return;
+    }
+
+    this.planEditError = '';
+    this.isChangingPlan = true;
+
+    try {
+
+      const updatedPlan =
+        await this.sessionPlanService
+          .addExerciseToPlan(
+            plan.id,
+            exercise.id
+          );
+
+      this.applyUpdatedPlan(
+        updatedPlan
+      );
+
+      this.closeAddExerciseModal();
+
+    } catch (error) {
+
+      console.error(
+        'Erro ao adicionar atividade ao plano',
+        error
+      );
+
+      this.planEditError =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível adicionar a atividade.';
+
+    } finally {
+
+      this.isChangingPlan = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  async removeActivityFromPlan(
+    activity: SessionPlanExercise
+  ): Promise<void> {
+
+    if (!this.isAdmin) {
+      return;
+    }
+
+    const confirmed =
+      window.confirm(
+        `Remover "${activity.title}" deste plano diário?`
+      );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.planEditError = '';
+    this.isChangingPlan = true;
+
+    try {
+
+      const updatedPlan =
+        await this.sessionPlanService
+          .removeExerciseFromPlan(
+            activity.sessionPlanExerciseId
+          );
+
+      this.applyUpdatedPlan(
+        updatedPlan
+      );
+
+    } catch (error) {
+
+      console.error(
+        'Erro ao remover atividade',
+        error
+      );
+
+      this.planEditError =
+        error instanceof Error
+          ? error.message
+          : 'Não foi possível remover a atividade.';
+
+    } finally {
+
+      this.isChangingPlan = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  private applyUpdatedPlan(
+    updatedPlan: SessionPlan
+  ): void {
+
+    if (
+      this.sessionPlan?.id ===
+      updatedPlan.id
+    ) {
+      this.sessionPlan =
+        updatedPlan;
+
+      this.activities =
+        updatedPlan.exercises;
+    }
+
+    const index =
+      this.weekPlans.findIndex(
+        plan =>
+          plan.id ===
+          updatedPlan.id
+      );
+
+    if (index >= 0) {
+
+      this.weekPlans = [
+        ...this.weekPlans
+      ];
+
+      this.weekPlans[index] =
+        updatedPlan;
+    }
+
+    if (
+      this.selectedWeekPlan?.id ===
+      updatedPlan.id
+    ) {
+      this.selectedWeekPlan =
+        updatedPlan;
+    }
+  }
+
+  get selectableExercises(): Exercise[] {
+
+    const plan =
+      this.editablePlan;
+
+    if (!plan) {
+      return this.availableExercises;
+    }
+
+    const existingIds =
+      new Set(
+        plan.exercises.map(
+          activity =>
+            activity.exerciseId
+        )
+      );
+
+    return this.availableExercises
+      .filter(
+        exercise =>
+          !existingIds.has(
+            exercise.id
+          )
+      );
   }
 
   get supportContactName(): string {

@@ -56,6 +56,34 @@ export class SessionPlanService {
     });
   }
 
+  async addExerciseToPlan(
+    sessionPlanId: number,
+    exerciseId: number
+  ): Promise<SessionPlan> {
+
+    return this.request<SessionPlan>(
+      `${this.apiBase}/session-plans/${sessionPlanId}/exercises`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          exerciseId
+        })
+      }
+    );
+  }
+
+  async removeExerciseFromPlan(
+    sessionPlanExerciseId: number
+  ): Promise<SessionPlan> {
+
+    return this.request<SessionPlan>(
+      `${this.apiBase}/session-plan-exercises/${sessionPlanExerciseId}`,
+      {
+        method: 'DELETE'
+      }
+    );
+  }
+
   async sendFeedback(
     sessionPlanExerciseId: number,
     payload: ExerciseFeedbackPayload
