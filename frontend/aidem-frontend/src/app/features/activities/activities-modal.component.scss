@@ -1665,109 +1665,144 @@ button:disabled {
   }
 }
 
-.admin-plan-actions {
-  margin: 18px 0;
-
-  display: flex;
-  justify-content: flex-end;
-}
-
-.plan-exercise-option div {
-  flex: 1;
-
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-
-
-
 /* =========================================================
    ADMIN - EDIÇÃO DO PLANO
-   Mantém o layout original das atividades intacto
    ========================================================= */
 
-.activity-card {
-  position: relative;
-}
-
-
-/* Botão pequeno no canto da atividade.
-   Não ocupa nenhuma coluna do grid. */
+/*
+ * O cartão já é position: relative.
+ * O botão de remoção fica completamente dentro da box
+ * e não participa no grid, por isso não desloca o número,
+ * a imagem nem os restantes botões.
+ */
 .admin-remove-activity {
   position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 2;
+  top: 18px;
+  right: 18px;
+  z-index: 3;
 
   width: auto;
-  min-width: 105px;
-  min-height: 40px;
-
-  padding: 0 16px;
-
-  border: none;
-  border-radius: 10px;
+  min-width: 108px;
+  min-height: 42px;
+  padding: 0 15px;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 7px;
 
-  background: #fff1f1;
+  border: 1px solid #efcaca;
+  border-radius: 12px;
+
+  background: #fff7f7;
   color: #b93232;
 
   font-family: 'Poppins', Inter, Arial, sans-serif;
   font-size: 14px;
   font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
 
   cursor: pointer;
 
+  box-shadow: 0 4px 10px rgba(185, 50, 50, 0.08);
+
   transition:
-    background 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
     color 0.2s ease,
     transform 0.2s ease;
 }
 
 .admin-remove-activity:hover:not(:disabled) {
-  background: #b93232;
-  color: #ffffff;
+  border-color: #d98d8d;
+  background: #fff0f0;
+  color: #a52c2c;
+  box-shadow: 0 6px 14px rgba(185, 50, 50, 0.12);
+  transform: translateY(-1px);
 }
 
 .admin-remove-activity:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: translateY(0);
+}
+
+.admin-remove-activity:focus-visible {
+  outline: 3px solid rgba(185, 50, 50, 0.18);
+  outline-offset: 3px;
 }
 
 .admin-remove-activity:disabled {
   opacity: 0.5;
   cursor: default;
+  box-shadow: none;
 }
 
+/*
+ * Reserva espaço à direita apenas nos cartões que têm
+ * o botão Remover. Os cartões dos restantes utilizadores
+ * mantêm exatamente o layout anterior.
+ */
+.admin-remove-activity ~ .activity-info {
+  padding-right: 118px;
+}
 
-/* Área do botão adicionar */
+/* Área do botão Adicionar atividade. */
 .admin-plan-actions {
   margin: 18px 0;
 
   display: flex;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: flex-end;
 }
 
-
-/* Impede que o .action-button global fique a 100% */
+/*
+ * Mantém a mesma ergonomia dos action-button da aplicação:
+ * 56 px de altura, raio 14 px, Poppins 18/800 e os mesmos
+ * estados primary/hover já definidos acima.
+ */
 .admin-plan-actions .action-button {
   width: auto;
   min-width: 220px;
-  min-height: 50px;
+  min-height: 56px;
+  padding: 0 20px;
 
-  padding: 0 22px;
+  border-radius: 14px;
 
-  border-radius: 12px;
-
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 800;
 }
 
+@media (max-width: 900px) {
+  .admin-remove-activity ~ .activity-info {
+    padding-right: 105px;
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-remove-activity {
+    top: 14px;
+    right: 14px;
+    min-height: 38px;
+    min-width: 96px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .admin-remove-activity ~ .activity-info {
+    padding-right: 0;
+    padding-top: 48px;
+  }
+
+  .admin-plan-actions {
+    justify-content: stretch;
+  }
+
+  .admin-plan-actions .action-button {
+    width: 100%;
+    min-width: 0;
+  }
+}
 
 /* =========================================================
    MODAL DE ADICIONAR ATIVIDADE
