@@ -2432,3 +2432,74 @@ button:disabled {
 
   opacity: 0.72;
 }
+
+/* =========================================================
+   ADMIN - BOTÕES DO PLANO NA MESMA LINHA
+   ========================================================= */
+
+.bottom-actions.admin-actions {
+  display: grid;
+
+  grid-template-columns:
+    180px
+    200px
+    170px
+    56px;
+
+  gap: 14px;
+
+  align-items: center;
+  justify-content: end;
+}
+
+
+/* Botão apenas com o caixote */
+.bottom-actions.admin-actions
+.admin-remove-activity {
+  width: 56px;
+  min-width: 56px;
+
+  height: 56px;
+  min-height: 56px;
+
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px solid #c96666;
+
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 6px 14px
+    rgba(185, 50, 50, 0.08);
+
+  color: #c96666;
+
+  cursor: pointer;
+}
+
+
+.bottom-actions.admin-actions
+.admin-remove-activity:hover:not(:disabled) {
+  border-color: #b95454;
+
+  background: #fff6f6;
+
+  box-shadow:
+    0 7px 16px
+    rgba(185, 50, 50, 0.13);
+}
+
+
+.bottom-actions.admin-actions
+.remove-plan-icon {
+  width: 24px;
+  height: 24px;
+
+  display: block;
+}
