@@ -258,24 +258,6 @@
           ">
 
 
-          <!-- ADMIN: REMOVER ATIVIDADE -->
-
-          <button
-            *ngIf="
-    isAdmin &&
-    activity.status === 'PENDING'
-  "
-            type="button"
-            class="admin-remove-activity"
-            [disabled]="isChangingPlan"
-            (click)="openRemoveActivityModal(activity)">
-
-            <span class="remove-icon" aria-hidden="true">×</span>
-            <span>Remover do plano</span>
-
-          </button>
-
-
           <span class="activity-number">
             {{ i + 1 }}
           </span>
@@ -410,6 +392,28 @@
                 <span>
                   Instruções
                 </span>
+
+              </button>
+
+              <button
+                *ngIf="
+    isAdmin &&
+    activity.status === 'PENDING'
+  "
+                type="button"
+                class="activity-action admin-remove-activity"
+                [disabled]="isChangingPlan"
+                (click)="openRemoveActivityModal(activity)">
+
+  <span
+    class="remove-icon"
+    aria-hidden="true">
+    ×
+  </span>
+
+                <span>
+    Remover do plano
+  </span>
 
               </button>
 
@@ -669,25 +673,6 @@
               activity.status === 'FAILED'
             ">
 
-
-            <!-- ADMIN: REMOVER ATIVIDADE -->
-
-            <button
-              *ngIf="
-    isAdmin &&
-    activity.status === 'PENDING'
-  "
-              type="button"
-              class="admin-remove-activity"
-              [disabled]="isChangingPlan"
-              (click)="openRemoveActivityModal(activity)">
-
-              <span class="remove-icon" aria-hidden="true">×</span>
-              <span>Remover do plano</span>
-
-            </button>
-
-
             <span class="activity-number">
               {{ i + 1 }}
             </span>
@@ -840,6 +825,28 @@
                   <span>
                     Instruções
                   </span>
+
+                </button>
+
+                <button
+                  *ngIf="
+    isAdmin &&
+    activity.status === 'PENDING'
+  "
+                  type="button"
+                  class="activity-action admin-remove-activity"
+                  [disabled]="isChangingPlan"
+                  (click)="openRemoveActivityModal(activity)">
+
+  <span
+    class="remove-icon"
+    aria-hidden="true">
+    ×
+  </span>
+
+                  <span>
+    Remover do plano
+  </span>
 
                 </button>
 

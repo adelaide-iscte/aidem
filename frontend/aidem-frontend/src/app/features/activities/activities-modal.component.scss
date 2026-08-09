@@ -1676,50 +1676,57 @@ button:disabled {
  * a imagem nem os restantes botões.
  */
 .admin-remove-activity {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  z-index: 3;
-
-  width: auto;
-  min-width: 108px;
-  min-height: 42px;
-  padding: 0 15px;
+  min-width: 0;
+  height: 64px;
+  padding: 0 24px;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 10px;
 
-  border: 1px solid #efcaca;
-  border-radius: 12px;
+  border: 2px solid #d9e2ef;
+  border-radius: 13px;
 
-  background: #fff7f7;
-  color: #b93232;
+  background: #f8fafd;
+  color: #687a92;
 
-  font-family: 'Poppins', Inter, Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 700;
+  font-family:
+    'Poppins',
+    Inter,
+    Arial,
+    sans-serif;
+
+  font-size: 17px;
+  font-weight: 800;
   line-height: 1;
+
   white-space: nowrap;
 
   cursor: pointer;
 
-  box-shadow: 0 4px 10px rgba(185, 50, 50, 0.08);
+  box-shadow:
+    0 8px 18px
+    rgba(54, 83, 126, 0.06);
 
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
-    box-shadow 0.2s ease,
     color 0.2s ease,
+    box-shadow 0.2s ease,
     transform 0.2s ease;
 }
 
 .admin-remove-activity:hover:not(:disabled) {
-  border-color: #d98d8d;
-  background: #fff0f0;
-  color: #a52c2c;
-  box-shadow: 0 6px 14px rgba(185, 50, 50, 0.12);
+  border-color: #c4d1e2;
+
+  background: #f1f5fa;
+  color: #4f627b;
+
+  box-shadow:
+    0 9px 20px
+    rgba(54, 83, 126, 0.1);
+
   transform: translateY(-1px);
 }
 
@@ -1727,9 +1734,15 @@ button:disabled {
   transform: translateY(0);
 }
 
-.admin-remove-activity:focus-visible {
-  outline: 3px solid rgba(185, 50, 50, 0.18);
-  outline-offset: 3px;
+.admin-remove-activity:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.admin-remove-activity .remove-icon {
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1;
 }
 
 .admin-remove-activity:disabled {
