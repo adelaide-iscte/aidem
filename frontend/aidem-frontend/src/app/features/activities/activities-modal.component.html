@@ -1163,7 +1163,6 @@
 <!-- ================================================= -->
 <!-- MODAL ADMIN: CONFIRMAR REMOÇÃO                    -->
 <!-- ================================================= -->
-
 <div
   *ngIf="showRemoveActivityModal"
   class="remove-activity-modal-backdrop"
@@ -1179,28 +1178,33 @@
     <div
       class="remove-activity-icon"
       aria-hidden="true">
-      −
+
+      <img
+        src="/icons/trash.svg"
+        alt="">
+
     </div>
 
     <h2 id="remove-activity-modal-title">
-      Remover atividade do plano?
+      Remover atividade?
     </h2>
 
     <p class="remove-activity-description">
-      Pretende retirar
+      Pretende remover
       <strong>{{ activityToRemove?.title }}</strong>
-      do plano deste dia?
+      deste plano?
     </p>
 
     <p class="remove-activity-note">
-      A atividade continuará disponível na plataforma
-      e poderá voltar a ser adicionada ao plano mais tarde.
+      Poderá voltar a adicioná-la mais tarde.
     </p>
 
     <p
       *ngIf="planEditError"
       class="plan-state error">
+
       {{ planEditError }}
+
     </p>
 
     <div class="remove-activity-actions">
@@ -1210,7 +1214,9 @@
         class="keep-activity-button"
         [disabled]="isChangingPlan"
         (click)="closeRemoveActivityModal()">
+
         Manter atividade
+
       </button>
 
       <button
@@ -1218,7 +1224,13 @@
         class="confirm-remove-activity-button"
         [disabled]="isChangingPlan"
         (click)="confirmRemoveActivity()">
-        {{ isChangingPlan ? 'A remover...' : 'Remover do plano' }}
+
+        {{
+          isChangingPlan
+            ? 'A remover...'
+            : 'Remover atividade'
+        }}
+
       </button>
 
     </div>
@@ -1226,7 +1238,6 @@
   </section>
 
 </div>
-
 <app-feedback-modal
   *ngIf="showFeedbackModal"
   (submitFeedback)="submitFeedback($event)"
