@@ -650,30 +650,40 @@
           *ngIf="selectedWeekPlan"
           class="activity-list">
 
-          <div
-            *ngFor="
-              let activity of selectedWeekActivities;
-              let i = index
-            "
-            class="activity-card weekly-activity-card"
-            [class.today-session]="
-              isSelectedWeekPlanToday
-            "
-            [class.formal-session]="
-              isSelectedWeekPlanToday &&
-              isFormalMode
-            "
-            [class.informal-session]="
-              isSelectedWeekPlanToday &&
-              !isFormalMode
-            "
-            [class.done]="
-              activity.status === 'COMPLETED' ||
-              activity.status === 'SKIPPED'
-            "
-            [class.failed]="
-              activity.status === 'FAILED'
-            ">
+          <<div
+          *ngFor="
+    let activity of selectedWeekActivities;
+    let i = index
+  "
+          class="activity-card weekly-activity-card"
+
+          [class.today-session]="
+    isSelectedWeekPlanToday
+  "
+
+          [class.formal-session]="
+    isSelectedWeekPlanToday &&
+    isFormalMode
+  "
+
+          [class.informal-session]="
+    isSelectedWeekPlanToday &&
+    !isFormalMode
+  "
+
+          [class.admin-editable]="
+    isAdmin &&
+    activity.status === 'PENDING'
+  "
+
+          [class.done]="
+    activity.status === 'COMPLETED' ||
+    activity.status === 'SKIPPED'
+  "
+
+          [class.failed]="
+    activity.status === 'FAILED'
+  ">
 
             <span class="activity-number">
               {{ i + 1 }}

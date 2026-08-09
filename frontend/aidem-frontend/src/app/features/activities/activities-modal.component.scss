@@ -2503,3 +2503,111 @@ button:disabled {
 
   display: block;
 }
+
+/* =========================================================
+   ADMIN - PLANO SEMANAL
+   ========================================================= */
+
+/*
+ * Hoje + admin formal:
+ * Não realizar | Concluir | Instruções | Lixo
+ */
+.weekly-activity-card.today-session.formal-session.admin-editable
+.activity-info {
+  grid-template-columns:
+    minmax(0, 1fr)
+    648px;
+}
+
+.weekly-activity-card.today-session.formal-session.admin-editable
+.bottom-actions {
+  display: grid;
+
+  grid-template-columns:
+    180px
+    200px
+    170px
+    56px;
+
+  gap: 14px;
+
+  align-items: center;
+  justify-content: end;
+}
+
+
+/*
+ * Hoje + admin sem "Não realizar":
+ * Concluir | Instruções | Lixo
+ */
+.weekly-activity-card.today-session.informal-session.admin-editable
+.activity-info {
+  grid-template-columns:
+    minmax(0, 1fr)
+    464px;
+}
+
+.weekly-activity-card.today-session.informal-session.admin-editable
+.bottom-actions {
+  display: grid;
+
+  grid-template-columns:
+    210px
+    170px
+    56px;
+
+  gap: 14px;
+
+  align-items: center;
+  justify-content: end;
+}
+
+
+/*
+ * Dia futuro:
+ * Instruções | Lixo
+ */
+.weekly-activity-card:not(.today-session).admin-editable
+.activity-info {
+  grid-template-columns:
+    minmax(0, 1fr)
+    240px;
+}
+
+.weekly-activity-card:not(.today-session).admin-editable
+.bottom-actions {
+  display: grid;
+
+  grid-template-columns:
+    170px
+    56px;
+
+  gap: 14px;
+
+  align-items: center;
+  justify-content: end;
+}
+
+
+/*
+ * Mantém o caixote igual ao plano diário.
+ */
+.weekly-activity-card.admin-editable
+.admin-remove-activity {
+  width: 56px;
+  min-width: 56px;
+
+  height: 56px;
+  min-height: 56px;
+
+  padding: 0;
+
+  border: 2px solid #c96666;
+  border-radius: 14px;
+
+  background: #ffffff;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
