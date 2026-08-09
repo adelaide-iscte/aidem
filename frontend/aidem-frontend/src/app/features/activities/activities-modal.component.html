@@ -261,17 +261,15 @@
 
           <button
             *ngIf="
-              isAdmin &&
-              activity.status === 'PENDING'
-            "
+    isAdmin &&
+    activity.status === 'PENDING'
+  "
             type="button"
-            class="action-button danger"
+            class="admin-remove-activity"
             [disabled]="isChangingPlan"
-            (click)="
-              removeActivityFromPlan(activity)
-            ">
+            (click)="removeActivityFromPlan(activity)">
 
-            Remover
+            ✕ Remover
 
           </button>
 
@@ -673,17 +671,15 @@
 
             <button
               *ngIf="
-                canEditSelectedPlan &&
-                activity.status === 'PENDING'
-              "
+    isAdmin &&
+    activity.status === 'PENDING'
+  "
               type="button"
-              class="action-button danger"
+              class="admin-remove-activity"
               [disabled]="isChangingPlan"
-              (click)="
-                removeActivityFromPlan(activity)
-              ">
+              (click)="removeActivityFromPlan(activity)">
 
-              Remover
+              ✕ Remover
 
             </button>
 

@@ -1672,6 +1672,107 @@ button:disabled {
   justify-content: flex-end;
 }
 
+.plan-exercise-option div {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+
+
+
+/* =========================================================
+   ADMIN - EDIÇÃO DO PLANO
+   Mantém o layout original das atividades intacto
+   ========================================================= */
+
+.activity-card {
+  position: relative;
+}
+
+
+/* Botão pequeno no canto da atividade.
+   Não ocupa nenhuma coluna do grid. */
+.admin-remove-activity {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+
+  width: auto;
+  min-width: 105px;
+  min-height: 40px;
+
+  padding: 0 16px;
+
+  border: none;
+  border-radius: 10px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  background: #fff1f1;
+  color: #b93232;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.admin-remove-activity:hover:not(:disabled) {
+  background: #b93232;
+  color: #ffffff;
+}
+
+.admin-remove-activity:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.admin-remove-activity:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+
+/* Área do botão adicionar */
+.admin-plan-actions {
+  margin: 18px 0;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+
+/* Impede que o .action-button global fique a 100% */
+.admin-plan-actions .action-button {
+  width: auto;
+  min-width: 220px;
+  min-height: 50px;
+
+  padding: 0 22px;
+
+  border-radius: 12px;
+
+  font-size: 16px;
+}
+
+
+/* =========================================================
+   MODAL DE ADICIONAR ATIVIDADE
+   ========================================================= */
+
 .plan-exercise-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -1683,27 +1784,31 @@ button:disabled {
   align-items: center;
   justify-content: center;
 
-  background: rgba(20, 31, 48, 0.45);
+  background: rgba(20, 31, 48, 0.4);
+
+  backdrop-filter: blur(3px);
 }
 
 .plan-exercise-modal {
-  width: min(620px, 100%);
-  max-height: 80vh;
-  padding: 24px;
+  width: min(650px, 100%);
+  max-height: 82vh;
+
+  padding: 28px;
 
   overflow-y: auto;
 
+  border: 1px solid #e1e7f0;
   border-radius: 20px;
 
   background: #ffffff;
 
   box-shadow:
-    0 24px 60px
-    rgba(26, 46, 78, 0.25);
+    0 25px 65px
+    rgba(26, 46, 78, 0.22);
 }
 
 .plan-exercise-modal-header {
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 
   display: flex;
   align-items: flex-start;
@@ -1714,43 +1819,63 @@ button:disabled {
 .plan-exercise-modal-header h2 {
   margin: 0;
 
-  color: #2b3c55;
+  color: #263b57;
 
   font-size: 24px;
+  font-weight: 800;
 }
 
 .plan-exercise-modal-header p {
-  margin: 6px 0 0;
+  margin: 5px 0 0;
 
   color: #718098;
+
+  font-size: 15px;
+  line-height: 1.45;
 }
 
 .modal-close {
-  border: 0;
-  background: transparent;
+  width: 40px;
+  height: 40px;
 
-  color: #59687d;
+  flex-shrink: 0;
 
-  font-size: 22px;
+  border: none;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f4f7fb;
+  color: #53647b;
+
+  font-size: 18px;
+  font-weight: 700;
 
   cursor: pointer;
+}
+
+.modal-close:hover {
+  background: #e9eff8;
 }
 
 .plan-exercise-options {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .plan-exercise-option {
   width: 100%;
-  padding: 14px 16px;
+
+  padding: 12px 14px;
 
   display: flex;
   align-items: center;
   gap: 14px;
 
-  border: 1px solid #dfe6f0;
+  border: 1px solid #e1e7f0;
   border-radius: 14px;
 
   background: #ffffff;
@@ -1758,16 +1883,23 @@ button:disabled {
   text-align: left;
 
   cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .plan-exercise-option:hover:not(:disabled) {
-  border-color: #407ce2;
-  background: #f5f9ff;
+  border-color: #8db2f6;
+  background: #f6f9ff;
+
+  transform: translateY(-1px);
 }
 
 .plan-exercise-option img {
-  width: 56px;
-  height: 56px;
+  width: 58px;
+  height: 58px;
 
   flex-shrink: 0;
 
@@ -1776,7 +1908,8 @@ button:disabled {
   object-fit: cover;
 }
 
-.plan-exercise-option div {
+.plan-exercise-option > div {
+  min-width: 0;
   flex: 1;
 
   display: flex;
@@ -1785,18 +1918,33 @@ button:disabled {
 }
 
 .plan-exercise-option strong {
-  color: #2b3c55;
+  color: #263b57;
+
   font-size: 16px;
+  font-weight: 700;
 }
 
 .plan-exercise-option span {
   color: #718098;
+
   font-size: 14px;
 }
 
 .plan-exercise-option .add-symbol {
-  color: #407ce2;
+  width: 34px;
+  height: 34px;
 
-  font-size: 28px;
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #eaf1ff;
+  color: #4079e8;
+
+  font-size: 22px;
   font-weight: 700;
 }
