@@ -155,7 +155,6 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
       !!this.sessionPlan
     );
   }
-
   async openAddExerciseModal(): Promise<void> {
 
     if (!this.isAdmin) {
@@ -171,7 +170,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
 
     try {
 
-      const result =
+      const firstPage =
         await this.exerciseService
           .getExercises(
             0,
@@ -179,8 +178,32 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
             ''
           );
 
+      let exercises = [
+        ...firstPage.content
+      ];
+
+      for (
+        let page = 1;
+        page < firstPage.totalPages;
+        page++
+      ) {
+
+        const nextPage =
+          await this.exerciseService
+            .getExercises(
+              page,
+              100,
+              ''
+            );
+
+        exercises = [
+          ...exercises,
+          ...nextPage.content
+        ];
+      }
+
       this.availableExercises =
-        result.content;
+        exercises;
 
     } catch (error) {
 
