@@ -225,40 +225,38 @@
     180px 210px 180px 64px;
 }
 
+/* =========================================================
+   MODAL REMOVER ATIVIDADE
+   ========================================================= */
+
 .remove-activity-modal {
-  width: min(540px, 100%);
-  padding: 38px 36px 34px;
+  width: min(760px, 92vw);
+  padding: 54px 52px 48px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
 
   border: 1px solid #e1e7f0;
-  border-radius: 22px;
+  border-radius: 28px;
 
   background: #ffffff;
   color: #263750;
 
-  font-family:
-    'Poppins',
-    Inter,
-    Arial,
-    sans-serif;
-
+  font-family: 'Poppins', Inter, Arial, sans-serif;
   text-align: center;
 
   box-shadow:
-    0 24px 65px
-    rgba(33, 51, 79, 0.2);
+    0 28px 75px rgba(33, 51, 79, 0.22);
 }
 
 
-/* Ícone vermelho suave */
+/* Ícone */
 
 .remove-activity-icon {
-  width: 72px;
-  height: 72px;
-  margin-bottom: 22px;
+  width: 90px;
+  height: 90px;
+  margin-bottom: 28px;
 
   display: flex;
   align-items: center;
@@ -270,9 +268,8 @@
 }
 
 .remove-activity-icon img {
-  width: 30px;
-  height: 30px;
-
+  width: 38px;
+  height: 38px;
   display: block;
 }
 
@@ -284,20 +281,20 @@
 
   color: #263750;
 
-  font-size: 34px;
+  font-size: 38px;
   font-weight: 800;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 
-/* Pergunta principal */
+/* Pergunta */
 
 .remove-activity-description {
-  margin: 24px 0 0;
+  margin: 28px 0 0;
 
   color: #596b84;
 
-  font-size: 17px;
+  font-size: 23px;
   font-weight: 500;
   line-height: 1.5;
 }
@@ -308,14 +305,14 @@
 }
 
 
-/* Nota calma */
+/* Nota */
 
 .remove-activity-note {
-  margin: 8px 0 0;
+  margin: 14px 0 0;
 
   color: #718098;
 
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 600;
   line-height: 1.45;
 }
@@ -325,30 +322,28 @@
 
 .remove-activity-actions {
   width: 100%;
-  margin-top: 28px;
+  margin-top: 38px;
 
   display: grid;
   grid-template-columns: 1fr 1fr;
 
-  gap: 14px;
+  gap: 18px;
 }
-
 
 .keep-activity-button,
 .confirm-remove-activity-button {
-  min-height: 56px;
-  padding: 0 18px;
+  min-height: 68px;
+  padding: 0 24px;
 
-  border-radius: 13px;
+  border-radius: 15px;
 
-  font-family:
-    'Poppins',
-    Inter,
-    Arial,
-    sans-serif;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
 
-  font-size: 15px;
+  font-size: 19px;
   font-weight: 800;
+  line-height: 1.2;
+
+  white-space: nowrap;
 
   cursor: pointer;
 
@@ -360,7 +355,7 @@
 }
 
 
-/* Manter = neutro */
+/* Manter */
 
 .keep-activity-button {
   border: 2px solid #cbd6e5;
@@ -375,7 +370,7 @@
 }
 
 
-/* Remover = mesmo código visual das outras remoções */
+/* Remover */
 
 .confirm-remove-activity-button {
   border: 2px solid #cf4545;
@@ -384,8 +379,7 @@
   color: #ffffff;
 
   box-shadow:
-    0 8px 18px
-    rgba(185, 50, 50, 0.18);
+    0 8px 18px rgba(185, 50, 50, 0.18);
 }
 
 .confirm-remove-activity-button:hover:not(:disabled) {
@@ -393,16 +387,13 @@
   background: #bd3939;
 
   box-shadow:
-    0 10px 22px
-    rgba(185, 50, 50, 0.24);
+    0 10px 22px rgba(185, 50, 50, 0.24);
 }
-
 
 .keep-activity-button:active:not(:disabled),
 .confirm-remove-activity-button:active:not(:disabled) {
   transform: scale(0.98);
 }
-
 
 .keep-activity-button:disabled,
 .confirm-remove-activity-button:disabled {
@@ -411,16 +402,44 @@
 }
 
 
-@media (max-width: 620px) {
+/* Mobile */
 
+@media (max-width: 620px) {
   .remove-activity-modal {
-    padding: 30px 20px;
+    width: 100%;
+    padding: 36px 24px;
+    border-radius: 22px;
+  }
+
+  .remove-activity-icon {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 22px;
+  }
+
+  .remove-activity-modal h2 {
+    font-size: 30px;
+  }
+
+  .remove-activity-description {
+    margin-top: 20px;
+    font-size: 19px;
+  }
+
+  .remove-activity-note {
+    font-size: 17px;
   }
 
   .remove-activity-actions {
+    margin-top: 28px;
     grid-template-columns: 1fr;
   }
 
+  .keep-activity-button,
+  .confirm-remove-activity-button {
+    min-height: 60px;
+    font-size: 17px;
+  }
 }
 
 .admin-remove-activity {
