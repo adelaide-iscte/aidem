@@ -141,4 +141,14 @@ export class SessionPlanService {
       `${this.apiBase}/patients/${patientId}/session-plans/week`
     );
   }
+
+
+  async getPlanRange(
+    patientId: number,
+    startDate: string
+  ): Promise<SessionPlan[]> {
+    return this.request<SessionPlan[]>(
+      `${this.apiBase}/patients/${patientId}/session-plans/range?startDate=${encodeURIComponent(startDate)}`
+    );
+  }
 }

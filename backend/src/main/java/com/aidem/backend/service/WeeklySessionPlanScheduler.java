@@ -38,10 +38,11 @@ public class WeeklySessionPlanScheduler {
         for (Patient patient : patients) {
             try {
                 sessionPlanService
-                        .getOrGenerateWeekPlan(
+                        .getOrGeneratePlanRange(
                                 patient.getId(),
                                 null,
-                                today
+                                today,
+                                14
                         );
 
             } catch (IllegalStateException exception) {

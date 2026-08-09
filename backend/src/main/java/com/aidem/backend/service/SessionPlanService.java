@@ -119,6 +119,8 @@ public class SessionPlanService {
         SessionPlanExercise planExercise = sessionPlanExerciseRepository.findById(sessionPlanExerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("Atividade do plano não encontrada."));
 
+        validateExerciseCanBeClassified(planExercise);
+
         boolean completed = Boolean.TRUE.equals(request.completed());
         planExercise.setStatus(completed ? ExerciseStatus.COMPLETED : ExerciseStatus.FAILED);
         sessionPlanExerciseRepository.save(planExercise);
@@ -146,6 +148,8 @@ public class SessionPlanService {
         SessionPlanExercise planExercise = sessionPlanExerciseRepository.findById(sessionPlanExerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("Atividade do plano não encontrada."));
 
+        validateExerciseCanBeClassified(planExercise);
+
         planExercise.setStatus(ExerciseStatus.SKIPPED);
         sessionPlanExerciseRepository.save(planExercise);
 
@@ -171,6 +175,12 @@ public class SessionPlanService {
         SessionPlanExercise planExercise = sessionPlanExerciseRepository.findById(sessionPlanExerciseId)
                 .orElseThrow(() -> new IllegalArgumentException("Atividade do plano não encontrada."));
 
+        if (!planExercise.getSessionPlan().getSessionDate().equals(LocalDate.now())) {
+            throw new IllegalStateException(
+                    "Só é possível anular a classificação de atividades do dia atual."
+            );
+        }
+
         planExercise.setStatus(ExerciseStatus.PENDING);
         sessionPlanExerciseRepository.save(planExercise);
 
@@ -188,6 +198,22 @@ public class SessionPlanService {
         sessionPlanRepository.save(plan);
 
         return toExerciseResponse(planExercise);
+    }
+
+    private void validateExerciseCanBeClassified(
+            SessionPlanExercise planExercise
+    ) {
+        if (planExercise.getStatus() != ExerciseStatus.PENDING) {
+            throw new IllegalStateException(
+                    "Esta atividade já foi classificada e não pode ser realizada novamente."
+            );
+        }
+
+        if (planExercise.getSessionPlan().getSessionDate().isAfter(LocalDate.now())) {
+            throw new IllegalStateException(
+                    "Ainda não é possível realizar uma atividade de um dia futuro."
+            );
+        }
     }
 
     private SessionPlan generatePlan(Long patientId, String userEmail, LocalDate date) {
@@ -1031,7 +1057,87 @@ public class SessionPlanService {
                 !date.isAfter(endOfWeek);
                 date = date.plusDays(1)
         ) {
-            if (!plansByDate.containsKey(date)) {
+            if (
+                    !date.isBefore(LocalDate.now()) &&
+                            !plansByDate.containsKey(date)
+            ) {
+                SessionPlan generatedPlan =
+                        generatePlan(
+                                patientId,
+                                userEmail,
+                                date
+                        );
+
+                plansByDate.put(
+                        date,
+                        generatedPlan
+                );
+            }
+        }
+
+        return plansByDate
+                .values()
+                .stream()
+                .sorted(
+                        Comparator.comparing(
+                                SessionPlan::getSessionDate
+                        )
+                )
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public List<SessionPlanResponse>
+    getOrGeneratePlanRange(
+            Long patientId,
+            String userEmail,
+            LocalDate startDate,
+            int numberOfDays
+    ) {
+        if (!patientRepository.existsById(patientId)) {
+            throw new IllegalArgumentException(
+                    "Utente não encontrado."
+            );
+        }
+
+        int safeNumberOfDays = Math.max(1, Math.min(numberOfDays, 31));
+        LocalDate endDate = startDate.plusDays(safeNumberOfDays - 1L);
+        LocalDate today = LocalDate.now();
+
+        Map<LocalDate, SessionPlan> plansByDate =
+                sessionPlanRepository
+                        .findByPatient_IdAndSessionDateBetweenOrderBySessionDateAscIdDesc(
+                                patientId,
+                                startDate,
+                                endDate
+                        )
+                        .stream()
+                        .collect(
+                                Collectors.toMap(
+                                        SessionPlan::getSessionDate,
+                                        plan -> plan,
+                                        (first, duplicate) -> first,
+                                        TreeMap::new
+                                )
+                        );
+
+        /*
+         * Nunca criamos retroativamente planos em dias passados.
+         * Assim, os registos históricos já recolhidos são preservados
+         * e não inventamos sessões que não existiam durante o estudo.
+         * Para hoje e para o futuro, os planos em falta são gerados
+         * normalmente.
+         */
+        for (
+                LocalDate date = startDate;
+                !date.isAfter(endDate);
+                date = date.plusDays(1)
+        ) {
+            if (
+                    !date.isBefore(today) &&
+                            !plansByDate.containsKey(date)
+            ) {
                 SessionPlan generatedPlan =
                         generatePlan(
                                 patientId,

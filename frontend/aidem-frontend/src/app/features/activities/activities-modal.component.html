@@ -98,7 +98,7 @@
           selectPlanView('weekly')
         ">
 
-        Plano semanal
+        Plano 14 dias
 
       </button>
 
@@ -291,7 +291,7 @@
               <button
                 *ngIf="
                   isFormalMode &&
-                  !isSkipped(activity)
+                  activity.status === 'PENDING'
                 "
                 class="action-button danger"
                 type="button"
@@ -333,13 +333,10 @@
 
               <button
                 *ngIf="
-                  !isCompleted(activity)
+                  activity.status === 'PENDING'
                 "
                 class="action-button primary"
                 type="button"
-                [disabled]="
-                  isSkipped(activity)
-                "
                 (click)="
                   openFeedbackModal(activity)
                 ">
@@ -439,7 +436,7 @@
 
       <app-loading-spinner
         *ngIf="isLoadingWeekPlan"
-        message="A preparar o plano semanal...">
+        message="A preparar os 14 dias...">
       </app-loading-spinner>
 
 
@@ -459,34 +456,76 @@
         ">
 
 
-        <!-- DIAS DA SEMANA -->
+        <!-- NAVEGAÇÃO DA JANELA DE 14 DIAS -->
+
+        <section
+          class="plan-range-navigation"
+          aria-label="Navegação do plano de 14 dias">
+
+          <button
+            type="button"
+            class="range-nav-button"
+            (click)="previousPlanWeek()">
+            ‹ Semana anterior
+          </button>
+
+          <div class="plan-range-title">
+            <strong>14 dias</strong>
+            <span>
+              {{ weekDayNumber(planWindowStart) }}
+              {{ weekMonthLabel(planWindowStart) }}
+              –
+              {{ weekDayNumber(planWindowEnd) }}
+              {{ weekMonthLabel(planWindowEnd) }}
+            </span>
+          </div>
+
+          <button
+            *ngIf="!isCurrentPlanWindow"
+            type="button"
+            class="range-today-button"
+            (click)="goToCurrentPlanWindow()">
+            Hoje
+          </button>
+
+          <button
+            type="button"
+            class="range-nav-button"
+            (click)="nextPlanWeek()">
+            Semana seguinte ›
+          </button>
+
+        </section>
+
+
+        <!-- 14 DIAS -->
 
         <section
           class="week-days"
-          aria-label="Dias da semana">
+          aria-label="14 dias do plano">
 
           <button
             *ngFor="
-              let plan of weekPlans
+              let day of visiblePlanDays
             "
             class="week-day-card"
             type="button"
             [class.active]="
-              selectedWeekPlan?.id ===
-              plan.id
+              selectedWeekDate ===
+              day.sessionDate
             "
             [class.today]="
-              isToday(plan.sessionDate)
+              isToday(day.sessionDate)
             "
             (click)="
-              selectWeekPlan(plan)
+              selectPlanDay(day)
             ">
 
             <span class="week-day-name">
 
               {{
                 weekDayLabel(
-                  plan.sessionDate
+                  day.sessionDate
                 )
               }}
 
@@ -497,7 +536,7 @@
 
               {{
                 weekDayNumber(
-                  plan.sessionDate
+                  day.sessionDate
                 )
               }}
 
@@ -508,7 +547,7 @@
 
               {{
                 weekMonthLabel(
-                  plan.sessionDate
+                  day.sessionDate
                 )
               }}
 
@@ -517,7 +556,7 @@
 
             <span
               *ngIf="
-                isToday(plan.sessionDate)
+                isToday(day.sessionDate)
               "
               class="today-label">
 
@@ -533,7 +572,7 @@
         <!-- DIA SELECIONADO -->
 
         <section
-          *ngIf="selectedWeekPlan"
+          *ngIf="selectedWeekDisplayDate"
           class="selected-day-summary">
 
 
@@ -547,18 +586,18 @@
 
               {{
                 weekDayLabel(
-                  selectedWeekPlan.sessionDate
+                  selectedWeekDisplayDate
                 )
               }},
               {{
                 weekDayNumber(
-                  selectedWeekPlan.sessionDate
+                  selectedWeekDisplayDate
                 )
               }}
               de
               {{
                 weekMonthLabel(
-                  selectedWeekPlan.sessionDate
+                  selectedWeekDisplayDate
                 )
               }}
 
@@ -573,7 +612,7 @@
 
               {{
                 selectedWeekPlan
-                  .totalDurationMinutes
+                  ?.totalDurationMinutes ?? 0
               }}
 
             </strong>
@@ -585,6 +624,16 @@
           </div>
 
         </section>
+
+
+        <p
+          *ngIf="
+            selectedWeekDisplayDate &&
+            !selectedWeekPlan
+          "
+          class="plan-state">
+          Não existe um plano registado para este dia.
+        </p>
 
 
         <!-- ADMIN: ADICIONAR NO DIA SELECIONADO -->
@@ -650,38 +699,50 @@
           *ngIf="selectedWeekPlan"
           class="activity-list">
 
-          <<div
-          *ngFor="
+          <div
+            *ngFor="
     let activity of selectedWeekActivities;
     let i = index
   "
-          class="activity-card weekly-activity-card"
+            class="activity-card weekly-activity-card"
 
-          [class.today-session]="
+            [class.today-session]="
     isSelectedWeekPlanToday
   "
 
-          [class.formal-session]="
-    isSelectedWeekPlanToday &&
-    isFormalMode
+            [class.formal-session]="
+    isFormalMode &&
+    (
+      isSelectedWeekPlanToday ||
+      (
+        isSelectedWeekPlanPast &&
+        activity.status === 'PENDING'
+      )
+    )
   "
 
-          [class.informal-session]="
-    isSelectedWeekPlanToday &&
-    !isFormalMode
+            [class.informal-session]="
+    !isFormalMode &&
+    (
+      isSelectedWeekPlanToday ||
+      (
+        isSelectedWeekPlanPast &&
+        activity.status === 'PENDING'
+      )
+    )
   "
 
-          [class.admin-editable]="
-    isAdmin &&
+            [class.admin-editable]="
+    canEditSelectedPlan &&
     activity.status === 'PENDING'
   "
 
-          [class.done]="
+            [class.done]="
     activity.status === 'COMPLETED' ||
     activity.status === 'SKIPPED'
   "
 
-          [class.failed]="
+            [class.failed]="
     activity.status === 'FAILED'
   ">
 
@@ -707,19 +768,21 @@
                 class="bottom-actions"
                 [class.informal-actions]="
     !isFormalMode &&
-    isSelectedWeekPlanToday
+    canClassifySelectedPlan &&
+    activity.status === 'PENDING'
   "
                 [class.admin-actions]="
-    isAdmin &&
+    canEditSelectedPlan &&
     activity.status === 'PENDING'
   ">
 
 
-                <!-- Só se altera estado na sessão de hoje -->
+                <!-- Hoje ou atividade pendente de um dia anterior -->
 
                 <ng-container
                   *ngIf="
-                    isSelectedWeekPlanToday
+                    canClassifySelectedPlan &&
+                    activity.status === 'PENDING'
                   ">
 
 
@@ -769,14 +832,8 @@
 
 
                   <button
-                    *ngIf="
-                      !isCompleted(activity)
-                    "
                     class="action-button primary"
                     type="button"
-                    [disabled]="
-                      isSkipped(activity)
-                    "
                     (click)="
                       openFeedbackModal(activity)
                     ">
@@ -792,28 +849,24 @@
 
                   </button>
 
-
-                  <button
-                    *ngIf="
-                      isCompleted(activity)
-                    "
-                    class="action-button secondary"
-                    type="button"
-                    (click)="
-                      resetExercise(activity)
-                    ">
-
-                    <span class="action-icon">
-                      ↺
-                    </span>
-
-                    <span>
-                      Cancelar
-                    </span>
-
-                  </button>
-
                 </ng-container>
+
+
+                <!-- Só hoje é possível anular uma conclusão -->
+
+                <button
+                  *ngIf="
+                    isSelectedWeekPlanToday &&
+                    isCompleted(activity)
+                  "
+                  class="action-button secondary"
+                  type="button"
+                  (click)="resetExercise(activity)">
+
+                  <span class="action-icon">↺</span>
+                  <span>Cancelar</span>
+
+                </button>
 
 
                 <!-- Instruções disponíveis em todos os dias -->
@@ -821,15 +874,7 @@
                 <button
                   class="action-button outline"
                   type="button"
-                  [disabled]="
-                    isSelectedWeekPlanToday &&
-                    isLocked(activity)
-                  "
                   (click)="
-                    (
-                      !isSelectedWeekPlanToday ||
-                      !isLocked(activity)
-                    ) &&
                     openInstructionsModal(activity)
                   ">
 
@@ -846,7 +891,7 @@
 
                 <button
                   *ngIf="
-    isAdmin &&
+    canEditSelectedPlan &&
     activity.status === 'PENDING'
   "
                   type="button"

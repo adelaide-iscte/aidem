@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.Map;
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 @RestController
@@ -223,6 +224,43 @@ public class SessionPlanController {
                                 patientId,
                                 email,
                                 LocalDate.now()
+                        )
+        );
+    }
+
+    @GetMapping(
+            "/api/patients/{patientId}/session-plans/range"
+    )
+    public ResponseEntity<List<SessionPlanResponse>>
+    getSessionPlanRange(
+            @PathVariable Long patientId,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate startDate,
+            Authentication authentication
+    ) {
+        patientAccessService.requirePatientAccess(
+                patientId,
+                authentication
+        );
+
+        String email =
+                authentication == null
+                        ? null
+                        : authentication.getName();
+
+        LocalDate effectiveStartDate =
+                startDate == null
+                        ? LocalDate.now()
+                        : startDate;
+
+        return ResponseEntity.ok(
+                sessionPlanService
+                        .getOrGeneratePlanRange(
+                                patientId,
+                                email,
+                                effectiveStartDate,
+                                14
                         )
         );
     }

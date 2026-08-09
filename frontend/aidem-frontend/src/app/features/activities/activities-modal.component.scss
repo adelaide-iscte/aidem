@@ -2817,3 +2817,97 @@ button:disabled {
   align-items: center;
   justify-content: center;
 }
+
+
+/* =========================================================
+   NAVEGAÇÃO DO PLANO DE 14 DIAS
+   ========================================================= */
+
+.plan-range-navigation {
+  margin-top: 18px;
+  padding: 14px 16px;
+
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+
+  border: 1px solid #dfe6f0;
+  border-radius: 16px;
+
+  background: #ffffff;
+  box-shadow: 0 7px 20px rgba(54, 83, 126, 0.06);
+}
+
+.plan-range-title {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+
+  color: #607089;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.plan-range-title strong {
+  color: #2b3c55;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.range-nav-button,
+.range-today-button {
+  min-height: 46px;
+  padding: 0 16px;
+
+  border: 1px solid #cfdced;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #3977df;
+
+  font-family: 'Poppins', Inter, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.range-nav-button:hover,
+.range-today-button:hover {
+  border-color: #8aaff0;
+  background: #f5f9ff;
+}
+
+.range-today-button {
+  background: #edf4ff;
+}
+
+@media (max-width: 900px) {
+  .plan-range-navigation {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .plan-range-title {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 620px) {
+  .plan-range-navigation {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .plan-range-title {
+    width: 100%;
+    order: -1;
+  }
+
+  .range-nav-button {
+    flex: 1;
+  }
+}
