@@ -244,11 +244,6 @@ public class SessionPlanController {
                 authentication
         );
 
-        String email =
-                authentication == null
-                        ? null
-                        : authentication.getName();
-
         LocalDate effectiveStartDate =
                 startDate == null
                         ? LocalDate.now()
@@ -256,11 +251,10 @@ public class SessionPlanController {
 
         return ResponseEntity.ok(
                 sessionPlanService
-                        .getOrGeneratePlanRange(
+                        .getExistingPlanRange(
                                 patientId,
-                                email,
                                 effectiveStartDate,
-                                14
+                                7
                         )
         );
     }

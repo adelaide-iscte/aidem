@@ -1089,6 +1089,54 @@ public class SessionPlanService {
 
     @Transactional
     public List<SessionPlanResponse>
+    getExistingPlanRange(
+            Long patientId,
+            LocalDate startDate,
+            int numberOfDays
+    ) {
+        if (!patientRepository.existsById(patientId)) {
+            throw new IllegalArgumentException(
+                    "Utente não encontrado."
+            );
+        }
+
+        int safeNumberOfDays =
+                Math.max(1, Math.min(numberOfDays, 7));
+
+        LocalDate endDate =
+                startDate.plusDays(safeNumberOfDays - 1L);
+
+        LocalDate today = LocalDate.now();
+        LocalDate earliestAllowedDate = today.minusDays(14);
+        LocalDate latestAllowedDate = today.plusDays(13);
+
+        return sessionPlanRepository
+                .findByPatient_IdAndSessionDateBetweenOrderBySessionDateAscIdDesc(
+                        patientId,
+                        startDate,
+                        endDate
+                )
+                .stream()
+                .filter(plan ->
+                        !plan.getSessionDate().isBefore(earliestAllowedDate) &&
+                                !plan.getSessionDate().isAfter(latestAllowedDate)
+                )
+                .collect(
+                        Collectors.toMap(
+                                SessionPlan::getSessionDate,
+                                plan -> plan,
+                                (first, duplicate) -> first,
+                                TreeMap::new
+                        )
+                )
+                .values()
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public List<SessionPlanResponse>
     getOrGeneratePlanRange(
             Long patientId,
             String userEmail,

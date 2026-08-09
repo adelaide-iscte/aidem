@@ -2911,3 +2911,46 @@ button:disabled {
     flex: 1;
   }
 }
+
+
+/* =========================================================
+   AJUSTE FINAL — NAVEGAÇÃO SEMANAL LIMITADA A ±14 DIAS
+   ========================================================= */
+
+/* Voltamos a apresentar exatamente 7 cartões por semana. */
+.week-days {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+/* Dias que pertencem à semana visual, mas já ultrapassam
+   o limite permitido (14 dias para trás / 14 dias incluindo hoje
+   para a frente), continuam visíveis apenas para manter a grelha. */
+.week-day-card.out-of-range,
+.week-day-card.out-of-range:hover {
+  opacity: 0.42;
+  border-color: #e3e8ef;
+  background: #eef1f5;
+  color: #8d98a8;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.week-day-card.out-of-range strong,
+.week-day-card.out-of-range .week-day-name,
+.week-day-card.out-of-range .week-day-month {
+  color: #8d98a8;
+}
+
+.range-nav-button:disabled {
+  opacity: 0.4;
+  border-color: #dfe5ed;
+  background: #f3f5f8;
+  color: #98a3b2;
+  cursor: not-allowed;
+}
+
+.range-nav-button:disabled:hover {
+  border-color: #dfe5ed;
+  background: #f3f5f8;
+}

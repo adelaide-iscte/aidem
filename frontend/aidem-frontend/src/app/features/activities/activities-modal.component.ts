@@ -33,6 +33,7 @@ type PlanView =
 type PlanDay = {
   sessionDate: string;
   plan: SessionPlan | null;
+  disabled: boolean;
 };
 
 type SelectedPatient = {
@@ -87,7 +88,9 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   visiblePlanDays: PlanDay[] = [];
   selectedWeekPlan: SessionPlan | null = null;
   selectedWeekDate: string | null = null;
-  planWindowStart = this.toLocalDateString(new Date());
+  planWindowStart = this.getStartOfWeekString(
+    this.toLocalDateString(new Date())
+  );
   isLoadingWeekPlan = false;
   weekPlanError = '';
 
@@ -526,7 +529,9 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
       this.visiblePlanDays = [];
       this.selectedWeekPlan = null;
       this.selectedWeekDate = null;
-      this.planWindowStart = this.toLocalDateString(new Date());
+      this.planWindowStart = this.getStartOfWeekString(
+        this.toLocalDateString(new Date())
+      );
       this.weekPlanError = '';
 
       void this.loadTodayPlan();
@@ -553,7 +558,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   async loadWeekPlan(): Promise<void> {
     if (!this.selectedPatient?.id) {
       this.weekPlanError =
-        'Escolha um utente para consultar o plano de 14 dias.';
+        'Escolha um utente para consultar o plano.';
 
       this.weekPlans = [];
       this.visiblePlanDays = [];
@@ -585,9 +590,13 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
         )
           ? this.selectedWeekDate
           : this.visiblePlanDays.find(
-            day => this.isToday(day.sessionDate)
+            day =>
+              !day.disabled &&
+              this.isToday(day.sessionDate)
           )?.sessionDate ??
-          this.visiblePlanDays[0]?.sessionDate ??
+          this.visiblePlanDays.find(
+            day => !day.disabled
+          )?.sessionDate ??
           null;
 
       const preferredDay =
@@ -603,14 +612,14 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
 
     } catch (error) {
       console.error(
-        'Erro ao carregar plano de 14 dias',
+        'Erro ao carregar plano semanal',
         error
       );
 
       this.weekPlanError =
         error instanceof Error
           ? error.message
-          : 'Erro ao carregar o plano de 14 dias.';
+          : 'Erro ao carregar o plano semanal.';
 
       this.weekPlans = [];
       this.visiblePlanDays = [];
@@ -626,11 +635,19 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   selectPlanDay(
     day: PlanDay
   ): void {
+    if (day.disabled) {
+      return;
+    }
+
     this.selectedWeekDate = day.sessionDate;
     this.selectedWeekPlan = day.plan;
   }
 
   async previousPlanWeek(): Promise<void> {
+    if (!this.canPreviousPlanWeek) {
+      return;
+    }
+
     this.planWindowStart =
       this.shiftDateString(
         this.planWindowStart,
@@ -642,6 +659,10 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   }
 
   async nextPlanWeek(): Promise<void> {
+    if (!this.canNextPlanWeek) {
+      return;
+    }
+
     this.planWindowStart =
       this.shiftDateString(
         this.planWindowStart,
@@ -654,8 +675,10 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
 
   async goToCurrentPlanWindow(): Promise<void> {
     this.planWindowStart =
-      this.toLocalDateString(
-        new Date()
+      this.getStartOfWeekString(
+        this.toLocalDateString(
+          new Date()
+        )
       );
 
     this.selectedWeekDate = null;
@@ -673,7 +696,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
     );
 
     return Array.from(
-      { length: 14 },
+      { length: 7 },
       (_, index) => {
         const sessionDate =
           this.shiftDateString(
@@ -685,7 +708,11 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
           sessionDate,
           plan:
             planByDate.get(sessionDate) ??
-            null
+            null,
+          disabled:
+            !this.isDateInsidePlanLimit(
+              sessionDate
+            )
         };
       }
     );
@@ -724,13 +751,88 @@ export class ActivitiesModalComponent implements OnInit, OnChanges {
   get planWindowEnd(): string {
     return this.shiftDateString(
       this.planWindowStart,
-      13
+      6
     );
   }
 
   get isCurrentPlanWindow(): boolean {
     return this.planWindowStart ===
-      this.toLocalDateString(new Date());
+      this.getStartOfWeekString(
+        this.todayDateString
+      );
+  }
+
+  get canPreviousPlanWeek(): boolean {
+    return this.planWindowStart >
+      this.earliestAllowedWeekStart;
+  }
+
+  get canNextPlanWeek(): boolean {
+    return this.planWindowStart <
+      this.latestAllowedWeekStart;
+  }
+
+  private get todayDateString(): string {
+    return this.toLocalDateString(
+      new Date()
+    );
+  }
+
+  private get earliestAllowedDate(): string {
+    return this.shiftDateString(
+      this.todayDateString,
+      -14
+    );
+  }
+
+  private get latestAllowedDate(): string {
+    /*
+     * Hoje + 13 dias = 14 dias consecutivos,
+     * exatamente como pedido.
+     */
+    return this.shiftDateString(
+      this.todayDateString,
+      13
+    );
+  }
+
+  private get earliestAllowedWeekStart(): string {
+    return this.getStartOfWeekString(
+      this.earliestAllowedDate
+    );
+  }
+
+  private get latestAllowedWeekStart(): string {
+    return this.getStartOfWeekString(
+      this.latestAllowedDate
+    );
+  }
+
+  private isDateInsidePlanLimit(
+    sessionDate: string
+  ): boolean {
+    return (
+      sessionDate >= this.earliestAllowedDate &&
+      sessionDate <= this.latestAllowedDate
+    );
+  }
+
+  private getStartOfWeekString(
+    dateString: string
+  ): string {
+    const date = new Date(
+      `${dateString}T12:00:00`
+    );
+
+    const day = date.getDay();
+    const daysSinceMonday =
+      day === 0 ? 6 : day - 1;
+
+    date.setDate(
+      date.getDate() - daysSinceMonday
+    );
+
+    return this.toLocalDateString(date);
   }
 
   get selectedWeekDisplayDate(): string | null {

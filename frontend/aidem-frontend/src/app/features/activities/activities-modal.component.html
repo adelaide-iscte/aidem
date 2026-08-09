@@ -436,7 +436,7 @@
 
       <app-loading-spinner
         *ngIf="isLoadingWeekPlan"
-        message="A preparar os 14 dias...">
+        message="A carregar semana...">
       </app-loading-spinner>
 
 
@@ -456,21 +456,22 @@
         ">
 
 
-        <!-- NAVEGAÇÃO DA JANELA DE 14 DIAS -->
+        <!-- NAVEGAÇÃO SEMANAL (LIMITADA A ±14 DIAS) -->
 
         <section
           class="plan-range-navigation"
-          aria-label="Navegação do plano de 14 dias">
+          aria-label="Navegação semanal do plano">
 
           <button
             type="button"
             class="range-nav-button"
+            [disabled]="!canPreviousPlanWeek"
             (click)="previousPlanWeek()">
             ‹ Semana anterior
           </button>
 
           <div class="plan-range-title">
-            <strong>14 dias</strong>
+            <strong>Semana</strong>
             <span>
               {{ weekDayNumber(planWindowStart) }}
               {{ weekMonthLabel(planWindowStart) }}
@@ -491,6 +492,7 @@
           <button
             type="button"
             class="range-nav-button"
+            [disabled]="!canNextPlanWeek"
             (click)="nextPlanWeek()">
             Semana seguinte ›
           </button>
@@ -498,11 +500,11 @@
         </section>
 
 
-        <!-- 14 DIAS -->
+        <!-- 7 DIAS DA SEMANA -->
 
         <section
           class="week-days"
-          aria-label="14 dias do plano">
+          aria-label="Dias da semana">
 
           <button
             *ngFor="
@@ -517,6 +519,10 @@
             [class.today]="
               isToday(day.sessionDate)
             "
+            [class.out-of-range]="
+              day.disabled
+            "
+            [disabled]="day.disabled"
             (click)="
               selectPlanDay(day)
             ">

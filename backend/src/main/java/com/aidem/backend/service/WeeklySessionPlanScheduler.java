@@ -26,10 +26,10 @@ public class WeeklySessionPlanScheduler {
     }
 
     @Scheduled(
-            cron = "0 0 6 * * MON",
+            cron = "0 0 6 * * *",
             zone = "Europe/Lisbon"
     )
-    public void generateWeeklyPlans() {
+    public void generateRollingPlans() {
         LocalDate today = LocalDate.now();
 
         List<Patient> patients =
@@ -47,7 +47,7 @@ public class WeeklySessionPlanScheduler {
 
             } catch (IllegalStateException exception) {
                 System.err.println(
-                        "Não foi possível criar o plano semanal " +
+                        "Não foi possível atualizar os planos dos próximos 14 dias " +
                                 "do utente " +
                                 patient.getId() +
                                 ": " +
@@ -56,7 +56,7 @@ public class WeeklySessionPlanScheduler {
 
             } catch (Exception exception) {
                 System.err.println(
-                        "Erro ao criar o plano semanal " +
+                        "Erro ao atualizar os planos dos próximos 14 dias " +
                                 "do utente " +
                                 patient.getId() +
                                 ": " +
