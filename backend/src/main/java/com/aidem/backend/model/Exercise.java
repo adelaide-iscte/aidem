@@ -59,6 +59,36 @@ public class Exercise {
             columnDefinition = "TEXT"
     )
     private String instructionMedia2;
+
+    @Column(
+            name = "instruction_media_3",
+            columnDefinition = "TEXT"
+    )
+    private String instructionMedia3;
+
+    @Column(
+            name = "instruction_media_4",
+            columnDefinition = "TEXT"
+    )
+    private String instructionMedia4;
+
+    @Column(
+            name = "instruction_media_5",
+            columnDefinition = "TEXT"
+    )
+    private String instructionMedia5;
+
+    @Column(
+            name = "instruction_media_6",
+            columnDefinition = "TEXT"
+    )
+    private String instructionMedia6;
+
+    @Column(
+            name = "instruction_media_7",
+            columnDefinition = "TEXT"
+    )
+    private String instructionMedia7;
     private Boolean active = true;
 
     private LocalDateTime createdAt;

@@ -22,6 +22,7 @@ export class InstructionsModalComponent implements OnDestroy {
   isVideoPlayerOpen = false;
   isDemoPlaying = false;
   isDemoMuted = false;
+  currentInstructionMediaIndex = 0;
 
   demoCurrentTime = 0;
   readonly demoDuration = 34;
@@ -40,6 +41,7 @@ export class InstructionsModalComponent implements OnDestroy {
 
     this.demoCurrentTime = 0;
     this.isDemoPlaying = false;
+    this.currentInstructionMediaIndex = 0;
     this.isVideoPlayerOpen = true;
   }
 
@@ -153,37 +155,83 @@ export class InstructionsModalComponent implements OnDestroy {
     activity?: SessionPlanExercise
   ): boolean {
     return Boolean(
-      activity?.instructionMediaUrl?.trim()
+      activity?.instructionMediaUrls?.length
     );
   }
 
-  getInstructionMediaUrl(
+  getInstructionMediaUrls(
+    activity?: SessionPlanExercise
+  ): string[] {
+    const media =
+      activity?.instructionMediaUrls ?? [];
+
+    return media
+      .filter(value => Boolean(value?.trim()))
+      .map(value => this.normalizeMediaUrl(value));
+  }
+
+  getCurrentInstructionMediaUrl(
     activity?: SessionPlanExercise
   ): string {
     const media =
-      activity?.instructionMediaUrl?.trim() ||
-      activity?.mediaUrl?.trim();
-
-    if (!media) {
-      return '/icons/generic_exercise.svg';
-    }
+      this.getInstructionMediaUrls(activity);
 
     return (
-      media.startsWith('data:') ||
-      media.startsWith('blob:') ||
-      media.startsWith('http://') ||
-      media.startsWith('https://') ||
-      media.startsWith('/')
+      media[
+        this.currentInstructionMediaIndex
+        ] ||
+      activity?.mediaUrl?.trim() ||
+      '/icons/generic_exercise.svg'
+    );
+  }
+
+  private normalizeMediaUrl(
+    media: string
+  ): string {
+    const normalized = media.trim();
+
+    return (
+      normalized.startsWith('data:') ||
+      normalized.startsWith('blob:') ||
+      normalized.startsWith('http://') ||
+      normalized.startsWith('https://') ||
+      normalized.startsWith('/')
     )
-      ? media
-      : `/${media}`;
+      ? normalized
+      : `/${normalized}`;
+  }
+
+  previousInstructionMedia(): void {
+    if (
+      this.currentInstructionMediaIndex > 0
+    ) {
+      this.currentInstructionMediaIndex--;
+    }
+  }
+
+  nextInstructionMedia(
+    activity?: SessionPlanExercise
+  ): void {
+    const mediaCount =
+      this.getInstructionMediaUrls(
+        activity
+      ).length;
+
+    if (
+      this.currentInstructionMediaIndex <
+      mediaCount - 1
+    ) {
+      this.currentInstructionMediaIndex++;
+    }
   }
 
   getVideoBackground(
     activity?: SessionPlanExercise
   ): string {
     const imageUrl =
-      this.getInstructionMediaUrl(activity);
+      this.getCurrentInstructionMediaUrl(
+        activity
+      );
 
     return `
     linear-gradient(

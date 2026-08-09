@@ -229,13 +229,66 @@
           #imageFrame
           class="instruction-image-viewer">
 
+          <<button
+          *ngIf="
+    getInstructionMediaUrls(activity).length > 1
+  "
+          type="button"
+          class="
+    instruction-image-arrow
+    instruction-image-arrow-left
+  "
+          aria-label="Imagem anterior"
+          [disabled]="
+    currentInstructionMediaIndex === 0
+  "
+          (click)="previousInstructionMedia()">
+
+          ‹
+        </button>
+
           <img
-            [src]="getInstructionMediaUrl(activity)"
+            [src]="
+    getCurrentInstructionMediaUrl(activity)
+  "
             [alt]="
-        'Imagem da atividade ' +
-        (activity?.title || '')
-      "
+    'Imagem ' +
+    (currentInstructionMediaIndex + 1) +
+    ' da atividade ' +
+    (activity?.title || '')
+  "
           />
+
+          <button
+            *ngIf="
+    getInstructionMediaUrls(activity).length > 1
+  "
+            type="button"
+            class="
+    instruction-image-arrow
+    instruction-image-arrow-right
+  "
+            aria-label="Imagem seguinte"
+            [disabled]="
+    currentInstructionMediaIndex ===
+    getInstructionMediaUrls(activity).length - 1
+  "
+            (click)="nextInstructionMedia(activity)">
+
+            ›
+          </button>
+
+          <span
+            *ngIf="
+    getInstructionMediaUrls(activity).length > 1
+  "
+            class="instruction-image-counter">
+
+  {{ currentInstructionMediaIndex + 1 }}
+            /
+            {{ getInstructionMediaUrls(activity).length }}
+
+</span>
 
           <button
             class="instruction-image-fullscreen"

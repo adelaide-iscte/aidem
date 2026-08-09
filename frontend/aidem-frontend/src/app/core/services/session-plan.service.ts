@@ -18,7 +18,7 @@ export interface SessionPlanExercise {
   materials: string | null;
   instructions: string | null;
   mediaUrl: string | null;
-  instructionMediaUrl: string | null;
+  instructionMediaUrls: string[];
   reason: string | null;
   status: ExerciseStatus;
 }

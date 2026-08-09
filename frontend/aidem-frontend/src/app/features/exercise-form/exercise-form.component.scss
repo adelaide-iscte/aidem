@@ -1091,3 +1091,54 @@ input:disabled {
   cursor: not-allowed;
   pointer-events: none;
 }
+
+.instruction-media-header p {
+  margin: 5px 0 0;
+
+  color: #718098;
+
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.instruction-media-list {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      auto-fit,
+        minmax(220px, 1fr)
+    );
+  gap: 16px;
+}
+
+.instruction-media-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.instruction-media-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.instruction-media-item-header strong {
+  color: #42536c;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.instruction-media-item,
+.instruction-media-preview {
+  height: 190px;
+}
+
+.instruction-media-limit {
+  color: #718098;
+
+  font-size: 15px;
+  font-weight: 600;
+}

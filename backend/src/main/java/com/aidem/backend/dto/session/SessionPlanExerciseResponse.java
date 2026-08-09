@@ -1,5 +1,7 @@
 package com.aidem.backend.dto.session;
 
+import java.util.List;
+
 public record SessionPlanExerciseResponse(
         Long sessionPlanExerciseId,
         Long exerciseId,
@@ -16,7 +18,7 @@ public record SessionPlanExerciseResponse(
         String materials,
         String instructions,
         String mediaUrl,
-        String instructionMediaUrl,
+        List<String> instructionMediaUrls,
         String reason,
         String status
 ) {}

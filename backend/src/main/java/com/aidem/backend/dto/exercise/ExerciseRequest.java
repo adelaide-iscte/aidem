@@ -26,4 +26,9 @@ public class ExerciseRequest {
     private String mediaUrl;
     private String media2;
     private String instructionMedia2;
+    private String instructionMedia3;
+    private String instructionMedia4;
+    private String instructionMedia5;
+    private String instructionMedia6;
+    private String instructionMedia7;
 }

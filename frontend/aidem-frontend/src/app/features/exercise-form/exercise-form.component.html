@@ -355,35 +355,75 @@
 
             <div class="instruction-media-header">
               <div>
-                <h3>Media das instruções</h3>
+                <h3>Imagens das instruções</h3>
 
+                <p>
+                  Pode adicionar até 6 imagens.
+                </p>
               </div>
             </div>
 
             <div
-              *ngIf="getInstructionMedia() as instructionMedia"
-              class="instruction-media-preview">
+              *ngIf="instructionMediaList.length > 0"
+              class="instruction-media-list">
 
-              <img
-                [src]="instructionMedia"
-                [alt]="
-        'Media das instruções de ' +
-        (form.title || 'atividade')
-      "
-              />
+              <div
+                *ngFor="
+        let field of instructionMediaFields;
+        let index = index
+      ">
+
+                <div
+                  *ngIf="getInstructionMedia(field) as instructionMedia"
+                  class="instruction-media-item">
+
+                  <div class="instruction-media-item-header">
+                    <strong>
+                      Imagem {{ index + 1 }}
+                    </strong>
+
+                    <button
+                      type="button"
+                      class="remove-exercise-image"
+                      [disabled]="
+              isSaving ||
+              isProcessingInstructionMedia
+            "
+                      (click)="removeInstructionMedia(index)">
+
+                      Remover
+                    </button>
+                  </div>
+
+                  <div class="instruction-media-preview">
+                    <img
+                      [src]="instructionMedia"
+                      [alt]="
+              'Imagem ' +
+              (index + 1) +
+              ' das instruções de ' +
+              (form.title || 'atividade')
+            "
+                    />
+                  </div>
+
+                </div>
+
+              </div>
+
             </div>
 
             <div
-              *ngIf="!getInstructionMedia()"
+              *ngIf="instructionMediaList.length === 0"
               class="instruction-media-empty">
 
-              Nenhuma nova imagem selecionada.
-              A imagem atual será mantida.
+              Nenhuma imagem das instruções selecionada.
             </div>
 
             <div class="instruction-media-actions">
 
               <label
+                *ngIf="canAddInstructionMedia"
                 class="select-instruction-media"
                 [class.disabled]="
         isSaving ||
@@ -399,9 +439,8 @@
                 {{
                   isProcessingInstructionMedia
                     ? 'A processar imagem...'
-                    : hasInstructionMedia
-                      ? 'Substituir media'
-                      : 'Adicionar imagem'
+                    : 'Adicionar imagem ' +
+                    nextInstructionMediaNumber
                 }}
 
                 <input
@@ -417,18 +456,12 @@
                 />
               </label>
 
-              <button
-                *ngIf="form.instructionMedia2"
-                type="button"
-                class="remove-exercise-image"
-                [disabled]="
-        isSaving ||
-        isProcessingInstructionMedia
-      "
-                (click)="removeInstructionMedia()">
+              <span
+                *ngIf="!canAddInstructionMedia"
+                class="instruction-media-limit">
 
-                Repor media anterior
-              </button>
+      Limite máximo de 6 imagens atingido.
+    </span>
 
             </div>
 

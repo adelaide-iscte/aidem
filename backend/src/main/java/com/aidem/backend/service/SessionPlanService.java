@@ -881,6 +881,8 @@ public class SessionPlanService {
 
         sessionPlanExerciseRepository.saveAll(completedExercises);
     }
+
+
     private String resolveExerciseMedia(
             Exercise exercise
     ) {
@@ -901,19 +903,54 @@ public class SessionPlanService {
         return "/icons/generic_exercise.svg";
     }
 
-    private String resolveInstructionMedia(
+    private List<String> resolveInstructionMedia(
             Exercise exercise
     ) {
-        if (
-                exercise.getInstructionMedia2() != null &&
-                        !exercise
-                                .getInstructionMedia2()
-                                .isBlank()
-        ) {
-            return exercise.getInstructionMedia2();
-        }
+        List<String> instructionMedia = new ArrayList<>();
 
-        return null;
+        addInstructionMedia(
+                instructionMedia,
+                exercise.getInstructionMedia2()
+        );
+
+        addInstructionMedia(
+                instructionMedia,
+                exercise.getInstructionMedia3()
+        );
+
+        addInstructionMedia(
+                instructionMedia,
+                exercise.getInstructionMedia4()
+        );
+
+        addInstructionMedia(
+                instructionMedia,
+                exercise.getInstructionMedia5()
+        );
+
+        addInstructionMedia(
+                instructionMedia,
+                exercise.getInstructionMedia6()
+        );
+
+        addInstructionMedia(
+                instructionMedia,
+                exercise.getInstructionMedia7()
+        );
+
+        return instructionMedia;
+    }
+
+    private void addInstructionMedia(
+            List<String> instructionMedia,
+            String media
+    ) {
+        if (
+                media != null &&
+                        !media.isBlank()
+        ) {
+            instructionMedia.add(media.trim());
+        }
     }
 
     private LocalDate getStartOfWeek(

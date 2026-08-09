@@ -222,6 +222,36 @@ public class ExerciseController {
                 )
         );
 
+        exercise.setInstructionMedia3(
+                cleanInstructionMedia(
+                        request.getInstructionMedia3()
+                )
+        );
+
+        exercise.setInstructionMedia4(
+                cleanInstructionMedia(
+                        request.getInstructionMedia4()
+                )
+        );
+
+        exercise.setInstructionMedia5(
+                cleanInstructionMedia(
+                        request.getInstructionMedia5()
+                )
+        );
+
+        exercise.setInstructionMedia6(
+                cleanInstructionMedia(
+                        request.getInstructionMedia6()
+                )
+        );
+
+        exercise.setInstructionMedia7(
+                cleanInstructionMedia(
+                        request.getInstructionMedia7()
+                )
+        );
+
     }
 
     private Integer defaultNumber(Integer value) {
