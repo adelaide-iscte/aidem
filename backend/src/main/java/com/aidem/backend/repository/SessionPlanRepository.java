@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface SessionPlanRepository
         extends JpaRepository<SessionPlan, Long> {
@@ -34,6 +35,18 @@ public interface SessionPlanRepository
     List<SessionPlan>
     findByPatient_IdOrderBySessionDateDescIdDesc(
             Long patientId
+    );
+
+    @Query("""
+    select sessionPlan.sessionDate
+    from SessionPlan sessionPlan
+    where sessionPlan.patient.id = :patientId
+      and sessionPlan.sessionDate between :startDate and :endDate
+    """)
+    Set<LocalDate> findExistingDates(
+            @Param("patientId") Long patientId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
     );
 
     @Modifying(flushAutomatically = true)

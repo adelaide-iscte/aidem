@@ -1149,6 +1149,70 @@ public class SessionPlanService {
     }
 
     @Transactional
+    public void ensurePlanRange(
+            Long patientId,
+            String userEmail,
+            LocalDate startDate,
+            int numberOfDays
+    ) {
+        if (!patientRepository.existsById(patientId)) {
+            throw new IllegalArgumentException(
+                    "Utente não encontrado."
+            );
+        }
+
+        int safeNumberOfDays =
+                Math.max(
+                        1,
+                        Math.min(numberOfDays, 31)
+                );
+
+        LocalDate endDate =
+                startDate.plusDays(
+                        safeNumberOfDays - 1L
+                );
+
+        LocalDate today = today();
+
+        Set<LocalDate> existingDates =
+                new HashSet<>(
+                        sessionPlanRepository
+                                .findExistingDates(
+                                        patientId,
+                                        startDate,
+                                        endDate
+                                )
+                );
+
+        /*
+         * Apenas garantimos que os planos existem.
+         *
+         * Não construímos SessionPlanResponse porque este método
+         * é usado pelo scheduler e o resultado não é apresentado
+         * ao utilizador.
+         */
+        for (
+                LocalDate date = startDate;
+                !date.isAfter(endDate);
+                date = date.plusDays(1)
+        ) {
+            if (
+                    !date.isBefore(today) &&
+                            !existingDates.contains(date)
+            ) {
+                generatePlan(
+                        patientId,
+                        userEmail,
+                        date
+                );
+
+                existingDates.add(date);
+            }
+        }
+    }
+
+
+    @Transactional
     public List<SessionPlanResponse>
     getOrGeneratePlanRange(
             Long patientId,

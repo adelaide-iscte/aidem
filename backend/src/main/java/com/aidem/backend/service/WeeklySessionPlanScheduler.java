@@ -61,7 +61,7 @@ public class WeeklySessionPlanScheduler {
             try {
 
                 sessionPlanService
-                        .getOrGeneratePlanRange(
+                        .ensurePlanRange(
                                 patient.getId(),
                                 null,
                                 today,
