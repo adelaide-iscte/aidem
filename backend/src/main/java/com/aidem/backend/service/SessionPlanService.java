@@ -850,6 +850,89 @@ public class SessionPlanService {
         );
     }
 
+    private SessionPlanResponse toRangeResponse(
+            SessionPlan plan
+    ) {
+
+        List<SessionPlanExercise> items =
+                sessionPlanExerciseRepository
+                        .findBySessionPlan_IdOrderByOrderIndexAsc(
+                                plan.getId()
+                        );
+
+        List<SessionPlanExerciseResponse> exercises =
+                items.stream()
+                        .map(this::toRangeExerciseResponse)
+                        .toList();
+
+        int totalDuration =
+                items.stream()
+                        .mapToInt(item ->
+                                item.getRecommendedDurationMinutes() == null
+                                        ? 0
+                                        : item.getRecommendedDurationMinutes()
+                        )
+                        .sum();
+
+        return new SessionPlanResponse(
+                plan.getId(),
+                plan.getPatient().getId(),
+                plan.getAssessment() == null
+                        ? null
+                        : plan.getAssessment().getId(),
+                plan.getSessionDate(),
+                plan.getTargetDurationMinutes(),
+                totalDuration,
+                plan.getStatus().name(),
+                exercises
+        );
+    }
+
+    private SessionPlanExerciseResponse
+    toRangeExerciseResponse(
+            SessionPlanExercise item
+    ) {
+
+        Exercise exercise =
+                item.getExercise();
+
+        return new SessionPlanExerciseResponse(
+                item.getId(),
+                exercise.getId(),
+                item.getOrderIndex(),
+
+                exercise.getTitle(),
+
+                null, // description
+
+                exercise.getDomain(),
+
+                exercise.getActivityType().name(),
+                exercise.getDifficultyLevel().name(),
+
+                item.getRecommendedDurationMinutes(),
+
+                null, // sets
+                null, // repetitions
+                null, // restSeconds
+                null, // materials
+                null, // instructions
+
+                resolveExerciseMedia(exercise),
+
+                /*
+                 * MUITO IMPORTANTE:
+                 * não carregar as imagens de instruções
+                 * de todos os exercícios dos 7 dias.
+                 */
+                List.of(),
+
+                item.getReason(),
+
+                item.getStatus().name()
+        );
+    }
+
     private SessionPlanExerciseResponse toExerciseResponse(SessionPlanExercise item) {
         Exercise ex = item.getExercise();
         return new SessionPlanExerciseResponse(
@@ -1144,7 +1227,7 @@ public class SessionPlanService {
                 )
                 .values()
                 .stream()
-                .map(this::toResponse)
+                .map(this::toRangeResponse)
                 .toList();
     }
 

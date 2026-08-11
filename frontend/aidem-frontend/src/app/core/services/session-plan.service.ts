@@ -107,31 +107,40 @@ export class SessionPlanService {
     });
   }
 
-  private async request<T>(url: string, init: RequestInit = {}): Promise<T> {
-    const token = localStorage.getItem('aidem_token');
+  private async request<T>(
+    url: string,
+    init: RequestInit = {}
+  ): Promise<T> {
+
+    const token =
+      localStorage.getItem('aidem_token');
 
     if (!token) {
       throw new Error('TOKEN_MISSING');
     }
 
-    const response = await fetch(url, {
-      ...init,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        ...(init.headers ?? {})
-      }
-    });
-
-    const raw = await response.text();
-    console.log(url, response.status, raw);
+    const response =
+      await fetch(url, {
+        ...init,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          ...(init.headers ?? {})
+        }
+      });
 
     if (!response.ok) {
-      throw new Error(raw || `Erro ${response.status}`);
+      const errorText =
+        await response.text();
+
+      throw new Error(
+        errorText ||
+        `Erro ${response.status}`
+      );
     }
 
-    return raw ? JSON.parse(raw) as T : ({} as T);
+    return await response.json() as T;
   }
 
   async getWeekPlan(

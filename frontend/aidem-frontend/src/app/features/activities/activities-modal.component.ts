@@ -1229,9 +1229,100 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
   openComplementaryInfoModal(): void { this.showComplementaryInfoModal = true; }
   closeComplementaryInfoModal(): void { this.showComplementaryInfoModal = false; }
 
-  openInstructionsModal(activity: SessionPlanExercise): void {
-    this.selectedActivity = activity;
-    this.showInstructionsModal = true;
+  async openInstructionsModal(
+    activity: SessionPlanExercise
+  ): Promise<void> {
+
+    /*
+     * O plano diário já traz os detalhes completos.
+     */
+    if (this.planView !== 'weekly') {
+      this.selectedActivity = activity;
+      this.showInstructionsModal = true;
+      return;
+    }
+
+    try {
+
+      /*
+       * No plano semanal só carregamos os detalhes
+       * quando o utilizador efetivamente abre
+       * as instruções.
+       */
+      const exercise =
+        await this.exerciseService
+          .getExerciseById(
+            activity.exerciseId
+          );
+
+      const instructionMediaUrls = [
+        exercise.instructionMedia2,
+        exercise.instructionMedia3,
+        exercise.instructionMedia4,
+        exercise.instructionMedia5,
+        exercise.instructionMedia6,
+        exercise.instructionMedia7
+      ].filter(
+        (media): media is string =>
+          Boolean(
+            media &&
+            media.trim()
+          )
+      );
+
+      this.selectedActivity = {
+        ...activity,
+
+        description:
+        exercise.description,
+
+        domain:
+        exercise.domain,
+
+        activityType:
+        exercise.activityType,
+
+        difficultyLevel:
+        exercise.difficultyLevel,
+
+        sets:
+        exercise.sets,
+
+        repetitions:
+        exercise.repetitions,
+
+        restSeconds:
+        exercise.restSeconds,
+
+        materials:
+        exercise.materials,
+
+        instructions:
+        exercise.instructions,
+
+        mediaUrl:
+          exercise.media2 ||
+          exercise.mediaUrl,
+
+        instructionMediaUrls
+      };
+
+      this.showInstructionsModal = true;
+
+    } catch (error) {
+
+      console.error(
+        'Erro ao carregar instruções da atividade',
+        error
+      );
+
+      /*
+       * Mesmo que o pedido dos detalhes falhe,
+       * não bloqueamos completamente o modal.
+       */
+      this.selectedActivity = activity;
+      this.showInstructionsModal = true;
+    }
   }
 
   closeInstructionsModal(): void { this.showInstructionsModal = false; }

@@ -138,6 +138,27 @@ export class ExerciseService {
     return raw;
   }
 
+  async getExerciseById(
+    id: number
+  ): Promise<Exercise> {
+
+    const response =
+      await fetch(
+        `${this.apiUrl}/${id}`,
+        {
+          method: 'GET',
+          headers: this.getHeaders()
+        }
+      );
+
+    const raw =
+      await this.handleResponse(
+        response
+      );
+
+    return JSON.parse(raw) as Exercise;
+  }
+
   async getExercises(
     page = 0,
     size = 20,
