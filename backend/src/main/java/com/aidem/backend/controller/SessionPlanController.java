@@ -249,10 +249,16 @@ public class SessionPlanController {
                         ? LocalDate.now()
                         : startDate;
 
+        String email =
+                authentication == null
+                        ? null
+                        : authentication.getName();
+
         return ResponseEntity.ok(
                 sessionPlanService
-                        .getExistingPlanRange(
+                        .getOrGeneratePlanRange(
                                 patientId,
+                                email,
                                 effectiveStartDate,
                                 7
                         )

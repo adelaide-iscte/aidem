@@ -204,7 +204,8 @@
   border: 12px solid #ffffff;
   box-shadow: 0 26px 60px rgba(0, 0, 0, 0.14);
   padding: 18px 28px 18px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
@@ -213,8 +214,8 @@
   margin-top: 24px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  flex: 1;
-  overflow: hidden;
+  flex: 1 0 auto;
+  overflow: visible;
 }
 
 .egp-row {
