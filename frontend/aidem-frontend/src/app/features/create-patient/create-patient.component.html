@@ -153,6 +153,7 @@
           Escolaridade *
           <select [(ngModel)]="form.education">
             <option value="">Selecionar</option>
+            <option value="Sem escolaridade">Sem escolaridade</option>
             <option value="1.º ano">1.º ano</option>
             <option value="2.º ano">2.º ano</option>
             <option value="3.º ano">3.º ano</option>
@@ -264,61 +265,61 @@
       </div>
 
       <div class="egp-table">
-      <div class="egp-row egp-head">
-        <span>Domínio</span>
+        <div class="egp-row egp-head">
+          <span>Domínio</span>
 
-        <div class="egp-inputs">
-          <span>PD</span>
-          <span>NR</span>
-          <span>Risco</span>
+          <div class="egp-inputs">
+            <span>PD</span>
+            <span>NR</span>
+            <span>Risco</span>
+          </div>
         </div>
-      </div>
 
-      <div class="egp-row" *ngFor="let row of egpRows">
-        <strong>{{ row.domain }}</strong>
+        <div class="egp-row" *ngFor="let row of egpRows">
+          <strong>{{ row.domain }}</strong>
 
-        <div class="egp-inputs">
-          <input
-            type="number"
-            min="0"
-            [(ngModel)]="row.score"
-            (ngModelChange)="recalculateEgpSummary()"
-            [readonly]="isSummaryRow(row.domain)"
-            [class.calculated-input]="isSummaryRow(row.domain)"
-            [class.invalid-input]="hasError('EGP - ' + row.domain + ' - PD')" />
+          <div class="egp-inputs">
+            <input
+              type="number"
+              min="0"
+              [(ngModel)]="row.score"
+              (ngModelChange)="recalculateEgpSummary()"
+              [readonly]="isSummaryRow(row.domain)"
+              [class.calculated-input]="isSummaryRow(row.domain)"
+              [class.invalid-input]="hasError('EGP - ' + row.domain + ' - PD')" />
 
-          <input
-            type="number"
-            min="0"
-            step="0.01"
-            [(ngModel)]="row.normalizedScore"
-            (ngModelChange)="recalculateEgpSummary()"
-            [readonly]="isAutoCalculatedNr(row.domain)"
-            [class.calculated-input]="isAutoCalculatedNr(row.domain)"
-            [class.invalid-input]="
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              [(ngModel)]="row.normalizedScore"
+              (ngModelChange)="recalculateEgpSummary()"
+              [readonly]="isAutoCalculatedNr(row.domain)"
+              [class.calculated-input]="isAutoCalculatedNr(row.domain)"
+              [class.invalid-input]="
     hasError(
       'EGP - ' + row.domain + ' - NR'
     )
   " />
 
-          <select
-            *ngIf="hasRiskClassification(row.domain)"
-            [(ngModel)]="row.riskLevel">
+            <select
+              *ngIf="hasRiskClassification(row.domain)"
+              [(ngModel)]="row.riskLevel">
 
-            <option value="LOW">Baixo</option>
-            <option value="MEDIUM">Médio</option>
-            <option value="HIGH">Elevado</option>
-          </select>
+              <option value="LOW">Baixo</option>
+              <option value="MEDIUM">Médio</option>
+              <option value="HIGH">Elevado</option>
+            </select>
 
-          <span
-            *ngIf="!hasRiskClassification(row.domain)"
-            class="risk-not-applicable"
-            aria-label="Sem classificação de risco">
+            <span
+              *ngIf="!hasRiskClassification(row.domain)"
+              class="risk-not-applicable"
+              aria-label="Sem classificação de risco">
   —
 </span>
+          </div>
         </div>
       </div>
-    </div>
     </section>
 
     <section class="actions-card">
