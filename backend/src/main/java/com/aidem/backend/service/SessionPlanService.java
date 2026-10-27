@@ -233,9 +233,14 @@ public class SessionPlanService {
         Assessment assessment = assessmentRepository.findFirstByPatient_IdOrderByAssessmentDateDescIdDesc(patientId)
                 .orElseThrow(() -> new IllegalStateException("Este utente ainda não tem avaliação EGP."));
 
-        List<DomainScore> domainScores = domainScoreRepository
-                .findByAssessment_IdOrderByDisplayOrderAscIdAsc(assessment.getId())
-                .stream()
+        List<DomainScore> allScores = domainScoreRepository
+                .findByAssessment_IdOrderByDisplayOrderAscIdAsc(assessment.getId());
+
+        // A área prioritária usa as prevalências motora/cognitiva, que são
+        // domínios-resumo; por isso é calculada antes de os filtrar.
+        ActivityType priorityType = getPriorityType(allScores);
+
+        List<DomainScore> domainScores = allScores.stream()
                 .filter(score -> !isSummaryDomain(score.getDomain()))
                 .toList();
 
@@ -256,6 +261,7 @@ public class SessionPlanService {
                         patientId,
                         date,
                         domainScores,
+                        priorityType,
                         riskGroups,
                         allExercises,
                         selectionHistory
@@ -295,6 +301,7 @@ public class SessionPlanService {
             Long patientId,
             LocalDate date,
             List<DomainScore> scores,
+            ActivityType priorityType,
             Map<RiskLevel, List<DomainScore>> riskGroups,
             List<ExercisePlanCandidate> allExercises,
             SelectionHistory selectionHistory
@@ -303,7 +310,6 @@ public class SessionPlanService {
         List<ExercisePlanCandidate> selected = new ArrayList<>();
         Set<Long> selectedIds = new HashSet<>();
 
-        ActivityType priorityType = getPriorityType(scores);
         List<DomainScore> sortedScores = scores.stream()
                 .sorted(Comparator.comparing(this::scoreValue))
                 .toList();
