@@ -85,6 +85,9 @@ export class LoginComponent {
       case 'INVALID_CREDENTIALS':
         return 'Email ou palavra-passe incorretos.';
 
+      case 'ACCOUNT_DISABLED':
+        return 'Esta conta está desativada. Contacte o administrador.';
+
       case 'REQUEST_TIMEOUT':
         return 'O servidor está a demorar demasiado a responder. Tente novamente dentro de instantes.';
 

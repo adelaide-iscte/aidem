@@ -36,6 +36,7 @@ export type LoginResponse = {
 
 export type LoginErrorCode =
   | 'INVALID_CREDENTIALS'
+  | 'ACCOUNT_DISABLED'
   | 'REQUEST_TIMEOUT'
   | 'SERVER_UNAVAILABLE';
 
@@ -128,6 +129,12 @@ export class AuthService {
       if (response.status === 401) {
         throw new LoginError(
           'INVALID_CREDENTIALS'
+        );
+      }
+
+      if (response.status === 403) {
+        throw new LoginError(
+          'ACCOUNT_DISABLED'
         );
       }
 

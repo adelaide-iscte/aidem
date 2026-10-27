@@ -32,25 +32,20 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
-        System.out.println("LOGIN START: " + request.email());
-
         User user = userRepository.findByEmailIgnoreCase(request.email())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
 
-        System.out.println("USER FOUND: " + user.getEmail());
-        System.out.println("HASH LENGTH: " + user.getPasswordHash().length());
-
         boolean passwordOk = passwordEncoder.matches(request.password(), user.getPasswordHash());
-
-        System.out.println("PASSWORD OK: " + passwordOk);
 
         if (!passwordOk) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
 
-        String token = jwtService.generateToken(user);
+        if (Boolean.FALSE.equals(user.getActive())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Account disabled");
+        }
 
-        System.out.println("TOKEN GENERATED");
+        String token = jwtService.generateToken(user);
 
         return new LoginResponse(
                 token,
