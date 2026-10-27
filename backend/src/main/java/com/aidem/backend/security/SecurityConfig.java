@@ -84,9 +84,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/dev/hash").permitAll()
                         .requestMatchers("/api/health").permitAll()
-                        .requestMatchers(
-                                "/api/session-plan-exercises/reset-completed"
-                        ).permitAll()
 
                         .requestMatchers(
                                 HttpMethod.GET,
@@ -122,7 +119,6 @@ public class SecurityConfig {
                                 "ADMIN",
                                 "FORMAL_CAREGIVER"
                         )
-                        .requestMatchers("/api/**").authenticated()
                         .requestMatchers("/api/admin/**")
                         .hasAuthority("ADMIN")
 
@@ -132,6 +128,10 @@ public class SecurityConfig {
                                 "/api/patients/"
                         )
                         .hasAnyAuthority("ADMIN", "FORMAL_CAREGIVER")
+
+                        // Tem de ficar depois das regras específicas acima:
+                        // o Spring Security aplica a primeira regra que corresponde.
+                        .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .oauth2ResourceServer(oauth2 ->

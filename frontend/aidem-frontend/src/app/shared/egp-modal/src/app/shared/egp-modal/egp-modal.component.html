@@ -1,7 +1,11 @@
 <div class="egp-overlay">
   <div class="egp-backdrop" (click)="closeModal()"></div>
 
-  <section class="egp-shell">
+  <section
+    class="egp-shell"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Resultados EGP do utente">
     <div class="egp-surface">
       <app-loading-spinner
         *ngIf="isLoading"

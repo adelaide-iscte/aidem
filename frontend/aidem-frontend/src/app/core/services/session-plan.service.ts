@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { AuthService } from './auth.service';
 
 export type ExerciseStatus = 'PENDING' | 'COMPLETED' | 'FAILED' | 'SKIPPED';
 
@@ -45,6 +46,8 @@ export interface ExerciseFeedbackPayload {
 export class SessionPlanService {
   // private readonly apiBase = 'http://localhost:8080/api';
   private readonly apiBase = 'https://aidem-backend.onrender.com/api';
+
+  private readonly authService = inject(AuthService);
 
   async getTodayPlan(patientId: number): Promise<SessionPlan> {
     return this.request<SessionPlan>(`${this.apiBase}/patients/${patientId}/session-plans/today`);
@@ -129,6 +132,14 @@ export class SessionPlanService {
           ...(init.headers ?? {})
         }
       });
+
+    if (response.status === 401) {
+      this.authService.expireSession();
+
+      throw new Error(
+        'A sessão expirou. Inicie sessão novamente.'
+      );
+    }
 
     if (!response.ok) {
       const errorText =
