@@ -609,10 +609,14 @@ public class SessionPlanService {
             ExercisePlanCandidate exercise,
             List<DomainScore> scores
     ) {
-        Map<String, Integer> map = new HashMap<>();
         List<DomainScore> sorted = scores.stream().sorted(Comparator.comparing(this::scoreValue)).toList();
-        for (int i = 0; i < sorted.size(); i++) map.put(normalize(sorted.get(i).getDomain()), i);
-        return map.getOrDefault(normalize(exercise.getDomain()), 999);
+
+        // Usa a mesma comparação que a seleção, para que "Equilíbrio Estático"
+        // (catálogo) corresponda a "Equilíbrio Estático I" (EGP).
+        for (int i = 0; i < sorted.size(); i++) {
+            if (sameDomain(sorted.get(i).getDomain(), exercise.getDomain())) return i;
+        }
+        return 999;
     }
 
     private int totalMinutes(List<ExercisePlanCandidate> exercises) {
