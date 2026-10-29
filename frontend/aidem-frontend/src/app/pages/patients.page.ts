@@ -5,7 +5,6 @@ import { AppPatient } from '../core/services/patient.service';
 import { AppSessionService } from '../core/services/app-session.service';
 import { AppNavigationService } from '../core/services/app-navigation.service';
 
-/* Lista de utentes do formal ou do administrador. */
 @Component({
   selector: 'app-patients-page',
   standalone: true,
@@ -26,10 +25,11 @@ import { AppNavigationService } from '../core/services/app-navigation.service';
         (openContents)="nav.goToContents()"
         (openAdminActivities)="nav.openAdminActivities()"
         (openUserManagement)="nav.openUserManagement()"
-        (logout)="nav.logout()">
+        (logout)="nav.logout()"
+      >
       </app-patients-list>
     }
-  `
+  `,
 })
 export class PatientsPage implements OnInit {
   readonly session = inject(AppSessionService);

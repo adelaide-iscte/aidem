@@ -1,12 +1,11 @@
 <div class="contents-page">
-
   <header class="contents-header">
     <button
       type="button"
       class="back-button"
       aria-label="Voltar à página anterior"
-      (click)="goBack.emit()">
-
+      (click)="goBack.emit()"
+    >
       <span class="back-arrow" aria-hidden="true">←</span>
       <span>Voltar</span>
     </button>
@@ -14,32 +13,22 @@
     <h1>Conteúdos</h1>
   </header>
 
-
-  <main
-    class="contents-main"
-    *ngIf="!selectedType">
-
+  <main class="contents-main" *ngIf="!selectedType">
     <section class="contents-introduction">
       <span class="contents-label">Biblioteca</span>
 
       <h2>Explore os conteúdos disponíveis</h2>
 
-      <p>
-        Escolha uma categoria para consultar os conteúdos.
-      </p>
+      <p>Escolha uma categoria para consultar os conteúdos.</p>
     </section>
 
-
-    <section
-      class="contents-grid"
-      aria-label="Categorias de conteúdos">
-
+    <section class="contents-grid" aria-label="Categorias de conteúdos">
       <button
         class="content-card"
         type="button"
         aria-label="Consultar livros"
-        (click)="select('books')">
-
+        (click)="select('books')"
+      >
         <span class="content-image-wrapper">
           <img src="/icons/livros.png" alt="" />
         </span>
@@ -49,18 +38,15 @@
           <small>Leituras e recursos recomendados.</small>
         </span>
 
-        <span class="content-arrow" aria-hidden="true">
-          ›
-        </span>
+        <span class="content-arrow" aria-hidden="true"> › </span>
       </button>
-
 
       <button
         class="content-card"
         type="button"
         aria-label="Consultar filmes"
-        (click)="select('movies')">
-
+        (click)="select('movies')"
+      >
         <span class="content-image-wrapper">
           <img src="/icons/filmes.png" alt="" />
         </span>
@@ -70,18 +56,15 @@
           <small>Filmes e conteúdos audiovisuais.</small>
         </span>
 
-        <span class="content-arrow" aria-hidden="true">
-          ›
-        </span>
+        <span class="content-arrow" aria-hidden="true"> › </span>
       </button>
-
 
       <button
         class="content-card"
         type="button"
         aria-label="Consultar peças de teatro"
-        (click)="select('theater')">
-
+        (click)="select('theater')"
+      >
         <span class="content-image-wrapper">
           <img src="/icons/teatros.png" alt="" />
         </span>
@@ -91,72 +74,37 @@
           <small>Espetáculos e iniciativas culturais.</small>
         </span>
 
-        <span class="content-arrow" aria-hidden="true">
-          ›
-        </span>
+        <span class="content-arrow" aria-hidden="true"> › </span>
       </button>
-
     </section>
   </main>
 
-
-  <main
-    class="contents-main selected-content-main"
-    *ngIf="selectedType">
-
-    <button
-      class="back-small"
-      type="button"
-      (click)="select(null)">
-
+  <main class="contents-main selected-content-main" *ngIf="selectedType">
+    <button class="back-small" type="button" (click)="select(null)">
       <span aria-hidden="true">←</span>
       <span>Escolher outro tipo</span>
     </button>
 
-
     <section class="empty-content">
-
       <div class="empty-content-icon">
-        <img
-          *ngIf="selectedType === 'books'"
-          src="/icons/livros.png"
-          alt="" />
+        <img *ngIf="selectedType === 'books'" src="/icons/livros.png" alt="" />
 
-        <img
-          *ngIf="selectedType === 'movies'"
-          src="/icons/filmes.png"
-          alt="" />
+        <img *ngIf="selectedType === 'movies'" src="/icons/filmes.png" alt="" />
 
-        <img
-          *ngIf="selectedType === 'theater'"
-          src="/icons/teatros.png"
-          alt="" />
+        <img *ngIf="selectedType === 'theater'" src="/icons/teatros.png" alt="" />
       </div>
 
-      <span class="empty-content-label">
-        Conteúdos
-      </span>
+      <span class="empty-content-label"> Conteúdos </span>
 
-      <h2 *ngIf="selectedType === 'books'">
-        Livros
-      </h2>
+      <h2 *ngIf="selectedType === 'books'">Livros</h2>
 
-      <h2 *ngIf="selectedType === 'movies'">
-        Filmes
-      </h2>
+      <h2 *ngIf="selectedType === 'movies'">Filmes</h2>
 
-      <h2 *ngIf="selectedType === 'theater'">
-        Peças de teatro
-      </h2>
+      <h2 *ngIf="selectedType === 'theater'">Peças de teatro</h2>
 
-      <p>
-        Ainda não existem conteúdos adicionados nesta categoria.
-      </p>
+      <p>Ainda não existem conteúdos adicionados nesta categoria.</p>
 
-      <small>
-        Quando forem adicionados, ficarão disponíveis nesta área.
-      </small>
+      <small> Quando forem adicionados, ficarão disponíveis nesta área. </small>
     </section>
-
   </main>
 </div>

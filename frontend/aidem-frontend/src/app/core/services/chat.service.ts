@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 
-export type ChatContactRole =
-  | 'ADMIN'
-  | 'FORMAL_CAREGIVER'
-  | 'INFORMAL_CAREGIVER';
+export type ChatContactRole = 'ADMIN' | 'FORMAL_CAREGIVER' | 'INFORMAL_CAREGIVER';
 
 export type ChatContact = {
   id: number;
@@ -33,106 +30,61 @@ export type ChatMessage = {
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChatService {
-
   // Local:
   // private readonly apiUrl =
   //   'http://localhost:8080/api/chat';
 
   // Produção:
-  private readonly apiUrl =
-    'https://aidem-backend.onrender.com/api/chat';
+  private readonly apiUrl = 'https://aidem-backend.onrender.com/api/chat';
 
-  constructor(
-    private authService: AuthService
-  ) {}
+  constructor(private authService: AuthService) {}
 
   async getContacts(): Promise<ChatContact[]> {
-    const response = await fetch(
-      `${this.apiUrl}/contacts`,
-      {
-        headers: this.getHeaders(),
-        cache: 'no-store'
-      }
-    );
+    const response = await fetch(`${this.apiUrl}/contacts`, {
+      headers: this.getHeaders(),
+      cache: 'no-store',
+    });
 
-    return this.handleResponse<ChatContact[]>(
-      response,
-      'Erro ao carregar os utilizadores'
-    );
+    return this.handleResponse<ChatContact[]>(response, 'Erro ao carregar os utilizadores');
   }
 
-  async getConversations():
-    Promise<ChatConversation[]> {
+  async getConversations(): Promise<ChatConversation[]> {
+    const response = await fetch(`${this.apiUrl}/conversations`, {
+      headers: this.getHeaders(),
+      cache: 'no-store',
+    });
 
-    const response = await fetch(
-      `${this.apiUrl}/conversations`,
-      {
-        headers: this.getHeaders(),
-        cache: 'no-store'
-      }
-    );
-
-    return this.handleResponse<ChatConversation[]>(
-      response,
-      'Erro ao carregar as conversas'
-    );
+    return this.handleResponse<ChatConversation[]>(response, 'Erro ao carregar as conversas');
   }
 
-  async getMessages(
-    contactId: number,
-    afterId?: number
-  ): Promise<ChatMessage[]> {
+  async getMessages(contactId: number, afterId?: number): Promise<ChatMessage[]> {
+    const query = afterId !== undefined ? `?afterId=${afterId}` : '';
 
-    const query =
-      afterId !== undefined
-        ? `?afterId=${afterId}`
-        : '';
+    const response = await fetch(`${this.apiUrl}/conversations/${contactId}/messages${query}`, {
+      headers: this.getHeaders(),
+      cache: 'no-store',
+    });
 
-    const response = await fetch(
-      `${this.apiUrl}/conversations/${contactId}/messages${query}`,
-      {
-        headers: this.getHeaders(),
-        cache: 'no-store'
-      }
-    );
-
-    return this.handleResponse<ChatMessage[]>(
-      response,
-      'Erro ao carregar as mensagens'
-    );
+    return this.handleResponse<ChatMessage[]>(response, 'Erro ao carregar as mensagens');
   }
 
-  async sendMessage(
-    contactId: number,
-    content: string
-  ): Promise<ChatMessage> {
+  async sendMessage(contactId: number, content: string): Promise<ChatMessage> {
+    const response = await fetch(`${this.apiUrl}/conversations/${contactId}/messages`, {
+      method: 'POST',
+      headers: this.getHeaders(true),
+      body: JSON.stringify({
+        content,
+      }),
+    });
 
-    const response = await fetch(
-      `${this.apiUrl}/conversations/${contactId}/messages`,
-      {
-        method: 'POST',
-        headers: this.getHeaders(true),
-        body: JSON.stringify({
-          content
-        })
-      }
-    );
-
-    return this.handleResponse<ChatMessage>(
-      response,
-      'Erro ao enviar a mensagem'
-    );
+    return this.handleResponse<ChatMessage>(response, 'Erro ao enviar a mensagem');
   }
 
-  private getHeaders(
-    includeContentType = false
-  ): HeadersInit {
-
-    const token =
-      this.authService.getToken();
+  private getHeaders(includeContentType = false): HeadersInit {
+    const token = this.authService.getToken();
 
     if (!token) {
       throw new Error('TOKEN_MISSING');
@@ -143,43 +95,29 @@ export class ChatService {
       Accept: 'application/json',
       ...(includeContentType
         ? {
-          'Content-Type': 'application/json'
-        }
-        : {})
+            'Content-Type': 'application/json',
+          }
+        : {}),
     };
   }
 
-  private async handleResponse<T>(
-    response: Response,
-    defaultError: string
-  ): Promise<T> {
-
+  private async handleResponse<T>(response: Response, defaultError: string): Promise<T> {
     const raw = await response.text();
 
     if (response.status === 401) {
       this.authService.expireSession();
 
-      throw new Error(
-        'A sessão expirou. Inicie sessão novamente.'
-      );
+      throw new Error('A sessão expirou. Inicie sessão novamente.');
     }
 
     if (!response.ok) {
-      throw new Error(
-        this.readErrorMessage(raw) ||
-        `${defaultError} (${response.status}).`
-      );
+      throw new Error(this.readErrorMessage(raw) || `${defaultError} (${response.status}).`);
     }
 
-    return raw
-      ? JSON.parse(raw) as T
-      : {} as T;
+    return raw ? (JSON.parse(raw) as T) : ({} as T);
   }
 
-  private readErrorMessage(
-    raw: string
-  ): string {
-
+  private readErrorMessage(raw: string): string {
     if (!raw) {
       return '';
     }
@@ -190,11 +128,7 @@ export class ChatService {
         message?: string;
       };
 
-      return (
-        body.detail ||
-        body.message ||
-        raw
-      );
+      return body.detail || body.message || raw;
     } catch {
       return raw;
     }

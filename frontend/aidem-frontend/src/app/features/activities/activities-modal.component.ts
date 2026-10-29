@@ -7,29 +7,30 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FeedbackModalComponent, FeedbackSubmitEvent } from '../../shared/feedback-modal/feedback-modal.component';
+import {
+  FeedbackModalComponent,
+  FeedbackSubmitEvent,
+} from '../../shared/feedback-modal/feedback-modal.component';
 import { InstructionsModalComponent } from '../../shared/instructions-modal/instructions-modal.component';
-import { ComplementaryInfoModalComponent } from '../../shared/complementary-info-modal/complementary-info-modal.component';
 import { CallOverlayComponent } from '../../shared/call-overlar-modal/call-overlay.component';
 import { NotificationsPopoverComponent } from '../../shared/notifications-popover-modal/notifications-popover.component';
 import { SkipReasonModalComponent } from '../../shared/skip-reason-modal/skip-reason-modal';
-import { SessionPlan, SessionPlanExercise, SessionPlanService } from '../../core/services/session-plan.service';
-import {SideMenuComponent} from "../../shared/side-menu-modal/side-menu.component";
-import {LoadingSpinnerComponent} from "../../shared/laoding-spinner-modal/loading-spinner.component";
-import { ExerciseNotificationService } from '../../core/services/exercise-notification.service';
 import {
-  Exercise,
-  ExerciseService
-} from '../../core/services/exercise.service';
+  SessionPlan,
+  SessionPlanExercise,
+  SessionPlanService,
+} from '../../core/services/session-plan.service';
+import { SideMenuComponent } from '../../shared/side-menu-modal/side-menu.component';
+import { LoadingSpinnerComponent } from '../../shared/laoding-spinner-modal/loading-spinner.component';
+import { ExerciseNotificationService } from '../../core/services/exercise-notification.service';
+import { Exercise, ExerciseService } from '../../core/services/exercise.service';
 
 type UserRole = 'informal' | 'formal';
-type PlanView =
-  | 'daily'
-  | 'weekly';
+type PlanView = 'daily' | 'weekly';
 
 type PlanDay = {
   sessionDate: string;
@@ -54,15 +55,14 @@ type SelectedPatient = {
     FormsModule,
     FeedbackModalComponent,
     InstructionsModalComponent,
-    ComplementaryInfoModalComponent,
     CallOverlayComponent,
     NotificationsPopoverComponent,
     SkipReasonModalComponent,
     SideMenuComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
   ],
   templateUrl: './activities-modal.component.html',
-  styleUrl: './activities-modal.component.scss'
+  styleUrl: './activities-modal.component.scss',
 })
 export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
   @Input() role: UserRole = 'informal';
@@ -77,8 +77,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
   @Output() logout = new EventEmitter<void>();
   @Output() openAdminActivities = new EventEmitter<void>();
   @Output()
-  openUserManagement =
-    new EventEmitter<void>();
+  openUserManagement = new EventEmitter<void>();
 
   sessionPlan: SessionPlan | null = null;
   activities: SessionPlanExercise[] = [];
@@ -89,9 +88,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
   visiblePlanDays: PlanDay[] = [];
   selectedWeekPlan: SessionPlan | null = null;
   selectedWeekDate: string | null = null;
-  planWindowStart = this.getStartOfWeekString(
-    this.toLocalDateString(new Date())
-  );
+  planWindowStart = this.getStartOfWeekString(this.toLocalDateString(new Date()));
   isLoadingWeekPlan = false;
   weekPlanError = '';
 
@@ -102,7 +99,6 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
   showCallOverlay = false;
   showFeedbackModal = false;
   showInstructionsModal = false;
-  showComplementaryInfoModal = false;
   showAddExerciseModal = false;
   availableExercises: Exercise[] = [];
   isLoadingExercises = false;
@@ -114,105 +110,53 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
   showRemoveActivityModal = false;
   activityToRemove: SessionPlanExercise | null = null;
 
-  /*
-   * Guarda a data que o componente considera como "hoje".
-   * Isto evita que a página continue a mostrar o plano do dia
-   * anterior quando fica aberta depois da meia-noite.
-   */
-  private currentLoadedDate =
-    this.toLocalDateString(
-      new Date()
-    );
+  private currentLoadedDate = this.toLocalDateString(new Date());
 
-  private dayChangeInterval:
-    ReturnType<typeof setInterval> | null =
-    null;
+  private dayChangeInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor(
     private sessionPlanService: SessionPlanService,
     private exerciseService: ExerciseService,
     public notificationService: ExerciseNotificationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
-    this.currentLoadedDate =
-      this.toLocalDateString(
-        new Date()
-      );
+    this.currentLoadedDate = this.toLocalDateString(new Date());
 
     void this.loadTodayPlan();
 
-    /*
-     * Não recarrega o plano a cada minuto.
-     * Apenas verifica se a data mudou e só nessa situação
-     * volta a pedir os dados.
-     */
-    this.dayChangeInterval =
-      setInterval(
-        () => {
-          void this.checkForDayChange();
-        },
-        60_000
-      );
+    this.dayChangeInterval = setInterval(() => {
+      void this.checkForDayChange();
+    }, 60_000);
   }
 
   ngOnDestroy(): void {
     if (this.dayChangeInterval) {
-      clearInterval(
-        this.dayChangeInterval
-      );
+      clearInterval(this.dayChangeInterval);
 
-      this.dayChangeInterval =
-        null;
+      this.dayChangeInterval = null;
     }
   }
 
-  private async checkForDayChange():
-    Promise<void> {
+  private async checkForDayChange(): Promise<void> {
+    const today = this.toLocalDateString(new Date());
 
-    const today =
-      this.toLocalDateString(
-        new Date()
-      );
-
-    if (
-      today ===
-      this.currentLoadedDate
-    ) {
+    if (today === this.currentLoadedDate) {
       return;
     }
 
-    this.currentLoadedDate =
-      today;
+    this.currentLoadedDate = today;
 
-    /*
-     * O Plano diário deve acompanhar sempre o dia real.
-     */
     await this.loadTodayPlan();
 
-    /*
-     * A janela do Plano 14 dias também depende do dia atual.
-     * Ao mudar de dia voltamos à semana que contém o novo "hoje".
-     */
-    this.planWindowStart =
-      this.getStartOfWeekString(
-        today
-      );
+    this.planWindowStart = this.getStartOfWeekString(today);
 
-    this.selectedWeekDate =
-      null;
+    this.selectedWeekDate = null;
 
-    if (
-      this.planView === 'weekly'
-    ) {
+    if (this.planView === 'weekly') {
       await this.loadWeekPlan();
     } else {
-      /*
-       * Se a vista semanal já tinha sido carregada,
-       * limpamos apenas a cache para que seja pedida novamente
-       * quando o utilizador abrir o Plano 14 dias.
-       */
       this.weekPlans = [];
       this.visiblePlanDays = [];
       this.selectedWeekPlan = null;
@@ -226,45 +170,27 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
       return '/icons/adm.svg';
     }
 
-    return this.role === 'formal'
-      ? '/icons/professional.svg'
-      : '/icons/generic_user.svg';
+    return this.role === 'formal' ? '/icons/professional.svg' : '/icons/generic_user.svg';
   }
 
   get canEditSelectedPlan(): boolean {
-    if (
-      !this.isAdmin ||
-      !this.selectedWeekPlan
-    ) {
+    if (!this.isAdmin || !this.selectedWeekPlan) {
       return false;
     }
 
-    const selectedDate =
-      new Date(
-        `${this.selectedWeekPlan.sessionDate}T00:00:00`
-      );
+    const selectedDate = new Date(`${this.selectedWeekPlan.sessionDate}T00:00:00`);
 
-    const today =
-      new Date();
+    const today = new Date();
 
-    today.setHours(
-      0,
-      0,
-      0,
-      0
-    );
+    today.setHours(0, 0, 0, 0);
 
     return selectedDate >= today;
   }
 
   get canEditTodayPlan(): boolean {
-    return (
-      this.isAdmin &&
-      !!this.sessionPlan
-    );
+    return this.isAdmin && !!this.sessionPlan;
   }
   async openAddExerciseModal(): Promise<void> {
-
     if (!this.isAdmin) {
       return;
     }
@@ -277,56 +203,23 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     this.showAddExerciseModal = true;
 
     try {
+      const firstPage = await this.exerciseService.getExercises(0, 100, '');
 
-      const firstPage =
-        await this.exerciseService
-          .getExercises(
-            0,
-            100,
-            ''
-          );
+      let exercises = [...firstPage.content];
 
-      let exercises = [
-        ...firstPage.content
-      ];
+      for (let page = 1; page < firstPage.totalPages; page++) {
+        const nextPage = await this.exerciseService.getExercises(page, 100, '');
 
-      for (
-        let page = 1;
-        page < firstPage.totalPages;
-        page++
-      ) {
-
-        const nextPage =
-          await this.exerciseService
-            .getExercises(
-              page,
-              100,
-              ''
-            );
-
-        exercises = [
-          ...exercises,
-          ...nextPage.content
-        ];
+        exercises = [...exercises, ...nextPage.content];
       }
 
-      this.availableExercises =
-        exercises;
-
+      this.availableExercises = exercises;
     } catch (error) {
-
-      console.error(
-        'Erro ao carregar atividades',
-        error
-      );
+      console.error('Erro ao carregar atividades', error);
 
       this.planEditError =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível carregar as atividades.';
-
+        error instanceof Error ? error.message : 'Não foi possível carregar as atividades.';
     } finally {
-
       this.isLoadingExercises = false;
       this.cdr.detectChanges();
     }
@@ -340,9 +233,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     this.exerciseDifficultyFilter = 'ALL';
   }
 
-  private get editablePlan():
-    SessionPlan | null {
-
+  private get editablePlan(): SessionPlan | null {
     if (this.planView === 'daily') {
       return this.sessionPlan;
     }
@@ -350,17 +241,10 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     return this.selectedWeekPlan;
   }
 
-  async addExerciseToSelectedPlan(
-    exercise: Exercise
-  ): Promise<void> {
+  async addExerciseToSelectedPlan(exercise: Exercise): Promise<void> {
+    const plan = this.editablePlan;
 
-    const plan =
-      this.editablePlan;
-
-    if (
-      !this.isAdmin ||
-      !plan
-    ) {
+    if (!this.isAdmin || !plan) {
       return;
     }
 
@@ -368,42 +252,23 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     this.isChangingPlan = true;
 
     try {
+      const updatedPlan = await this.sessionPlanService.addExerciseToPlan(plan.id, exercise.id);
 
-      const updatedPlan =
-        await this.sessionPlanService
-          .addExerciseToPlan(
-            plan.id,
-            exercise.id
-          );
-
-      this.applyUpdatedPlan(
-        updatedPlan
-      );
+      this.applyUpdatedPlan(updatedPlan);
 
       this.closeAddExerciseModal();
-
     } catch (error) {
-
-      console.error(
-        'Erro ao adicionar atividade ao plano',
-        error
-      );
+      console.error('Erro ao adicionar atividade ao plano', error);
 
       this.planEditError =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível adicionar a atividade.';
-
+        error instanceof Error ? error.message : 'Não foi possível adicionar a atividade.';
     } finally {
-
       this.isChangingPlan = false;
       this.cdr.detectChanges();
     }
   }
 
-  openRemoveActivityModal(
-    activity: SessionPlanExercise
-  ): void {
+  openRemoveActivityModal(activity: SessionPlanExercise): void {
     if (!this.isAdmin) {
       return;
     }
@@ -424,10 +289,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   async confirmRemoveActivity(): Promise<void> {
-    if (
-      !this.isAdmin ||
-      !this.activityToRemove
-    ) {
+    if (!this.isAdmin || !this.activityToRemove) {
       return;
     }
 
@@ -437,107 +299,64 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     this.isChangingPlan = true;
 
     try {
-      const updatedPlan =
-        await this.sessionPlanService
-          .removeExerciseFromPlan(
-            activity.sessionPlanExerciseId
-          );
+      const updatedPlan = await this.sessionPlanService.removeExerciseFromPlan(
+        activity.sessionPlanExerciseId,
+      );
 
       this.applyUpdatedPlan(updatedPlan);
 
       this.showRemoveActivityModal = false;
       this.activityToRemove = null;
-
     } catch (error) {
-      console.error(
-        'Erro ao remover atividade',
-        error
-      );
+      console.error('Erro ao remover atividade', error);
 
       this.planEditError =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível remover a atividade.';
-
+        error instanceof Error ? error.message : 'Não foi possível remover a atividade.';
     } finally {
       this.isChangingPlan = false;
       this.cdr.detectChanges();
     }
   }
 
-  private applyUpdatedPlan(
-    updatedPlan: SessionPlan
-  ): void {
+  private applyUpdatedPlan(updatedPlan: SessionPlan): void {
+    if (this.sessionPlan?.id === updatedPlan.id) {
+      this.sessionPlan = updatedPlan;
 
-    if (
-      this.sessionPlan?.id ===
-      updatedPlan.id
-    ) {
-      this.sessionPlan =
-        updatedPlan;
-
-      this.activities =
-        updatedPlan.exercises;
+      this.activities = updatedPlan.exercises;
     }
 
-    const index =
-      this.weekPlans.findIndex(
-        plan =>
-          plan.id ===
-          updatedPlan.id
-      );
+    const index = this.weekPlans.findIndex((plan) => plan.id === updatedPlan.id);
 
     if (index >= 0) {
+      this.weekPlans = [...this.weekPlans];
 
-      this.weekPlans = [
-        ...this.weekPlans
-      ];
-
-      this.weekPlans[index] =
-        updatedPlan;
+      this.weekPlans[index] = updatedPlan;
     }
 
-    if (
-      this.selectedWeekPlan?.id ===
-      updatedPlan.id
-    ) {
-      this.selectedWeekPlan =
-        updatedPlan;
+    if (this.selectedWeekPlan?.id === updatedPlan.id) {
+      this.selectedWeekPlan = updatedPlan;
     }
 
-    this.visiblePlanDays =
-      this.visiblePlanDays.map(
-        day =>
-          day.sessionDate ===
-          updatedPlan.sessionDate
-            ? {
-              ...day,
-              plan: updatedPlan
-            }
-            : day
-      );
+    this.visiblePlanDays = this.visiblePlanDays.map((day) =>
+      day.sessionDate === updatedPlan.sessionDate
+        ? {
+            ...day,
+            plan: updatedPlan,
+          }
+        : day,
+    );
   }
 
   get selectableExercises(): Exercise[] {
     const plan = this.editablePlan;
 
-    const existingIds = new Set(
-      plan?.exercises.map(
-        activity => activity.exerciseId
-      ) ?? []
-    );
+    const existingIds = new Set(plan?.exercises.map((activity) => activity.exerciseId) ?? []);
 
-    const normalizedSearch =
-      this.exerciseSearch
-        .trim()
-        .toLowerCase();
+    const normalizedSearch = this.exerciseSearch.trim().toLowerCase();
 
     return this.availableExercises
-      .filter(
-        exercise =>
-          !existingIds.has(exercise.id)
-      )
-      .filter(exercise => {
+      .filter((exercise) => !existingIds.has(exercise.id))
+      .filter((exercise) => {
         if (!normalizedSearch) {
           return true;
         }
@@ -546,38 +365,24 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
           exercise.title,
           exercise.domain,
           exercise.description,
-          this.activityTypeLabel(
-            exercise.activityType
-          ),
-          this.exerciseDifficultyLabel(
-            exercise.difficultyLevel
-          )
+          this.activityTypeLabel(exercise.activityType),
+          this.exerciseDifficultyLabel(exercise.difficultyLevel),
         ];
 
-        return values.some(
-          value =>
-            value
-              ?.toLowerCase()
-              .includes(normalizedSearch)
-        );
+        return values.some((value) => value?.toLowerCase().includes(normalizedSearch));
       })
       .filter(
-        exercise =>
-          this.exerciseTypeFilter === 'ALL' ||
-          exercise.activityType ===
-          this.exerciseTypeFilter
+        (exercise) =>
+          this.exerciseTypeFilter === 'ALL' || exercise.activityType === this.exerciseTypeFilter,
       )
       .filter(
-        exercise =>
+        (exercise) =>
           this.exerciseDifficultyFilter === 'ALL' ||
-          exercise.difficultyLevel ===
-          this.exerciseDifficultyFilter
+          exercise.difficultyLevel === this.exerciseDifficultyFilter,
       );
   }
 
-  activityTypeLabel(
-    type: string
-  ): string {
+  activityTypeLabel(type: string): string {
     switch (type) {
       case 'MOTOR':
         return 'Motora';
@@ -590,9 +395,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  exerciseDifficultyLabel(
-    difficulty: string
-  ): string {
+  exerciseDifficultyLabel(difficulty: string): string {
     switch (difficulty) {
       case 'LOW':
         return 'Baixa';
@@ -606,34 +409,22 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get supportContactName(): string {
-    return this.isFormalMode
-      ? 'Carolina Cortes'
-      : 'Profissional de saúde';
+    return this.isFormalMode ? 'Carolina Cortes' : 'Profissional de saúde';
   }
 
   get supportContactAvatar(): string {
     return '/icons/professional.svg';
   }
 
-  ngOnChanges(
-    changes: SimpleChanges
-  ): void {
-    if (
-      changes['selectedPatient'] &&
-      !changes['selectedPatient'].firstChange
-    ) {
-      this.currentLoadedDate =
-        this.toLocalDateString(
-          new Date()
-        );
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedPatient'] && !changes['selectedPatient'].firstChange) {
+      this.currentLoadedDate = this.toLocalDateString(new Date());
 
       this.weekPlans = [];
       this.visiblePlanDays = [];
       this.selectedWeekPlan = null;
       this.selectedWeekDate = null;
-      this.planWindowStart = this.getStartOfWeekString(
-        this.currentLoadedDate
-      );
+      this.planWindowStart = this.getStartOfWeekString(this.currentLoadedDate);
       this.weekPlanError = '';
 
       void this.loadTodayPlan();
@@ -644,47 +435,27 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  async selectPlanView(
-    view: PlanView
-  ): Promise<void> {
-
-    /*
-     * Se o utilizador deixou a aplicação aberta durante a
-     * mudança de dia, sincroniza tudo antes de trocar de vista.
-     */
+  async selectPlanView(view: PlanView): Promise<void> {
     await this.checkForDayChange();
 
     this.planView = view;
 
-    if (
-      view === 'daily'
-    ) {
-      /*
-       * Garante que a vista diária usa sempre o plano do
-       * dia que está atualmente carregado.
-       */
-      if (
-        this.sessionPlan?.sessionDate !==
-        this.currentLoadedDate
-      ) {
+    if (view === 'daily') {
+      if (this.sessionPlan?.sessionDate !== this.currentLoadedDate) {
         await this.loadTodayPlan();
       }
 
       return;
     }
 
-    if (
-      view === 'weekly' &&
-      this.weekPlans.length === 0
-    ) {
+    if (view === 'weekly' && this.weekPlans.length === 0) {
       await this.loadWeekPlan();
     }
   }
 
   async loadWeekPlan(): Promise<void> {
     if (!this.selectedPatient?.id) {
-      this.weekPlanError =
-        'Escolha um utente para consultar o plano.';
+      this.weekPlanError = 'Escolha um utente para consultar o plano.';
 
       this.weekPlans = [];
       this.visiblePlanDays = [];
@@ -697,70 +468,45 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     this.weekPlanError = '';
 
     try {
-      this.weekPlans =
-        await this.sessionPlanService.getPlanRange(
-          this.selectedPatient.id,
-          this.planWindowStart
-        );
+      this.weekPlans = await this.sessionPlanService.getPlanRange(
+        this.selectedPatient.id,
+        this.planWindowStart,
+      );
 
-      this.visiblePlanDays =
-        this.buildVisiblePlanDays(
-          this.planWindowStart,
-          this.weekPlans
-        );
+      this.visiblePlanDays = this.buildVisiblePlanDays(this.planWindowStart, this.weekPlans);
 
       const preferredDate =
         this.selectedWeekDate &&
-        this.visiblePlanDays.some(
-          day => day.sessionDate === this.selectedWeekDate
-        )
+        this.visiblePlanDays.some((day) => day.sessionDate === this.selectedWeekDate)
           ? this.selectedWeekDate
-          : this.visiblePlanDays.find(
-            day =>
-              !day.disabled &&
-              this.isToday(day.sessionDate)
-          )?.sessionDate ??
-          this.visiblePlanDays.find(
-            day => !day.disabled
-          )?.sessionDate ??
-          null;
+          : (this.visiblePlanDays.find((day) => !day.disabled && this.isToday(day.sessionDate))
+              ?.sessionDate ??
+            this.visiblePlanDays.find((day) => !day.disabled)?.sessionDate ??
+            null);
 
       const preferredDay =
-        this.visiblePlanDays.find(
-          day => day.sessionDate === preferredDate
-        ) ?? null;
+        this.visiblePlanDays.find((day) => day.sessionDate === preferredDate) ?? null;
 
-      this.selectedWeekDate =
-        preferredDay?.sessionDate ?? null;
+      this.selectedWeekDate = preferredDay?.sessionDate ?? null;
 
-      this.selectedWeekPlan =
-        preferredDay?.plan ?? null;
-
+      this.selectedWeekPlan = preferredDay?.plan ?? null;
     } catch (error) {
-      console.error(
-        'Erro ao carregar plano semanal',
-        error
-      );
+      console.error('Erro ao carregar plano semanal', error);
 
       this.weekPlanError =
-        error instanceof Error
-          ? error.message
-          : 'Erro ao carregar o plano semanal.';
+        error instanceof Error ? error.message : 'Erro ao carregar o plano semanal.';
 
       this.weekPlans = [];
       this.visiblePlanDays = [];
       this.selectedWeekPlan = null;
       this.selectedWeekDate = null;
-
     } finally {
       this.isLoadingWeekPlan = false;
       this.cdr.detectChanges();
     }
   }
 
-  selectPlanDay(
-    day: PlanDay
-  ): void {
+  selectPlanDay(day: PlanDay): void {
     if (day.disabled) {
       return;
     }
@@ -774,11 +520,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
 
-    this.planWindowStart =
-      this.shiftDateString(
-        this.planWindowStart,
-        -7
-      );
+    this.planWindowStart = this.shiftDateString(this.planWindowStart, -7);
 
     this.selectedWeekDate = null;
     await this.loadWeekPlan();
@@ -789,174 +531,96 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
       return;
     }
 
-    this.planWindowStart =
-      this.shiftDateString(
-        this.planWindowStart,
-        7
-      );
+    this.planWindowStart = this.shiftDateString(this.planWindowStart, 7);
 
     this.selectedWeekDate = null;
     await this.loadWeekPlan();
   }
 
   async goToCurrentPlanWindow(): Promise<void> {
-    this.planWindowStart =
-      this.getStartOfWeekString(
-        this.toLocalDateString(
-          new Date()
-        )
-      );
+    this.planWindowStart = this.getStartOfWeekString(this.toLocalDateString(new Date()));
 
     this.selectedWeekDate = null;
     await this.loadWeekPlan();
   }
 
-  private buildVisiblePlanDays(
-    startDate: string,
-    plans: SessionPlan[]
-  ): PlanDay[] {
-    const planByDate = new Map(
-      plans.map(
-        plan => [plan.sessionDate, plan]
-      )
-    );
+  private buildVisiblePlanDays(startDate: string, plans: SessionPlan[]): PlanDay[] {
+    const planByDate = new Map(plans.map((plan) => [plan.sessionDate, plan]));
 
-    return Array.from(
-      { length: 7 },
-      (_, index) => {
-        const sessionDate =
-          this.shiftDateString(
-            startDate,
-            index
-          );
+    return Array.from({ length: 7 }, (_, index) => {
+      const sessionDate = this.shiftDateString(startDate, index);
 
-        return {
-          sessionDate,
-          plan:
-            planByDate.get(sessionDate) ??
-            null,
-          disabled:
-            !this.isDateInsidePlanLimit(
-              sessionDate
-            )
-        };
-      }
-    );
+      return {
+        sessionDate,
+        plan: planByDate.get(sessionDate) ?? null,
+        disabled: !this.isDateInsidePlanLimit(sessionDate),
+      };
+    });
   }
 
-  private shiftDateString(
-    dateString: string,
-    days: number
-  ): string {
-    const date =
-      new Date(
-        `${dateString}T12:00:00`
-      );
+  private shiftDateString(dateString: string, days: number): string {
+    const date = new Date(`${dateString}T12:00:00`);
 
-    date.setDate(
-      date.getDate() + days
-    );
+    date.setDate(date.getDate() + days);
 
     return this.toLocalDateString(date);
   }
 
-  private toLocalDateString(
-    date: Date
-  ): string {
+  private toLocalDateString(date: Date): string {
     const year = date.getFullYear();
-    const month = String(
-      date.getMonth() + 1
-    ).padStart(2, '0');
-    const day = String(
-      date.getDate()
-    ).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
   }
 
   get planWindowEnd(): string {
-    return this.shiftDateString(
-      this.planWindowStart,
-      6
-    );
+    return this.shiftDateString(this.planWindowStart, 6);
   }
 
   get isCurrentPlanWindow(): boolean {
-    return this.planWindowStart ===
-      this.getStartOfWeekString(
-        this.todayDateString
-      );
+    return this.planWindowStart === this.getStartOfWeekString(this.todayDateString);
   }
 
   get canPreviousPlanWeek(): boolean {
-    return this.planWindowStart >
-      this.earliestAllowedWeekStart;
+    return this.planWindowStart > this.earliestAllowedWeekStart;
   }
 
   get canNextPlanWeek(): boolean {
-    return this.planWindowStart <
-      this.latestAllowedWeekStart;
+    return this.planWindowStart < this.latestAllowedWeekStart;
   }
 
   private get todayDateString(): string {
-    return this.toLocalDateString(
-      new Date()
-    );
+    return this.toLocalDateString(new Date());
   }
 
   private get earliestAllowedDate(): string {
-    return this.shiftDateString(
-      this.todayDateString,
-      -14
-    );
+    return this.shiftDateString(this.todayDateString, -14);
   }
 
   private get latestAllowedDate(): string {
-    /*
-     * Hoje + 13 dias = 14 dias consecutivos,
-     * exatamente como pedido.
-     */
-    return this.shiftDateString(
-      this.todayDateString,
-      13
-    );
+    return this.shiftDateString(this.todayDateString, 13);
   }
 
   private get earliestAllowedWeekStart(): string {
-    return this.getStartOfWeekString(
-      this.earliestAllowedDate
-    );
+    return this.getStartOfWeekString(this.earliestAllowedDate);
   }
 
   private get latestAllowedWeekStart(): string {
-    return this.getStartOfWeekString(
-      this.latestAllowedDate
-    );
+    return this.getStartOfWeekString(this.latestAllowedDate);
   }
 
-  private isDateInsidePlanLimit(
-    sessionDate: string
-  ): boolean {
-    return (
-      sessionDate >= this.earliestAllowedDate &&
-      sessionDate <= this.latestAllowedDate
-    );
+  private isDateInsidePlanLimit(sessionDate: string): boolean {
+    return sessionDate >= this.earliestAllowedDate && sessionDate <= this.latestAllowedDate;
   }
 
-  private getStartOfWeekString(
-    dateString: string
-  ): string {
-    const date = new Date(
-      `${dateString}T12:00:00`
-    );
+  private getStartOfWeekString(dateString: string): string {
+    const date = new Date(`${dateString}T12:00:00`);
 
     const day = date.getDay();
-    const daysSinceMonday =
-      day === 0 ? 6 : day - 1;
+    const daysSinceMonday = day === 0 ? 6 : day - 1;
 
-    date.setDate(
-      date.getDate() - daysSinceMonday
-    );
+    date.setDate(date.getDate() - daysSinceMonday);
 
     return this.toLocalDateString(date);
   }
@@ -970,8 +634,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
       return false;
     }
 
-    return this.selectedWeekDate <
-      this.toLocalDateString(new Date());
+    return this.selectedWeekDate < this.toLocalDateString(new Date());
   }
 
   get canClassifySelectedPlan(): boolean {
@@ -979,153 +642,81 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
       return false;
     }
 
-    return this.selectedWeekDate <=
-      this.toLocalDateString(new Date());
+    return this.selectedWeekDate <= this.toLocalDateString(new Date());
   }
 
-  isToday(
-    sessionDate: string
-  ): boolean {
+  isToday(sessionDate: string): boolean {
     const today = new Date();
 
-    const date =
-      new Date(
-        `${sessionDate}T00:00:00`
-      );
+    const date = new Date(`${sessionDate}T00:00:00`);
 
     return (
-      date.getFullYear() ===
-      today.getFullYear() &&
-      date.getMonth() ===
-      today.getMonth() &&
-      date.getDate() ===
-      today.getDate()
+      date.getFullYear() === today.getFullYear() &&
+      date.getMonth() === today.getMonth() &&
+      date.getDate() === today.getDate()
     );
   }
 
   get isSelectedWeekPlanToday(): boolean {
-    return !!this.selectedWeekDate &&
-      this.isToday(
-        this.selectedWeekDate
-      );
+    return !!this.selectedWeekDate && this.isToday(this.selectedWeekDate);
   }
 
-  weekDayLabel(
-    sessionDate: string | null
-  ): string {
+  weekDayLabel(sessionDate: string | null): string {
     if (!sessionDate) {
       return '';
     }
 
-    const date =
-      new Date(
-        `${sessionDate}T00:00:00`
-      );
+    const date = new Date(`${sessionDate}T00:00:00`);
 
-    const label =
-      new Intl.DateTimeFormat(
-        'pt-PT',
-        {
-          weekday: 'short'
-        }
-      ).format(date);
+    const label = new Intl.DateTimeFormat('pt-PT', {
+      weekday: 'short',
+    }).format(date);
 
-    return (
-      label
-        .replace('.', '')
-        .charAt(0)
-        .toUpperCase() +
-      label
-        .replace('.', '')
-        .slice(1)
-    );
+    return label.replace('.', '').charAt(0).toUpperCase() + label.replace('.', '').slice(1);
   }
 
-  weekDayNumber(
-    sessionDate: string | null
-  ): string {
+  weekDayNumber(sessionDate: string | null): string {
     if (!sessionDate) {
       return '';
     }
 
-    return new Intl.DateTimeFormat(
-      'pt-PT',
-      {
-        day: '2-digit'
-      }
-    ).format(
-      new Date(
-        `${sessionDate}T00:00:00`
-      )
-    );
+    return new Intl.DateTimeFormat('pt-PT', {
+      day: '2-digit',
+    }).format(new Date(`${sessionDate}T00:00:00`));
   }
 
-  weekMonthLabel(
-    sessionDate: string | null
-  ): string {
+  weekMonthLabel(sessionDate: string | null): string {
     if (!sessionDate) {
       return '';
     }
 
-    return new Intl.DateTimeFormat(
-      'pt-PT',
-      {
-        month: 'short'
-      }
-    )
-      .format(
-        new Date(
-          `${sessionDate}T00:00:00`
-        )
-      )
+    return new Intl.DateTimeFormat('pt-PT', {
+      month: 'short',
+    })
+      .format(new Date(`${sessionDate}T00:00:00`))
       .replace('.', '');
   }
 
-  get selectedWeekActivities():
-    SessionPlanExercise[] {
-    return (
-      this.selectedWeekPlan?.exercises ??
-      []
-    );
+  get selectedWeekActivities(): SessionPlanExercise[] {
+    return this.selectedWeekPlan?.exercises ?? [];
   }
 
-  get selectedWeekCompletedCount():
-    number {
-    return this.selectedWeekActivities
-      .filter(
-        activity =>
-          activity.status !== 'PENDING'
-      )
-      .length;
+  get selectedWeekCompletedCount(): number {
+    return this.selectedWeekActivities.filter((activity) => activity.status !== 'PENDING').length;
   }
 
-  get selectedWeekProgressPercent():
-    number {
-    const total =
-      this.selectedWeekActivities.length;
+  get selectedWeekProgressPercent(): number {
+    const total = this.selectedWeekActivities.length;
 
     if (total === 0) {
       return 0;
     }
 
-    return Math.round(
-      (
-        this.selectedWeekCompletedCount /
-        total
-      ) * 100
-    );
+    return Math.round((this.selectedWeekCompletedCount / total) * 100);
   }
 
-
   async loadTodayPlan(): Promise<void> {
-    /*
-     * Mantém a referência de "hoje" sincronizada sempre que
-     * o plano diário é carregado explicitamente.
-     */
-    this.currentLoadedDate =
-      this.toLocalDateString(
-        new Date()
-      );
+    this.currentLoadedDate = this.toLocalDateString(new Date());
 
     if (!this.selectedPatient?.id) {
       this.planError = 'Escolha um utente para gerar o plano diário.';
@@ -1154,15 +745,11 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   get supportCopy(): string {
-    return this.isFormalMode
-      ? 'Contacte a administração!'
-      : 'Contacte-nos!';
+    return this.isFormalMode ? 'Contacte a administração!' : 'Contacte-nos!';
   }
 
   get completedCount(): number {
-    return this.activities.filter(activity =>
-      activity.status !== 'PENDING'
-    ).length;
+    return this.activities.filter((activity) => activity.status !== 'PENDING').length;
   }
 
   get progressPercent(): number {
@@ -1174,11 +761,8 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     return `${this.progressPercent}%`;
   }
 
-  activityImage(
-    activity: SessionPlanExercise
-  ): string {
-    const media =
-      activity.mediaUrl?.trim();
+  activityImage(activity: SessionPlanExercise): string {
+    const media = activity.mediaUrl?.trim();
 
     if (!media) {
       return '/icons/generic_exercise.svg';
@@ -1196,46 +780,35 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     return `/${media}`;
   }
 
-  difficultyLabel(value: string): string {
-    switch (value) {
-      case 'HIGH': return 'Alto risco';
-      case 'MEDIUM': return 'Risco médio';
-      case 'LOW': return 'Baixo risco';
-      default: return value;
-    }
+  openSideMenu(): void {
+    this.showSideMenu = true;
+  }
+  closeSideMenu(): void {
+    this.showSideMenu = false;
   }
 
-  openSideMenu(): void { this.showSideMenu = true; }
-  closeSideMenu(): void { this.showSideMenu = false; }
-
   toggleNotifications(): void {
-    if (
-      this.role !== 'informal' ||
-      this.isAdmin
-    ) {
+    if (this.role !== 'informal' || this.isAdmin) {
       return;
     }
 
-    this.showNotifications =
-      !this.showNotifications;
+    this.showNotifications = !this.showNotifications;
 
     if (this.showNotifications) {
       this.notificationService.markAsRead();
     }
   }
-  closeNotifications(): void { this.showNotifications = false; }
-  openCallOverlay(): void { this.showCallOverlay = true; }
-  closeCallOverlay(): void { this.showCallOverlay = false; }
-  openComplementaryInfoModal(): void { this.showComplementaryInfoModal = true; }
-  closeComplementaryInfoModal(): void { this.showComplementaryInfoModal = false; }
+  closeNotifications(): void {
+    this.showNotifications = false;
+  }
+  openCallOverlay(): void {
+    this.showCallOverlay = true;
+  }
+  closeCallOverlay(): void {
+    this.showCallOverlay = false;
+  }
 
-  async openInstructionsModal(
-    activity: SessionPlanExercise
-  ): Promise<void> {
-
-    /*
-     * O plano diário já traz os detalhes completos.
-     */
+  async openInstructionsModal(activity: SessionPlanExercise): Promise<void> {
     if (this.planView !== 'weekly') {
       this.selectedActivity = activity;
       this.showInstructionsModal = true;
@@ -1243,17 +816,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     try {
-
-      /*
-       * No plano semanal só carregamos os detalhes
-       * quando o utilizador efetivamente abre
-       * as instruções.
-       */
-      const exercise =
-        await this.exerciseService
-          .getExerciseById(
-            activity.exerciseId
-          );
+      const exercise = await this.exerciseService.getExerciseById(activity.exerciseId);
 
       const instructionMediaUrls = [
         exercise.instructionMedia2,
@@ -1261,101 +824,79 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
         exercise.instructionMedia4,
         exercise.instructionMedia5,
         exercise.instructionMedia6,
-        exercise.instructionMedia7
-      ].filter(
-        (media): media is string =>
-          Boolean(
-            media &&
-            media.trim()
-          )
-      );
+        exercise.instructionMedia7,
+      ].filter((media): media is string => Boolean(media && media.trim()));
 
       this.selectedActivity = {
         ...activity,
 
-        description:
-        exercise.description,
+        description: exercise.description,
 
-        domain:
-        exercise.domain,
+        domain: exercise.domain,
 
-        activityType:
-        exercise.activityType,
+        activityType: exercise.activityType,
 
-        difficultyLevel:
-        exercise.difficultyLevel,
+        difficultyLevel: exercise.difficultyLevel,
 
-        sets:
-        exercise.sets,
+        sets: exercise.sets,
 
-        repetitions:
-        exercise.repetitions,
+        repetitions: exercise.repetitions,
 
-        restSeconds:
-        exercise.restSeconds,
+        restSeconds: exercise.restSeconds,
 
-        materials:
-        exercise.materials,
+        materials: exercise.materials,
 
-        instructions:
-        exercise.instructions,
+        instructions: exercise.instructions,
 
-        mediaUrl:
-          exercise.media2 ||
-          exercise.mediaUrl,
+        mediaUrl: exercise.media2 || exercise.mediaUrl,
 
-        instructionMediaUrls
+        instructionMediaUrls,
       };
 
       this.showInstructionsModal = true;
-
     } catch (error) {
+      console.error('Erro ao carregar instruções da atividade', error);
 
-      console.error(
-        'Erro ao carregar instruções da atividade',
-        error
-      );
-
-      /*
-       * Mesmo que o pedido dos detalhes falhe,
-       * não bloqueamos completamente o modal.
-       */
       this.selectedActivity = activity;
       this.showInstructionsModal = true;
     }
   }
 
-  closeInstructionsModal(): void { this.showInstructionsModal = false; }
+  closeInstructionsModal(): void {
+    this.showInstructionsModal = false;
+  }
 
   openFeedbackModal(activity: SessionPlanExercise): void {
     this.selectedActivity = activity;
     this.showFeedbackModal = true;
   }
 
-  closeFeedbackModal(): void { this.showFeedbackModal = false; }
+  closeFeedbackModal(): void {
+    this.showFeedbackModal = false;
+  }
 
   openSkipModal(activity: SessionPlanExercise): void {
     this.selectedActivity = activity;
     this.showSkipModal = true;
   }
 
-  closeSkipModal(): void { this.showSkipModal = false; }
+  closeSkipModal(): void {
+    this.showSkipModal = false;
+  }
 
   async submitFeedback(event: FeedbackSubmitEvent): Promise<void> {
     if (!this.selectedActivity) return;
 
-
     const completed = event.completion === 'yes' || event.completion === 'almost';
 
     const updated = await this.sessionPlanService.sendFeedback(
-
       this.selectedActivity.sessionPlanExerciseId,
       {
         completed: completed,
         difficultyFeedback: event.difficulty,
         emotionFeedback: event.completion,
-        notes: event.reason
-      }
+        notes: event.reason,
+      },
     );
 
     this.updateActivity(updated);
@@ -1368,7 +909,8 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
       this.updateActivity(updated);
     } catch (error) {
       console.error('Erro ao cancelar atividade concluída', error);
-      this.planError = error instanceof Error ? error.message : 'Erro ao cancelar atividade concluída.';
+      this.planError =
+        error instanceof Error ? error.message : 'Erro ao cancelar atividade concluída.';
     } finally {
       this.cdr.detectChanges();
     }
@@ -1379,7 +921,7 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
 
     const updated = await this.sessionPlanService.skipExercise(
       this.selectedActivity.sessionPlanExerciseId,
-      reason
+      reason,
     );
 
     this.updateActivity(updated);
@@ -1387,76 +929,40 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     this.closeSkipModal();
   }
 
-  private updateActivity(
-    updated: SessionPlanExercise
-  ): void {
-    /*
-     * Atualiza o plano diário.
-     */
-    this.activities =
-      this.activities.map(
-        activity =>
-          activity.sessionPlanExerciseId ===
-          updated.sessionPlanExerciseId
-            ? updated
-            : activity
-      );
+  private updateActivity(updated: SessionPlanExercise): void {
+    this.activities = this.activities.map((activity) =>
+      activity.sessionPlanExerciseId === updated.sessionPlanExerciseId ? updated : activity,
+    );
 
     if (this.sessionPlan) {
       this.sessionPlan = {
         ...this.sessionPlan,
-        exercises: this.activities
+        exercises: this.activities,
       };
     }
 
-    /*
-     * Atualiza os planos da vista semanal.
-     */
-    this.weekPlans =
-      this.weekPlans.map(plan => ({
-        ...plan,
+    this.weekPlans = this.weekPlans.map((plan) => ({
+      ...plan,
 
-        exercises:
-          plan.exercises.map(
-            activity =>
-              activity.sessionPlanExerciseId ===
-              updated.sessionPlanExerciseId
-                ? updated
-                : activity
-          )
-      }));
+      exercises: plan.exercises.map((activity) =>
+        activity.sessionPlanExerciseId === updated.sessionPlanExerciseId ? updated : activity,
+      ),
+    }));
 
+    const updatedPlanByDate = new Map(this.weekPlans.map((plan) => [plan.sessionDate, plan]));
 
-    const updatedPlanByDate = new Map(
-      this.weekPlans.map(
-        plan => [plan.sessionDate, plan]
-      )
-    );
-
-    this.visiblePlanDays =
-      this.visiblePlanDays.map(
-        day => ({
-          ...day,
-          plan:
-            updatedPlanByDate.get(
-              day.sessionDate
-            ) ??
-            day.plan
-        })
-      );
+    this.visiblePlanDays = this.visiblePlanDays.map((day) => ({
+      ...day,
+      plan: updatedPlanByDate.get(day.sessionDate) ?? day.plan,
+    }));
 
     if (this.selectedWeekPlan) {
       this.selectedWeekPlan = {
         ...this.selectedWeekPlan,
 
-        exercises:
-          this.selectedWeekPlan.exercises.map(
-            activity =>
-              activity.sessionPlanExerciseId ===
-              updated.sessionPlanExerciseId
-                ? updated
-                : activity
-          )
+        exercises: this.selectedWeekPlan.exercises.map((activity) =>
+          activity.sessionPlanExerciseId === updated.sessionPlanExerciseId ? updated : activity,
+        ),
       };
     }
 

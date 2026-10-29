@@ -1,101 +1,48 @@
-import {
-  Injectable,
-  computed,
-  inject,
-  signal
-} from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 
-import {
-  AuthService,
-  AuthUser,
-  FrontendRole
-} from './auth.service';
+import { AuthService, AuthUser, FrontendRole } from './auth.service';
 
-import {
-  AppPatient,
-  PatientProfile,
-  PatientService
-} from './patient.service';
+import { AppPatient, PatientProfile, PatientService } from './patient.service';
 
-import {
-  ExerciseNotificationService
-} from './exercise-notification.service';
+import { ExerciseNotificationService } from './exercise-notification.service';
 
-export type CaregiverViewRole =
-  | 'informal'
-  | 'formal';
+export type CaregiverViewRole = 'informal' | 'formal';
 
-/*
- * Estado global da sessão (utilizador
- * autenticado, lista de utentes e utente
- * selecionado).
- *
- * Antes este estado vivia no AppComponent;
- * agora é partilhado pelas páginas do
- * router e pelos guards.
- */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AppSessionService {
+  private readonly authService = inject(AuthService);
 
-  private readonly authService =
-    inject(AuthService);
+  private readonly patientService = inject(PatientService);
 
-  private readonly patientService =
-    inject(PatientService);
+  private readonly notificationService = inject(ExerciseNotificationService);
 
-  private readonly notificationService =
-    inject(ExerciseNotificationService);
+  readonly currentUser = signal<AuthUser | null>(null);
 
-  readonly currentUser =
-    signal<AuthUser | null>(null);
+  readonly role = computed<FrontendRole | null>(() => {
+    const user = this.currentUser();
 
-  readonly role =
-    computed<FrontendRole | null>(() => {
-      const user = this.currentUser();
+    return user ? this.authService.toFrontendRole(user.role) : null;
+  });
 
-      return user
-        ? this.authService.toFrontendRole(
-          user.role
-        )
-        : null;
-    });
+  readonly isAdmin = computed(() => this.role() === 'admin');
 
-  readonly isLoggedIn =
-    computed(() => this.currentUser() !== null);
+  readonly caregiverView = computed<CaregiverViewRole>(() =>
+    this.role() === 'informal' ? 'informal' : 'formal',
+  );
 
-  readonly isAdmin =
-    computed(() => this.role() === 'admin');
+  readonly patients = signal<AppPatient[]>([]);
 
-  /*
-   * O administrador usa a vista do
-   * cuidador formal.
-   */
-  readonly caregiverView =
-    computed<CaregiverViewRole>(() =>
-      this.role() === 'informal'
-        ? 'informal'
-        : 'formal'
-    );
+  readonly isLoadingPatients = signal(false);
 
-  readonly patients =
-    signal<AppPatient[]>([]);
+  readonly patientsError = signal('');
 
-  readonly isLoadingPatients =
-    signal(false);
+  readonly selectedPatient = signal<PatientProfile | null>(null);
 
-  readonly patientsError =
-    signal('');
+  readonly isLoadingSelectedPatient = signal(false);
 
-  readonly selectedPatient =
-    signal<PatientProfile | null>(null);
-
-  readonly isLoadingSelectedPatient =
-    signal(false);
-
-  readonly selectedPatientError =
-    signal('');
+  readonly selectedPatientError = signal('');
 
   private patientsLoaded = false;
 
@@ -103,18 +50,10 @@ export class AppSessionService {
 
   private requestedPatientId: number | null = null;
 
-  /*
-   * Sincroniza o estado com a sessão
-   * guardada no localStorage.
-   *
-   * Devolve true se existir sessão válida.
-   */
   restore(): boolean {
-    const token =
-      this.authService.getToken();
+    const token = this.authService.getToken();
 
-    const user =
-      this.authService.getStoredUser();
+    const user = this.authService.getStoredUser();
 
     if (!token || !user) {
       if (this.currentUser()) {
@@ -132,9 +71,7 @@ export class AppSessionService {
     return true;
   }
 
-  startSession(
-    user: AuthUser
-  ): void {
+  startSession(user: AuthUser): void {
     this.clearState();
     this.currentUser.set(user);
   }
@@ -144,13 +81,10 @@ export class AppSessionService {
     this.clearState();
   }
 
-  hasRole(
-    roles: readonly FrontendRole[]
-  ): boolean {
+  hasRole(roles: readonly FrontendRole[]): boolean {
     const role = this.role();
 
-    return role !== null &&
-      roles.includes(role);
+    return role !== null && roles.includes(role);
   }
 
   async ensurePatientsLoaded(): Promise<void> {
@@ -160,22 +94,15 @@ export class AppSessionService {
   }
 
   loadPatients(): Promise<void> {
-    this.patientsRequest ??=
-      this.fetchPatients()
-        .finally(() => {
-          this.patientsRequest = undefined;
-        });
+    this.patientsRequest ??= this.fetchPatients().finally(() => {
+      this.patientsRequest = undefined;
+    });
 
     return this.patientsRequest;
   }
 
-  async selectPatient(
-    patientId: number
-  ): Promise<void> {
-    if (
-      this.selectedPatient()?.id === patientId ||
-      this.requestedPatientId === patientId
-    ) {
+  async selectPatient(patientId: number): Promise<void> {
+    if (this.selectedPatient()?.id === patientId || this.requestedPatientId === patientId) {
       return;
     }
 
@@ -184,48 +111,31 @@ export class AppSessionService {
     this.selectedPatientError.set('');
 
     try {
-      const patientProfile =
-        await this.patientService
-          .getPatient(patientId);
+      const patientProfile = await this.patientService.getPatient(patientId);
 
-      /*
-       * Ignora respostas antigas se,
-       * entretanto, foi pedido outro utente.
-       */
       if (this.requestedPatientId !== patientId) {
         return;
       }
 
-      this.selectedPatient.set(
-        patientProfile
-      );
+      this.selectedPatient.set(patientProfile);
 
       if (this.role() === 'informal') {
-        this.notificationService.start(
-          patientProfile.id
-        );
+        this.notificationService.start(patientProfile.id);
       } else {
         this.notificationService.stop();
       }
-
     } catch (error) {
       if (this.requestedPatientId !== patientId) {
         return;
       }
 
-      console.error(
-        'Erro ao abrir utente:',
-        error
-      );
+      console.error('Erro ao abrir utente:', error);
 
       this.selectedPatient.set(null);
 
       this.selectedPatientError.set(
-        error instanceof Error
-          ? error.message
-          : 'Erro ao carregar perfil do utente.'
+        error instanceof Error ? error.message : 'Erro ao carregar perfil do utente.',
       );
-
     } finally {
       if (this.requestedPatientId === patientId) {
         this.requestedPatientId = null;
@@ -234,45 +144,27 @@ export class AppSessionService {
     }
   }
 
-  updatePatient(
-    updatedPatient: PatientProfile
-  ): void {
-    /*
-     * Atualiza o utente selecionado e a
-     * informação apresentada na lista.
-     */
-    this.selectedPatient.set(
-      updatedPatient
-    );
+  updatePatient(updatedPatient: PatientProfile): void {
+    this.selectedPatient.set(updatedPatient);
 
-    this.patients.update(
-      (patients) =>
-        patients.map(
-          (patient) =>
-            patient.id === updatedPatient.id
-              ? {
-                ...patient,
-                name: updatedPatient.name,
-                birthDate: updatedPatient.birthDate,
-                age: updatedPatient.age,
-                avatar: updatedPatient.avatar,
-                subtitle: updatedPatient.subtitle
-              }
-              : patient
-        )
+    this.patients.update((patients) =>
+      patients.map((patient) =>
+        patient.id === updatedPatient.id
+          ? {
+              ...patient,
+              name: updatedPatient.name,
+              birthDate: updatedPatient.birthDate,
+              age: updatedPatient.age,
+              avatar: updatedPatient.avatar,
+              subtitle: updatedPatient.subtitle,
+            }
+          : patient,
+      ),
     );
   }
 
-  removePatient(
-    patientId: number
-  ): void {
-    this.patients.update(
-      (patients) =>
-        patients.filter(
-          (patient) =>
-            patient.id !== patientId
-        )
-    );
+  removePatient(patientId: number): void {
+    this.patients.update((patients) => patients.filter((patient) => patient.id !== patientId));
 
     this.notificationService.stop();
     this.selectedPatient.set(null);
@@ -283,26 +175,17 @@ export class AppSessionService {
     this.patientsError.set('');
 
     try {
-      this.patients.set(
-        await this.patientService.getPatients()
-      );
+      this.patients.set(await this.patientService.getPatients());
 
       this.patientsLoaded = true;
-
     } catch (error) {
-      console.error(
-        'loadPatients failed',
-        error
-      );
+      console.error('loadPatients failed', error);
 
       this.patients.set([]);
 
       this.patientsError.set(
-        error instanceof Error
-          ? error.message
-          : 'Erro ao carregar lista de utentes.'
+        error instanceof Error ? error.message : 'Erro ao carregar lista de utentes.',
       );
-
     } finally {
       this.isLoadingPatients.set(false);
     }

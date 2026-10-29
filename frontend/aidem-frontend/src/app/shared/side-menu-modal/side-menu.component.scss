@@ -6,9 +6,6 @@
   box-sizing: border-box;
 }
 
-
-/* Fundo escurecido */
-
 .side-menu-overlay {
   position: fixed;
   inset: 0;
@@ -21,9 +18,6 @@
 
   animation: overlay-appear 0.2s ease;
 }
-
-
-/* Menu lateral */
 
 .side-menu {
   position: fixed;
@@ -53,9 +47,6 @@
 
   animation: side-menu-appear 0.24s ease;
 }
-
-
-/* Cabeçalho */
 
 .side-menu-header {
   min-height: 100px;
@@ -146,9 +137,6 @@
   transform: scale(0.98);
 }
 
-
-/* Zona central com scroll */
-
 .side-menu-navigation {
   flex: 1;
   min-height: 0;
@@ -179,9 +167,6 @@
   background: #9fb5d1;
 }
 
-
-/* Títulos das secções */
-
 .side-menu-section-title {
   margin: 0 4px 10px;
 
@@ -198,9 +183,6 @@
 .admin-section-title {
   margin-top: 24px;
 }
-
-
-/* Opções */
 
 .side-menu-item {
   width: 100%;
@@ -253,9 +235,6 @@
   outline-offset: 2px;
 }
 
-
-/* Ícones */
-
 .side-menu-icon,
 .logout-icon {
   width: 48px;
@@ -282,9 +261,6 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
-
-/* Texto das opções */
 
 .side-menu-item-copy,
 .logout-copy {
@@ -338,19 +314,13 @@
   transform: translateX(2px);
 }
 
-
-/* Rodapé fixo */
-
 .side-menu-footer {
   position: relative;
   z-index: 2;
 
   flex-shrink: 0;
 
-  padding:
-    16px
-    20px
-    max(16px, env(safe-area-inset-bottom));
+  padding: 16px 20px max(16px, env(safe-area-inset-bottom));
 
   border-top: 1px solid #e3e8f0;
 
@@ -418,9 +388,6 @@
   transform: scale(0.99);
 }
 
-
-/* Animações */
-
 @keyframes side-menu-appear {
   from {
     transform: translateX(-100%);
@@ -440,9 +407,6 @@
     opacity: 1;
   }
 }
-
-
-/* Tablets com pouca altura */
 
 @media (max-height: 720px) {
   .side-menu-header {
@@ -518,9 +482,6 @@
   }
 }
 
-
-/* Telemóvel */
-
 @media (max-width: 600px) {
   .side-menu {
     width: min(430px, calc(100vw - 16px));
@@ -569,15 +530,9 @@
   }
 
   .side-menu-footer {
-    padding:
-      12px
-      14px
-      max(12px, env(safe-area-inset-bottom));
+    padding: 12px 14px max(12px, env(safe-area-inset-bottom));
   }
 }
-
-
-/* Evita animações para quem as desativou */
 
 @media (prefers-reduced-motion: reduce) {
   .side-menu,

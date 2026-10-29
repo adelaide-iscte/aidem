@@ -2,13 +2,6 @@ import { Routes } from '@angular/router';
 
 import { authGuard, guestGuard, roleGuard, startPageGuard } from './core/guards/auth.guards';
 
-/*
- * Permissões por perfil:
- *  - todos os autenticados: utente (início,
- *    atividades, perfil), mensagens, conteúdos
- *  - admin + formal: lista e criação de utentes
- *  - admin: gestão de exercícios e de utilizadores
- */
 export const routes: Routes = [
   {
     path: 'login',

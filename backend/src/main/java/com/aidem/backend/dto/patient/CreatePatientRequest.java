@@ -5,35 +5,35 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record CreatePatientRequest(
-        String fullName,
-        LocalDate birthDate,
-        String gender,
-        String diagnosisType,
-        String phone,
-        String email,
-        String address,
-        String education,
-        String profession,
-        String sessionType,
+    String fullName,
+    LocalDate birthDate,
+    String gender,
+    String diagnosisType,
+    String phone,
+    String email,
+    String address,
+    String education,
+    String profession,
+    String sessionType,
 
-        String informalCaregiverName,
-        String informalCaregiverPhone,
-        String informalCaregiverEmail,
+    String informalCaregiverName,
+    String informalCaregiverPhone,
+    String informalCaregiverEmail,
 
-        String secondInformalCaregiverName,
-        String secondInformalCaregiverPhone,
-        String secondInformalCaregiverEmail,
+    String secondInformalCaregiverName,
+    String secondInformalCaregiverPhone,
+    String secondInformalCaregiverEmail,
 
-        String avatar,
-        String notes,
-        LocalDate assessmentDate,
-        List<EgpScoreRequest> egpScores
+    String avatar,
+    String notes,
+    LocalDate assessmentDate,
+    List<EgpScoreRequest> egpScores
 ) {
     public record EgpScoreRequest(
-            String domain,
-            BigDecimal score,
-            BigDecimal normalizedScore,
-            String riskLevel,
-            Integer displayOrder
+        String domain,
+        BigDecimal score,
+        BigDecimal normalizedScore,
+        String riskLevel,
+        Integer displayOrder
     ) {}
 }

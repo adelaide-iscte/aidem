@@ -2,10 +2,9 @@ package com.aidem.backend.model;
 
 import com.aidem.backend.model.enums.RiskLevel;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "domain_scores")

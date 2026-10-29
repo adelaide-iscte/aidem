@@ -2,10 +2,6 @@ import { Component, inject } from '@angular/core';
 import { AppSessionService } from '../core/services/app-session.service';
 import { AppNavigationService } from '../core/services/app-navigation.service';
 
-/*
- * Mostrado a um cuidador informal que
- * ainda não tem utente associado.
- */
 @Component({
   selector: 'app-no-patient-page',
   standalone: true,
@@ -13,14 +9,12 @@ import { AppNavigationService } from '../core/services/app-navigation.service';
     <p>
       {{
         session.patientsError() ||
-        'Não foi encontrado nenhum utente associado a este cuidador informal.'
+          'Não foi encontrado nenhum utente associado a este cuidador informal.'
       }}
     </p>
 
-    <button type="button" (click)="nav.logout()">
-      Terminar sessão
-    </button>
-  `
+    <button type="button" (click)="nav.logout()">Terminar sessão</button>
+  `,
 })
 export class NoPatientPage {
   readonly session = inject(AppSessionService);

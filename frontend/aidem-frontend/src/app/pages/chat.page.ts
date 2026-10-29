@@ -19,9 +19,10 @@ import { AppNavigationService } from '../core/services/app-navigation.service';
       (openContents)="nav.goToContents()"
       (openAdminActivities)="nav.openAdminActivities()"
       (openUserManagement)="nav.openUserManagement()"
-      (logout)="nav.logout()">
+      (logout)="nav.logout()"
+    >
     </app-chat-modal>
-  `
+  `,
 })
 export class ChatPage {
   readonly session = inject(AppSessionService);

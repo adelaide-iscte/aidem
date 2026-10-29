@@ -19,9 +19,6 @@ textarea {
   font: inherit;
 }
 
-
-/* Fundo do modal */
-
 .skip-overlay {
   position: fixed;
   inset: 0;
@@ -44,9 +41,6 @@ textarea {
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
 }
-
-
-/* Modal */
 
 .skip-modal {
   position: relative;
@@ -75,9 +69,6 @@ textarea {
 
   animation: skipModalOpen 0.18s ease-out;
 }
-
-
-/* Botão voltar */
 
 .back-button {
   width: fit-content;
@@ -123,9 +114,6 @@ textarea {
   transform: scale(0.98);
 }
 
-
-/* Instrução */
-
 .skip-modal h1 {
   margin: 28px 0 22px;
   padding: 20px 22px;
@@ -141,9 +129,6 @@ textarea {
   font-weight: 700;
   line-height: 1.4;
 }
-
-
-/* Campo do motivo */
 
 .skip-modal textarea {
   width: 100%;
@@ -185,9 +170,6 @@ textarea {
   font-weight: 500;
   opacity: 1;
 }
-
-
-/* Botão concluir */
 
 .submit-button {
   min-width: 220px;
@@ -232,15 +214,11 @@ textarea {
   transform: scale(0.98);
 }
 
-
-/* Foco por teclado */
-
 .back-button:focus-visible,
 .submit-button:focus-visible {
   outline: 4px solid rgba(64, 124, 226, 0.24);
   outline-offset: 3px;
 }
-
 
 @keyframes skipModalOpen {
   from {
@@ -253,9 +231,6 @@ textarea {
     transform: translateY(0) scale(1);
   }
 }
-
-
-/* Tablet com pouca altura */
 
 @media (max-height: 700px) and (min-width: 651px) {
   .skip-overlay {
@@ -286,9 +261,6 @@ textarea {
     margin-top: 20px;
   }
 }
-
-
-/* Telemóvel */
 
 @media (max-width: 650px) {
   .skip-overlay {
@@ -333,9 +305,6 @@ textarea {
     margin-top: 22px;
   }
 }
-
-
-/* Respeita a preferência por menos movimento */
 
 @media (prefers-reduced-motion: reduce) {
   .skip-modal {

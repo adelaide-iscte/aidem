@@ -2,15 +2,11 @@ package com.aidem.backend.model;
 
 import com.aidem.backend.model.enums.CaregiverRelationshipType;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(
-        name = "patient_caregivers",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"patient_id", "user_id"})
-)
+@Table(name = "patient_caregivers", uniqueConstraints = @UniqueConstraint(columnNames = { "patient_id", "user_id" }))
 @Getter
 @Setter
 @NoArgsConstructor

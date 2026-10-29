@@ -94,35 +94,6 @@
   gap: 10px;
 }
 
-//.contact-actions button {
-//  height: 48px;
-//  border-radius: 8px;
-//  font-size: 24px;
-//  font-weight: 800;
-//  cursor: pointer;
-//}
-
-//.message-button,
-//.call-button {
-//  border: none;
-//  display: flex;
-//  align-items: center;
-//  justify-content: center;
-//  gap: 18px;
-//  padding: 0;
-//}
-
-//.message-button {
-//  background: white;
-//  color: #4079e8;
-//}
-//
-//.call-button {
-//  background: #4079e8;
-//  color: #ffffff;
-//  border: none;
-//}
-
 .progress-card {
   height: 65px;
   margin-top: 26px;
@@ -182,37 +153,6 @@
   line-height: 1.14;
 }
 
-.actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-}
-
-.info-button {
-  height: 39px;
-  border: none;
-  border-radius: 10px;
-  background: #e8f0ff;
-  color: #4079e8;
-  font-size: 17px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 14px;
-}
-
-.info-icon {
-  width: 22px;
-  height: 22px;
-}
-
-.arrow {
-  font-size: 30px;
-  line-height: 1;
-}
-
 .bottom-actions {
   display: flex;
   align-items: center;
@@ -221,13 +161,8 @@
 }
 
 .bottom-actions.admin-actions {
-  grid-template-columns:
-    180px 210px 180px 64px;
+  grid-template-columns: 180px 210px 180px 64px;
 }
-
-/* =========================================================
-   MODAL REMOVER ATIVIDADE
-   ========================================================= */
 
 .remove-activity-modal {
   width: min(760px, 92vw);
@@ -246,12 +181,8 @@
   font-family: 'Poppins', Inter, Arial, sans-serif;
   text-align: center;
 
-  box-shadow:
-    0 28px 75px rgba(33, 51, 79, 0.22);
+  box-shadow: 0 28px 75px rgba(33, 51, 79, 0.22);
 }
-
-
-/* Ícone */
 
 .remove-activity-icon {
   width: 90px;
@@ -273,9 +204,6 @@
   display: block;
 }
 
-
-/* Título */
-
 .remove-activity-modal h2 {
   margin: 0;
 
@@ -285,9 +213,6 @@
   font-weight: 800;
   line-height: 1.2;
 }
-
-
-/* Pergunta */
 
 .remove-activity-description {
   margin: 28px 0 0;
@@ -304,9 +229,6 @@
   font-weight: 800;
 }
 
-
-/* Nota */
-
 .remove-activity-note {
   margin: 14px 0 0;
 
@@ -316,9 +238,6 @@
   font-weight: 600;
   line-height: 1.45;
 }
-
-
-/* Botões */
 
 .remove-activity-actions {
   width: 100%;
@@ -354,9 +273,6 @@
     transform 0.2s ease;
 }
 
-
-/* Manter */
-
 .keep-activity-button {
   border: 2px solid #cbd6e5;
 
@@ -369,25 +285,20 @@
   background: #f5f8fc;
 }
 
-
-/* Remover */
-
 .confirm-remove-activity-button {
   border: 2px solid #cf4545;
 
   background: #cf4545;
   color: #ffffff;
 
-  box-shadow:
-    0 8px 18px rgba(185, 50, 50, 0.18);
+  box-shadow: 0 8px 18px rgba(185, 50, 50, 0.18);
 }
 
 .confirm-remove-activity-button:hover:not(:disabled) {
   border-color: #bd3939;
   background: #bd3939;
 
-  box-shadow:
-    0 10px 22px rgba(185, 50, 50, 0.24);
+  box-shadow: 0 10px 22px rgba(185, 50, 50, 0.24);
 }
 
 .keep-activity-button:active:not(:disabled),
@@ -400,9 +311,6 @@
   opacity: 0.55;
   cursor: wait;
 }
-
-
-/* Mobile */
 
 @media (max-width: 620px) {
   .remove-activity-modal {
@@ -446,46 +354,6 @@
   border: 2px solid #c96666;
 }
 
-//.complete-button,
-//.instructions-button,
-//.skip-button,
-//.undo-button {
-//  height: 39px;
-//  border-radius: 7px;
-//  padding: 0 18px;
-//  font-size: 18px;
-//  font-weight: 700;
-//  display: inline-flex;
-//  align-items: center;
-//  justify-content: center;
-//  gap: 8px;
-//  cursor: pointer;
-//}
-
-.complete-button {
-  border: none;
-  background: #4079e8;
-  color: white;
-}
-
-.undo-button {
-  border: 1px solid #4079e8;
-  background: #ffffff;
-  color: #4079e8;
-}
-
-.instructions-button {
-  border: 1px solid #4079e8;
-  background: white;
-  color: #4079e8;
-}
-
-.skip-button {
-  border: none;
-  background: #bf3838;
-  color: #ffffff;
-}
-
 .formal-mode .contact-text p {
   font-size: 28px;
 }
@@ -495,35 +363,6 @@
   grid-template-columns: 1fr 650px;
   gap: 24px;
   align-items: center;
-}
-
-//.formal-mode .bottom-actions {
-//  display: grid;
-//  grid-template-columns: 170px 290px 185px;
-//  gap: 12px;
-//  justify-content: end;
-//  align-items: center;
-//}
-
-//.formal-mode .skip-button,
-//.formal-mode .complete-button,
-//.formal-mode .undo-button,
-//.formal-mode .instructions-button {
-//  width: 100%;
-//  white-space: nowrap;
-//}
-
-.formal-mode .skip-button {
-  background: #b93232;
-  color: #ffffff;
-}
-
-.formal-mode .complete-button {
-  padding: 0 14px;
-}
-
-.formal-mode .instructions-button {
-  padding: 0 12px;
 }
 
 .button-icon {
@@ -538,7 +377,6 @@
   height: 18px;
 }
 
-.message-button span,
 .call-button span {
   transform: translateY(-1px);
 }
@@ -593,60 +431,12 @@
   font-weight: 400;
 }
 
-.formal-right {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.info-button {
-  width: 100%;
-  height: 44px;
-  border: none;
-  border-radius: 12px;
-  background: #e8f0ff;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-
-  color: #4079e8;
-  font-size: 18px;
-  font-weight: 600;
-  font-family: 'Poppins', sans-serif;
-  cursor: pointer;
-}
-
-.info-button span {
-  flex: 1;
-  text-align: center;
-}
-
-.arrow-icon {
-  width: 12px;
-  height: 18px;
-}
-
 .bottom-actions {
   display: grid;
   grid-template-columns: 190px 190px 170px;
   gap: 12px;
   align-items: center;
 }
-
-//.skip-button {
-//  width: 170px;
-//}
-
-//.complete-button,
-//.undo-button {
-//  width: 290px;
-//}
-//
-//.instructions-button {
-//  width: 180px;
-//}
 
 .plan-state {
   margin: 18px auto;
@@ -666,11 +456,6 @@
 
 .activity-card.failed {
   opacity: 0.62;
-}
-
-.activity-info .duration {
-  font-size: 24px;
-  font-weight: 500;
 }
 
 button:disabled {
@@ -702,18 +487,6 @@ button:disabled {
   opacity: 0.72;
 }
 
-.skipped-lock {
-  background: #e6a6a6 !important;
-  color: #ffffff !important;
-  cursor: default;
-}
-
-.activity-card.failed .complete-button,
-.activity-card.failed .instructions-button {
-  opacity: 0.55;
-  cursor: default;
-}
-
 .accessibility-row {
   display: flex;
   justify-content: flex-end;
@@ -743,7 +516,7 @@ button:disabled {
 
   box-shadow: 0 3px 10px rgba(64, 124, 226, 0.12);
 
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .accessibility-button:hover {
@@ -753,7 +526,7 @@ button:disabled {
 }
 
 .accessibility-button:active {
-  transform: scale(.98);
+  transform: scale(0.98);
 }
 
 .accessibility-icon {
@@ -870,25 +643,15 @@ button:disabled {
   color: #4079e8;
   border-color: #4079e8;
 }
-/* Cuidador informal: mantém os dois botões alinhados à direita,
-   no mesmo local dos últimos dois botões do cuidador formal */
 .bottom-actions.informal-actions {
   grid-template-columns: 210px 180px;
   justify-content: end;
 }
 
-
-// hello
-
-/* Estética alinhada com a página inicial */
-
 .activities-page {
   background: #f7f9fc;
   color: #263750;
 }
-
-
-/* Cabeçalho */
 
 .header {
   border-bottom-color: #e4e9f1;
@@ -920,9 +683,6 @@ button:disabled {
   background: #ffffff;
 }
 
-
-/* Ouvir página */
-
 .accessibility-button {
   border-color: #9dbdff;
   background: #ffffff;
@@ -947,20 +707,12 @@ button:disabled {
   outline-offset: 3px;
 }
 
-
-/* Cartão de contacto */
-
 .contact-card {
   position: relative;
   overflow: hidden;
   border: 1px solid #ccdcf4;
   border-radius: 20px;
-  background:
-    linear-gradient(
-        110deg,
-        #e8f1ff 0%,
-        #dce9fb 100%
-    );
+  background: linear-gradient(110deg, #e8f1ff 0%, #dce9fb 100%);
   box-shadow: 0 10px 28px rgba(58, 91, 138, 0.1);
 }
 
@@ -995,9 +747,6 @@ button:disabled {
   color: #46556c;
 }
 
-
-/* Cartão de progresso */
-
 .progress-card {
   border-color: #dfe6f0;
   border-radius: 16px;
@@ -1016,18 +765,10 @@ button:disabled {
 }
 
 .progress-line div {
-  background:
-    linear-gradient(
-        90deg,
-        #407ce2,
-        #6b9cf0
-    );
+  background: linear-gradient(90deg, #407ce2, #6b9cf0);
   box-shadow: 0 2px 8px rgba(64, 124, 226, 0.22);
   transition: width 0.35s ease;
 }
-
-
-/* Cartões das atividades */
 
 .activity-card {
   position: relative;
@@ -1072,18 +813,10 @@ button:disabled {
   color: #2b3c55;
 }
 
-
-/* Atividade com resultado registado */
-
 .activity-card.done {
   opacity: 1;
   border-color: #cad8ec;
-  background:
-    linear-gradient(
-        90deg,
-        #f7faff 0%,
-        #ffffff 55%
-    );
+  background: linear-gradient(90deg, #f7faff 0%, #ffffff 55%);
 }
 
 .activity-card.done::before {
@@ -1094,18 +827,10 @@ button:disabled {
   color: #607ba8;
 }
 
-
-/* Atividade não concluída */
-
 .activity-card.failed {
   opacity: 1;
   border-color: #efc8bb;
-  background:
-    linear-gradient(
-        90deg,
-        #fff7f4 0%,
-        #ffffff 55%
-    );
+  background: linear-gradient(90deg, #fff7f4 0%, #ffffff 55%);
 }
 
 .activity-card.failed::before {
@@ -1116,9 +841,6 @@ button:disabled {
 .activity-card.failed .activity-info h2 {
   color: #9d4935;
 }
-
-
-/* Botões */
 
 .action-button {
   transition:
@@ -1181,9 +903,6 @@ button:disabled {
   transform: none;
 }
 
-
-/* Botões do cartão de contacto */
-
 .contact-actions .action-button.primary {
   border-color: #407ce2;
   background: #407ce2;
@@ -1201,9 +920,6 @@ button:disabled {
   background: #ffffff;
 }
 
-
-/* Mensagens de carregamento e erro */
-
 .plan-state {
   padding: 18px 22px;
   border: 1px solid #dce8fa;
@@ -1217,8 +933,6 @@ button:disabled {
   background: #fff6f6;
   color: #a93636;
 }
-
-/* Alternância plano diário / semanal */
 
 .plan-view-switch {
   width: fit-content;
@@ -1234,9 +948,7 @@ button:disabled {
 
   background: #f4f7fc;
 
-  box-shadow:
-    0 6px 18px
-    rgba(54, 83, 126, 0.06);
+  box-shadow: 0 6px 18px rgba(54, 83, 126, 0.06);
 }
 
 .plan-view-switch button {
@@ -1265,15 +977,9 @@ button:disabled {
   background: #407ce2;
   color: #ffffff;
 
-  box-shadow:
-    0 7px 16px
-    rgba(64, 124, 226, 0.22);
+  box-shadow: 0 7px 16px rgba(64, 124, 226, 0.22);
 }
 
-
-/* Cabeçalho semanal */
-
-.weekly-plan-header,
 .selected-day-summary {
   margin-top: 26px;
   padding: 22px 26px;
@@ -1288,9 +994,7 @@ button:disabled {
 
   background: #ffffff;
 
-  box-shadow:
-    0 8px 24px
-    rgba(54, 83, 126, 0.07);
+  box-shadow: 0 8px 24px rgba(54, 83, 126, 0.07);
 }
 
 .section-label {
@@ -1305,7 +1009,6 @@ button:disabled {
   text-transform: uppercase;
 }
 
-.weekly-plan-header h2,
 .selected-day-summary h2 {
   margin: 0;
 
@@ -1315,28 +1018,11 @@ button:disabled {
   font-weight: 800;
 }
 
-.weekly-plan-count {
-  flex-shrink: 0;
-  padding: 9px 15px;
-
-  border-radius: 999px;
-
-  background: #edf4ff;
-  color: #3977df;
-
-  font-size: 18px;
-  font-weight: 800;
-}
-
-
-/* Dias da semana */
-
 .week-days {
   margin-top: 16px;
 
   display: grid;
-  grid-template-columns:
-    repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -1361,9 +1047,7 @@ button:disabled {
 
   cursor: pointer;
 
-  box-shadow:
-    0 7px 20px
-    rgba(54, 83, 126, 0.06);
+  box-shadow: 0 7px 20px rgba(54, 83, 126, 0.06);
 
   transition:
     border-color 0.2s ease,
@@ -1376,9 +1060,7 @@ button:disabled {
 .week-day-card:hover {
   border-color: #b8cef0;
 
-  box-shadow:
-    0 11px 25px
-    rgba(54, 83, 126, 0.11);
+  box-shadow: 0 11px 25px rgba(54, 83, 126, 0.11);
 
   transform: translateY(-2px);
 }
@@ -1386,16 +1068,9 @@ button:disabled {
 .week-day-card.active {
   border-color: #407ce2;
 
-  background:
-    linear-gradient(
-        180deg,
-        #edf4ff 0%,
-        #ffffff 100%
-    );
+  background: linear-gradient(180deg, #edf4ff 0%, #ffffff 100%);
 
-  box-shadow:
-    0 10px 25px
-    rgba(64, 124, 226, 0.15);
+  box-shadow: 0 10px 25px rgba(64, 124, 226, 0.15);
 }
 
 .week-day-card.today::after {
@@ -1452,16 +1127,8 @@ button:disabled {
   font-weight: 800;
 }
 
-
-/* Sessão selecionada */
-
 .selected-day-summary {
-  background:
-    linear-gradient(
-        120deg,
-        #f4f8ff 0%,
-        #ffffff 70%
-    );
+  background: linear-gradient(120deg, #f4f8ff 0%, #ffffff 70%);
 }
 
 .selected-day-duration {
@@ -1488,9 +1155,6 @@ button:disabled {
   margin-top: 16px;
 }
 
-
-/* Tablet */
-
 @media (max-width: 900px) {
   .content {
     padding-left: 20px;
@@ -1498,13 +1162,9 @@ button:disabled {
   }
 
   .week-days {
-    grid-template-columns:
-      repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-
-
-/* Telemóvel */
 
 @media (max-width: 620px) {
   .plan-view-switch {
@@ -1516,7 +1176,6 @@ button:disabled {
     padding: 0 12px;
   }
 
-  .weekly-plan-header,
   .selected-day-summary {
     align-items: flex-start;
   }
@@ -1536,10 +1195,6 @@ button:disabled {
   }
 }
 
-/* =====================================================
-   Atividades do plano semanal
-   ===================================================== */
-
 .weekly-activity-card {
   min-height: 160px;
 
@@ -1548,9 +1203,7 @@ button:disabled {
 
   background: #ffffff;
 
-  box-shadow:
-    0 8px 24px
-    rgba(54, 83, 126, 0.07);
+  box-shadow: 0 8px 24px rgba(54, 83, 126, 0.07);
 
   transition:
     border-color 0.2s ease,
@@ -1561,80 +1214,43 @@ button:disabled {
 .weekly-activity-card:hover {
   border-color: #cbd9ef;
 
-  box-shadow:
-    0 12px 30px
-    rgba(54, 83, 126, 0.12);
+  box-shadow: 0 12px 30px rgba(54, 83, 126, 0.12);
 
   transform: translateY(-2px);
 }
 
-
-/*
- * Dias que não são hoje:
- * apenas aparece o botão Instruções.
- */
-
-.weekly-activity-card:not(.today-session)
-.activity-info {
-  grid-template-columns:
-    minmax(0, 1fr) 180px;
+.weekly-activity-card:not(.today-session) .activity-info {
+  grid-template-columns: minmax(0, 1fr) 180px;
 }
 
-.weekly-activity-card:not(.today-session)
-.bottom-actions {
+.weekly-activity-card:not(.today-session) .bottom-actions {
   display: grid;
   grid-template-columns: 180px;
   justify-content: end;
   gap: 14px;
 }
 
-
-/*
- * Sessão de hoje — cuidador informal:
- * Concluir + Instruções.
- */
-
-.weekly-activity-card.informal-session
-.activity-info {
-  grid-template-columns:
-    minmax(0, 1fr) 404px;
+.weekly-activity-card.informal-session .activity-info {
+  grid-template-columns: minmax(0, 1fr) 404px;
 }
 
-.weekly-activity-card.informal-session
-.bottom-actions {
+.weekly-activity-card.informal-session .bottom-actions {
   display: grid;
-  grid-template-columns:
-    210px 180px;
+  grid-template-columns: 210px 180px;
   justify-content: end;
   gap: 14px;
 }
 
-
-/*
- * Sessão de hoje — cuidador formal:
- * Não realizar + Concluir + Instruções.
- */
-
-.weekly-activity-card.formal-session
-.activity-info {
-  grid-template-columns:
-    minmax(0, 1fr) 620px;
+.weekly-activity-card.formal-session .activity-info {
+  grid-template-columns: minmax(0, 1fr) 620px;
 }
 
-.weekly-activity-card.formal-session
-.bottom-actions {
+.weekly-activity-card.formal-session .bottom-actions {
   display: grid;
-  grid-template-columns:
-    180px 210px 180px;
+  grid-template-columns: 180px 210px 180px;
   justify-content: end;
   gap: 14px;
 }
-
-
-/*
- * Botões semanais:
- * usa exatamente o mesmo estilo dos botões diários.
- */
 
 .weekly-activity-card .action-button {
   min-height: 56px;
@@ -1649,11 +1265,7 @@ button:disabled {
   justify-content: center;
   gap: 8px;
 
-  font-family:
-    'Poppins',
-    Inter,
-    Arial,
-    sans-serif;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
 
   font-size: 18px;
   font-weight: 800;
@@ -1671,91 +1283,59 @@ button:disabled {
     transform 0.2s ease;
 }
 
-
-/* Concluir */
-
-.weekly-activity-card
-.action-button.primary {
+.weekly-activity-card .action-button.primary {
   border-color: #407ce2;
   background: #407ce2;
   color: #ffffff;
 
-  box-shadow:
-    0 7px 16px
-    rgba(64, 124, 226, 0.2);
+  box-shadow: 0 7px 16px rgba(64, 124, 226, 0.2);
 }
 
-.weekly-activity-card
-.action-button.primary:hover:not(:disabled) {
+.weekly-activity-card .action-button.primary:hover:not(:disabled) {
   border-color: #326fd4;
   background: #326fd4;
 
-  box-shadow:
-    0 9px 20px
-    rgba(64, 124, 226, 0.28);
+  box-shadow: 0 9px 20px rgba(64, 124, 226, 0.28);
 
   transform: translateY(-1px);
 }
 
-
-/* Instruções e Cancelar */
-
-.weekly-activity-card
-.action-button.outline,
-.weekly-activity-card
-.action-button.secondary {
+.weekly-activity-card .action-button.outline,
+.weekly-activity-card .action-button.secondary {
   border-color: #7fa7ee;
   background: #ffffff;
   color: #3977df;
 }
 
-.weekly-activity-card
-.action-button.outline:hover:not(:disabled),
-.weekly-activity-card
-.action-button.secondary:hover:not(:disabled) {
+.weekly-activity-card .action-button.outline:hover:not(:disabled),
+.weekly-activity-card .action-button.secondary:hover:not(:disabled) {
   border-color: #407ce2;
   background: #f1f6ff;
 
-  box-shadow:
-    0 6px 14px
-    rgba(64, 124, 226, 0.12);
+  box-shadow: 0 6px 14px rgba(64, 124, 226, 0.12);
 
   transform: translateY(-1px);
 }
 
-
-/* Não realizar */
-
-.weekly-activity-card
-.action-button.danger {
+.weekly-activity-card .action-button.danger {
   border-color: #b93232;
   background: #b93232;
   color: #ffffff;
 
-  box-shadow:
-    0 7px 16px
-    rgba(185, 50, 50, 0.16);
+  box-shadow: 0 7px 16px rgba(185, 50, 50, 0.16);
 }
 
-.weekly-activity-card
-.action-button.danger:hover:not(:disabled) {
+.weekly-activity-card .action-button.danger:hover:not(:disabled) {
   border-color: #a52c2c;
   background: #a52c2c;
 
-  box-shadow:
-    0 9px 20px
-    rgba(185, 50, 50, 0.22);
+  box-shadow: 0 9px 20px rgba(185, 50, 50, 0.22);
 
   transform: translateY(-1px);
 }
 
-
-/* Estados desativados */
-
-.weekly-activity-card
-.action-button.muted,
-.weekly-activity-card
-.action-button:disabled {
+.weekly-activity-card .action-button.muted,
+.weekly-activity-card .action-button:disabled {
   opacity: 0.5;
 
   cursor: default;
@@ -1763,9 +1343,6 @@ button:disabled {
   box-shadow: none;
   transform: none;
 }
-
-
-/* Ícones */
 
 .weekly-activity-card .small-icon {
   width: 22px;
@@ -1781,92 +1358,64 @@ button:disabled {
   flex-shrink: 0;
 }
 
-
-/* Atividade concluída */
-
 .weekly-activity-card.done {
   opacity: 1;
 
   border-color: #cad8ec;
 
-  background:
-    linear-gradient(
-        90deg,
-        #f7faff 0%,
-        #ffffff 55%
-    );
+  background: linear-gradient(90deg, #f7faff 0%, #ffffff 55%);
 }
 
 .weekly-activity-card.done::before {
   background: #7896c9;
 }
 
-.weekly-activity-card.done
-.activity-number {
+.weekly-activity-card.done .activity-number {
   color: #607ba8;
 }
-
-
-/* Atividade não realizada */
 
 .weekly-activity-card.failed {
   opacity: 1;
 
   border-color: #efc8bb;
 
-  background:
-    linear-gradient(
-        90deg,
-        #fff7f4 0%,
-        #ffffff 55%
-    );
+  background: linear-gradient(90deg, #fff7f4 0%, #ffffff 55%);
 }
 
 .weekly-activity-card.failed::before {
   background: #d56e52;
 }
 
-.weekly-activity-card.failed
-.activity-number,
-.weekly-activity-card.failed
-.activity-info h2 {
+.weekly-activity-card.failed .activity-number,
+.weekly-activity-card.failed .activity-info h2 {
   color: #9d4935;
 }
 
 @media (max-width: 1050px) {
-  .weekly-activity-card.formal-session
-  .activity-info {
-    grid-template-columns:
-      minmax(0, 1fr);
+  .weekly-activity-card.formal-session .activity-info {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .weekly-activity-card.formal-session
-  .bottom-actions {
+  .weekly-activity-card.formal-session .bottom-actions {
     width: 100%;
 
-    grid-template-columns:
-      repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .weekly-activity-card.informal-session
-  .activity-info {
-    grid-template-columns:
-      minmax(0, 1fr);
+  .weekly-activity-card.informal-session .activity-info {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .weekly-activity-card.informal-session
-  .bottom-actions {
+  .weekly-activity-card.informal-session .bottom-actions {
     width: 100%;
 
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 720px) {
   .weekly-activity-card {
-    grid-template-columns:
-      36px 90px minmax(0, 1fr);
+    grid-template-columns: 36px 90px minmax(0, 1fr);
   }
 
   .weekly-activity-card .activity-image {
@@ -1875,15 +1424,13 @@ button:disabled {
   }
 
   .weekly-activity-card .activity-info {
-    grid-template-columns:
-      minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr) !important;
   }
 
   .weekly-activity-card .bottom-actions {
     margin-top: 16px;
 
-    grid-template-columns:
-      minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr) !important;
   }
 
   .weekly-activity-card .action-button {
@@ -1891,16 +1438,6 @@ button:disabled {
   }
 }
 
-/* =========================================================
-   ADMIN - EDIÇÃO DO PLANO
-   ========================================================= */
-
-/*
- * O cartão já é position: relative.
- * O botão de remoção fica completamente dentro da box
- * e não participa no grid, por isso não desloca o número,
- * a imagem nem os restantes botões.
- */
 .admin-remove-activity {
   min-width: 0;
   height: 64px;
@@ -1917,11 +1454,7 @@ button:disabled {
   background: #f8fafd;
   color: #687a92;
 
-  font-family:
-    'Poppins',
-    Inter,
-    Arial,
-    sans-serif;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
 
   font-size: 17px;
   font-weight: 800;
@@ -1931,9 +1464,7 @@ button:disabled {
 
   cursor: pointer;
 
-  box-shadow:
-    0 8px 18px
-    rgba(54, 83, 126, 0.06);
+  box-shadow: 0 8px 18px rgba(54, 83, 126, 0.06);
 
   transition:
     background-color 0.2s ease,
@@ -1949,9 +1480,7 @@ button:disabled {
   background: #f1f5fa;
   color: #4f627b;
 
-  box-shadow:
-    0 9px 20px
-    rgba(54, 83, 126, 0.1);
+  box-shadow: 0 9px 20px rgba(54, 83, 126, 0.1);
 
   transform: translateY(-1px);
 }
@@ -1965,28 +1494,16 @@ button:disabled {
   cursor: default;
 }
 
-.admin-remove-activity .remove-icon {
-  font-size: 25px;
-  font-weight: 500;
-  line-height: 1;
-}
-
 .admin-remove-activity:disabled {
   opacity: 0.5;
   cursor: default;
   box-shadow: none;
 }
 
-/*
- * Reserva espaço à direita apenas nos cartões que têm
- * o botão Remover. Os cartões dos restantes utilizadores
- * mantêm exatamente o layout anterior.
- */
 .admin-remove-activity ~ .activity-info {
   padding-right: 118px;
 }
 
-/* Área do botão Adicionar atividade. */
 .admin-plan-actions {
   margin: 18px 0;
 
@@ -1995,11 +1512,6 @@ button:disabled {
   justify-content: flex-end;
 }
 
-/*
- * Mantém a mesma ergonomia dos action-button da aplicação:
- * 56 px de altura, raio 14 px, Poppins 18/800 e os mesmos
- * estados primary/hover já definidos acima.
- */
 .admin-plan-actions .action-button {
   width: auto;
   min-width: 220px;
@@ -2043,10 +1555,6 @@ button:disabled {
   }
 }
 
-/* =========================================================
-   MODAL DE ADICIONAR ATIVIDADE
-   ========================================================= */
-
 .plan-exercise-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -2076,9 +1584,7 @@ button:disabled {
 
   background: #ffffff;
 
-  box-shadow:
-    0 25px 65px
-    rgba(26, 46, 78, 0.22);
+  box-shadow: 0 25px 65px rgba(26, 46, 78, 0.22);
 }
 
 .plan-exercise-modal-header {
@@ -2223,11 +1729,6 @@ button:disabled {
   font-weight: 700;
 }
 
-/* =========================================================
-   ADMIN - AJUSTES FINAIS DE EDIÇÃO DO PLANO
-   ========================================================= */
-
-/* Remover fica visualmente como ação secundária da aplicação. */
 .admin-remove-activity {
   min-width: 0;
   min-height: 40px;
@@ -2257,16 +1758,6 @@ button:disabled {
   outline: 3px solid rgba(64, 124, 226, 0.2);
   outline-offset: 3px;
 }
-
-.remove-icon {
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 1;
-}
-
-/* =========================================================
-   MODAL DE ADICIONAR ATIVIDADE - TIPOGRAFIA E PESQUISA
-   ========================================================= */
 
 .plan-exercise-modal,
 .plan-exercise-modal button,
@@ -2412,10 +1903,6 @@ button:disabled {
   font-weight: 600;
   line-height: 1.4;
 }
-
-/* =========================================================
-   MODAL CALMO DE REMOÇÃO DE ATIVIDADE
-   ========================================================= */
 
 .remove-activity-modal-backdrop {
   position: fixed;
@@ -2574,10 +2061,6 @@ button:disabled {
   }
 }
 
-/* =========================================================
-   ADMIN - REMOVER ATIVIDADE DO PLANO
-   ========================================================= */
-
 .admin-remove-activity {
   width: 64px;
   min-width: 64px;
@@ -2597,9 +2080,7 @@ button:disabled {
   background: #f8fafd;
   color: #687a92;
 
-  box-shadow:
-    0 8px 18px
-    rgba(54, 83, 126, 0.06);
+  box-shadow: 0 8px 18px rgba(54, 83, 126, 0.06);
 
   cursor: pointer;
 
@@ -2614,9 +2095,7 @@ button:disabled {
   border-color: #c4d1e2;
   background: #f1f5fa;
 
-  box-shadow:
-    0 9px 20px
-    rgba(54, 83, 126, 0.1);
+  box-shadow: 0 9px 20px rgba(54, 83, 126, 0.1);
 
   transform: translateY(-1px);
 }
@@ -2639,10 +2118,6 @@ button:disabled {
   opacity: 0.72;
 }
 
-/* =========================================================
-   ADMIN - BOTÕES DO PLANO NA MESMA LINHA
-   ========================================================= */
-
 .bottom-actions.admin-actions {
   display: grid;
 
@@ -2658,10 +2133,7 @@ button:disabled {
   justify-content: end;
 }
 
-
-/* Botão apenas com o caixote */
-.bottom-actions.admin-actions
-.admin-remove-activity {
+.bottom-actions.admin-actions .admin-remove-activity {
   width: 56px;
   min-width: 56px;
 
@@ -2680,53 +2152,35 @@ button:disabled {
 
   background: #ffffff;
 
-  box-shadow:
-    0 6px 14px
-    rgba(185, 50, 50, 0.08);
+  box-shadow: 0 6px 14px rgba(185, 50, 50, 0.08);
 
   color: #c96666;
 
   cursor: pointer;
 }
 
-
-.bottom-actions.admin-actions
-.admin-remove-activity:hover:not(:disabled) {
+.bottom-actions.admin-actions .admin-remove-activity:hover:not(:disabled) {
   border-color: #b95454;
 
   background: #fff6f6;
 
-  box-shadow:
-    0 7px 16px
-    rgba(185, 50, 50, 0.13);
+  box-shadow: 0 7px 16px rgba(185, 50, 50, 0.13);
 }
 
-
-.bottom-actions.admin-actions
-.remove-plan-icon {
+.bottom-actions.admin-actions .remove-plan-icon {
   width: 24px;
   height: 24px;
 
   display: block;
 }
 
-/* =========================================================
-   ADMIN - PLANO SEMANAL
-   ========================================================= */
-
-/*
- * Hoje + admin formal:
- * Não realizar | Concluir | Instruções | Lixo
- */
-.weekly-activity-card.today-session.formal-session.admin-editable
-.activity-info {
+.weekly-activity-card.today-session.formal-session.admin-editable .activity-info {
   grid-template-columns:
     minmax(0, 1fr)
     648px;
 }
 
-.weekly-activity-card.today-session.formal-session.admin-editable
-.bottom-actions {
+.weekly-activity-card.today-session.formal-session.admin-editable .bottom-actions {
   display: grid;
 
   grid-template-columns:
@@ -2741,20 +2195,13 @@ button:disabled {
   justify-content: end;
 }
 
-
-/*
- * Hoje + admin sem "Não realizar":
- * Concluir | Instruções | Lixo
- */
-.weekly-activity-card.today-session.informal-session.admin-editable
-.activity-info {
+.weekly-activity-card.today-session.informal-session.admin-editable .activity-info {
   grid-template-columns:
     minmax(0, 1fr)
     464px;
 }
 
-.weekly-activity-card.today-session.informal-session.admin-editable
-.bottom-actions {
+.weekly-activity-card.today-session.informal-session.admin-editable .bottom-actions {
   display: grid;
 
   grid-template-columns:
@@ -2768,20 +2215,13 @@ button:disabled {
   justify-content: end;
 }
 
-
-/*
- * Dia futuro:
- * Instruções | Lixo
- */
-.weekly-activity-card:not(.today-session).admin-editable
-.activity-info {
+.weekly-activity-card:not(.today-session).admin-editable .activity-info {
   grid-template-columns:
     minmax(0, 1fr)
     240px;
 }
 
-.weekly-activity-card:not(.today-session).admin-editable
-.bottom-actions {
+.weekly-activity-card:not(.today-session).admin-editable .bottom-actions {
   display: grid;
 
   grid-template-columns:
@@ -2794,12 +2234,7 @@ button:disabled {
   justify-content: end;
 }
 
-
-/*
- * Mantém o caixote igual ao plano diário.
- */
-.weekly-activity-card.admin-editable
-.admin-remove-activity {
+.weekly-activity-card.admin-editable .admin-remove-activity {
   width: 56px;
   min-width: 56px;
 
@@ -2817,11 +2252,6 @@ button:disabled {
   align-items: center;
   justify-content: center;
 }
-
-
-/* =========================================================
-   NAVEGAÇÃO DO PLANO DE 14 DIAS
-   ========================================================= */
 
 .plan-range-navigation {
   margin-top: 18px;
@@ -2912,19 +2342,10 @@ button:disabled {
   }
 }
 
-
-/* =========================================================
-   AJUSTE FINAL — NAVEGAÇÃO SEMANAL LIMITADA A ±14 DIAS
-   ========================================================= */
-
-/* Voltamos a apresentar exatamente 7 cartões por semana. */
 .week-days {
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
-/* Dias que pertencem à semana visual, mas já ultrapassam
-   o limite permitido (14 dias para trás / 14 dias incluindo hoje
-   para a frente), continuam visíveis apenas para manter a grelha. */
 .week-day-card.out-of-range,
 .week-day-card.out-of-range:hover {
   opacity: 0.42;

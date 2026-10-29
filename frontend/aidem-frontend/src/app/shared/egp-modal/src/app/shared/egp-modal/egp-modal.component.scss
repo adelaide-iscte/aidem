@@ -27,8 +27,6 @@
   -webkit-backdrop-filter: blur(7px);
 }
 
-
-
 .top-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -123,8 +121,6 @@
   font-weight: 700;
 }
 
-
-
 .egp-column.right {
   border-left: 1px solid rgba(141, 154, 179, 0.45);
   padding-left: 25px;
@@ -166,7 +162,6 @@
   font-weight: 500;
 }
 
-
 .egp-label {
   padding-right: 8px;
   color: #222222;
@@ -194,7 +189,6 @@
   height: 100%;
   padding: 18px 38px;
 }
-
 
 .egp-surface {
   width: 100%;
@@ -575,7 +569,7 @@
   cursor: pointer;
 
   box-shadow: 0 3px 10px rgba(64, 124, 226, 0.12);
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .accessibility-button:hover {
@@ -585,7 +579,7 @@
 }
 
 .accessibility-button:active {
-  transform: scale(.98);
+  transform: scale(0.98);
 }
 
 .accessibility-icon {
@@ -723,45 +717,6 @@
   }
 }
 
-.maintenance-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  width: 480px;
-  max-width: calc(100vw - 32px);
-
-  background: #fff;
-  border-radius: 22px;
-
-  padding: 32px;
-
-  z-index: 2001;
-
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-
-  text-align: center;
-}
-
-.maintenance-modal h2 {
-  margin: 0;
-
-  color: #4677e8;
-  font-size: 30px;
-  font-weight: 700;
-}
-
-.maintenance-modal p {
-  margin: 0;
-
-  color: #555;
-  font-size: 17px;
-  line-height: 1.5;
-}
-
 .chart-svg path {
   fill: none;
   stroke: #101010;
@@ -781,11 +736,6 @@
   object-fit: contain;
 }
 
-/* =========================================================
-   ESTÉTICA UNIFICADA — MODAL EGP
-   Colocar no final do ficheiro SCSS atual
-   ========================================================= */
-
 :host {
   --egp-primary: #407ce2;
   --egp-primary-dark: #326ed2;
@@ -796,9 +746,6 @@
   --egp-border: #dce6f2;
   --egp-soft-blue: #edf4ff;
 }
-
-
-/* Fundo e modal principal */
 
 .egp-backdrop {
   background: rgba(26, 36, 52, 0.56);
@@ -829,9 +776,6 @@
     0 5px 16px rgba(33, 51, 79, 0.08);
 }
 
-
-/* Estados vazio e erro */
-
 .egp-surface > p {
   max-width: 680px;
   margin: auto;
@@ -851,9 +795,6 @@
   box-shadow: 0 8px 24px rgba(54, 83, 126, 0.07);
 }
 
-
-/* Botão Ouvir página */
-
 .egp-accessibility-row {
   margin: 0 0 18px;
 }
@@ -869,7 +810,7 @@
   background: #ffffff;
   color: var(--egp-primary);
 
-  font-family: "Poppins", Inter, Arial, sans-serif;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
   font-size: 18px;
   font-weight: 800;
 
@@ -896,9 +837,6 @@
   width: 25px;
   height: 25px;
 }
-
-
-/* Cartões superiores */
 
 .top-row {
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -959,9 +897,6 @@
   overflow-wrap: anywhere;
 }
 
-
-/* Dados do utente */
-
 .user-data-card {
   overflow: hidden;
 }
@@ -1008,9 +943,6 @@
   color: var(--egp-primary);
   font-weight: 800;
 }
-
-
-/* Cartão da tabela EGP */
 
 .egp-table-layout {
   margin-top: 16px;
@@ -1117,9 +1049,6 @@
   font-weight: 800;
 }
 
-
-/* Botões inferiores */
-
 .footer-actions {
   min-height: 62px;
   margin-top: 18px;
@@ -1185,13 +1114,6 @@
 .back-icon {
   font-size: 30px;
 }
-
-
-/* =========================================================
-   MODAL DO GRÁFICO
-   Apenas estética: não mexe nas dimensões internas que
-   sincronizam as linhas da tabela com os pontos do gráfico.
-   ========================================================= */
 
 .graph-overlay {
   z-index: 20;
@@ -1281,16 +1203,6 @@
   font-weight: 800;
 }
 
-/*
- * Não se alteram:
- * - chartPath
- * - pointX
- * - pointY
- * - viewBox
- * - dimensões das zonas
- * - quantidade ou posição das linhas
- */
-
 .chart-background {
   border-color: #9eacbe;
   border-radius: 8px;
@@ -1332,37 +1244,6 @@
 .close-graph-button:active {
   transform: scale(0.98);
 }
-
-
-/* Modal de manutenção */
-
-.maintenance-modal {
-  border: 1px solid var(--egp-border);
-  border-radius: 20px;
-
-  background: #ffffff;
-
-  box-shadow:
-    0 24px 65px rgba(33, 51, 79, 0.25),
-    0 5px 16px rgba(33, 51, 79, 0.08);
-}
-
-.maintenance-modal h2 {
-  color: var(--egp-text);
-  font-size: 29px;
-  font-weight: 800;
-}
-
-.maintenance-modal p {
-  color: #5e6d82;
-  font-size: 18px;
-}
-
-
-/* =========================================================
-   TABLETS COM POUCA ALTURA
-   Mantém o texto legível sem cortar a tabela.
-   ========================================================= */
 
 @media (max-width: 1200px) and (max-height: 900px) {
   .egp-shell {
@@ -1521,9 +1402,6 @@
   }
 }
 
-
-/* Ecrãs estreitos */
-
 @media (max-width: 900px) {
   .egp-surface {
     overflow-y: auto;
@@ -1556,11 +1434,6 @@
     flex: 1 1 190px;
   }
 
-  /*
-   * O gráfico continua lado a lado.
-   * Em ecrãs muito estreitos permite deslocação horizontal,
-   * para não perder a correspondência entre tabela e pontos.
-   */
   .graph-modal {
     overflow-x: auto;
   }

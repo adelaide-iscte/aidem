@@ -4,27 +4,16 @@
 
     <div class="top-icons">
       <div class="notification-bell-wrapper">
-        <img
-          src="/icons/bell.svg"
-          class="top-icon"
-          (click)="toggleNotifications()"
-        />
+        <img src="/icons/bell.svg" class="top-icon" (click)="toggleNotifications()" />
 
         <span
-          *ngIf="
-    !isAdmin &&
-    role === 'informal' &&
-    notificationService.unreadCount() > 0
-  "
-          class="notification-badge">
-  {{ notificationService.unreadCount() }}
-</span>
+          *ngIf="!isAdmin && role === 'informal' && notificationService.unreadCount() > 0"
+          class="notification-badge"
+        >
+          {{ notificationService.unreadCount() }}
+        </span>
       </div>
-      <img
-        [src]="headerAvatar"
-        class="avatar"
-        alt="Perfil"
-      />
+      <img [src]="headerAvatar" class="avatar" alt="Perfil" />
     </div>
   </header>
 
@@ -33,24 +22,17 @@
       <button
         class="accessibility-button"
         type="button"
-        aria-label="Ler conteúdo da página inicial em voz alta">
-
-        <img
-          src="/icons/volume-blue.svg"
-          class="accessibility-icon"
-          alt="">
+        aria-label="Ler conteúdo da página inicial em voz alta"
+      >
+        <img src="/icons/volume-blue.svg" class="accessibility-icon" alt="" />
 
         <span>Ouvir página</span>
-
       </button>
     </div>
 
     <section class="hero-card">
       <div class="patient-avatar">
-        <img
-          [src]="patient?.avatar || '/icons/generic_user.svg'"
-          alt="Utente"
-        />
+        <img [src]="patient?.avatar || '/icons/generic_user.svg'" alt="Utente" />
       </div>
 
       <div class="hero-info">
@@ -69,51 +51,39 @@
         </p>
       </div>
 
-      <img
-        src="/icons/care-hands-blue.png"
-        class="hero-watermark"
-        alt=""
-        aria-hidden="true">
+      <img src="/icons/care-hands-blue.png" class="hero-watermark" alt="" aria-hidden="true" />
 
       <button
         *ngIf="!isLoadingActivities"
         class="action-button primary hero-action-button"
         type="button"
-        (click)="openActivities.emit()">
-
+        (click)="openActivities.emit()"
+      >
         <span>{{ sessionActionLabel }}</span>
       </button>
     </section>
 
-
     <section class="session-summary-card">
       <div class="session-summary-header">
         <div>
-          <span class="session-summary-label">
-  Sessão de hoje | {{ todayFormatted }}
-</span>
+          <span class="session-summary-label"> Sessão de hoje | {{ todayFormatted }} </span>
           <h2 *ngIf="!isLoadingActivities">
             {{ sessionSummaryTitle }}
           </h2>
         </div>
 
-        <span
-          *ngIf="!isLoadingActivities"
-          class="session-status"
-          [ngClass]="sessionStatusClass">
-      {{ sessionStatusLabel }}
-    </span>
+        <span *ngIf="!isLoadingActivities" class="session-status" [ngClass]="sessionStatusClass">
+          {{ sessionStatusLabel }}
+        </span>
       </div>
 
-      <app-loading-spinner
-        *ngIf="isLoadingActivities"
-        message="A preparar o resumo da sessão...">
+      <app-loading-spinner *ngIf="isLoadingActivities" message="A preparar o resumo da sessão...">
       </app-loading-spinner>
 
       <div
         class="session-summary-content"
-        *ngIf="!isLoadingActivities && sessionTotalActivities > 0">
-
+        *ngIf="!isLoadingActivities && sessionTotalActivities > 0"
+      >
         <div class="session-information">
           <div class="session-information-item">
             <span>Atividades planeadas</span>
@@ -123,11 +93,7 @@
           <div class="session-information-item">
             <span>Duração aproximada</span>
             <strong>
-              {{
-                sessionDurationMinutes > 0
-                  ? sessionDurationMinutes + ' min'
-                  : 'A definir'
-              }}
+              {{ sessionDurationMinutes > 0 ? sessionDurationMinutes + ' min' : 'A definir' }}
             </strong>
           </div>
         </div>
@@ -150,12 +116,9 @@
             aria-label="Progresso da sessão de hoje"
             aria-valuemin="0"
             aria-valuemax="100"
-            [attr.aria-valuenow]="sessionProgressPercent">
-
-            <div
-              class="session-progress-fill"
-              [style.width.%]="sessionProgressPercent">
-            </div>
+            [attr.aria-valuenow]="sessionProgressPercent"
+          >
+            <div class="session-progress-fill" [style.width.%]="sessionProgressPercent"></div>
           </div>
         </div>
 
@@ -166,14 +129,10 @@
         </p>
       </div>
 
-      <div
-        class="session-empty"
-        *ngIf="!isLoadingActivities && sessionTotalActivities === 0">
-
+      <div class="session-empty" *ngIf="!isLoadingActivities && sessionTotalActivities === 0">
         <p>Ainda não existem atividades preparadas para hoje.</p>
       </div>
     </section>
-
   </main>
 
   <footer class="bottom-nav">
@@ -193,9 +152,7 @@
     </div>
   </footer>
 </div>
-<app-notifications-popover
-  *ngIf="showNotifications"
-  (close)="closeNotifications()">
+<app-notifications-popover *ngIf="showNotifications" (close)="closeNotifications()">
 </app-notifications-popover>
 
 <app-side-menu
@@ -203,10 +160,11 @@
   [isAdmin]="isAdmin"
   [canChangePatient]="role === 'formal' || isAdmin"
   (close)="closeSideMenu()"
-  (changePatient)="openPatients.emit();closeSideMenu()"
-  (openContents)="openContents.emit();closeSideMenu()"
-  (openAdminActivities)="openAdminActivities.emit();closeSideMenu()"
-  (openUserManagement)="openUserManagement.emit();closeSideMenu()"
+  (changePatient)="openPatients.emit(); closeSideMenu()"
+  (openContents)="openContents.emit(); closeSideMenu()"
+  (openAdminActivities)="openAdminActivities.emit(); closeSideMenu()"
+  (openUserManagement)="openUserManagement.emit(); closeSideMenu()"
   (openMessages)="openChat.emit(); closeSideMenu()"
-  (logout)="logout.emit();closeSideMenu()">
+  (logout)="logout.emit(); closeSideMenu()"
+>
 </app-side-menu>

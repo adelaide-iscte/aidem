@@ -7,32 +7,24 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import {
-  CallOverlayComponent
-} from '../../../../shared/call-overlar-modal/call-overlay.component';
+import { CallOverlayComponent } from '../../../../shared/call-overlar-modal/call-overlay.component';
 
-import {
-  SideMenuComponent
-} from '../../../../shared/side-menu-modal/side-menu.component';
-import {
-  ExerciseNotificationService
-} from '../../../../core/services/exercise-notification.service';
+import { SideMenuComponent } from '../../../../shared/side-menu-modal/side-menu.component';
+import { ExerciseNotificationService } from '../../../../core/services/exercise-notification.service';
 
-import {
-  NotificationsPopoverComponent
-} from '../../../../shared/notifications-popover-modal/notifications-popover.component';
+import { NotificationsPopoverComponent } from '../../../../shared/notifications-popover-modal/notifications-popover.component';
 import {
   ChatContact,
   ChatContactRole,
   ChatConversation,
   ChatMessage,
-  ChatService
+  ChatService,
 } from '../../../../core/services/chat.service';
 
 @Component({
@@ -43,14 +35,12 @@ import {
     FormsModule,
     CallOverlayComponent,
     SideMenuComponent,
-    NotificationsPopoverComponent
+    NotificationsPopoverComponent,
   ],
   templateUrl: './chat-modal.component.html',
-  styleUrls: ['./chat-modal.component.scss']
+  styleUrls: ['./chat-modal.component.scss'],
 })
-export class ChatModalComponent
-  implements OnInit, OnDestroy {
-
+export class ChatModalComponent implements OnInit, OnDestroy {
   @Input()
   role: 'formal' | 'informal' = 'formal';
 
@@ -60,16 +50,12 @@ export class ChatModalComponent
   @Output() openPatients = new EventEmitter<void>();
   @Output() goHome = new EventEmitter<void>();
   @Output() openProfile = new EventEmitter<void>();
-  @Output() openActivities = new EventEmitter<void>();
-  @Output() openChat = new EventEmitter<void>();
   @Output() openContents = new EventEmitter<void>();
   @Output() openUserManagement = new EventEmitter<void>();
   @Output() openAdminActivities = new EventEmitter<void>();
   @Output() logout = new EventEmitter<void>();
   @ViewChild('messagesContainer')
-
-  private messagesContainer?:
-    ElementRef<HTMLElement>;
+  private messagesContainer?: ElementRef<HTMLElement>;
 
   conversations: ChatConversation[] = [];
   contacts: ChatContact[] = [];
@@ -101,7 +87,7 @@ export class ChatModalComponent
   constructor(
     private chatService: ChatService,
     public notificationService: ExerciseNotificationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -113,15 +99,11 @@ export class ChatModalComponent
   }
 
   toggleNotifications(): void {
-    if (
-      this.role !== 'informal' ||
-      this.isAdmin
-    ) {
+    if (this.role !== 'informal' || this.isAdmin) {
       return;
     }
 
-    this.showNotifications =
-      !this.showNotifications;
+    this.showNotifications = !this.showNotifications;
 
     if (this.showNotifications) {
       this.notificationService.markAsRead();
@@ -137,25 +119,20 @@ export class ChatModalComponent
       return '/icons/adm.svg';
     }
 
-    return this.role === 'formal'
-      ? '/icons/professional.svg'
-      : '/icons/generic_user.svg';
+    return this.role === 'formal' ? '/icons/professional.svg' : '/icons/generic_user.svg';
   }
 
   get filteredContacts(): ChatContact[] {
-    const search =
-      this.contactSearch
-        .trim()
-        .toLocaleLowerCase('pt-PT');
+    const search = this.contactSearch.trim().toLocaleLowerCase('pt-PT');
 
     if (!search) {
       return this.contacts;
     }
 
-    return this.contacts.filter(contact => {
-      const searchable =
-        `${contact.fullName} ${this.roleLabel(contact.role)}`
-          .toLocaleLowerCase('pt-PT');
+    return this.contacts.filter((contact) => {
+      const searchable = `${contact.fullName} ${this.roleLabel(contact.role)}`.toLocaleLowerCase(
+        'pt-PT',
+      );
 
       return searchable.includes(search);
     });
@@ -166,7 +143,7 @@ export class ChatModalComponent
       this.selectedContact &&
       !this.isLoadingMessages &&
       !this.isSendingMessage &&
-      this.message.trim()
+      this.message.trim(),
     );
   }
 
@@ -178,9 +155,7 @@ export class ChatModalComponent
     this.showSideMenu = false;
   }
 
-  async openNewMessagePicker():
-    Promise<void> {
-
+  async openNewMessagePicker(): Promise<void> {
     this.showNewMessage = true;
     this.contactSearch = '';
 
@@ -194,27 +169,19 @@ export class ChatModalComponent
     this.contactSearch = '';
   }
 
-  async selectConversation(
-    conversation: ChatConversation
-  ): Promise<void> {
-
+  async selectConversation(conversation: ChatConversation): Promise<void> {
     await this.openConversation({
       id: conversation.contactId,
       fullName: conversation.contactName,
       role: conversation.contactRole,
-      avatar: conversation.contactAvatar
+      avatar: conversation.contactAvatar,
     });
   }
 
-  async selectContact(
-    contact: ChatContact
-  ): Promise<void> {
-
+  async selectContact(contact: ChatContact): Promise<void> {
     this.closeNewMessagePicker();
 
-    await this.openConversation(
-      contact
-    );
+    await this.openConversation(contact);
   }
 
   returnToConversationList(): void {
@@ -238,14 +205,9 @@ export class ChatModalComponent
   }
 
   async sendMessage(): Promise<void> {
-    const content =
-      this.message.trim();
+    const content = this.message.trim();
 
-    if (
-      !content ||
-      !this.selectedContact ||
-      this.isSendingMessage
-    ) {
+    if (!content || !this.selectedContact || this.isSendingMessage) {
       return;
     }
 
@@ -253,15 +215,9 @@ export class ChatModalComponent
     this.sendError = '';
 
     try {
-      const sentMessage =
-        await this.chatService.sendMessage(
-          this.selectedContact.id,
-          content
-        );
+      const sentMessage = await this.chatService.sendMessage(this.selectedContact.id, content);
 
-      this.mergeMessages([
-        sentMessage
-      ]);
+      this.mergeMessages([sentMessage]);
 
       this.message = '';
 
@@ -269,15 +225,10 @@ export class ChatModalComponent
 
       await this.loadConversations(true);
     } catch (error) {
-      console.error(
-        'Erro ao enviar mensagem:',
-        error
-      );
+      console.error('Erro ao enviar mensagem:', error);
 
       this.sendError =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível enviar a mensagem.';
+        error instanceof Error ? error.message : 'Não foi possível enviar a mensagem.';
     } finally {
       this.isSendingMessage = false;
       this.cdr.detectChanges();
@@ -288,10 +239,7 @@ export class ChatModalComponent
     this.close.emit();
   }
 
-  avatarForRole(
-    role: ChatContactRole
-  ): string {
-
+  avatarForRole(role: ChatContactRole): string {
     switch (role) {
       case 'ADMIN':
         return '/icons/adm.svg';
@@ -304,19 +252,11 @@ export class ChatModalComponent
     }
   }
 
-  avatarForContact(
-    contact: ChatContact
-  ): string {
-
-    return contact.avatar?.trim()
-      ? contact.avatar
-      : this.avatarForRole(contact.role);
+  avatarForContact(contact: ChatContact): string {
+    return contact.avatar?.trim() ? contact.avatar : this.avatarForRole(contact.role);
   }
 
-  roleLabel(
-    role: ChatContactRole
-  ): string {
-
+  roleLabel(role: ChatContactRole): string {
     switch (role) {
       case 'ADMIN':
         return 'Administração';
@@ -329,10 +269,7 @@ export class ChatModalComponent
     }
   }
 
-  formatMessageTime(
-    sentAt: string
-  ): string {
-
+  formatMessageTime(sentAt: string): string {
     const date = new Date(sentAt);
 
     if (Number.isNaN(date.getTime())) {
@@ -350,22 +287,19 @@ export class ChatModalComponent
       'pt-PT',
       sameDay
         ? {
-          hour: '2-digit',
-          minute: '2-digit'
-        }
+            hour: '2-digit',
+            minute: '2-digit',
+          }
         : {
-          day: '2-digit',
-          month: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit'
-        }
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          },
     ).format(date);
   }
 
-  formatConversationTime(
-    sentAt: string
-  ): string {
-
+  formatConversationTime(sentAt: string): string {
     const date = new Date(sentAt);
 
     if (Number.isNaN(date.getTime())) {
@@ -383,69 +317,48 @@ export class ChatModalComponent
       'pt-PT',
       sameDay
         ? {
-          hour: '2-digit',
-          minute: '2-digit'
-        }
+            hour: '2-digit',
+            minute: '2-digit',
+          }
         : {
-          day: '2-digit',
-          month: '2-digit'
-        }
+            day: '2-digit',
+            month: '2-digit',
+          },
     ).format(date);
   }
 
-  trackByConversation(
-    _: number,
-    conversation: ChatConversation
-  ): number {
+  trackByConversation(_: number, conversation: ChatConversation): number {
     return conversation.contactId;
   }
 
-  trackByContact(
-    _: number,
-    contact: ChatContact
-  ): number {
+  trackByContact(_: number, contact: ChatContact): number {
     return contact.id;
   }
 
-  trackByMessageId(
-    _: number,
-    chatMessage: ChatMessage
-  ): number {
+  trackByMessageId(_: number, chatMessage: ChatMessage): number {
     return chatMessage.id;
   }
 
-  private async initialize():
-    Promise<void> {
-
+  private async initialize(): Promise<void> {
     await this.loadConversations();
 
     this.startPolling();
   }
 
-  private async loadConversations(
-    silent = false
-  ): Promise<void> {
-
+  private async loadConversations(silent = false): Promise<void> {
     if (!silent) {
       this.isLoadingConversations = true;
       this.conversationsError = '';
     }
 
     try {
-      this.conversations =
-        await this.chatService
-          .getConversations();
+      this.conversations = await this.chatService.getConversations();
     } catch (error) {
-      console.error(
-        'Erro ao carregar conversas:',
-        error
-      );
+      console.error('Erro ao carregar conversas:', error);
 
       if (!silent) {
         this.conversationsError =
-          error instanceof Error
-            ? error.message
-            : 'Não foi possível carregar as conversas.';
+          error instanceof Error ? error.message : 'Não foi possível carregar as conversas.';
       }
     } finally {
       if (!silent) {
@@ -456,36 +369,24 @@ export class ChatModalComponent
     }
   }
 
-  private async loadContacts():
-    Promise<void> {
-
+  private async loadContacts(): Promise<void> {
     this.isLoadingContacts = true;
     this.contactsError = '';
 
     try {
-      this.contacts =
-        await this.chatService
-          .getContacts();
+      this.contacts = await this.chatService.getContacts();
     } catch (error) {
-      console.error(
-        'Erro ao carregar contactos:',
-        error
-      );
+      console.error('Erro ao carregar contactos:', error);
 
       this.contactsError =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível carregar os utilizadores.';
+        error instanceof Error ? error.message : 'Não foi possível carregar os utilizadores.';
     } finally {
       this.isLoadingContacts = false;
       this.cdr.detectChanges();
     }
   }
 
-  private async openConversation(
-    contact: ChatContact
-  ): Promise<void> {
-
+  private async openConversation(contact: ChatContact): Promise<void> {
     this.selectedContact = contact;
     this.messages = [];
     this.message = '';
@@ -494,19 +395,12 @@ export class ChatModalComponent
     this.isLoadingMessages = true;
 
     try {
-      this.messages =
-        await this.chatService
-          .getMessages(contact.id);
+      this.messages = await this.chatService.getMessages(contact.id);
     } catch (error) {
-      console.error(
-        'Erro ao abrir conversa:',
-        error
-      );
+      console.error('Erro ao abrir conversa:', error);
 
       this.messagesError =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível abrir esta conversa.';
+        error instanceof Error ? error.message : 'Não foi possível abrir esta conversa.';
     } finally {
       this.isLoadingMessages = false;
       this.cdr.detectChanges();
@@ -517,19 +411,14 @@ export class ChatModalComponent
   private startPolling(): void {
     this.stopPolling();
 
-    this.pollingTimer = setInterval(
-      () => {
-        void this.poll();
-      },
-      5000
-    );
+    this.pollingTimer = setInterval(() => {
+      void this.poll();
+    }, 5000);
   }
 
   private stopPolling(): void {
     if (this.pollingTimer !== null) {
-      clearInterval(
-        this.pollingTimer
-      );
+      clearInterval(this.pollingTimer);
 
       this.pollingTimer = null;
     }
@@ -543,9 +432,7 @@ export class ChatModalComponent
     this.isPolling = true;
 
     try {
-      await this.loadConversations(
-        true
-      );
+      await this.loadConversations(true);
 
       if (this.selectedContact) {
         await this.loadNewMessages();
@@ -555,76 +442,47 @@ export class ChatModalComponent
     }
   }
 
-  private async loadNewMessages():
-    Promise<void> {
-
+  private async loadNewMessages(): Promise<void> {
     if (!this.selectedContact) {
       return;
     }
 
     try {
       const lastMessageId =
-        this.messages.length > 0
-          ? this.messages[
-          this.messages.length - 1
-            ].id
-          : 0;
+        this.messages.length > 0 ? this.messages[this.messages.length - 1].id : 0;
 
-      const newMessages =
-        await this.chatService.getMessages(
-          this.selectedContact.id,
-          lastMessageId
-        );
+      const newMessages = await this.chatService.getMessages(
+        this.selectedContact.id,
+        lastMessageId,
+      );
 
       if (newMessages.length > 0) {
-        this.mergeMessages(
-          newMessages
-        );
+        this.mergeMessages(newMessages);
 
         this.cdr.detectChanges();
         this.scrollToBottom();
       }
     } catch (error) {
-      console.warn(
-        'Não foi possível atualizar as mensagens:',
-        error
-      );
+      console.warn('Não foi possível atualizar as mensagens:', error);
     }
   }
 
-  private mergeMessages(
-    newMessages: ChatMessage[]
-  ): void {
+  private mergeMessages(newMessages: ChatMessage[]): void {
+    const messagesById = new Map<number, ChatMessage>();
 
-    const messagesById =
-      new Map<number, ChatMessage>();
-
-    for (const chatMessage of [
-      ...this.messages,
-      ...newMessages
-    ]) {
-      messagesById.set(
-        chatMessage.id,
-        chatMessage
-      );
+    for (const chatMessage of [...this.messages, ...newMessages]) {
+      messagesById.set(chatMessage.id, chatMessage);
     }
 
-    this.messages = Array.from(
-      messagesById.values()
-    ).sort(
-      (a, b) => a.id - b.id
-    );
+    this.messages = Array.from(messagesById.values()).sort((a, b) => a.id - b.id);
   }
 
   private scrollToBottom(): void {
     setTimeout(() => {
-      const container =
-        this.messagesContainer
-          ?.nativeElement;
+      const container = this.messagesContainer?.nativeElement;
 
       if (container) {
-        container.scrollTop =
-          container.scrollHeight;
+        container.scrollTop = container.scrollHeight;
       }
     });
   }

@@ -10,7 +10,7 @@
 
     <form class="login-form" (ngSubmit)="login()">
       <div class="input-wrapper">
-        <img src="/icons/Mail.svg" class="icon">
+        <img src="/icons/Mail.svg" class="icon" />
         <input
           type="email"
           name="email"
@@ -21,7 +21,7 @@
       </div>
 
       <div class="input-wrapper" [class.input-error]="errorMessage()">
-        <img src="/icons/Lock.svg" class="icon">
+        <img src="/icons/Lock.svg" class="icon" />
 
         <input
           [type]="showPassword ? 'text' : 'password'"
@@ -32,12 +32,7 @@
         />
 
         <button type="button" class="eye-button" (click)="togglePassword()">
-          <img
-            [src]="showPassword
-        ? '/icons/Eye off.svg'
-        : '/icons/Eye.svg'"
-            class="eye-icon"
-          />
+          <img [src]="showPassword ? '/icons/Eye off.svg' : '/icons/Eye.svg'" class="eye-icon" />
         </button>
       </div>
 
@@ -45,22 +40,16 @@
         {{ errorMessage() }}
       </p>
 
-
       <button
         type="submit"
         class="login-button"
         [class.loading]="isLoading()"
-        [disabled]="isLoading()">
-
-        <app-loading-spinner
-          *ngIf="isLoading()"
-          [compact]="true"
-          message="">
-        </app-loading-spinner>
+        [disabled]="isLoading()"
+      >
+        <app-loading-spinner *ngIf="isLoading()" [compact]="true" message=""> </app-loading-spinner>
 
         <span *ngIf="!isLoading()">Entrar</span>
       </button>
     </form>
-
   </main>
 </div>

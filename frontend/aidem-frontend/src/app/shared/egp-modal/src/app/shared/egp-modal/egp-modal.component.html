@@ -1,33 +1,18 @@
 <div class="egp-overlay">
   <div class="egp-backdrop" (click)="closeModal()"></div>
 
-  <section
-    class="egp-shell"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Resultados EGP do utente">
+  <section class="egp-shell" role="dialog" aria-modal="true" aria-label="Resultados EGP do utente">
     <div class="egp-surface">
-      <app-loading-spinner
-        *ngIf="isLoading"
-        message="A carregar dados EGP...">
+      <app-loading-spinner *ngIf="isLoading" message="A carregar dados EGP...">
       </app-loading-spinner>
 
       <p *ngIf="error">{{ error }}</p>
 
-      <p *ngIf="!isLoading && !error && rows.length === 0">
-        Sem dados EGP para este utente.
-      </p>
+      <p *ngIf="!isLoading && !error && rows.length === 0">Sem dados EGP para este utente.</p>
 
       <div class="egp-accessibility-row" *ngIf="!isLoading && !error">
-        <button
-          class="accessibility-button"
-          type="button"
-          aria-label="Ler dados EGP em voz alta">
-
-          <img
-            src="/icons/volume-blue.svg"
-            class="accessibility-icon"
-            alt="">
+        <button class="accessibility-button" type="button" aria-label="Ler dados EGP em voz alta">
+          <img src="/icons/volume-blue.svg" class="accessibility-icon" alt="" />
 
           <span>Ouvir página</span>
         </button>
@@ -35,7 +20,7 @@
 
       <div class="top-row" *ngIf="!isLoading && !error">
         <article class="patient-card">
-          <img [src]="patientCard.avatar" [alt]="patientCard.name" class="patient-avatar">
+          <img [src]="patientCard.avatar" [alt]="patientCard.name" class="patient-avatar" />
 
           <div class="patient-copy">
             <p>{{ patientCard.title }}</p>
@@ -62,9 +47,7 @@
         </article>
       </div>
 
-      <div
-        class="egp-table-layout"
-        *ngIf="!isLoading && !error && rows.length > 0">
+      <div class="egp-table-layout" *ngIf="!isLoading && !error && rows.length > 0">
         <section class="egp-column">
           <header class="egp-header">
             <h3>EGP</h3>
@@ -100,8 +83,8 @@
             <div
               class="egp-row"
               *ngFor="let row of secondColumnRows"
-              [class.summary-row]="row.summary || isSummaryRow(row.label)">
-
+              [class.summary-row]="row.summary || isSummaryRow(row.label)"
+            >
               <div class="egp-label">{{ row.label }}</div>
 
               <div class="egp-scores">
@@ -113,65 +96,43 @@
         </section>
       </div>
 
-      <div
-        class="footer-actions"
-        *ngIf="!isLoading">
-
+      <div class="footer-actions" *ngIf="!isLoading">
         <button
-          *ngIf="
-      canEdit &&
-      assessmentId !== null &&
-      rows.length > 0
-    "
+          *ngIf="canEdit && assessmentId !== null && rows.length > 0"
           type="button"
           class="secondary-button"
-          (click)="openEditModal()">
-
-          <img
-            src="/icons/Edit.svg"
-            class="edit-icon"
-            alt="" />
+          (click)="openEditModal()"
+        >
+          <img src="/icons/Edit.svg" class="edit-icon" alt="" />
 
           Editar dados
-
         </button>
 
         <button
           *ngIf="!error && rows.length > 0"
           type="button"
           class="primary-button"
-          (click)="openGraph()">
-
+          (click)="openGraph()"
+        >
           Ver gráfico
         </button>
 
-        <button
-          type="button"
-          class="secondary-button"
-          (click)="closeModal()">
-
-    <span class="back-icon">
-      ‹
-    </span>
+        <button type="button" class="secondary-button" (click)="closeModal()">
+          <span class="back-icon"> ‹ </span>
 
           Voltar
-
         </button>
-
       </div>
     </div>
   </section>
   <app-egp-edit-modal
-    *ngIf="
-    showEditModal &&
-    patientId !== null &&
-    editableAssessment
-  "
+    *ngIf="showEditModal && patientId !== null && editableAssessment"
     [patientId]="patientId"
     [patientName]="patientCard.name"
     [assessment]="editableAssessment!"
     (cancel)="closeEditModal()"
-    (saved)="onEgpSaved($event)">
+    (saved)="onEgpSaved($event)"
+  >
   </app-egp-edit-modal>
 
   <div class="graph-overlay" *ngIf="showGraphModal">
@@ -193,8 +154,8 @@
             <div
               class="graph-row"
               *ngFor="let row of chartRows"
-              [class.summary-row]="row.summary || isSummaryRow(row.label)">
-
+              [class.summary-row]="row.summary || isSummaryRow(row.label)"
+            >
               <div class="graph-label">{{ row.label }}</div>
 
               <div class="graph-scores">
@@ -212,43 +173,32 @@
             <div class="zone zone-three"></div>
 
             <div class="vertical-grid">
-            <span
-              *ngFor="let value of [0,1,2,3,4,5,6]"
-              [style.left.%]="(value / 6) * 100">
-            </span>
+              <span *ngFor="let value of [0, 1, 2, 3, 4, 5, 6]" [style.left.%]="(value / 6) * 100">
+              </span>
             </div>
 
             <div
               class="horizontal-grid"
-              [style.grid-template-rows]="'repeat(' + chartRows.length + ', 1fr)'">
-
+              [style.grid-template-rows]="'repeat(' + chartRows.length + ', 1fr)'"
+            >
               <span *ngFor="let row of chartRows"></span>
             </div>
 
-            <svg
-              class="chart-svg"
-              viewBox="0 0 600 21"
-              preserveAspectRatio="none">
-
-              <path
-                [attr.d]="chartPath"
-                vector-effect="non-scaling-stroke">
-              </path>
+            <svg class="chart-svg" viewBox="0 0 600 21" preserveAspectRatio="none">
+              <path [attr.d]="chartPath" vector-effect="non-scaling-stroke"></path>
 
               <ellipse
                 *ngFor="let row of chartRows; let i = index"
                 [attr.cx]="pointX(row.nr)"
                 [attr.cy]="pointY(i)"
                 rx="6"
-                ry="0.18">
-              </ellipse>
+                ry="0.18"
+              ></ellipse>
             </svg>
           </div>
 
           <div class="x-axis">
-            <span
-              *ngFor="let value of [0,1,2,3,4,5,6]"
-              [style.left.%]="(value / 6) * 100">
+            <span *ngFor="let value of [0, 1, 2, 3, 4, 5, 6]" [style.left.%]="(value / 6) * 100">
               {{ value }}
             </span>
           </div>
@@ -256,9 +206,7 @@
       </div>
 
       <div class="graph-footer">
-        <button type="button" class="close-graph-button" (click)="closeGraph()">
-          Fechar
-        </button>
+        <button type="button" class="close-graph-button" (click)="closeGraph()">Fechar</button>
       </div>
     </section>
   </div>

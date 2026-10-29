@@ -12,9 +12,10 @@ import { AppNavigationService } from '../core/services/app-navigation.service';
       [isAdmin]="true"
       (goBack)="nav.back()"
       (createExercise)="nav.openCreateExercise()"
-      (editExercise)="onEditExercise($event)">
+      (editExercise)="onEditExercise($event)"
+    >
     </app-admin-exercises>
-  `
+  `,
 })
 export class AdminExercisesPage {
   readonly nav = inject(AppNavigationService);

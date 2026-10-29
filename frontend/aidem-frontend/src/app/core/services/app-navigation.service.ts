@@ -1,57 +1,29 @@
-import {
-  Injectable,
-  inject
-} from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
-import {
-  Location
-} from '@angular/common';
+import { Location } from '@angular/common';
 
-import {
-  Router
-} from '@angular/router';
+import { Router } from '@angular/router';
 
-import {
-  AppSessionService
-} from './app-session.service';
+import { AppSessionService } from './app-session.service';
 
 type NavigationState = {
   depth?: number;
 };
 
-/*
- * Centraliza a navegação da aplicação
- * através do Angular Router.
- *
- * Cada entrada do histórico criada pela
- * aplicação guarda a sua "profundidade"
- * (history.state.depth). Assim, os botões
- * "voltar" da interface só usam o histórico
- * do browser quando a página anterior
- * pertence à aplicação; caso contrário
- * navegam para uma página por omissão.
- */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AppNavigationService {
+  private readonly router = inject(Router);
 
-  private readonly router =
-    inject(Router);
+  private readonly location = inject(Location);
 
-  private readonly location =
-    inject(Location);
-
-  private readonly session =
-    inject(AppSessionService);
+  private readonly session = inject(AppSessionService);
 
   homeUrl(): string {
-    const patient =
-      this.session.selectedPatient();
+    const patient = this.session.selectedPatient();
 
-    return patient
-      ? `/utentes/${patient.id}`
-      : '/';
+    return patient ? `/utentes/${patient.id}` : '/';
   }
 
   goHome(): void {
@@ -66,9 +38,7 @@ export class AppNavigationService {
     void this.go('/utentes');
   }
 
-  openPatient(
-    patientId: number
-  ): void {
+  openPatient(patientId: number): void {
     void this.go(`/utentes/${patientId}`);
   }
 
@@ -100,98 +70,57 @@ export class AppNavigationService {
     void this.go('/admin/exercicios/novo');
   }
 
-  openEditExercise(
-    exerciseId: number
-  ): void {
-    void this.go(
-      `/admin/exercicios/${exerciseId}/editar`
-    );
+  openEditExercise(exerciseId: number): void {
+    void this.go(`/admin/exercicios/${exerciseId}/editar`);
   }
 
   openUserManagement(): void {
     void this.go('/admin/utilizadores');
   }
 
-  /*
-   * Volta à página anterior da aplicação
-   * ou, se não existir, ao fallback.
-   */
-  back(
-    fallbackUrl: string = this.homeUrl()
-  ): void {
+  back(fallbackUrl: string = this.homeUrl()): void {
     if (this.currentDepth() > 0) {
       this.location.back();
       return;
     }
 
-    void this.router.navigateByUrl(
-      fallbackUrl,
-      { replaceUrl: true }
-    );
+    void this.router.navigateByUrl(fallbackUrl, { replaceUrl: true });
   }
 
-  /*
-   * Usado depois do login: substitui a
-   * entrada do /login no histórico, para
-   * que o botão "voltar" do browser não
-   * regresse ao formulário de login.
-   */
-  enterApp(
-    url: string = '/'
-  ): void {
+  enterApp(url: string = '/'): void {
     void this.go(url, true);
   }
 
   logout(): void {
     this.session.logout();
 
-    void this.router.navigateByUrl(
-      '/login',
-      { replaceUrl: true }
-    );
+    void this.router.navigateByUrl('/login', { replaceUrl: true });
   }
 
-  private goToPatientPage(
-    page: 'atividades' | 'perfil'
-  ): void {
-    const patient =
-      this.session.selectedPatient();
+  private goToPatientPage(page: 'atividades' | 'perfil'): void {
+    const patient = this.session.selectedPatient();
 
     if (!patient) {
       return;
     }
 
-    void this.go(
-      `/utentes/${patient.id}/${page}`
-    );
+    void this.go(`/utentes/${patient.id}/${page}`);
   }
 
-  private go(
-    url: string,
-    replaceUrl = false
-  ): Promise<boolean> {
-    const depth =
-      this.currentDepth();
+  private go(url: string, replaceUrl = false): Promise<boolean> {
+    const depth = this.currentDepth();
 
-    return this.router.navigateByUrl(
-      url,
-      {
-        replaceUrl,
-        state: {
-          depth: replaceUrl
-            ? depth
-            : depth + 1
-        }
-      }
-    );
+    return this.router.navigateByUrl(url, {
+      replaceUrl,
+      state: {
+        depth: replaceUrl ? depth : depth + 1,
+      },
+    });
   }
 
   private currentDepth(): number {
-    const state =
-      this.location.getState() as NavigationState | null;
+    const state = this.location.getState() as NavigationState | null;
 
-    return typeof state?.depth === 'number'
-      ? state.depth
-      : 0;
+    return typeof state?.depth === 'number' ? state.depth : 0;
   }
 }

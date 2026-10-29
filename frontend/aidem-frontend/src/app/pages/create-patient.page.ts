@@ -8,18 +8,15 @@ import { AppNavigationService } from '../core/services/app-navigation.service';
   standalone: true,
   imports: [CreatePatientComponent],
   template: `
-    <app-create-patient
-      (created)="onCreated()"
-      (goBack)="nav.back('/utentes')">
+    <app-create-patient (created)="onCreated()" (goBack)="nav.back('/utentes')">
     </app-create-patient>
-  `
+  `,
 })
 export class CreatePatientPage {
   private readonly session = inject(AppSessionService);
   readonly nav = inject(AppNavigationService);
 
   onCreated(): void {
-    // Recarrega a lista para incluir o novo utente.
     void this.session.loadPatients();
     this.nav.back('/utentes');
   }

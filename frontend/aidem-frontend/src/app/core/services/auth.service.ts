@@ -1,26 +1,12 @@
-import {
-  Inject,
-  Injectable,
-  PLATFORM_ID
-} from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 
-import {
-  isPlatformBrowser
-} from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 
-import {
-  Subject
-} from 'rxjs';
+import { Subject } from 'rxjs';
 
-export type BackendRole =
-  | 'ADMIN'
-  | 'FORMAL_CAREGIVER'
-  | 'INFORMAL_CAREGIVER';
+export type BackendRole = 'ADMIN' | 'FORMAL_CAREGIVER' | 'INFORMAL_CAREGIVER';
 
-export type FrontendRole =
-  | 'admin'
-  | 'formal'
-  | 'informal';
+export type FrontendRole = 'admin' | 'formal' | 'informal';
 
 export type AuthUser = {
   id: number;
@@ -48,43 +34,35 @@ export class LoginError extends Error {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   // Local:
   // private readonly backendUrl =
   //   'http://localhost:8080';
 
-// Produção:
-  private readonly backendUrl =
-    'https://aidem-backend.onrender.com';
+  // Produção:
+  private readonly backendUrl = 'https://aidem-backend.onrender.com';
 
-  private readonly apiUrl =
-    `${this.backendUrl}/api/auth`;
+  private readonly apiUrl = `${this.backendUrl}/api/auth`;
 
   private readonly loginTimeoutMs = 90_000;
 
-  private readonly tokenKey =
-    'aidem_token';
+  private readonly tokenKey = 'aidem_token';
 
-  private readonly userKey =
-    'aidem_user';
+  private readonly userKey = 'aidem_user';
 
-  private readonly sessionExpiredSubject =
-    new Subject<void>();
+  private readonly sessionExpiredSubject = new Subject<void>();
 
-  readonly sessionExpired$ =
-    this.sessionExpiredSubject.asObservable();
+  readonly sessionExpired$ = this.sessionExpiredSubject.asObservable();
 
   constructor(
     @Inject(PLATFORM_ID)
-    private platformId: object
+    private platformId: object,
   ) {}
 
   private get isBrowser(): boolean {
-    return isPlatformBrowser(
-      this.platformId
-    );
+    return isPlatformBrowser(this.platformId);
   }
 
   warmUpBackend(): void {
@@ -92,94 +70,62 @@ export class AuthService {
       return;
     }
 
-    void fetch(
-      `${this.backendUrl}/api/health`
-    ).catch(() => undefined);
+    void fetch(`${this.backendUrl}/api/health`).catch(() => undefined);
   }
 
-  async login(
-    email: string,
-    password: string
-  ): Promise<LoginResponse> {
+  async login(email: string, password: string): Promise<LoginResponse> {
     this.clearSession();
 
     const controller = new AbortController();
 
-    const timeoutId = setTimeout(
-      () => controller.abort(),
-      this.loginTimeoutMs
-    );
+    const timeoutId = setTimeout(() => controller.abort(), this.loginTimeoutMs);
 
     try {
-      const response = await fetch(
-        `${this.apiUrl}/login`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: email.trim(),
-            password
-          }),
-          signal: controller.signal
-        }
-      );
+      const response = await fetch(`${this.apiUrl}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+        }),
+        signal: controller.signal,
+      });
 
       if (response.status === 401) {
-        throw new LoginError(
-          'INVALID_CREDENTIALS'
-        );
+        throw new LoginError('INVALID_CREDENTIALS');
       }
 
       if (response.status === 403) {
-        throw new LoginError(
-          'ACCOUNT_DISABLED'
-        );
+        throw new LoginError('ACCOUNT_DISABLED');
       }
 
       if (!response.ok) {
-        throw new LoginError(
-          'SERVER_UNAVAILABLE'
-        );
+        throw new LoginError('SERVER_UNAVAILABLE');
       }
 
-      const data =
-        await response.json() as LoginResponse;
+      const data = (await response.json()) as LoginResponse;
 
-      this.saveSession(
-        data.token,
-        data.user
-      );
+      this.saveSession(data.token, data.user);
 
       return data;
-
     } catch (error: unknown) {
       if (error instanceof LoginError) {
         throw error;
       }
 
-      if (
-        error instanceof Error &&
-        error.name === 'AbortError'
-      ) {
-        throw new LoginError(
-          'REQUEST_TIMEOUT'
-        );
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new LoginError('REQUEST_TIMEOUT');
       }
 
-      throw new LoginError(
-        'SERVER_UNAVAILABLE'
-      );
-
+      throw new LoginError('SERVER_UNAVAILABLE');
     } finally {
       clearTimeout(timeoutId);
     }
   }
 
-  toFrontendRole(
-    role: BackendRole
-  ): FrontendRole {
+  toFrontendRole(role: BackendRole): FrontendRole {
     switch (role) {
       case 'ADMIN':
         return 'admin';
@@ -192,23 +138,14 @@ export class AuthService {
     }
   }
 
-  saveSession(
-    token: string,
-    user: AuthUser
-  ): void {
+  saveSession(token: string, user: AuthUser): void {
     if (!this.isBrowser) {
       return;
     }
 
-    localStorage.setItem(
-      this.tokenKey,
-      token
-    );
+    localStorage.setItem(this.tokenKey, token);
 
-    localStorage.setItem(
-      this.userKey,
-      JSON.stringify(user)
-    );
+    localStorage.setItem(this.userKey, JSON.stringify(user));
   }
 
   clearSession(): void {
@@ -216,13 +153,9 @@ export class AuthService {
       return;
     }
 
-    localStorage.removeItem(
-      this.tokenKey
-    );
+    localStorage.removeItem(this.tokenKey);
 
-    localStorage.removeItem(
-      this.userKey
-    );
+    localStorage.removeItem(this.userKey);
   }
 
   logout(): void {
@@ -240,9 +173,7 @@ export class AuthService {
       return null;
     }
 
-    return localStorage.getItem(
-      this.tokenKey
-    );
+    return localStorage.getItem(this.tokenKey);
   }
 
   getStoredUser(): AuthUser | null {
@@ -250,29 +181,17 @@ export class AuthService {
       return null;
     }
 
-    const rawUser =
-      localStorage.getItem(
-        this.userKey
-      );
+    const rawUser = localStorage.getItem(this.userKey);
 
     if (!rawUser) {
       return null;
     }
 
     try {
-      return JSON.parse(
-        rawUser
-      ) as AuthUser;
+      return JSON.parse(rawUser) as AuthUser;
     } catch {
       this.clearSession();
       return null;
     }
-  }
-
-  hasSession(): boolean {
-    return Boolean(
-      this.getToken() &&
-      this.getStoredUser()
-    );
   }
 }

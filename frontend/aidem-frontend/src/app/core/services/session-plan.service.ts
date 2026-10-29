@@ -53,122 +53,91 @@ export class SessionPlanService {
     return this.request<SessionPlan>(`${this.apiBase}/patients/${patientId}/session-plans/today`);
   }
 
-  async regenerateTodayPlan(patientId: number): Promise<SessionPlan> {
-    return this.request<SessionPlan>(`${this.apiBase}/patients/${patientId}/session-plans/today/regenerate`, {
-      method: 'POST'
+  async addExerciseToPlan(sessionPlanId: number, exerciseId: number): Promise<SessionPlan> {
+    return this.request<SessionPlan>(`${this.apiBase}/session-plans/${sessionPlanId}/exercises`, {
+      method: 'POST',
+      body: JSON.stringify({
+        exerciseId,
+      }),
     });
   }
 
-  async addExerciseToPlan(
-    sessionPlanId: number,
-    exerciseId: number
-  ): Promise<SessionPlan> {
-
-    return this.request<SessionPlan>(
-      `${this.apiBase}/session-plans/${sessionPlanId}/exercises`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          exerciseId
-        })
-      }
-    );
-  }
-
-  async removeExerciseFromPlan(
-    sessionPlanExerciseId: number
-  ): Promise<SessionPlan> {
-
+  async removeExerciseFromPlan(sessionPlanExerciseId: number): Promise<SessionPlan> {
     return this.request<SessionPlan>(
       `${this.apiBase}/session-plan-exercises/${sessionPlanExerciseId}`,
       {
-        method: 'DELETE'
-      }
+        method: 'DELETE',
+      },
     );
   }
 
   async sendFeedback(
     sessionPlanExerciseId: number,
-    payload: ExerciseFeedbackPayload
+    payload: ExerciseFeedbackPayload,
   ): Promise<SessionPlanExercise> {
-    return this.request<SessionPlanExercise>(`${this.apiBase}/session-plan-exercises/${sessionPlanExerciseId}/feedback`, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
+    return this.request<SessionPlanExercise>(
+      `${this.apiBase}/session-plan-exercises/${sessionPlanExerciseId}/feedback`,
+      {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      },
+    );
   }
 
   async skipExercise(sessionPlanExerciseId: number, notes: string): Promise<SessionPlanExercise> {
-    return this.request<SessionPlanExercise>(`${this.apiBase}/session-plan-exercises/${sessionPlanExerciseId}/skip`, {
-      method: 'POST',
-      body: JSON.stringify({ notes })
-    });
+    return this.request<SessionPlanExercise>(
+      `${this.apiBase}/session-plan-exercises/${sessionPlanExerciseId}/skip`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ notes }),
+      },
+    );
   }
 
   async resetExercise(sessionPlanExerciseId: number): Promise<SessionPlanExercise> {
-    return this.request<SessionPlanExercise>(`${this.apiBase}/session-plan-exercises/${sessionPlanExerciseId}/reset`, {
-      method: 'PATCH'
-    });
+    return this.request<SessionPlanExercise>(
+      `${this.apiBase}/session-plan-exercises/${sessionPlanExerciseId}/reset`,
+      {
+        method: 'PATCH',
+      },
+    );
   }
 
-  private async request<T>(
-    url: string,
-    init: RequestInit = {}
-  ): Promise<T> {
-
-    const token =
-      localStorage.getItem('aidem_token');
+  private async request<T>(url: string, init: RequestInit = {}): Promise<T> {
+    const token = localStorage.getItem('aidem_token');
 
     if (!token) {
       throw new Error('TOKEN_MISSING');
     }
 
-    const response =
-      await fetch(url, {
-        ...init,
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          ...(init.headers ?? {})
-        }
-      });
+    const response = await fetch(url, {
+      ...init,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...(init.headers ?? {}),
+      },
+    });
 
     if (response.status === 401) {
       this.authService.expireSession();
 
-      throw new Error(
-        'A sessão expirou. Inicie sessão novamente.'
-      );
+      throw new Error('A sessão expirou. Inicie sessão novamente.');
     }
 
     if (!response.ok) {
-      const errorText =
-        await response.text();
+      const errorText = await response.text();
 
-      throw new Error(
-        errorText ||
-        `Erro ${response.status}`
-      );
+      throw new Error(errorText || `Erro ${response.status}`);
     }
 
-    return await response.json() as T;
+    return (await response.json()) as T;
   }
 
-  async getWeekPlan(
-    patientId: number
-  ): Promise<SessionPlan[]> {
+  async getPlanRange(patientId: number, startDate: string): Promise<SessionPlan[]> {
     return this.request<SessionPlan[]>(
-      `${this.apiBase}/patients/${patientId}/session-plans/week`
-    );
-  }
-
-
-  async getPlanRange(
-    patientId: number,
-    startDate: string
-  ): Promise<SessionPlan[]> {
-    return this.request<SessionPlan[]>(
-      `${this.apiBase}/patients/${patientId}/session-plans/range?startDate=${encodeURIComponent(startDate)}`
+      `${this.apiBase}/patients/${patientId}/session-plans/range?startDate=${encodeURIComponent(startDate)}`,
     );
   }
 }

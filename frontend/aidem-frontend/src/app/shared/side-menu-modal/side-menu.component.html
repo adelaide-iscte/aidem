@@ -1,54 +1,31 @@
-<div
-  class="side-menu-overlay"
-  aria-hidden="true"
-  (click)="close.emit()">
-</div>
+<div class="side-menu-overlay" aria-hidden="true" (click)="close.emit()"></div>
 
-<aside
-  class="side-menu"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="side-menu-title">
-
+<aside class="side-menu" role="dialog" aria-modal="true" aria-labelledby="side-menu-title">
   <header class="side-menu-header">
     <div class="side-menu-heading">
       <h2 id="side-menu-title">Menu principal</h2>
     </div>
 
-    <button
-      class="side-menu-back"
-      type="button"
-      aria-label="Fechar menu"
-      (click)="close.emit()">
-
+    <button class="side-menu-back" type="button" aria-label="Fechar menu" (click)="close.emit()">
       <span aria-hidden="true">←</span>
       <span>Voltar</span>
     </button>
   </header>
 
-
-  <nav
-    class="side-menu-navigation"
-    aria-label="Navegação principal">
-
-    <span class="side-menu-section-title">
-      Geral
-    </span>
-
+  <nav class="side-menu-navigation" aria-label="Navegação principal">
+    <span class="side-menu-section-title"> Geral </span>
 
     <button
       *ngIf="canChangePatient"
       class="side-menu-item"
       type="button"
-      (click)="changePatient.emit()">
-
+      (click)="changePatient.emit()"
+    >
       <span class="side-menu-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24">
           <circle cx="9" cy="7.5" r="3"></circle>
 
-          <path
-            d="M3.5 18c.7-3.3 2.5-4.8 5.5-4.8s4.8 1.5 5.5 4.8">
-          </path>
+          <path d="M3.5 18c.7-3.3 2.5-4.8 5.5-4.8s4.8 1.5 5.5 4.8"></path>
 
           <path d="M15.5 8h5"></path>
           <path d="m18.4 5.2 2.8 2.8-2.8 2.8"></path>
@@ -59,18 +36,10 @@
         <strong>Trocar utente</strong>
       </span>
 
-      <span class="side-menu-chevron" aria-hidden="true">
-        ›
-      </span>
+      <span class="side-menu-chevron" aria-hidden="true"> › </span>
     </button>
 
-
-    <button
-      *ngIf="canOpenMessages"
-      class="side-menu-item"
-      type="button"
-      (click)="openMessages.emit()">
-
+    <button class="side-menu-item" type="button" (click)="openMessages.emit()">
       <span class="side-menu-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24">
           <path d="M5 5.5h14v10H9L5 19V5.5Z"></path>
@@ -83,26 +52,15 @@
         <strong>Mensagens</strong>
       </span>
 
-      <span class="side-menu-chevron" aria-hidden="true">
-        ›
-      </span>
+      <span class="side-menu-chevron" aria-hidden="true"> › </span>
     </button>
 
-
-    <button
-      class="side-menu-item"
-      type="button"
-      (click)="openContents.emit()">
-
+    <button class="side-menu-item" type="button" (click)="openContents.emit()">
       <span class="side-menu-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24">
-          <path
-            d="M4 5.5c2.8-.9 5.4-.4 8 1.5v12c-2.6-1.9-5.2-2.4-8-1.5v-12Z">
-          </path>
+          <path d="M4 5.5c2.8-.9 5.4-.4 8 1.5v12c-2.6-1.9-5.2-2.4-8-1.5v-12Z"></path>
 
-          <path
-            d="M20 5.5c-2.8-.9-5.4-.4-8 1.5v12c2.6-1.9 5.2-2.4 8-1.5v-12Z">
-          </path>
+          <path d="M20 5.5c-2.8-.9-5.4-.4-8 1.5v12c2.6-1.9 5.2-2.4 8-1.5v-12Z"></path>
         </svg>
       </span>
 
@@ -110,24 +68,13 @@
         <strong>Conteúdos</strong>
       </span>
 
-      <span class="side-menu-chevron" aria-hidden="true">
-        ›
-      </span>
+      <span class="side-menu-chevron" aria-hidden="true"> › </span>
     </button>
 
-
     <ng-container *ngIf="isAdmin">
+      <span class="side-menu-section-title admin-section-title"> Administração </span>
 
-      <span class="side-menu-section-title admin-section-title">
-        Administração
-      </span>
-
-
-      <button
-        class="side-menu-item admin-item"
-        type="button"
-        (click)="openAdminActivities.emit()">
-
+      <button class="side-menu-item admin-item" type="button" (click)="openAdminActivities.emit()">
         <span class="side-menu-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
             <path d="M8 4h8"></path>
@@ -143,29 +90,18 @@
           <strong>Atividades</strong>
         </span>
 
-        <span class="side-menu-chevron" aria-hidden="true">
-          ›
-        </span>
+        <span class="side-menu-chevron" aria-hidden="true"> › </span>
       </button>
 
-
-      <button
-        class="side-menu-item admin-item"
-        type="button"
-        (click)="openUserManagement.emit()">
-
+      <button class="side-menu-item admin-item" type="button" (click)="openUserManagement.emit()">
         <span class="side-menu-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24">
             <circle cx="9" cy="8" r="3"></circle>
             <circle cx="17" cy="9" r="2.5"></circle>
 
-            <path
-              d="M3.5 19c.7-3.5 2.5-5 5.5-5s4.8 1.5 5.5 5">
-            </path>
+            <path d="M3.5 19c.7-3.5 2.5-5 5.5-5s4.8 1.5 5.5 5"></path>
 
-            <path
-              d="M14.5 14.5c3.3-.8 5.3.7 6 3.5">
-            </path>
+            <path d="M14.5 14.5c3.3-.8 5.3.7 6 3.5"></path>
           </svg>
         </span>
 
@@ -173,21 +109,13 @@
           <strong>Gestão de utilizadores</strong>
         </span>
 
-        <span class="side-menu-chevron" aria-hidden="true">
-          ›
-        </span>
+        <span class="side-menu-chevron" aria-hidden="true"> › </span>
       </button>
-
     </ng-container>
   </nav>
 
-
   <footer class="side-menu-footer">
-    <button
-      type="button"
-      class="logout-item"
-      (click)="logout.emit()">
-
+    <button type="button" class="logout-item" (click)="logout.emit()">
       <span class="logout-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24">
           <path d="M10 4H5v16h5"></path>

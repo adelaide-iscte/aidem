@@ -6,7 +6,7 @@ import { AppNavigationService } from '../core/services/app-navigation.service';
   selector: 'app-contents-page',
   standalone: true,
   imports: [ContentsComponent],
-  template: `<app-contents (goBack)="nav.back()"></app-contents>`
+  template: `<app-contents (goBack)="nav.back()"></app-contents>`,
 })
 export class ContentsPage {
   readonly nav = inject(AppNavigationService);

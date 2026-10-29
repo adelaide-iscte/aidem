@@ -4,5 +4,5 @@ public enum ExerciseStatus {
     PENDING,
     COMPLETED,
     FAILED,
-    SKIPPED
+    SKIPPED,
 }

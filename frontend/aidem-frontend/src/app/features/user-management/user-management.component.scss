@@ -11,18 +11,12 @@
   box-sizing: border-box;
 }
 
-
-/* Página */
-
 .user-management-page {
   min-height: 100vh;
 
   background: #f7f9fc;
   color: #263750;
 }
-
-
-/* Cabeçalho */
 
 .header {
   position: relative;
@@ -125,18 +119,12 @@
   object-fit: cover;
 }
 
-
-/* Conteúdo */
-
 .list-content,
 .form-content {
   width: min(1320px, calc(100% - 96px));
   margin: 0 auto;
   padding: 38px 0 64px;
 }
-
-
-/* Introduções */
 
 .list-heading {
   margin-bottom: 26px;
@@ -190,9 +178,6 @@
   margin-bottom: 25px;
 }
 
-
-/* Botão principal */
-
 .primary-button {
   min-height: 60px;
   padding: 0 25px;
@@ -240,9 +225,6 @@
   font-weight: 600;
   line-height: 1;
 }
-
-
-/* Pesquisa e filtros */
 
 .toolbar {
   padding: 18px;
@@ -364,9 +346,6 @@
   color: #3977df;
 }
 
-
-/* Filtros */
-
 .role-filters {
   padding: 5px;
 
@@ -411,9 +390,6 @@
 
   box-shadow: 0 3px 9px rgba(54, 76, 113, 0.12);
 }
-
-
-/* Lista de utilizadores */
 
 .users-list {
   margin-top: 22px;
@@ -588,9 +564,6 @@
   font-weight: 700;
 }
 
-
-/* Ações dos utilizadores */
-
 .user-actions {
   display: flex;
   align-items: center;
@@ -657,9 +630,6 @@
   transform: scale(0.98);
 }
 
-
-/* Mensagens */
-
 .message {
   margin: 24px 0 0;
   padding: 24px;
@@ -686,9 +656,6 @@
   background: #ffffff;
   color: #68778c;
 }
-
-
-/* Formulário */
 
 .caregiver-form {
   display: flex;
@@ -757,9 +724,6 @@
   border-radius: 50%;
   background: #407ce2;
 }
-
-
-/* Campos */
 
 .account-panel label {
   display: flex;
@@ -836,9 +800,6 @@
 .password-grid input {
   min-width: 0;
 }
-
-
-/* Tipo de cuidador */
 
 .role-selection {
   margin: 3px 0 0;
@@ -934,9 +895,6 @@
   font-weight: 600;
   line-height: 1.35;
 }
-
-
-/* Seleção de utentes */
 
 .patients-heading {
   display: flex;
@@ -1113,9 +1071,6 @@
   text-align: center;
 }
 
-
-/* Ações do formulário */
-
 .form-actions {
   margin-top: 4px;
   padding: 4px 0 0;
@@ -1192,9 +1147,6 @@
   box-shadow: none;
 }
 
-
-/* Foco acessível */
-
 .primary-button:focus-visible,
 .back-button:focus-visible,
 .role-filters button:focus-visible,
@@ -1209,9 +1161,6 @@
   outline: 4px solid rgba(64, 124, 226, 0.22);
   outline-offset: 3px;
 }
-
-
-/* Modal de remoção */
 
 .delete-modal-backdrop {
   position: fixed;
@@ -1390,9 +1339,6 @@
   }
 }
 
-
-/* Tablet */
-
 @media (max-width: 1280px) {
   .list-content,
   .form-content {
@@ -1440,9 +1386,6 @@
     justify-content: flex-end;
   }
 }
-
-
-/* Telemóvel */
 
 @media (max-width: 700px) {
   .header {

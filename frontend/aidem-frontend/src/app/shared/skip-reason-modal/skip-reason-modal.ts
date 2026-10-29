@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './skip-reason-modal.component.html',
-  styleUrl: './skip-reason-modal.component.scss'
+  styleUrl: './skip-reason-modal.component.scss',
 })
 export class SkipReasonModalComponent {
   @Output() close = new EventEmitter<void>();

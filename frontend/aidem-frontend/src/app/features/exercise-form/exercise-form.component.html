@@ -4,8 +4,8 @@
       type="button"
       class="back-button"
       aria-label="Voltar à lista de atividades"
-      (click)="goBack.emit()">
-
+      (click)="goBack.emit()"
+    >
       <span class="back-arrow" aria-hidden="true">←</span>
       <span>Voltar</span>
     </button>
@@ -13,83 +13,37 @@
     <h1>{{ pageTitle }}</h1>
 
     <div class="header-icons">
-      <img
-        src="/icons/bell.svg"
-        alt="Notificações"
-      />
+      <img src="/icons/bell.svg" alt="Notificações" />
 
-      <img
-        src="/icons/adm.svg"
-        class="admin-avatar"
-        alt="Administrador"
-      />
+      <img src="/icons/adm.svg" class="admin-avatar" alt="Administrador" />
     </div>
   </header>
 
   <main class="form-content">
     <section class="exercise-image-editor">
-
       <div class="exercise-image-preview">
+        <img [src]="getExerciseImage()" [alt]="form.title || 'Imagem da atividade'" />
 
-        <img
-          [src]="getExerciseImage()"
-          [alt]="
-        form.title ||
-        'Imagem da atividade'
-      "
-        />
-
-        <label
-          class="exercise-image-camera"
-          aria-label="Selecionar imagem da atividade">
-
+        <label class="exercise-image-camera" aria-label="Selecionar imagem da atividade">
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp"
-            [disabled]="
-          isSaving ||
-          isProcessingImage
-        "
-            (change)="
-          onExerciseImageSelected($event)
-        "
+            [disabled]="isSaving || isProcessingImage"
+            (change)="onExerciseImageSelected($event)"
           />
 
-          <img
-            src="/icons/camera.svg"
-            alt=""
-            aria-hidden="true"
-          />
-
+          <img src="/icons/camera.svg" alt="" aria-hidden="true" />
         </label>
-
       </div>
 
-
       <div class="exercise-image-information">
-
         <h2>Imagem da atividade</h2>
 
-        <p>
-          A imagem é opcional. Pode selecionar
-          uma imagem JPG, PNG ou WEBP até 5 MB.
-        </p>
-
+        <p>A imagem é opcional. Pode selecionar uma imagem JPG, PNG ou WEBP até 5 MB.</p>
 
         <div class="exercise-image-actions">
-
-          <label
-            class="select-exercise-image"
-            [class.disabled]="
-          isSaving ||
-          isProcessingImage
-        ">
-
-            <img
-              src="/icons/camera.svg"
-              alt=""
-              aria-hidden="true"
-            />
+          <label class="select-exercise-image" [class.disabled]="isSaving || isProcessingImage">
+            <img src="/icons/camera.svg" alt="" aria-hidden="true" />
 
             {{
               isProcessingImage
@@ -102,52 +56,30 @@
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp"
-              [disabled]="
-            isSaving ||
-            isProcessingImage
-          "
-              (change)="
-            onExerciseImageSelected($event)
-          "
+              [disabled]="isSaving || isProcessingImage"
+              (change)="onExerciseImageSelected($event)"
             />
-
           </label>
-
 
           <button
             *ngIf="hasCustomExerciseImage"
             type="button"
             class="remove-exercise-image"
-            [disabled]="
-          isSaving ||
-          isProcessingImage
-        "
-            (click)="removeExerciseImage()">
-
+            [disabled]="isSaving || isProcessingImage"
+            (click)="removeExerciseImage()"
+          >
             Remover imagem
           </button>
-
         </div>
 
-
-        <p
-          *ngIf="imageError"
-          class="exercise-image-error">
-
+        <p *ngIf="imageError" class="exercise-image-error">
           {{ imageError }}
         </p>
-
       </div>
-
     </section>
 
-    <form
-      class="activity-form"
-      (ngSubmit)="save()">
-
+    <form class="activity-form" (ngSubmit)="save()">
       <div class="form-columns">
-
-        <!-- Informações principais -->
         <section class="main-fields">
           <h2>Informações principais</h2>
 
@@ -165,41 +97,34 @@
 
           <div class="fields-grid">
             <div class="counter-field">
-              <span class="field-label">
-                Duração
-              </span>
+              <span class="field-label"> Duração </span>
 
               <div class="counter-control">
                 <button
                   type="button"
                   aria-label="Diminuir duração"
-                  (click)="decrease('durationMinutes')">
+                  (click)="decrease('durationMinutes')"
+                >
                   −
                 </button>
 
-                <span>
-                  {{ form.durationMinutes }} min.
-                </span>
+                <span> {{ form.durationMinutes }} min. </span>
 
                 <button
                   type="button"
                   aria-label="Aumentar duração"
-                  (click)="increase('durationMinutes')">
+                  (click)="increase('durationMinutes')"
+                >
                   +
                 </button>
               </div>
             </div>
 
             <div class="counter-field">
-              <span class="field-label">
-                Contagem
-              </span>
+              <span class="field-label"> Contagem </span>
 
               <div class="counter-control">
-                <button
-                  type="button"
-                  aria-label="Diminuir contagem"
-                  (click)="decrease('sets')">
+                <button type="button" aria-label="Diminuir contagem" (click)="decrease('sets')">
                   −
                 </button>
 
@@ -207,25 +132,21 @@
                   {{ form.sets }}
                 </span>
 
-                <button
-                  type="button"
-                  aria-label="Aumentar contagem"
-                  (click)="increase('sets')">
+                <button type="button" aria-label="Aumentar contagem" (click)="increase('sets')">
                   +
                 </button>
               </div>
             </div>
 
             <div class="counter-field">
-              <span class="field-label">
-                N.º de repetições
-              </span>
+              <span class="field-label"> N.º de repetições </span>
 
               <div class="counter-control">
                 <button
                   type="button"
                   aria-label="Diminuir repetições"
-                  (click)="decrease('repetitions')">
+                  (click)="decrease('repetitions')"
+                >
                   −
                 </button>
 
@@ -236,33 +157,32 @@
                 <button
                   type="button"
                   aria-label="Aumentar repetições"
-                  (click)="increase('repetitions')">
+                  (click)="increase('repetitions')"
+                >
                   +
                 </button>
               </div>
             </div>
 
             <div class="counter-field">
-              <span class="field-label">
-                Descanso
-              </span>
+              <span class="field-label"> Descanso </span>
 
               <div class="counter-control">
                 <button
                   type="button"
                   aria-label="Diminuir descanso"
-                  (click)="decrease('restSeconds')">
+                  (click)="decrease('restSeconds')"
+                >
                   −
                 </button>
 
-                <span>
-                  {{ form.restSeconds }} seg.
-                </span>
+                <span> {{ form.restSeconds }} seg. </span>
 
                 <button
                   type="button"
                   aria-label="Aumentar descanso"
-                  (click)="increase('restSeconds')">
+                  (click)="increase('restSeconds')"
+                >
                   +
                 </button>
               </div>
@@ -275,12 +195,12 @@
             <textarea
               name="description"
               [(ngModel)]="form.description"
-              placeholder="Escreva uma observação aqui...">
+              placeholder="Escreva uma observação aqui..."
+            >
             </textarea>
           </label>
         </section>
 
-        <!-- Informações adicionais sempre visíveis -->
         <section class="extra-fields">
           <h2>Informações adicionais</h2>
 
@@ -300,13 +220,8 @@
             <label>
               <span>Tipo</span>
 
-              <select
-                name="activityType"
-                [(ngModel)]="form.activityType">
-
-                <option
-                  *ngFor="let type of activityTypes"
-                  [value]="type.value">
+              <select name="activityType" [(ngModel)]="form.activityType">
+                <option *ngFor="let type of activityTypes" [value]="type.value">
                   {{ type.label }}
                 </option>
               </select>
@@ -315,19 +230,12 @@
             <label>
               <span>Dificuldade</span>
 
-              <select
-                name="difficultyLevel"
-                [(ngModel)]="form.difficultyLevel">
-
-                <option
-                  *ngFor="let level of difficultyLevels"
-                  [value]="level.value">
+              <select name="difficultyLevel" [(ngModel)]="form.difficultyLevel">
+                <option *ngFor="let level of difficultyLevels" [value]="level.value">
                   {{ level.label }}
                 </option>
               </select>
             </label>
-
-
           </div>
 
           <label>
@@ -336,7 +244,8 @@
             <textarea
               name="materials"
               [(ngModel)]="form.materials"
-              placeholder="Ex.: bola pequena, cadeira...">
+              placeholder="Ex.: bola pequena, cadeira..."
+            >
             </textarea>
           </label>
 
@@ -347,50 +256,35 @@
               name="instructions"
               [(ngModel)]="form.instructions"
               placeholder="Descreva a preparação e a execução da atividade..."
-              required>
+              required
+            >
             </textarea>
           </label>
 
           <div class="instruction-media-editor">
-
             <div class="instruction-media-header">
               <div>
                 <h3>Imagens das instruções</h3>
 
-                <p>
-                  Pode adicionar até 6 imagens.
-                </p>
+                <p>Pode adicionar até 6 imagens.</p>
               </div>
             </div>
 
-            <div
-              *ngIf="instructionMediaList.length > 0"
-              class="instruction-media-list">
-
-              <div
-                *ngFor="
-        let field of instructionMediaFields;
-        let index = index
-      ">
-
+            <div *ngIf="instructionMediaList.length > 0" class="instruction-media-list">
+              <div *ngFor="let field of instructionMediaFields; let index = index">
                 <div
                   *ngIf="getInstructionMedia(field) as instructionMedia"
-                  class="instruction-media-item">
-
+                  class="instruction-media-item"
+                >
                   <div class="instruction-media-item-header">
-                    <strong>
-                      Imagem {{ index + 1 }}
-                    </strong>
+                    <strong> Imagem {{ index + 1 }} </strong>
 
                     <button
                       type="button"
                       class="remove-exercise-image"
-                      [disabled]="
-              isSaving ||
-              isProcessingInstructionMedia
-            "
-                      (click)="removeInstructionMedia(index)">
-
+                      [disabled]="isSaving || isProcessingInstructionMedia"
+                      (click)="removeInstructionMedia(index)"
+                    >
                       Remover
                     </button>
                   </div>
@@ -399,113 +293,69 @@
                     <img
                       [src]="instructionMedia"
                       [alt]="
-              'Imagem ' +
-              (index + 1) +
-              ' das instruções de ' +
-              (form.title || 'atividade')
-            "
+                        'Imagem ' +
+                        (index + 1) +
+                        ' das instruções de ' +
+                        (form.title || 'atividade')
+                      "
                     />
                   </div>
-
                 </div>
-
               </div>
-
             </div>
 
-            <div
-              *ngIf="instructionMediaList.length === 0"
-              class="instruction-media-empty">
-
+            <div *ngIf="instructionMediaList.length === 0" class="instruction-media-empty">
               Nenhuma imagem das instruções selecionada.
             </div>
 
             <div class="instruction-media-actions">
-
               <label
                 *ngIf="canAddInstructionMedia"
                 class="select-instruction-media"
-                [class.disabled]="
-        isSaving ||
-        isProcessingInstructionMedia
-      ">
-
-                <img
-                  src="/icons/camera.svg"
-                  alt=""
-                  aria-hidden="true"
-                />
+                [class.disabled]="isSaving || isProcessingInstructionMedia"
+              >
+                <img src="/icons/camera.svg" alt="" aria-hidden="true" />
 
                 {{
                   isProcessingInstructionMedia
                     ? 'A processar imagem...'
-                    : 'Adicionar imagem ' +
-                    nextInstructionMediaNumber
+                    : 'Adicionar imagem ' + nextInstructionMediaNumber
                 }}
 
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
-                  [disabled]="
-          isSaving ||
-          isProcessingInstructionMedia
-        "
-                  (change)="
-          onInstructionMediaSelected($event)
-        "
+                  [disabled]="isSaving || isProcessingInstructionMedia"
+                  (change)="onInstructionMediaSelected($event)"
                 />
               </label>
 
-              <span
-                *ngIf="!canAddInstructionMedia"
-                class="instruction-media-limit">
-
-      Limite máximo de 6 imagens atingido.
-    </span>
-
+              <span *ngIf="!canAddInstructionMedia" class="instruction-media-limit">
+                Limite máximo de 6 imagens atingido.
+              </span>
             </div>
 
-            <p
-              *ngIf="instructionMediaError"
-              class="exercise-image-error">
-
+            <p *ngIf="instructionMediaError" class="exercise-image-error">
               {{ instructionMediaError }}
             </p>
-
           </div>
         </section>
       </div>
 
-      <p
-        *ngIf="errorMessage"
-        class="error-message">
+      <p *ngIf="errorMessage" class="error-message">
         {{ errorMessage }}
       </p>
 
-      <p
-        *ngIf="successMessage"
-        class="success-message">
+      <p *ngIf="successMessage" class="success-message">
         {{ successMessage }}
       </p>
 
       <div class="form-actions">
-        <button
-          type="submit"
-          class="save-button"
-          [disabled]="isSaving">
-          {{
-            isSaving
-              ? 'A guardar...'
-              : 'Guardar atividade'
-          }}
+        <button type="submit" class="save-button" [disabled]="isSaving">
+          {{ isSaving ? 'A guardar...' : 'Guardar atividade' }}
         </button>
 
-        <button
-          type="button"
-          class="cancel-button"
-          (click)="goBack.emit()">
-          Cancelar
-        </button>
+        <button type="button" class="cancel-button" (click)="goBack.emit()">Cancelar</button>
       </div>
     </form>
   </main>

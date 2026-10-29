@@ -16,18 +16,12 @@ input {
   font: inherit;
 }
 
-
-/* Página */
-
 .activities-page {
   min-height: 100vh;
 
   background: #f7f9fc;
   color: #263750;
 }
-
-
-/* Cabeçalho */
 
 .header {
   height: 100px;
@@ -84,9 +78,6 @@ input {
     0 4px 12px rgba(54, 83, 126, 0.12);
 }
 
-
-/* Botão voltar */
-
 .back-button {
   justify-self: start;
 
@@ -136,17 +127,11 @@ input {
   line-height: 1;
 }
 
-
-/* Conteúdo */
-
 .content {
   width: min(1180px, calc(100% - 64px));
   margin: 0 auto;
   padding: 38px 0 60px;
 }
-
-
-/* Título e botão adicionar */
 
 .list-header {
   min-height: 64px;
@@ -235,9 +220,6 @@ input {
   font-weight: 500;
   line-height: 1;
 }
-
-
-/* Pesquisa */
 
 .search-wrapper {
   position: relative;
@@ -354,9 +336,6 @@ input {
   color: #407ce2;
 }
 
-
-/* Lista */
-
 .activities-list {
   display: flex;
   flex-direction: column;
@@ -448,9 +427,6 @@ input {
   color: #407ce2;
 }
 
-
-/* Ações de cada atividade */
-
 .activity-actions {
   display: flex;
   align-items: center;
@@ -529,9 +505,6 @@ input {
 
   box-shadow: 0 5px 13px rgba(190, 52, 52, 0.12);
 }
-
-
-/* Paginação */
 
 .pagination {
   margin-top: 26px;
@@ -613,9 +586,6 @@ input {
   font-weight: 600;
 }
 
-
-/* Mensagens */
-
 .error-message,
 .empty-message {
   margin: 28px 0 0;
@@ -644,9 +614,6 @@ input {
 
   box-shadow: 0 7px 20px rgba(54, 83, 126, 0.05);
 }
-
-
-/* Modal de remoção */
 
 .delete-modal-backdrop {
   position: fixed;
@@ -783,9 +750,6 @@ input {
   cursor: wait;
 }
 
-
-/* Foco por teclado */
-
 .back-button:focus-visible,
 .add-button:focus-visible,
 .clear-search:focus-visible,
@@ -796,7 +760,6 @@ input {
   outline: 4px solid rgba(64, 124, 226, 0.24);
   outline-offset: 3px;
 }
-
 
 @keyframes deleteModalOpen {
   from {
@@ -809,9 +772,6 @@ input {
     transform: translateY(0) scale(1);
   }
 }
-
-
-/* Tablet */
 
 @media (max-width: 1000px) {
   .header {
@@ -840,9 +800,6 @@ input {
     font-size: 16px;
   }
 }
-
-
-/* Ecrãs estreitos */
 
 @media (max-width: 700px) {
   .header {
@@ -976,9 +933,6 @@ input {
     font-size: 25px;
   }
 }
-
-
-/* Reduz movimento quando solicitado pelo sistema */
 
 @media (prefers-reduced-motion: reduce) {
   .activity-card,

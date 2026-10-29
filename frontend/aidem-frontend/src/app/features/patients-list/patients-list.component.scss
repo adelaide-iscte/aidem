@@ -8,9 +8,6 @@
   box-sizing: border-box;
 }
 
-
-/* Página */
-
 .patients-page {
   min-height: 100vh;
   padding-bottom: 130px;
@@ -20,9 +17,6 @@
 
   font-family: 'Poppins', Inter, Arial, sans-serif;
 }
-
-
-/* Cabeçalho */
 
 .header {
   position: relative;
@@ -85,16 +79,10 @@
   object-fit: cover;
 }
 
-
-/* Conteúdo */
-
 .content {
   width: min(1450px, calc(100% - 96px));
   margin: 36px auto 0;
 }
-
-
-/* Título da página */
 
 .page-heading {
   margin-bottom: 24px;
@@ -171,9 +159,6 @@
 
   white-space: nowrap;
 }
-
-
-/* Barra de pesquisa e ações */
 
 .toolbar {
   padding: 22px;
@@ -297,9 +282,6 @@
   color: #3977df;
 }
 
-
-/* Botões da toolbar */
-
 .sort-button,
 .add-button {
   min-height: 60px;
@@ -372,9 +354,6 @@
 
   transform: translateY(-1px);
 }
-
-
-/* Lista de utentes */
 
 .patients-card {
   margin-top: 24px;
@@ -514,9 +493,6 @@
   transform: translateX(2px);
 }
 
-
-/* Estado sem resultados */
-
 .empty-state {
   min-height: 260px;
   padding: 38px;
@@ -569,15 +545,6 @@
   font-weight: 600;
 }
 
-
-/*
- * O estilo de .bottom-nav vem do src/styles.scss.
- * Não coloques aqui novas regras para o rodapé.
- */
-
-
-/* Tablet */
-
 @media (max-width: 1100px) {
   .content {
     width: min(100% - 64px, 1000px);
@@ -600,9 +567,6 @@
     grid-template-columns: 1fr;
   }
 }
-
-
-/* Telemóvel */
 
 @media (max-width: 700px) {
   .header {

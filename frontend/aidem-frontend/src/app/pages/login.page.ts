@@ -8,7 +8,7 @@ import { AppNavigationService } from '../core/services/app-navigation.service';
   selector: 'app-login-page',
   standalone: true,
   imports: [LoginComponent],
-  template: `<app-login (loginSuccess)="onLogin($event)"></app-login>`
+  template: `<app-login (loginSuccess)="onLogin($event)"></app-login>`,
 })
 export class LoginPage {
   private readonly route = inject(ActivatedRoute);
@@ -18,14 +18,8 @@ export class LoginPage {
   onLogin(event: LoginSuccessEvent): void {
     this.session.startSession(event.user);
 
-    const returnUrl =
-      this.route.snapshot.queryParamMap.get('returnUrl');
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
 
-    // Só aceita URLs internos (ex.: "/admin/utilizadores").
-    this.nav.enterApp(
-      returnUrl?.startsWith('/') && !returnUrl.startsWith('//')
-        ? returnUrl
-        : '/'
-    );
+    this.nav.enterApp(returnUrl?.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/');
   }
 }

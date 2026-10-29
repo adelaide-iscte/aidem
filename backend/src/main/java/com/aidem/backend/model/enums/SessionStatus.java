@@ -4,5 +4,5 @@ public enum SessionStatus {
     PLANNED,
     IN_PROGRESS,
     COMPLETED,
-    CANCELLED
+    CANCELLED,
 }

@@ -21,9 +21,10 @@ import { AppNavigationService } from '../core/services/app-navigation.service';
       (openUserManagement)="nav.openUserManagement()"
       (logout)="nav.logout()"
       (patientUpdated)="session.updatePatient($event)"
-      (patientDeleted)="onPatientDeleted($event)">
+      (patientDeleted)="onPatientDeleted($event)"
+    >
     </app-profile>
-  `
+  `,
 })
 export class ProfilePage {
   readonly session = inject(AppSessionService);
@@ -32,7 +33,6 @@ export class ProfilePage {
   onPatientDeleted(patientId: number): void {
     this.session.removePatient(patientId);
 
-    // O utente já não existe: não deve ficar no histórico.
     this.nav.enterApp('/utentes');
   }
 }

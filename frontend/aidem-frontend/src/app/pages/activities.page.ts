@@ -19,9 +19,10 @@ import { AppNavigationService } from '../core/services/app-navigation.service';
       (openContents)="nav.goToContents()"
       (openAdminActivities)="nav.openAdminActivities()"
       (openUserManagement)="nav.openUserManagement()"
-      (logout)="nav.logout()">
+      (logout)="nav.logout()"
+    >
     </app-activities>
-  `
+  `,
 })
 export class ActivitiesPage {
   readonly session = inject(AppSessionService);

@@ -1,6 +1,4 @@
-@import url(
-  'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'
-);
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 :host {
   position: fixed;
@@ -9,11 +7,7 @@
 
   display: block;
 
-  font-family:
-    'Poppins',
-    Inter,
-    Arial,
-    sans-serif;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
 }
 
 * {
@@ -27,8 +21,7 @@
 }
 
 .edit-egp-backdrop {
-  background:
-    rgba(15, 23, 42, 0.56);
+  background: rgba(15, 23, 42, 0.56);
 
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -47,17 +40,12 @@
   color: #111111;
   background: #ffffff;
 
-  border:
-    1px solid #e1e7f1;
+  border: 1px solid #e1e7f1;
 
   border-radius: 26px;
 
-  box-shadow:
-    0 30px 80px
-    rgba(15, 23, 42, 0.25);
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.25);
 }
-
-/* Cabeçalho */
 
 .modal-header {
   min-height: 94px;
@@ -74,8 +62,7 @@
 
   align-items: center;
 
-  border-bottom:
-    1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
 
   background: #ffffff;
 }
@@ -110,8 +97,7 @@
   justify-content: center;
   gap: 10px;
 
-  border:
-    2px solid #4079e8;
+  border: 2px solid #4079e8;
 
   border-radius: 16px;
 
@@ -150,8 +136,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-/* Conteúdo com scroll */
-
 .modal-content {
   flex: 1;
   min-height: 0;
@@ -163,10 +147,7 @@ button:disabled {
   align-content: start;
   gap: 20px;
 
-  padding:
-    24px
-    30px
-    30px;
+  padding: 24px 30px 30px;
 
   background: #f8faff;
 }
@@ -184,29 +165,21 @@ button:disabled {
   color: #4079e8;
 }
 
-/* Cartões */
-
 .form-card,
 .error-card {
   width: 100%;
 
-  border:
-    1px solid #e5e7eb;
+  border: 1px solid #e5e7eb;
 
   border-radius: 18px;
 
   background: #ffffff;
 
-  box-shadow:
-    0 10px 26px
-    rgba(15, 23, 42, 0.06);
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.06);
 }
 
 .form-card {
-  padding:
-    28px
-    34px
-    32px;
+  padding: 28px 34px 32px;
 }
 
 .error-card {
@@ -221,8 +194,6 @@ button:disabled {
 .error-card ul {
   margin: 10px 0 0;
 }
-
-/* Título e data */
 
 .form-heading {
   display: flex;
@@ -261,21 +232,15 @@ label {
 }
 
 .form-heading label {
-  width: min(
-    280px,
-    100%
-  );
+  width: min(280px, 100%);
 }
-
-/* Inputs */
 
 input,
 select {
   width: 100%;
   min-width: 0;
 
-  border:
-    1.5px solid #d8deea;
+  border: 1.5px solid #d8deea;
 
   border-radius: 12px;
 
@@ -298,29 +263,20 @@ input:focus,
 select:focus {
   border-color: #4079e8;
 
-  box-shadow:
-    0 0 0 3px
-    rgba(64, 121, 232, 0.12);
+  box-shadow: 0 0 0 3px rgba(64, 121, 232, 0.12);
 }
 
 .invalid input,
 .invalid-input {
-  border-color:
-    #ef4444 !important;
+  border-color: #ef4444 !important;
 
   background: #fff7f7;
 }
 
-/* Tabela EGP */
-
 .egp-table {
   display: grid;
 
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 
   gap: 0 54px;
 }
@@ -337,8 +293,7 @@ select:focus {
   justify-content: space-between;
   gap: 18px;
 
-  border-bottom:
-    1px solid #d5deef;
+  border-bottom: 1px solid #d5deef;
 
   padding: 8px 0;
 }
@@ -410,8 +365,7 @@ select:focus {
   font-weight: 800;
 }
 
-.egp-head
-.egp-inputs span {
+.egp-head .egp-inputs span {
   text-align: center;
 
   font-size: 15px;
@@ -431,8 +385,6 @@ select:focus {
   cursor: default;
 }
 
-/* Botões inferiores */
-
 .modal-actions {
   min-height: 92px;
   flex-shrink: 0;
@@ -444,8 +396,7 @@ select:focus {
   align-items: center;
   gap: 16px;
 
-  border-top:
-    1px solid #e5e7eb;
+  border-top: 1px solid #e5e7eb;
 
   background: #ffffff;
 }
@@ -471,16 +422,14 @@ select:focus {
 }
 
 .cancel-button {
-  border:
-    2px solid #4079e8;
+  border: 2px solid #4079e8;
 
   background: #ffffff;
   color: #4079e8;
 }
 
 .save-button {
-  border:
-    2px solid #4079e8;
+  border: 2px solid #4079e8;
 
   background: #4079e8;
   color: #ffffff;
@@ -489,8 +438,6 @@ select:focus {
 .save-button:hover:not(:disabled) {
   background: #356bd2;
 }
-
-/* Tablets e portáteis pequenos */
 
 @media (max-width: 1250px) {
   .edit-egp-modal {
@@ -502,13 +449,10 @@ select:focus {
     gap: 0;
   }
 
-  // Esconde o cabeçalho repetido da segunda coluna
   .egp-column + .egp-column .egp-head {
     display: none;
   }
 }
-
-/* Telemóveis */
 
 @media (max-width: 760px) {
   .edit-egp-modal {

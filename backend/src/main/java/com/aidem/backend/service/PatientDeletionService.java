@@ -1,7 +1,6 @@
 package com.aidem.backend.service;
 
 import com.aidem.backend.model.*;
-import jakarta.persistence.EntityManager;
 import com.aidem.backend.repository.AssessmentRepository;
 import com.aidem.backend.repository.DomainScoreRepository;
 import com.aidem.backend.repository.ExerciseFeedbackRepository;
@@ -11,11 +10,12 @@ import com.aidem.backend.repository.RecommendationExplanationRepository;
 import com.aidem.backend.repository.SessionHistoryRepository;
 import com.aidem.backend.repository.SessionPlanExerciseRepository;
 import com.aidem.backend.repository.SessionPlanRepository;
+import jakarta.persistence.EntityManager;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.List;
 
 @Service
 public class PatientDeletionService {
@@ -32,16 +32,16 @@ public class PatientDeletionService {
     private final EntityManager entityManager;
 
     public PatientDeletionService(
-            PatientRepository patientRepository,
-            PatientCaregiverRepository patientCaregiverRepository,
-            SessionHistoryRepository sessionHistoryRepository,
-            SessionPlanRepository sessionPlanRepository,
-            SessionPlanExerciseRepository sessionPlanExerciseRepository,
-            ExerciseFeedbackRepository exerciseFeedbackRepository,
-            RecommendationExplanationRepository recommendationExplanationRepository,
-            AssessmentRepository assessmentRepository,
-            DomainScoreRepository domainScoreRepository,
-            EntityManager entityManager
+        PatientRepository patientRepository,
+        PatientCaregiverRepository patientCaregiverRepository,
+        SessionHistoryRepository sessionHistoryRepository,
+        SessionPlanRepository sessionPlanRepository,
+        SessionPlanExerciseRepository sessionPlanExerciseRepository,
+        ExerciseFeedbackRepository exerciseFeedbackRepository,
+        RecommendationExplanationRepository recommendationExplanationRepository,
+        AssessmentRepository assessmentRepository,
+        DomainScoreRepository domainScoreRepository,
+        EntityManager entityManager
     ) {
         this.patientRepository = patientRepository;
         this.patientCaregiverRepository = patientCaregiverRepository;
@@ -58,73 +58,45 @@ public class PatientDeletionService {
     @Transactional
     public void deletePatient(Long patientId) {
         Patient patient = patientRepository
-                .findById(patientId)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "Utente não encontrado."
-                        )
-                );
+            .findById(patientId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utente não encontrado."));
 
-        List<SessionPlan> sessionPlans =
-                sessionPlanRepository
-                        .findByPatient_IdOrderBySessionDateDescIdDesc(
-                                patientId
-                        );
+        List<SessionPlan> sessionPlans = sessionPlanRepository.findByPatient_IdOrderBySessionDateDescIdDesc(patientId);
 
         for (SessionPlan sessionPlan : sessionPlans) {
-            deleteSessionPlanExercises(
-                    sessionPlan.getId()
-            );
+            deleteSessionPlanExercises(sessionPlan.getId());
         }
 
         if (!sessionPlans.isEmpty()) {
-            sessionPlanRepository
-                    .deleteAllInBatch(sessionPlans);
+            sessionPlanRepository.deleteAllInBatch(sessionPlans);
         }
 
-        List<Assessment> assessments =
-                assessmentRepository
-                        .findByPatient_Id(patientId);
+        List<Assessment> assessments = assessmentRepository.findByPatient_Id(patientId);
 
         for (Assessment assessment : assessments) {
-            List<DomainScore> domainScores =
-                    domainScoreRepository
-                            .findByAssessment_IdOrderByDisplayOrderAscIdAsc(
-                                    assessment.getId()
-                            );
+            List<DomainScore> domainScores = domainScoreRepository.findByAssessment_IdOrderByDisplayOrderAscIdAsc(
+                assessment.getId()
+            );
 
             if (!domainScores.isEmpty()) {
-                domainScoreRepository
-                        .deleteAllInBatch(domainScores);
+                domainScoreRepository.deleteAllInBatch(domainScores);
             }
         }
 
         if (!assessments.isEmpty()) {
-            assessmentRepository
-                    .deleteAllInBatch(assessments);
+            assessmentRepository.deleteAllInBatch(assessments);
         }
 
-        List<PatientCaregiver> caregiverAssociations =
-                patientCaregiverRepository
-                        .findByPatient_Id(patientId);
+        List<PatientCaregiver> caregiverAssociations = patientCaregiverRepository.findByPatient_Id(patientId);
 
         if (!caregiverAssociations.isEmpty()) {
-            patientCaregiverRepository
-                    .deleteAllInBatch(
-                            caregiverAssociations
-                    );
+            patientCaregiverRepository.deleteAllInBatch(caregiverAssociations);
         }
 
-        List<SessionHistory> sessionHistory =
-                sessionHistoryRepository
-                        .findByPatientIdOrderBySessionDateDesc(
-                                patientId
-                        );
+        List<SessionHistory> sessionHistory = sessionHistoryRepository.findByPatientIdOrderBySessionDateDesc(patientId);
 
         if (!sessionHistory.isEmpty()) {
-            sessionHistoryRepository
-                    .deleteAllInBatch(sessionHistory);
+            sessionHistoryRepository.deleteAllInBatch(sessionHistory);
         }
 
         entityManager.clear();
@@ -133,47 +105,30 @@ public class PatientDeletionService {
         patientRepository.flush();
     }
 
-    private void deleteSessionPlanExercises(
-            Long sessionPlanId
-    ) {
-        List<SessionPlanExercise> exercises =
-                sessionPlanExerciseRepository
-                        .findBySessionPlan_IdOrderByOrderIndexAsc(
-                                sessionPlanId
-                        );
+    private void deleteSessionPlanExercises(Long sessionPlanId) {
+        List<SessionPlanExercise> exercises = sessionPlanExerciseRepository.findBySessionPlan_IdOrderByOrderIndexAsc(
+            sessionPlanId
+        );
 
         if (exercises.isEmpty()) {
             return;
         }
 
-        List<Long> exerciseIds = exercises
-                .stream()
-                .map(SessionPlanExercise::getId)
-                .toList();
+        List<Long> exerciseIds = exercises.stream().map(SessionPlanExercise::getId).toList();
 
-        List<ExerciseFeedback> feedback =
-                exerciseFeedbackRepository
-                        .findBySessionPlanExercise_IdIn(
-                                exerciseIds
-                        );
+        List<ExerciseFeedback> feedback = exerciseFeedbackRepository.findBySessionPlanExercise_IdIn(exerciseIds);
 
         if (!feedback.isEmpty()) {
-            exerciseFeedbackRepository
-                    .deleteAllInBatch(feedback);
+            exerciseFeedbackRepository.deleteAllInBatch(feedback);
         }
 
         List<RecommendationExplanation> explanations =
-                recommendationExplanationRepository
-                        .findBySessionPlanExercise_IdIn(
-                                exerciseIds
-                        );
+            recommendationExplanationRepository.findBySessionPlanExercise_IdIn(exerciseIds);
 
         if (!explanations.isEmpty()) {
-            recommendationExplanationRepository
-                    .deleteAllInBatch(explanations);
+            recommendationExplanationRepository.deleteAllInBatch(explanations);
         }
 
-        sessionPlanExerciseRepository
-                .deleteAllInBatch(exercises);
+        sessionPlanExerciseRepository.deleteAllInBatch(exercises);
     }
 }

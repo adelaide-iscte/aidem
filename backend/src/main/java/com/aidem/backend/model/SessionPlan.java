@@ -2,10 +2,9 @@ package com.aidem.backend.model;
 
 import com.aidem.backend.model.enums.SessionStatus;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "session_plans")

@@ -16,9 +16,6 @@ input {
   font: inherit;
 }
 
-
-/* Fundo da página */
-
 .tablet-frame {
   width: 100%;
   min-height: 100vh;
@@ -35,25 +32,6 @@ input {
   background: #f7f9fc;
   color: #263750;
 }
-
-
-/* Mantido caso voltes a utilizar a barra */
-
-.status-bar {
-  height: 44px;
-  padding: 14px 72px 0;
-
-  display: flex;
-  justify-content: space-between;
-
-  color: #263750;
-
-  font-size: 14px;
-  font-weight: 600;
-}
-
-
-/* Cartão principal */
 
 .login-container {
   width: min(620px, 100%);
@@ -75,9 +53,6 @@ input {
     0 5px 16px rgba(33, 51, 79, 0.06);
 }
 
-
-/* Logótipo */
-
 .login-logo {
   width: 100%;
   margin-bottom: 28px;
@@ -94,9 +69,6 @@ input {
   display: block;
   object-fit: contain;
 }
-
-
-/* Mensagem de boas-vindas */
 
 .login-welcome {
   margin-bottom: 36px;
@@ -123,9 +95,6 @@ input {
   font-weight: 500;
   line-height: 1.4;
 }
-
-
-/* Formulário */
 
 .login-form {
   width: 100%;
@@ -171,16 +140,12 @@ input {
   box-shadow: none;
 }
 
-
 .input-wrapper:focus-within {
   border-color: #407ce2;
   background: #ffffff;
 
   box-shadow: 0 0 0 4px rgba(64, 124, 226, 0.12);
 }
-
-
-/* Ícones dos inputs */
 
 .icon {
   width: 32px;
@@ -191,9 +156,6 @@ input {
 
   object-fit: contain;
 }
-
-
-/* Inputs */
 
 .input-wrapper input {
   width: 100%;
@@ -219,9 +181,6 @@ input {
   font-weight: 500;
   opacity: 1;
 }
-
-
-/* Mostrar/esconder palavra-passe */
 
 .eye-button {
   width: 46px;
@@ -263,9 +222,6 @@ input {
   object-fit: contain;
 }
 
-
-/* Erros */
-
 .input-wrapper.input-error {
   border-color: #d95353 !important;
   background: #fff8f8;
@@ -295,29 +251,6 @@ input {
   line-height: 1.4;
   text-align: center;
 }
-
-
-/* Recuperar palavra-passe */
-
-.forgot-password {
-  display: block;
-  margin: -5px 0 28px;
-
-  color: #407ce2;
-
-  font-size: 17px;
-  font-weight: 700;
-  text-decoration: none;
-
-  cursor: pointer;
-}
-
-.forgot-password:hover {
-  text-decoration: underline;
-}
-
-
-/* Botão entrar */
 
 .login-button {
   width: 100%;
@@ -368,18 +301,11 @@ input {
   box-shadow: none;
 }
 
-
-/* Foco visível para navegação por teclado */
-
 .login-button:focus-visible,
-.eye-button:focus-visible,
-.forgot-password:focus-visible {
+.eye-button:focus-visible {
   outline: 4px solid rgba(64, 124, 226, 0.24);
   outline-offset: 3px;
 }
-
-
-/* Tablet com pouca altura */
 
 @media (max-height: 800px) and (min-width: 701px) {
   .tablet-frame {
@@ -428,18 +354,7 @@ input {
     min-height: 58px;
     font-size: 21px;
   }
-
-  .divider {
-    margin: 24px 0 20px;
-  }
-
-  .social-buttons button {
-    min-height: 56px;
-  }
 }
-
-
-/* Telemóvel */
 
 @media (max-width: 700px) {
   .tablet-frame {
@@ -505,22 +420,5 @@ input {
   .login-button {
     min-height: 60px;
     font-size: 21px;
-  }
-
-  .divider {
-    margin: 28px 0 22px;
-  }
-
-  .social-buttons button {
-    min-height: 58px;
-    padding: 0 48px;
-
-    font-size: 16px;
-  }
-
-  .social-icon {
-    left: 17px;
-    width: 26px;
-    height: 26px;
   }
 }

@@ -25,7 +25,6 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-
 .profile-content {
   width: min(1130px, calc(100% - 120px));
   margin: 74px auto 0;
@@ -101,8 +100,8 @@
   display: grid;
   grid-template-columns: 1fr 1.08fr;
   grid-template-areas:
-    "contacts data"
-    "egp caregiver";
+    'contacts data'
+    'egp caregiver';
   gap: 24px;
   align-items: start;
 }
@@ -292,40 +291,6 @@
   margin: 0 auto;
 }
 
-.filter-button {
-  width: 470px;
-  height: 52px;
-  margin-bottom: 28px;
-  padding: 0 18px;
-  border: none;
-  border-radius: 10px;
-  background: #e4e9f3;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: 'Poppins', sans-serif;
-  cursor: pointer;
-}
-
-.filter-button span {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #555;
-  font-size: 24px;
-  font-weight: 400;
-}
-
-.filter-button img {
-  width: 24px;
-  height: 24px;
-}
-
-.chevron {
-  font-size: 26px !important;
-  color: #4079e8 !important;
-}
-
 .sessions-list {
   height: 430px;
   overflow-y: auto;
@@ -349,20 +314,6 @@
   flex-shrink: 0;
 }
 
-.session-info h2 {
-  margin: 0 0 5px;
-  font-size: 25px;
-  font-weight: 700;
-  color: #111;
-}
-
-.session-info p {
-  margin: 0 0 10px;
-  font-size: 19px;
-  font-weight: 400;
-  color: #555;
-}
-
 .easy {
   color: #39ba1f;
   font-weight: 700;
@@ -378,22 +329,9 @@
   font-weight: 700;
 }
 
-
 .empty-contact {
   color: #98a2b3;
 }
-//.session-info button {
-//  min-width: 165px;
-//  height: 38px;
-//  border: none;
-//  border-radius: 12px;
-//  background: #4079e8;
-//  color: white;
-//  font-family: 'Poppins', sans-serif;
-//  font-size: 15px;
-//  font-weight: 500;
-//  cursor: pointer;
-//}
 
 .session-card {
   min-height: 105px;
@@ -435,17 +373,6 @@
 .session-copy strong.hard {
   color: #d93030;
 }
-//
-//.session-copy button {
-//  height: 32px;
-//  border: none;
-//  border-radius: 8px;
-//  background: #4079e8;
-//  color: white;
-//  font-size: 16px;
-//  font-weight: 700;
-//  padding: 0 24px;
-//}
 
 .session-filter {
   width: 285px;
@@ -482,7 +409,6 @@
   transform: translateY(-2px);
 }
 
-
 .accessibility-row {
   display: flex;
   justify-content: flex-end;
@@ -512,7 +438,7 @@
 
   box-shadow: 0 3px 10px rgba(64, 124, 226, 0.12);
 
-  transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 .accessibility-button:hover {
@@ -522,7 +448,7 @@
 }
 
 .accessibility-button:active {
-  transform: scale(.98);
+  transform: scale(0.98);
 }
 
 .accessibility-icon {
@@ -734,8 +660,6 @@
   border-color: #4079e8;
 }
 
-/* Edição do perfil */
-
 .accessibility-row {
   align-items: center;
   gap: 14px;
@@ -746,9 +670,6 @@
   align-items: center;
   gap: 12px;
 }
-
-
-/* Botões */
 
 .profile-edit-button img {
   width: 22px;
@@ -783,9 +704,6 @@
   cursor: not-allowed;
 }
 
-
-/* Mensagens de edição */
-
 .profile-edit-feedback {
   margin: -15px 0 22px;
   text-align: center;
@@ -798,15 +716,11 @@
   font-weight: 600;
 }
 
-.profile-edit-feedback
-.profile-edit-error {
+.profile-edit-feedback .profile-edit-error {
   color: #c83232;
   font-size: 17px;
   font-weight: 700;
 }
-
-
-/* Nome do utente */
 
 .hero-name-input {
   width: min(470px, 100%);
@@ -820,26 +734,18 @@
   background: #ffffff;
   color: #000000;
 
-  font-family:
-    'Poppins',
-    Inter,
-    Arial,
-    sans-serif;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
 
   font-size: 30px;
   font-weight: 700;
 }
-
-
-/* Diagnóstico */
 
 .hero-diagnosis-field {
   display: block;
   margin-top: 9px;
 }
 
-.patient-info
-.hero-diagnosis-field span {
+.patient-info .hero-diagnosis-field span {
   margin: 0 0 5px;
   color: #555555;
   font-size: 14px;
@@ -860,9 +766,6 @@
   font-size: 18px;
 }
 
-
-/* Estilo comum dos inputs */
-
 .inline-edit-input,
 .data-edit-input,
 .caregiver-edit-fields input {
@@ -877,11 +780,7 @@
   background: #ffffff;
   color: #222222;
 
-  font-family:
-    'Poppins',
-    Inter,
-    Arial,
-    sans-serif;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
 
   font-size: 15px;
   font-weight: 500;
@@ -891,9 +790,6 @@
   flex: 1;
   width: 100%;
 }
-
-
-/* Dados do utente */
 
 .data-grid div.editing-cell {
   min-height: 82px;
@@ -912,9 +808,6 @@
   width: 100%;
 }
 
-
-/* Efeito de foco */
-
 .hero-name-input:focus,
 .hero-diagnosis-field input:focus,
 .inline-edit-input:focus,
@@ -922,13 +815,8 @@
 .caregiver-edit-fields input:focus {
   border-color: #407ce2;
 
-  box-shadow:
-    0 0 0 3px
-    rgba(64, 124, 226, 0.12);
+  box-shadow: 0 0 0 3px rgba(64, 124, 226, 0.12);
 }
-
-
-/* Dados do cuidador */
 
 .caregiver-content.editing {
   align-items: flex-start;
@@ -957,11 +845,7 @@
   width: 100%;
 }
 
-
-/* Telemóveis e ecrãs pequenos */
-
 @media (max-width: 800px) {
-
   .accessibility-row {
     align-items: stretch;
     flex-direction: column;
@@ -971,8 +855,7 @@
     width: 100%;
   }
 
-  .profile-edit-actions
-  .action-button,
+  .profile-edit-actions .action-button,
   .accessibility-button {
     flex: 1;
   }
@@ -986,8 +869,6 @@
     width: 100%;
   }
 }
-
-/* Separadores e botão Editar */
 
 .patient-info {
   min-width: 620px;
@@ -1005,14 +886,12 @@
   gap: 16px;
 }
 
-.profile-tabs-row
-.profile-tabs {
+.profile-tabs-row .profile-tabs {
   flex: 0 0 384px;
   margin-top: 0;
 }
 
-.profile-tabs-row
-.profile-edit-actions {
+.profile-tabs-row .profile-edit-actions {
   min-height: 64px;
   margin: 0;
 
@@ -1022,11 +901,7 @@
   gap: 9px;
 }
 
-
-/* Botão Editar */
-
-.profile-tabs-row
-.profile-edit-button {
+.profile-tabs-row .profile-edit-button {
   min-width: 174px;
   min-height: 52px;
   padding: 0 16px;
@@ -1034,34 +909,23 @@
   font-size: 16px;
 }
 
-.profile-tabs-row
-.profile-edit-button img {
+.profile-tabs-row .profile-edit-button img {
   width: 20px;
   height: 20px;
 }
 
-
-/* Guardar e Cancelar */
-
-.profile-tabs-row
-.profile-edit-actions.editing {
+.profile-tabs-row .profile-edit-actions.editing {
   min-height: 0;
 
   align-items: stretch;
   flex-direction: column;
 }
 
-
-.profile-tabs-row
-.profile-edit-button,
-.profile-tabs-row
-.save-profile-button,
-.profile-tabs-row
-.change-avatar-button,
-.profile-tabs-row
-.cancel-edit-button,
-.profile-tabs-row
-.remove-avatar-link {
+.profile-tabs-row .profile-edit-button,
+.profile-tabs-row .save-profile-button,
+.profile-tabs-row .change-avatar-button,
+.profile-tabs-row .cancel-edit-button,
+.profile-tabs-row .remove-avatar-link {
   min-height: 48px;
   padding: 0 14px;
   width: 100%;
@@ -1119,12 +983,7 @@
   text-decoration: underline;
 }
 
-
-
-/* Ecrãs mais pequenos */
-
 @media (max-width: 900px) {
-
   .patient-info {
     min-width: 0;
   }
@@ -1134,29 +993,23 @@
     flex-direction: column;
   }
 
-  .profile-tabs-row
-  .profile-tabs {
+  .profile-tabs-row .profile-tabs {
     width: 100%;
     flex-basis: auto;
   }
 
-  .profile-tabs-row
-  .profile-tabs button {
+  .profile-tabs-row .profile-tabs button {
     flex: 1;
     width: auto;
   }
 
-  .profile-tabs-row
-  .profile-edit-actions {
+  .profile-tabs-row .profile-edit-actions {
     width: 100%;
   }
 
-  .profile-tabs-row
-  .profile-edit-button,
-  .profile-tabs-row
-  .save-profile-button,
-  .profile-tabs-row
-  .cancel-edit-button {
+  .profile-tabs-row .profile-edit-button,
+  .profile-tabs-row .save-profile-button,
+  .profile-tabs-row .cancel-edit-button {
     width: 100%;
   }
 }
@@ -1209,7 +1062,6 @@
   text-align: center;
 }
 
-
 @keyframes deleteModalOpen {
   from {
     opacity: 0;
@@ -1226,18 +1078,10 @@
   width: 100%;
 }
 
-
-//hello
-
-/* Estética alinhada com Início e Atividades */
-
 .profile-page {
   background: #f7f9fc;
   color: #263750;
 }
-
-
-/* Cabeçalho */
 
 .header {
   border-bottom-color: #e4e9f1;
@@ -1245,21 +1089,14 @@
   box-shadow: 0 2px 10px rgba(43, 61, 88, 0.04);
 }
 
-
 .avatar {
   border: 2px solid #e3eaf5;
   background: #ffffff;
 }
 
-
-/* Conteúdo */
-
 .profile-content {
   margin-top: 24px;
 }
-
-
-/* Ouvir página */
 
 .accessibility-button {
   border-color: #9dbdff;
@@ -1286,21 +1123,13 @@
   outline-offset: 3px;
 }
 
-
-/* Apresentação do utente */
-
 .profile-hero {
   position: relative;
   padding: 25px 32px;
   overflow: hidden;
   border: 1px solid #ccdcf4;
   border-radius: 20px;
-  background:
-    linear-gradient(
-        110deg,
-        #e8f1ff 0%,
-        #dce9fb 100%
-    );
+  background: linear-gradient(110deg, #e8f1ff 0%, #dce9fb 100%);
   box-shadow: 0 10px 28px rgba(58, 91, 138, 0.1);
 }
 
@@ -1336,9 +1165,6 @@
   color: #46556c;
 }
 
-
-/* Separadores */
-
 .profile-tabs {
   border: 1px solid #cbdaf1;
   background: #e7eef9;
@@ -1363,9 +1189,6 @@
   box-shadow: 0 6px 16px rgba(64, 124, 226, 0.22);
 }
 
-
-/* Cartões dos dados */
-
 .contacts-card,
 .user-data-card,
 .caregiver-card {
@@ -1379,12 +1202,7 @@
 .user-data-card h2,
 .caregiver-title {
   border-bottom-color: #e3eaf4;
-  background:
-    linear-gradient(
-        90deg,
-        #f5f9ff 0%,
-        #ffffff 100%
-    );
+  background: linear-gradient(90deg, #f5f9ff 0%, #ffffff 100%);
 }
 
 .card-title h2,
@@ -1396,9 +1214,6 @@
 .caregiver-title img {
   filter: drop-shadow(0 3px 7px rgba(64, 124, 226, 0.12));
 }
-
-
-/* Contactos */
 
 .contact-row {
   border-bottom-color: #e6ebf2;
@@ -1420,9 +1235,6 @@
 .empty-contact {
   color: #8996a8 !important;
 }
-
-
-/* Dados do utente */
 
 .data-grid div {
   border-bottom-color: #e6ebf2;
@@ -1446,9 +1258,6 @@
   background: #f7faff;
 }
 
-
-/* Botão EGP */
-
 .egp-button {
   border-color: #407ce2;
   background: #407ce2;
@@ -1470,9 +1279,6 @@
 .egp-button:active {
   transform: translateY(0);
 }
-
-
-/* Cuidador */
 
 .caregiver-title {
   border-bottom: 1px solid #e3eaf4;
@@ -1496,9 +1302,6 @@
   box-shadow: 0 6px 16px rgba(54, 83, 126, 0.1);
 }
 
-
-/* Inputs de edição */
-
 .hero-name-input,
 .hero-diagnosis-field input,
 .inline-edit-input,
@@ -1521,9 +1324,6 @@
   box-shadow: 0 0 0 4px rgba(64, 124, 226, 0.12);
 }
 
-
-/* Informação durante a edição */
-
 .profile-edit-feedback {
   padding: 14px 18px;
   border: 1px solid #dce8fa;
@@ -1540,9 +1340,6 @@
 .profile-edit-feedback .profile-edit-error {
   color: #ac3434;
 }
-
-
-/* Botões gerais */
 
 .action-button {
   transition:
@@ -1589,9 +1386,6 @@
   transform: none;
 }
 
-
-/* Remover utente */
-
 .profile-delete-button {
   border-color: #c74b4b;
   background: #ffffff;
@@ -1608,9 +1402,6 @@
   background: #fff5f5;
   box-shadow: 0 7px 17px rgba(166, 41, 41, 0.14);
 }
-
-
-/* Histórico de sessões */
 
 .session-filter {
   border: 1px solid #d5e0f0;
@@ -1688,9 +1479,6 @@
   color: #af4138;
 }
 
-
-/* Estados vazios e erros */
-
 .empty-sessions-message,
 .sessions-error {
   padding: 20px 22px;
@@ -1710,9 +1498,6 @@
   color: #a93636;
 }
 
-
-/* Modal dos detalhes */
-
 .session-modal-backdrop {
   background: rgba(25, 37, 58, 0.5);
   backdrop-filter: blur(3px);
@@ -1726,12 +1511,7 @@
 
 .session-modal-header {
   border-bottom-color: #e3eaf4;
-  background:
-    linear-gradient(
-        110deg,
-        #f5f9ff 0%,
-        #ffffff 100%
-    );
+  background: linear-gradient(110deg, #f5f9ff 0%, #ffffff 100%);
 }
 
 .session-modal-header h2 {
@@ -1772,8 +1552,6 @@
   background: #78a0e9;
   content: '';
 }
-
-/* Modal de remoção do utente */
 
 .delete-modal-backdrop {
   position: fixed;
@@ -2001,21 +1779,10 @@
   object-fit: cover;
 }
 
-.remove-avatar-button {
-  border-color: #e3aaaa;
-  color: #b43d3d;
-}
-
-.remove-avatar-button:hover:not(:disabled) {
-  border-color: #cc7272;
-  background: #fff5f5;
-}
-
 @media (max-width: 700px) {
   .patient-avatar-editor {
     width: 135px;
     min-width: 135px;
     height: 135px;
   }
-
 }

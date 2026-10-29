@@ -1,17 +1,9 @@
 import { Injectable } from '@angular/core';
-import {
-  AuthService
-} from './auth.service';
+import { AuthService } from './auth.service';
 
-export type ActivityType =
-  | 'MOTOR'
-  | 'COGNITIVE'
-  | 'MIXED';
+export type ActivityType = 'MOTOR' | 'COGNITIVE' | 'MIXED';
 
-export type DifficultyLevel =
-  | 'LOW'
-  | 'MEDIUM'
-  | 'HIGH';
+export type DifficultyLevel = 'LOW' | 'MEDIUM' | 'HIGH';
 
 export interface Exercise {
   id: number;
@@ -83,19 +75,16 @@ export type ExercisePayload = {
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ExerciseService {
   // Desenvolvimento local:
   // private readonly apiUrl =
   //   'http://localhost:8080/api/exercises';
 
-  private readonly apiUrl =
-    'https://aidem-backend.onrender.com/api/exercises';
+  private readonly apiUrl = 'https://aidem-backend.onrender.com/api/exercises';
 
-  constructor(
-    private authService: AuthService
-  ) {}
+  constructor(private authService: AuthService) {}
 
   private getHeaders(): HeadersInit {
     const token = this.authService.getToken();
@@ -105,162 +94,111 @@ export class ExerciseService {
       'Content-Type': 'application/json',
       ...(token
         ? {
-          Authorization: `Bearer ${token}`
-        }
-        : {})
+            Authorization: `Bearer ${token}`,
+          }
+        : {}),
     };
   }
 
-  private async handleResponse(
-    response: Response
-  ): Promise<string> {
+  private async handleResponse(response: Response): Promise<string> {
     const raw = await response.text();
 
     if (response.status === 401) {
       this.authService.logout();
 
-      window.dispatchEvent(
-        new CustomEvent('aidem-session-expired')
-      );
+      window.dispatchEvent(new CustomEvent('aidem-session-expired'));
 
-      throw new Error(
-        'A sessão expirou. Inicie sessão novamente.'
-      );
+      throw new Error('A sessão expirou. Inicie sessão novamente.');
     }
 
     if (!response.ok) {
-      throw new Error(
-        raw ||
-        `Erro no pedido (${response.status}).`
-      );
+      throw new Error(raw || `Erro no pedido (${response.status}).`);
     }
 
     return raw;
   }
 
-  async getExerciseById(
-    id: number
-  ): Promise<Exercise> {
+  async getExerciseById(id: number): Promise<Exercise> {
+    const response = await fetch(`${this.apiUrl}/${id}`, {
+      method: 'GET',
+      headers: this.getHeaders(),
+    });
 
-    const response =
-      await fetch(
-        `${this.apiUrl}/${id}`,
-        {
-          method: 'GET',
-          headers: this.getHeaders()
-        }
-      );
-
-    const raw =
-      await this.handleResponse(
-        response
-      );
+    const raw = await this.handleResponse(response);
 
     return JSON.parse(raw) as Exercise;
   }
 
-  async getExercises(
-    page = 0,
-    size = 20,
-    search = ''
-  ): Promise<ExercisePage> {
+  async getExercises(page = 0, size = 20, search = ''): Promise<ExercisePage> {
     const params = new URLSearchParams({
       page: page.toString(),
       size: size.toString(),
-      search: search.trim()
+      search: search.trim(),
     });
 
-    const response = await fetch(
-      `${this.apiUrl}?${params.toString()}`,
-      {
-        method: 'GET',
-        headers: this.getHeaders()
-      }
-    );
+    const response = await fetch(`${this.apiUrl}?${params.toString()}`, {
+      method: 'GET',
+      headers: this.getHeaders(),
+    });
 
     const raw = await this.handleResponse(response);
 
     return raw
-      ? JSON.parse(raw) as ExercisePage
+      ? (JSON.parse(raw) as ExercisePage)
       : {
-        content: [],
-        number: 0,
-        size,
-        totalElements: 0,
-        totalPages: 0,
-        first: true,
-        last: true,
-        empty: true
-      };
+          content: [],
+          number: 0,
+          size,
+          totalElements: 0,
+          totalPages: 0,
+          first: true,
+          last: true,
+          empty: true,
+        };
   }
 
-  async createExercise(
-    payload: ExercisePayload
-  ): Promise<Exercise> {
-    const response = await fetch(
-      this.apiUrl,
-      {
-        method: 'POST',
-        headers: this.getHeaders(),
-        body: JSON.stringify(payload)
-      }
-    );
+  async createExercise(payload: ExercisePayload): Promise<Exercise> {
+    const response = await fetch(this.apiUrl, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(payload),
+    });
 
     const raw = await response.text();
 
     if (!response.ok) {
-      throw new Error(
-        raw ||
-        `Erro ao criar atividade (${response.status}).`
-      );
+      throw new Error(raw || `Erro ao criar atividade (${response.status}).`);
     }
 
     return JSON.parse(raw);
   }
 
-  async updateExercise(
-    id: number,
-    payload: ExercisePayload
-  ): Promise<Exercise> {
-    const response = await fetch(
-      `${this.apiUrl}/${id}`,
-      {
-        method: 'PUT',
-        headers: this.getHeaders(),
-        body: JSON.stringify(payload)
-      }
-    );
+  async updateExercise(id: number, payload: ExercisePayload): Promise<Exercise> {
+    const response = await fetch(`${this.apiUrl}/${id}`, {
+      method: 'PUT',
+      headers: this.getHeaders(),
+      body: JSON.stringify(payload),
+    });
 
     const raw = await response.text();
 
     if (!response.ok) {
-      throw new Error(
-        raw ||
-        `Erro ao editar atividade (${response.status}).`
-      );
+      throw new Error(raw || `Erro ao editar atividade (${response.status}).`);
     }
 
     return JSON.parse(raw);
   }
 
-  async deleteExercise(
-    id: number
-  ): Promise<void> {
-    const response = await fetch(
-      `${this.apiUrl}/${id}`,
-      {
-        method: 'DELETE',
-        headers: this.getHeaders()
-      }
-    );
+  async deleteExercise(id: number): Promise<void> {
+    const response = await fetch(`${this.apiUrl}/${id}`, {
+      method: 'DELETE',
+      headers: this.getHeaders(),
+    });
 
     if (!response.ok) {
       const raw = await response.text();
 
-      throw new Error(
-        raw ||
-        `Erro ao apagar atividade (${response.status}).`
-      );
+      throw new Error(raw || `Erro ao apagar atividade (${response.status}).`);
     }
   }
 }

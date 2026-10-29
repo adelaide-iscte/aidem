@@ -8,7 +8,7 @@ type ContentType = 'books' | 'movies' | 'theater' | null;
   standalone: true,
   imports: [CommonModule],
   templateUrl: './contents.component.html',
-  styleUrl: './contents.component.scss'
+  styleUrl: './contents.component.scss',
 })
 export class ContentsComponent {
   @Output() goBack = new EventEmitter<void>();

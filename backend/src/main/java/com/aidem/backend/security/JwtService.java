@@ -1,13 +1,12 @@
 package com.aidem.backend.security;
 
 import com.aidem.backend.model.User;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.jwt.*;
-import org.springframework.stereotype.Service;
-import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
-import org.springframework.security.oauth2.jwt.JwsHeader;
-
 import java.time.Instant;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
@@ -25,18 +24,16 @@ public class JwtService {
         Instant now = Instant.now();
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("aidem")
-                .issuedAt(now)
-                .expiresAt(now.plusSeconds(expirationMinutes * 60))
-                .subject(user.getEmail())
-                .claim("uid", user.getId())
-                .claim("role", user.getRole().name())
-                .build();
+            .issuer("aidem")
+            .issuedAt(now)
+            .expiresAt(now.plusSeconds(expirationMinutes * 60))
+            .subject(user.getEmail())
+            .claim("uid", user.getId())
+            .claim("role", user.getRole().name())
+            .build();
 
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
 
-        return jwtEncoder.encode(
-                JwtEncoderParameters.from(header, claims)
-        ).getTokenValue();
+        return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
     }
 }

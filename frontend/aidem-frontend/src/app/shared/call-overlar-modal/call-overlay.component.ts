@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './call-overlay.component.html',
-  styleUrl: './call-overlay.component.scss'
+  styleUrl: './call-overlay.component.scss',
 })
 export class CallOverlayComponent {
   @Input() name = 'Carolina Santos Cortes';

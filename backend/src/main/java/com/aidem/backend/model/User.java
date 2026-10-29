@@ -2,9 +2,8 @@ package com.aidem.backend.model;
 
 import com.aidem.backend.model.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
+import lombok.*;
 
 @Entity
 @Table(name = "users")

@@ -5,12 +5,6 @@ import { LoadingSpinnerComponent } from '../shared/laoding-spinner-modal/loading
 import { Exercise, ExerciseService } from '../core/services/exercise.service';
 import { AppNavigationService } from '../core/services/app-navigation.service';
 
-/*
- * Usada em /admin/exercicios/novo e em
- * /admin/exercicios/:exerciseId/editar.
- * Na edição, o exercício é carregado a
- * partir do id presente no URL.
- */
 @Component({
   selector: 'app-exercise-form-page',
   standalone: true,
@@ -21,13 +15,10 @@ import { AppNavigationService } from '../core/services/app-navigation.service';
     } @else if (errorMessage()) {
       <p>{{ errorMessage() }}</p>
     } @else {
-      <app-exercise-form
-        [exerciseToEdit]="exercise()"
-        (goBack)="close()"
-        (saved)="close()">
+      <app-exercise-form [exerciseToEdit]="exercise()" (goBack)="close()" (saved)="close()">
       </app-exercise-form>
     }
-  `
+  `,
 })
 export class ExerciseFormPage implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -39,8 +30,7 @@ export class ExerciseFormPage implements OnInit {
   readonly errorMessage = signal('');
 
   async ngOnInit(): Promise<void> {
-    const exerciseId =
-      this.route.snapshot.paramMap.get('exerciseId');
+    const exerciseId = this.route.snapshot.paramMap.get('exerciseId');
 
     if (!exerciseId) {
       return;
@@ -49,14 +39,10 @@ export class ExerciseFormPage implements OnInit {
     this.isLoading.set(true);
 
     try {
-      this.exercise.set(
-        await this.exerciseService.getExerciseById(Number(exerciseId))
-      );
+      this.exercise.set(await this.exerciseService.getExerciseById(Number(exerciseId)));
     } catch (error) {
       this.errorMessage.set(
-        error instanceof Error
-          ? error.message
-          : 'Erro ao carregar o exercício.'
+        error instanceof Error ? error.message : 'Erro ao carregar o exercício.',
       );
     } finally {
       this.isLoading.set(false);

@@ -8,9 +8,6 @@
   box-sizing: border-box;
 }
 
-
-/* Página */
-
 .contents-page {
   min-height: 100vh;
 
@@ -19,9 +16,6 @@
 
   font-family: 'Poppins', Inter, Arial, sans-serif;
 }
-
-
-/* Cabeçalho */
 
 .contents-header {
   position: relative;
@@ -52,9 +46,6 @@
   line-height: 1.2;
   text-align: center;
 }
-
-
-/* Botão voltar */
 
 .back-button {
   width: 170px;
@@ -109,17 +100,11 @@
   outline-offset: 3px;
 }
 
-
-/* Conteúdo principal */
-
 .contents-main {
   width: min(1320px, calc(100% - 96px));
   margin: 0 auto;
   padding: 40px 0 64px;
 }
-
-
-/* Introdução */
 
 .contents-introduction {
   margin-bottom: 30px;
@@ -172,17 +157,11 @@
   line-height: 1.5;
 }
 
-
-/* Grelha de categorias */
-
 .contents-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 22px;
 }
-
-
-/* Cartões */
 
 .content-card {
   width: 100%;
@@ -297,9 +276,6 @@
   transform: translateX(2px);
 }
 
-
-/* Página da categoria selecionada */
-
 .selected-content-main {
   display: grid;
   align-content: start;
@@ -347,9 +323,6 @@
 
   box-shadow: 0 6px 16px rgba(64, 124, 226, 0.12);
 }
-
-
-/* Estado vazio */
 
 .empty-content {
   min-height: 440px;
@@ -435,9 +408,6 @@
   line-height: 1.5;
 }
 
-
-/* Tablet */
-
 @media (max-width: 900px) {
   .contents-header {
     grid-template-columns: 160px 1fr 160px;
@@ -490,9 +460,6 @@
     align-self: center;
   }
 }
-
-
-/* Telemóvel */
 
 @media (max-width: 700px) {
   .contents-header {

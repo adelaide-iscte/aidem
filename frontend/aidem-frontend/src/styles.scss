@@ -1,11 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&display=swap');
 
-
-/* ==================================================
-   NAVEGAÇÃO INFERIOR GLOBAL
-   Usada em: Home, Atividades e Perfil
-   ================================================== */
-
 .bottom-nav {
   position: fixed;
   z-index: 1000;
@@ -81,9 +75,6 @@
   pointer-events: none;
 }
 
-
-/* Tablet */
-
 @media (max-width: 900px) {
   .bottom-nav {
     gap: 48px;
@@ -93,9 +84,6 @@
     font-size: 17px;
   }
 }
-
-
-/* Telemóvel */
 
 @media (max-width: 700px) {
   .bottom-nav {
@@ -117,11 +105,6 @@
     height: 38px;
   }
 }
-
-
-/* ==================================================
-   CABEÇALHO GLOBAL
-   ================================================== */
 
 .header,
 .contents-header {
@@ -148,25 +131,17 @@
 
   background: rgba(255, 255, 255, 0.97) !important;
 
-  box-shadow:
-    0 5px 18px
-    rgba(43, 61, 88, 0.07) !important;
+  box-shadow: 0 5px 18px rgba(43, 61, 88, 0.07) !important;
 
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
-
-
-/* Elemento do lado esquerdo */
 
 .header > :first-child,
 .contents-header > :first-child {
   grid-column: 1 !important;
   justify-self: start !important;
 }
-
-
-/* Título central */
 
 .header > h1,
 .contents-header > h1 {
@@ -182,9 +157,6 @@
   text-align: center !important;
 }
 
-
-/* Ícones do lado direito */
-
 .header > .top-icons,
 .header > .header-icons,
 .contents-header > .top-icons,
@@ -196,9 +168,6 @@
   align-items: center !important;
   gap: 18px !important;
 }
-
-
-/* Menu */
 
 .header .menu-icon,
 .contents-header .menu-icon {
@@ -215,9 +184,6 @@
     transform 0.2s ease;
 }
 
-
-/* Sino */
-
 .header .top-icon,
 .header .notification-icon,
 .contents-header .top-icon,
@@ -228,9 +194,6 @@
 
   object-fit: contain;
 }
-
-
-/* Avatar */
 
 .header .avatar,
 .header .admin-avatar,
@@ -246,9 +209,6 @@
   object-fit: contain;
 }
 
-
-/* Sino com contador */
-
 .header .notification-bell-wrapper {
   position: relative;
 
@@ -256,9 +216,6 @@
   align-items: center;
   justify-content: center;
 }
-
-
-/* Botão voltar */
 
 .header .back-button,
 .contents-header .back-button {
@@ -285,9 +242,6 @@
   cursor: pointer;
 }
 
-
-/* Efeitos */
-
 .header .menu-icon:hover,
 .header .top-icon:hover,
 .header .notification-icon:hover,
@@ -305,9 +259,6 @@
 .contents-header .notification-icon:active {
   transform: scale(0.95);
 }
-
-
-/* Telemóvel */
 
 @media (max-width: 700px) {
   .header,
@@ -357,10 +308,6 @@
     display: none;
   }
 }
-
-/* ==================================================
-   CONTADOR GLOBAL DE NOTIFICAÇÕES
-   ================================================== */
 
 .header .notification-bell-wrapper,
 .contents-header .notification-bell-wrapper {

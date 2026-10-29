@@ -9,5 +9,4 @@ public record ChatMessageResponse(
     String content,
     Instant sentAt,
     boolean mine
-) {
-}
+) {}

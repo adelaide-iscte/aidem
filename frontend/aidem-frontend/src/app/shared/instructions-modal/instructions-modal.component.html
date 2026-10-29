@@ -3,8 +3,8 @@
     class="instructions-modal"
     role="dialog"
     aria-modal="true"
-    aria-labelledby="instructions-modal-title">
-
+    aria-labelledby="instructions-modal-title"
+  >
     <header class="modal-header">
       <div class="modal-title">
         <span class="modal-label">Atividade</span>
@@ -17,43 +17,24 @@
       <button
         class="accessibility-button"
         type="button"
-        aria-label="Ler as instruções da atividade em voz alta">
-
-        <img
-          src="/icons/volume-blue.svg"
-          class="accessibility-icon"
-          alt="">
+        aria-label="Ler as instruções da atividade em voz alta"
+      >
+        <img src="/icons/volume-blue.svg" class="accessibility-icon" alt="" />
 
         <span>Ouvir instruções</span>
       </button>
     </header>
 
-
-    <section
-      class="instructions-card"
-      aria-labelledby="instructions-section-title">
-
-      <h2 id="instructions-section-title">
-        Instruções
-      </h2>
+    <section class="instructions-card" aria-labelledby="instructions-section-title">
+      <h2 id="instructions-section-title">Instruções</h2>
 
       <p class="instructions-text">
         {{ activity?.instructions || activity?.description || 'Sem instruções disponíveis.' }}
       </p>
     </section>
 
-
     <section class="modal-content">
-
-      <div
-        class="information-card"
-        aria-label="Informação da atividade">
-<!--
-        <div class="info-row">
-          <span class="info-label">Local</span>
-          <span class="info-value">Não definido</span>
-        </div>-->
-
+      <div class="information-card" aria-label="Informação da atividade">
         <div class="info-row">
           <span class="info-label">Materiais</span>
 
@@ -85,10 +66,8 @@
             {{ activity?.restSeconds ?? 'Não definido' }}
 
             <ng-container
-              *ngIf="
-                activity?.restSeconds !== null &&
-                activity?.restSeconds !== undefined
-              ">
+              *ngIf="activity?.restSeconds !== null && activity?.restSeconds !== undefined"
+            >
               segundos
             </ng-container>
           </span>
@@ -101,10 +80,8 @@
             {{ activity?.durationMinutes ?? 'Não definido' }}
 
             <ng-container
-              *ngIf="
-                activity?.durationMinutes !== null &&
-                activity?.durationMinutes !== undefined
-              ">
+              *ngIf="activity?.durationMinutes !== null && activity?.durationMinutes !== undefined"
+            >
               minutos
             </ng-container>
           </span>
@@ -112,93 +89,70 @@
       </div>
 
       <div class="video-area">
-
         <button
           class="video-preview"
           type="button"
           [class.image-preview]="hasInstructionImage(activity)"
           [style.background-image]="getVideoBackground(activity)"
           [attr.aria-label]="
-    hasInstructionImage(activity)
-      ? 'Abrir imagem da atividade'
-      : 'Abrir demonstração da atividade'
-  "
-          (click)="openVideoPlayer()">
-
-  <span class="video-preview-title">
-    {{
-      hasInstructionImage(activity)
-        ? 'Ver imagem'
-        : 'Ver vídeo'
-    }}
-  </span>
+            hasInstructionImage(activity)
+              ? 'Abrir imagem da atividade'
+              : 'Abrir demonstração da atividade'
+          "
+          (click)="openVideoPlayer()"
+        >
+          <span class="video-preview-title">
+            {{ hasInstructionImage(activity) ? 'Ver imagem' : 'Ver vídeo' }}
+          </span>
 
           <span
             *ngIf="!hasInstructionImage(activity)"
             class="video-preview-play"
-            aria-hidden="true">
-
-    <svg viewBox="0 0 24 24">
-      <path d="M8 5v14l11-7z"></path>
-    </svg>
-  </span>
+            aria-hidden="true"
+          >
+            <svg viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"></path>
+            </svg>
+          </span>
 
           <span
             *ngIf="hasInstructionImage(activity)"
             class="image-preview-expand"
-            aria-hidden="true">
-
-    <svg viewBox="0 0 24 24">
-      <path
-        d="M4 9V4h5
+            aria-hidden="true"
+          >
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M4 9V4h5
            M15 4h5v5
            M20 15v5h-5
-           M9 20H4v-5">
-      </path>
-    </svg>
-  </span>
+           M9 20H4v-5"
+              ></path>
+            </svg>
+          </span>
         </button>
 
-        <button
-          class="close-button"
-          type="button"
-          (click)="closeModal()">
-
-          Fechar
-        </button>
-
+        <button class="close-button" type="button" (click)="closeModal()">Fechar</button>
       </div>
-
     </section>
   </article>
-  <div
-    *ngIf="isVideoPlayerOpen"
-    class="video-player-backdrop"
-    (click)="closeVideoPlayer()">
-
+  <div *ngIf="isVideoPlayerOpen" class="video-player-backdrop" (click)="closeVideoPlayer()">
     <section
       class="video-player-dialog"
       role="dialog"
       aria-modal="true"
       [attr.aria-label]="
-  (
-    hasInstructionImage(activity)
-      ? 'Imagem da atividade '
-      : 'Demonstração da atividade '
-  ) +
-  (activity?.title || '')
-"
-      (click)="$event.stopPropagation()">
-
+        (hasInstructionImage(activity) ? 'Imagem da atividade ' : 'Demonstração da atividade ') +
+        (activity?.title || '')
+      "
+      (click)="$event.stopPropagation()"
+    >
       <header class="video-player-header">
         <div>
-        <span class="video-player-label">
-  {{
-            hasInstructionImage(activity)
-              ? 'Imagem da atividade'
-              : 'Demonstração da atividade'
-          }}
-</span>
+          <span class="video-player-label">
+            {{
+              hasInstructionImage(activity) ? 'Imagem da atividade' : 'Demonstração da atividade'
+            }}
+          </span>
 
           <h2>{{ activity?.title }}</h2>
         </div>
@@ -206,133 +160,97 @@
         <button
           class="video-player-close"
           type="button"
-          [attr.aria-label]="
-  hasInstructionImage(activity)
-    ? 'Fechar imagem'
-    : 'Fechar player'
-"
-          (click)="closeVideoPlayer()">
-
+          [attr.aria-label]="hasInstructionImage(activity) ? 'Fechar imagem' : 'Fechar player'"
+          (click)="closeVideoPlayer()"
+        >
           <svg viewBox="0 0 24 24">
             <path d="M6 6l12 12M18 6L6 18"></path>
           </svg>
         </button>
       </header>
 
-      <ng-container
-        *ngIf="
-    hasInstructionImage(activity);
-    else videoPlayer
-  ">
-
-        <div
-          #imageFrame
-          class="instruction-image-viewer">
-
+      <ng-container *ngIf="hasInstructionImage(activity); else videoPlayer">
+        <div #imageFrame class="instruction-image-viewer">
           <button
-          *ngIf="
-    getInstructionMediaUrls(activity).length > 1
-  "
-          type="button"
-          class="
-    instruction-image-arrow
-    instruction-image-arrow-left
-  "
-          aria-label="Imagem anterior"
-          [disabled]="
-    currentInstructionMediaIndex === 0
-  "
-          (click)="previousInstructionMedia()">
-
-          ‹
-        </button>
+            *ngIf="getInstructionMediaUrls(activity).length > 1"
+            type="button"
+            class="instruction-image-arrow instruction-image-arrow-left"
+            aria-label="Imagem anterior"
+            [disabled]="currentInstructionMediaIndex === 0"
+            (click)="previousInstructionMedia()"
+          >
+            ‹
+          </button>
 
           <img
-            [src]="
-    getCurrentInstructionMediaUrl(activity)
-  "
+            [src]="getCurrentInstructionMediaUrl(activity)"
             [alt]="
-    'Imagem ' +
-    (currentInstructionMediaIndex + 1) +
-    ' da atividade ' +
-    (activity?.title || '')
-  "
+              'Imagem ' +
+              (currentInstructionMediaIndex + 1) +
+              ' da atividade ' +
+              (activity?.title || '')
+            "
           />
 
           <button
-            *ngIf="
-    getInstructionMediaUrls(activity).length > 1
-  "
+            *ngIf="getInstructionMediaUrls(activity).length > 1"
             type="button"
-            class="
-    instruction-image-arrow
-    instruction-image-arrow-right
-  "
+            class="instruction-image-arrow instruction-image-arrow-right"
             aria-label="Imagem seguinte"
             [disabled]="
-    currentInstructionMediaIndex ===
-    getInstructionMediaUrls(activity).length - 1
-  "
-            (click)="nextInstructionMedia(activity)">
-
+              currentInstructionMediaIndex === getInstructionMediaUrls(activity).length - 1
+            "
+            (click)="nextInstructionMedia(activity)"
+          >
             ›
           </button>
 
           <span
-            *ngIf="
-    getInstructionMediaUrls(activity).length > 1
-  "
-            class="instruction-image-counter">
-
-  {{ currentInstructionMediaIndex + 1 }}
+            *ngIf="getInstructionMediaUrls(activity).length > 1"
+            class="instruction-image-counter"
+          >
+            {{ currentInstructionMediaIndex + 1 }}
             /
             {{ getInstructionMediaUrls(activity).length }}
-
-</span>
+          </span>
 
           <button
             class="instruction-image-fullscreen"
             type="button"
             aria-label="Ver imagem em ecrã inteiro"
-            (click)="togglePlayerFullscreen(imageFrame)">
-
+            (click)="togglePlayerFullscreen(imageFrame)"
+          >
             <svg viewBox="0 0 24 24">
               <path
                 d="M4 9V4h5
              M15 4h5v5
              M20 15v5h-5
-             M9 20H4v-5">
-              </path>
+             M9 20H4v-5"
+              ></path>
             </svg>
           </button>
-
         </div>
-
       </ng-container>
 
       <ng-template #videoPlayer>
-
         <div
           #playerFrame
           class="demo-player"
-          [style.background-image]="getVideoBackground(activity)">
-
-          <!-- mantém aqui todos os controlos atuais do player -->
-
+          [style.background-image]="getVideoBackground(activity)"
+        >
           <button
             *ngIf="!isDemoPlaying"
             class="demo-player-central-play"
             type="button"
             aria-label="Reproduzir demonstração"
-            (click)="toggleDemoPlayback()">
-
+            (click)="toggleDemoPlayback()"
+          >
             <svg viewBox="0 0 24 24">
               <path d="M8 5v14l11-7z"></path>
             </svg>
           </button>
 
           <div class="demo-player-controls">
-
             <div class="demo-player-progress-row">
               <span>{{ formatDemoTime(demoCurrentTime) }}</span>
 
@@ -345,48 +263,38 @@
                 [value]="demoCurrentTime"
                 [style.--progress]="demoProgress + '%'"
                 aria-label="Progresso da demonstração"
-                (input)="seekDemo($event)">
+                (input)="seekDemo($event)"
+              />
 
               <span>{{ formatDemoTime(demoDuration) }}</span>
             </div>
 
             <div class="demo-player-buttons">
-
               <button
                 class="demo-player-icon-button"
                 type="button"
-                [attr.aria-label]="
-            isDemoMuted
-              ? 'Ativar som'
-              : 'Desativar som'
-          "
-                (click)="toggleDemoMute()">
-
-                <svg
-                  *ngIf="!isDemoMuted"
-                  viewBox="0 0 24 24">
-
+                [attr.aria-label]="isDemoMuted ? 'Ativar som' : 'Desativar som'"
+                (click)="toggleDemoMute()"
+              >
+                <svg *ngIf="!isDemoMuted" viewBox="0 0 24 24">
                   <path d="M4 9v6h4l5 4V5L8 9H4"></path>
                   <path d="M16 8a5 5 0 010 8"></path>
                   <path d="M18.5 5.5a9 9 0 010 13"></path>
                 </svg>
 
-                <svg
-                  *ngIf="isDemoMuted"
-                  viewBox="0 0 24 24">
-
+                <svg *ngIf="isDemoMuted" viewBox="0 0 24 24">
                   <path d="M4 9v6h4l5 4V5L8 9H4"></path>
                   <path d="M17 9l5 5M22 9l-5 5"></path>
                 </svg>
               </button>
 
               <div class="demo-player-main-buttons">
-
                 <button
                   class="demo-player-skip"
                   type="button"
                   aria-label="Recuar 5 segundos"
-                  (click)="skipDemo(-5)">
+                  (click)="skipDemo(-5)"
+                >
                   −5s
                 </button>
 
@@ -394,23 +302,15 @@
                   class="demo-player-play-button"
                   type="button"
                   [attr.aria-label]="
-              isDemoPlaying
-                ? 'Pausar demonstração'
-                : 'Reproduzir demonstração'
-            "
-                  (click)="toggleDemoPlayback()">
-
-                  <svg
-                    *ngIf="!isDemoPlaying"
-                    viewBox="0 0 24 24">
-
+                    isDemoPlaying ? 'Pausar demonstração' : 'Reproduzir demonstração'
+                  "
+                  (click)="toggleDemoPlayback()"
+                >
+                  <svg *ngIf="!isDemoPlaying" viewBox="0 0 24 24">
                     <path d="M8 5v14l11-7z"></path>
                   </svg>
 
-                  <svg
-                    *ngIf="isDemoPlaying"
-                    viewBox="0 0 24 24">
-
+                  <svg *ngIf="isDemoPlaying" viewBox="0 0 24 24">
                     <path d="M7 5h4v14H7zM13 5h4v14h-4z"></path>
                   </svg>
                 </button>
@@ -419,32 +319,30 @@
                   class="demo-player-skip"
                   type="button"
                   aria-label="Avançar 5 segundos"
-                  (click)="skipDemo(5)">
+                  (click)="skipDemo(5)"
+                >
                   +5s
                 </button>
-
               </div>
 
               <button
                 class="demo-player-icon-button demo-player-fullscreen"
                 type="button"
                 aria-label="Ver em ecrã inteiro"
-                (click)="togglePlayerFullscreen(playerFrame)">
-
+                (click)="togglePlayerFullscreen(playerFrame)"
+              >
                 <svg viewBox="0 0 24 24">
                   <path
                     d="M4 9V4h5
                  M15 4h5v5
                  M20 15v5h-5
-                 M9 20H4v-5">
-                  </path>
+                 M9 20H4v-5"
+                  ></path>
                 </svg>
               </button>
-
             </div>
           </div>
         </div>
-
       </ng-template>
     </section>
   </div>

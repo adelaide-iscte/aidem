@@ -20,9 +20,6 @@ button {
   cursor: pointer;
 }
 
-
-/* Página */
-
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -46,11 +43,6 @@ button {
   background: #f7f9fc;
   color: #263750;
 }
-
-
-/* Cabeçalho */
-
-
 
 .left-actions,
 .top-icons {
@@ -118,9 +110,6 @@ button {
   gap: 20px;
 }
 
-
-/* Área principal */
-
 .chat-workspace {
   width: min(1480px, calc(100% - 56px));
   height: calc(100% - 40px);
@@ -144,9 +133,6 @@ button {
     0 16px 38px rgba(52, 72, 103, 0.1),
     0 4px 12px rgba(52, 72, 103, 0.04);
 }
-
-
-/* Painel das conversas */
 
 .conversations-panel {
   min-width: 0;
@@ -212,9 +198,6 @@ button {
   line-height: 1.2;
 }
 
-
-/* Botões principais */
-
 .new-message-button,
 .primary-button {
   min-height: 52px;
@@ -264,9 +247,6 @@ button {
   font-weight: 500;
   line-height: 1;
 }
-
-
-/* Lista de conversas */
 
 .conversation-list,
 .contact-list {
@@ -409,9 +389,6 @@ button {
   font-weight: 500;
 }
 
-
-/* Estados */
-
 .panel-state,
 .chat-state {
   margin: auto;
@@ -443,9 +420,6 @@ button {
   color: #b42318;
 }
 
-
-/* Painel da conversa */
-
 .conversation-panel {
   min-width: 0;
   min-height: 0;
@@ -455,9 +429,6 @@ button {
 
   background: #f4f7fc;
 }
-
-
-/* Sem conversa selecionada */
 
 .no-conversation {
   margin: auto;
@@ -513,9 +484,6 @@ button {
   font-weight: 500;
   line-height: 1.5;
 }
-
-
-/* Cabeçalho da conversa */
 
 .professional-card {
   min-height: 112px;
@@ -625,9 +593,6 @@ button {
   object-fit: contain;
 }
 
-
-/* Área das mensagens */
-
 .chat-main {
   min-height: 0;
 
@@ -715,9 +680,6 @@ button {
   font-size: 12px;
   font-weight: 700;
 }
-
-
-/* Campo para escrever */
 
 .chat-input-area {
   flex-shrink: 0;
@@ -832,9 +794,6 @@ button {
   box-shadow: none;
 }
 
-
-/* Modal para escolher destinatário */
-
 .contact-picker-backdrop {
   position: fixed;
   inset: 0;
@@ -915,9 +874,6 @@ button {
   transform: scale(0.96);
 }
 
-
-/* Pesquisa de contactos */
-
 .contact-search {
   min-height: 58px;
   margin: 23px 0 16px;
@@ -965,9 +921,6 @@ button {
   color: #98a4b5;
   opacity: 1;
 }
-
-
-/* Lista de contactos */
 
 .contact-list {
   border-top: 1px solid #edf1f6;
@@ -1047,9 +1000,6 @@ button {
   font-weight: 600;
 }
 
-
-/* Rodapé */
-
 .bottom-nav {
   display: flex;
   align-items: center;
@@ -1102,9 +1052,6 @@ button {
   color: #407ce2;
 }
 
-
-/* Foco por teclado */
-
 .back-button:focus-visible,
 .new-message-button:focus-visible,
 .primary-button:focus-visible,
@@ -1117,9 +1064,6 @@ button {
   outline: 4px solid rgba(64, 124, 226, 0.24);
   outline-offset: 3px;
 }
-
-
-/* Tablet */
 
 @media (max-width: 1100px) {
   .chat-workspace {
@@ -1140,9 +1084,6 @@ button {
     font-size: 14px;
   }
 }
-
-
-/* Tablet estreito e telemóvel */
 
 @media (max-width: 900px) {
   .header {
@@ -1170,13 +1111,11 @@ button {
     display: none;
   }
 
-  .chat-workspace.conversation-open
-  .conversations-panel {
+  .chat-workspace.conversation-open .conversations-panel {
     display: none;
   }
 
-  .chat-workspace.conversation-open
-  .conversation-panel {
+  .chat-workspace.conversation-open .conversation-panel {
     display: flex;
   }
 
@@ -1236,15 +1175,12 @@ button {
   }
 }
 
-
-/* Telemóvel */
-
 @media (max-width: 560px) {
   .chat-page {
     grid-template-rows:
-    76px
-    minmax(0, 1fr)
-    82px;
+      76px
+      minmax(0, 1fr)
+      82px;
   }
 
   .left-actions {
@@ -1360,9 +1296,6 @@ button {
   }
 }
 
-
-/* Menos movimento */
-
 @media (prefers-reduced-motion: reduce) {
   .back-button,
   .new-message-button,
@@ -1378,8 +1311,6 @@ button {
     scroll-behavior: auto;
   }
 }
-
-/* Correção do cabeçalho das conversas */
 
 .conversations-heading {
   padding: 22px;
@@ -1409,10 +1340,6 @@ button {
   font-size: 21px;
 }
 
-/* =========================================================
-   Tipografia maior e consistente com o resto da aplicação
-   ========================================================= */
-
 .back-button {
   font-size: 20px;
 }
@@ -1426,18 +1353,12 @@ button {
   font-size: 31px;
 }
 
-
-/* Botões */
-
 .new-message-button,
 .primary-button {
   min-height: 50px;
 
   font-size: 16px;
 }
-
-
-/* Lista de conversas */
 
 .conversation-item {
   min-height: 112px;
@@ -1459,9 +1380,6 @@ button {
   font-size: 16px;
 }
 
-
-/* Mensagens de estado */
-
 .panel-state,
 .chat-state {
   font-size: 18px;
@@ -1472,9 +1390,6 @@ button {
   font-size: 20px;
 }
 
-
-/* Quando não existe conversa selecionada */
-
 .no-conversation h2 {
   font-size: 31px;
 }
@@ -1483,9 +1398,6 @@ button {
   font-size: 19px;
 }
 
-
-/* Cabeçalho da conversa */
-
 .professional-info h2 {
   font-size: 27px;
 }
@@ -1493,9 +1405,6 @@ button {
 .professional-info p {
   font-size: 17px;
 }
-
-
-/* Balões de mensagens */
 
 .message {
   padding: 15px 20px;
@@ -1507,9 +1416,6 @@ button {
   font-size: 14px;
 }
 
-
-/* Campo para escrever */
-
 .chat-input-shell input {
   font-size: 19px;
 }
@@ -1517,9 +1423,6 @@ button {
 .send-error {
   font-size: 16px;
 }
-
-
-/* Modal de nova mensagem */
 
 .contact-search input {
   font-size: 19px;
@@ -1537,15 +1440,9 @@ button {
   font-size: 16px;
 }
 
-
-/* Rodapé */
-
 .bottom-nav div {
   font-size: 16px;
 }
-
-
-/* Em tablets estreitos, o botão passa para baixo do título */
 
 @media (max-width: 1100px) and (min-width: 901px) {
   .conversations-heading {
@@ -1558,9 +1455,6 @@ button {
     font-size: 17px;
   }
 }
-
-
-/* Telemóvel */
 
 @media (max-width: 560px) {
   .section-label {
@@ -1611,8 +1505,6 @@ button {
     font-size: 14px;
   }
 }
-
-/* Correção definitiva do botão Nova mensagem */
 
 .conversations-heading {
   min-height: auto;

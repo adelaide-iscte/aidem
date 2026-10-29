@@ -1,8 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import {
-  SessionPlanExercise,
-  SessionPlanService
-} from './session-plan.service';
+import { SessionPlanExercise, SessionPlanService } from './session-plan.service';
 
 export interface ExerciseNotification {
   id: string;
@@ -13,46 +10,24 @@ export interface ExerciseNotification {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ExerciseNotificationService {
-
-  /*
-   * Horários das notificações:
-   * 07:00, 11:00, 15:00 e 19:00.
-   *
-   * O horário seguinte seria 23:00, mas já ultrapassa as 22:00.
-   */
   private readonly notificationHours = [7, 11, 15, 19];
 
   private patientId: number | null = null;
 
   private timerId: ReturnType<typeof setInterval> | null = null;
 
-  /*
-   * Guarda o último horário para o qual já criámos uma notificação.
-   * Evita criar a mesma notificação novamente a cada minuto.
-   */
   private lastGeneratedSlot: number | null = null;
   private lastGeneratedDate: string | null = null;
 
-  /*
-   * A lista terá sempre zero ou uma notificação.
-   * Ao criar uma nova usamos set([notification]), substituindo a anterior.
-   */
   readonly notifications = signal<ExerciseNotification[]>([]);
   readonly unreadCount = signal(0);
 
-  constructor(
-    private sessionPlanService: SessionPlanService
-  ) {}
+  constructor(private sessionPlanService: SessionPlanService) {}
 
   start(patientId: number): void {
-    console.log('Notification service started', patientId);
-
-    /*
-     * Se já estamos a acompanhar este utente, não criamos outro timer.
-     */
     if (this.patientId === patientId && this.timerId) {
       void this.checkScheduledNotification();
       return;
@@ -67,15 +42,8 @@ export class ExerciseNotificationService {
     this.notifications.set([]);
     this.unreadCount.set(0);
 
-    /*
-     * Verifica logo ao entrar na aplicação.
-     */
     void this.checkScheduledNotification();
 
-    /*
-     * Verifica o relógio a cada minuto.
-     * A notificação só é criada quando estamos dentro de um horário válido.
-     */
     this.timerId = setInterval(() => {
       void this.checkScheduledNotification();
     }, 60_000);
@@ -94,10 +62,6 @@ export class ExerciseNotificationService {
     this.unreadCount.set(0);
   }
 
-  /**
-   * Atualiza imediatamente a notificação depois de um exercício
-   * ser concluído, cancelado ou marcado como não realizado.
-   */
   async refresh(): Promise<void> {
     if (!this.patientId) {
       return;
@@ -106,10 +70,6 @@ export class ExerciseNotificationService {
     await this.updateCurrentNotification();
   }
 
-  /**
-   * Verifica se chegou um novo horário:
-   * 07h, 11h, 15h ou 19h.
-   */
   private async checkScheduledNotification(): Promise<void> {
     if (!this.patientId) {
       return;
@@ -117,9 +77,6 @@ export class ExerciseNotificationService {
 
     const now = new Date();
 
-    /*
-     * Não cria notificações antes das 07h nem a partir das 22h.
-     */
     if (now.getHours() < 7 || now.getHours() >= 22) {
       return;
     }
@@ -133,8 +90,7 @@ export class ExerciseNotificationService {
     const currentDate = this.toDateKey(now);
 
     const alreadyGenerated =
-      this.lastGeneratedSlot === currentSlot &&
-      this.lastGeneratedDate === currentDate;
+      this.lastGeneratedSlot === currentSlot && this.lastGeneratedDate === currentDate;
 
     if (alreadyGenerated) {
       return;
@@ -143,12 +99,6 @@ export class ExerciseNotificationService {
     await this.createNotification(currentSlot, now);
   }
 
-  /**
-   * Atualiza a notificação existente com a quantidade atual
-   * de exercícios pendentes.
-   *
-   * Se já não houver exercícios pendentes, remove-a.
-   */
   private async updateCurrentNotification(): Promise<void> {
     if (!this.patientId) {
       return;
@@ -166,36 +116,25 @@ export class ExerciseNotificationService {
       return;
     }
 
-    await this.createNotification(currentSlot, now, true);
+    await this.createNotification(currentSlot, now);
   }
 
   markAsRead(): void {
     this.unreadCount.set(0);
   }
 
-
-  private async createNotification(
-    slotHour: number,
-    now: Date,
-    isRefresh = false
-  ): Promise<void> {
+  private async createNotification(slotHour: number, now: Date): Promise<void> {
     if (!this.patientId) {
       return;
     }
 
     try {
-      const plan = await this.sessionPlanService.getTodayPlan(
-        this.patientId
-      );
+      const plan = await this.sessionPlanService.getTodayPlan(this.patientId);
 
-      const remainingExercises = (plan.exercises ?? []).filter(
-        exercise => this.isPending(exercise)
+      const remainingExercises = (plan.exercises ?? []).filter((exercise) =>
+        this.isPending(exercise),
       ).length;
 
-      /*
-       * Se todos os exercícios estiverem terminados,
-       * não mostramos nenhuma notificação.
-       */
       if (remainingExercises === 0) {
         this.notifications.set([]);
         this.unreadCount.set(0);
@@ -209,55 +148,27 @@ export class ExerciseNotificationService {
       const notification: ExerciseNotification = {
         id: 'exercise-reminder',
         title: this.getNotificationTitle(slotHour),
-        text: this.getNotificationText(
-          remainingExercises,
-          slotHour
-        ),
+        text: this.getNotificationText(remainingExercises, slotHour),
         time: this.formatTime(now),
-        type: 'EXERCISE_REMINDER'
+        type: 'EXERCISE_REMINDER',
       };
 
-      /*
-       * Substitui a notificação anterior.
-       * Nunca se acumulam vários lembretes de exercícios.
-       */
       this.notifications.set([notification]);
       this.unreadCount.set(1);
 
-      /*
-       * No refresh atualizamos apenas a contagem.
-       * Mesmo assim mantemos o slot como já processado.
-       */
       this.lastGeneratedSlot = slotHour;
       this.lastGeneratedDate = this.toDateKey(now);
-
     } catch (error) {
-      console.error(
-        'Erro ao criar notificação dos exercícios:',
-        error
-      );
+      console.error('Erro ao criar notificação dos exercícios:', error);
     }
   }
 
   private isPending(exercise: SessionPlanExercise): boolean {
-    return (
-      exercise.status !== 'COMPLETED' &&
-      exercise.status !== 'SKIPPED'
-    );
+    return exercise.status !== 'COMPLETED' && exercise.status !== 'SKIPPED';
   }
 
-  /**
-   * Por exemplo:
-   *
-   * 08:30 -> slot das 07h
-   * 12:00 -> slot das 11h
-   * 17:00 -> slot das 15h
-   * 21:00 -> slot das 19h
-   */
   private getCurrentSlot(currentHour: number): number | null {
-    const validSlots = this.notificationHours.filter(
-      hour => hour <= currentHour
-    );
+    const validSlots = this.notificationHours.filter((hour) => hour <= currentHour);
 
     if (validSlots.length === 0) {
       return null;
@@ -285,12 +196,8 @@ export class ExerciseNotificationService {
     }
   }
 
-  private getNotificationText(
-    remaining: number,
-    slotHour: number
-  ): string {
-    const exerciseWord =
-      remaining === 1 ? 'exercício' : 'exercícios';
+  private getNotificationText(remaining: number, slotHour: number): string {
+    const exerciseWord = remaining === 1 ? 'exercício' : 'exercícios';
 
     switch (slotHour) {
       case 7:
@@ -323,13 +230,9 @@ export class ExerciseNotificationService {
   private toDateKey(date: Date): string {
     const year = date.getFullYear();
 
-    const month = String(
-      date.getMonth() + 1
-    ).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
 
-    const day = String(
-      date.getDate()
-    ).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
   }
@@ -337,7 +240,7 @@ export class ExerciseNotificationService {
   private formatTime(date: Date): string {
     return new Intl.DateTimeFormat('pt-PT', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     }).format(date);
   }
 }

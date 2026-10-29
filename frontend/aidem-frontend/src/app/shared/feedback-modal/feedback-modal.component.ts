@@ -13,7 +13,7 @@ export type FeedbackSubmitEvent = {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './feedback-modal.component.html',
-  styleUrl: './feedback-modal.component.scss'
+  styleUrl: './feedback-modal.component.scss',
 })
 export class FeedbackModalComponent {
   @Output() close = new EventEmitter<void>();
@@ -34,7 +34,7 @@ export class FeedbackModalComponent {
     'Está a ir muito bem!',
     'Parabéns pelo seu esforço!',
     'Continue assim!',
-    'Ótimo trabalho!'
+    'Ótimo trabalho!',
   ];
 
   successMessage = '';
@@ -69,13 +69,11 @@ export class FeedbackModalComponent {
     this.submitFeedback.emit({
       completion: this.selectedCompletion,
       difficulty: this.selectedDifficulty,
-      reason: this.reason.trim() || undefined
+      reason: this.reason.trim() || undefined,
     });
 
     this.successMessage =
-      this.successMessages[
-        Math.floor(Math.random() * this.successMessages.length)
-        ];
+      this.successMessages[Math.floor(Math.random() * this.successMessages.length)];
 
     this.showSuccess = true;
   }

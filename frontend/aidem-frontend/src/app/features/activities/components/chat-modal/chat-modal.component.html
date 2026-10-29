@@ -1,20 +1,10 @@
 <div class="modal-backdrop">
   <div class="chat-page">
-
     <header class="header">
       <div class="left-actions">
-        <img
-          src="/icons/menu.svg"
-          class="menu-icon"
-          alt="Abrir menu"
-          (click)="openSideMenu()"
-        />
+        <img src="/icons/menu.svg" class="menu-icon" alt="Abrir menu" (click)="openSideMenu()" />
 
-        <button
-          class="back-button"
-          type="button"
-          (click)="closeModal()">
-
+        <button class="back-button" type="button" (click)="closeModal()">
           <span class="back-arrow" aria-hidden="true">←</span>
           <span>Voltar</span>
         </button>
@@ -30,117 +20,58 @@
           />
 
           <span
-            *ngIf="
-      !isAdmin &&
-      role === 'informal' &&
-      notificationService.unreadCount() > 0
-    "
+            *ngIf="!isAdmin && role === 'informal' && notificationService.unreadCount() > 0"
             class="notification-badge"
-            aria-label="Nova notificação">
-
-    {{ notificationService.unreadCount() }}
-  </span>
+            aria-label="Nova notificação"
+          >
+            {{ notificationService.unreadCount() }}
+          </span>
         </div>
 
-        <img
-          [src]="headerAvatar"
-          class="avatar"
-          alt="Perfil"
-        />
+        <img [src]="headerAvatar" class="avatar" alt="Perfil" />
       </div>
     </header>
 
-
-    <div
-      class="chat-workspace"
-      [class.conversation-open]="selectedContact">
-
-
-      <!-- Lista de conversas -->
-
-      <aside
-        class="conversations-panel"
-        aria-label="Conversas">
-
+    <div class="chat-workspace" [class.conversation-open]="selectedContact">
+      <aside class="conversations-panel" aria-label="Conversas">
         <div class="conversations-heading">
           <div>
-            <span class="section-label">
-              Mensagens
-            </span>
+            <span class="section-label"> Mensagens </span>
 
             <h1>Conversas</h1>
           </div>
 
-          <button
-            class="new-message-button"
-            type="button"
-            (click)="openNewMessagePicker()">
-
+          <button class="new-message-button" type="button" (click)="openNewMessagePicker()">
             <span aria-hidden="true">+</span>
             <span>Nova mensagem</span>
           </button>
         </div>
 
+        <div *ngIf="isLoadingConversations" class="panel-state">A carregar conversas...</div>
 
-        <div
-          *ngIf="isLoadingConversations"
-          class="panel-state">
-
-          A carregar conversas...
-        </div>
-
-
-        <div
-          *ngIf="
-            !isLoadingConversations &&
-            conversationsError
-          "
-          class="panel-state error-state">
-
+        <div *ngIf="!isLoadingConversations && conversationsError" class="panel-state error-state">
           {{ conversationsError }}
         </div>
 
-
         <div
-          *ngIf="
-            !isLoadingConversations &&
-            !conversationsError &&
-            conversations.length === 0
-          "
-          class="panel-state empty-state">
+          *ngIf="!isLoadingConversations && !conversationsError && conversations.length === 0"
+          class="panel-state empty-state"
+        >
+          <strong> Ainda não existem conversas. </strong>
 
-          <strong>
-            Ainda não existem conversas.
-          </strong>
-
-          <span>
-            Selecione “Nova mensagem” para começar.
-          </span>
+          <span> Selecione “Nova mensagem” para começar. </span>
         </div>
 
-
-        <div
-          *ngIf="conversations.length > 0"
-          class="conversation-list">
-
+        <div *ngIf="conversations.length > 0" class="conversation-list">
           <button
-            *ngFor="
-              let conversation of conversations;
-              trackBy: trackByConversation
-            "
+            *ngFor="let conversation of conversations; trackBy: trackByConversation"
             class="conversation-item"
-            [class.active]="
-              selectedContact?.id ===
-              conversation.contactId
-            "
+            [class.active]="selectedContact?.id === conversation.contactId"
             type="button"
-            (click)="selectConversation(conversation)">
-
+            (click)="selectConversation(conversation)"
+          >
             <img
-              [src]="
-  conversation.contactAvatar ||
-  avatarForRole(conversation.contactRole)
-"
+              [src]="conversation.contactAvatar || avatarForRole(conversation.contactRole)"
               class="conversation-avatar"
               [alt]="conversation.contactName"
             />
@@ -151,32 +82,17 @@
                   {{ conversation.contactName }}
                 </strong>
 
-                <time
-                  [attr.datetime]="
-                    conversation.lastMessageAt
-                  ">
-                  {{
-                    formatConversationTime(
-                      conversation.lastMessageAt
-                    )
-                  }}
+                <time [attr.datetime]="conversation.lastMessageAt">
+                  {{ formatConversationTime(conversation.lastMessageAt) }}
                 </time>
               </span>
 
               <span class="conversation-role">
-                {{
-                  roleLabel(
-                    conversation.contactRole
-                  )
-                }}
+                {{ roleLabel(conversation.contactRole) }}
               </span>
 
               <span class="conversation-preview">
-                <ng-container
-                  *ngIf="conversation.lastMessageMine">
-
-                  Você:
-                </ng-container>
+                <ng-container *ngIf="conversation.lastMessageMine"> Você: </ng-container>
 
                 {{ conversation.lastMessage }}
               </span>
@@ -185,53 +101,29 @@
         </div>
       </aside>
 
-
-      <!-- Conversa selecionada -->
-
-      <section
-        class="conversation-panel"
-        aria-label="Conversa selecionada">
-
-        <div
-          *ngIf="!selectedContact"
-          class="no-conversation">
-
-          <div
-            class="no-conversation-icon"
-            aria-hidden="true">
-
-            <img
-              src="/icons/Message.svg"
-              alt=""
-            />
+      <section class="conversation-panel" aria-label="Conversa selecionada">
+        <div *ngIf="!selectedContact" class="no-conversation">
+          <div class="no-conversation-icon" aria-hidden="true">
+            <img src="/icons/Message.svg" alt="" />
           </div>
 
           <h2>Selecione uma conversa</h2>
 
-          <p>
-            Escolha uma conversa existente ou envie
-            uma nova mensagem.
-          </p>
+          <p>Escolha uma conversa existente ou envie uma nova mensagem.</p>
 
-          <button
-            class="primary-button"
-            type="button"
-            (click)="openNewMessagePicker()">
-
+          <button class="primary-button" type="button" (click)="openNewMessagePicker()">
             Nova mensagem
           </button>
         </div>
 
-
         <ng-container *ngIf="selectedContact">
-
           <section class="professional-card">
             <button
               class="mobile-list-button"
               type="button"
               aria-label="Voltar à lista de conversas"
-              (click)="returnToConversationList()">
-
+              (click)="returnToConversationList()"
+            >
               ←
             </button>
 
@@ -247,11 +139,7 @@
               </h2>
 
               <p>
-                {{
-                  roleLabel(
-                    selectedContact.role
-                  )
-                }}
+                {{ roleLabel(selectedContact.role) }}
               </p>
             </div>
 
@@ -259,92 +147,47 @@
               class="call-button"
               type="button"
               aria-label="Iniciar chamada"
-              (click)="openCallOverlay()">
-
-              <img
-                src="/icons/Phone_2.svg"
-                alt=""
-              />
+              (click)="openCallOverlay()"
+            >
+              <img src="/icons/Phone_2.svg" alt="" />
             </button>
           </section>
 
-
           <section class="chat-main">
-            <main
-              #messagesContainer
-              class="chat-content"
-              aria-live="polite">
+            <main #messagesContainer class="chat-content" aria-live="polite">
+              <div *ngIf="isLoadingMessages" class="chat-state">A carregar mensagens...</div>
 
-
-              <div
-                *ngIf="isLoadingMessages"
-                class="chat-state">
-
-                A carregar mensagens...
-              </div>
-
-
-              <div
-                *ngIf="
-                  !isLoadingMessages &&
-                  messagesError
-                "
-                class="chat-state error-state">
-
+              <div *ngIf="!isLoadingMessages && messagesError" class="chat-state error-state">
                 {{ messagesError }}
               </div>
 
-
               <div
-                *ngIf="
-                  !isLoadingMessages &&
-                  !messagesError &&
-                  messages.length === 0
-                "
-                class="chat-state empty-state">
+                *ngIf="!isLoadingMessages && !messagesError && messages.length === 0"
+                class="chat-state empty-state"
+              >
+                <strong> Ainda não existem mensagens. </strong>
 
-                <strong>
-                  Ainda não existem mensagens.
-                </strong>
-
-                <span>
-                  Envie a primeira mensagem desta conversa.
-                </span>
+                <span> Envie a primeira mensagem desta conversa. </span>
               </div>
 
-
               <article
-                *ngFor="
-                  let chatMessage of messages;
-                  trackBy: trackByMessageId
-                "
+                *ngFor="let chatMessage of messages; trackBy: trackByMessageId"
                 class="message-row"
                 [class.sent]="chatMessage.mine"
-                [class.received]="!chatMessage.mine">
-
+                [class.received]="!chatMessage.mine"
+              >
                 <p class="message">
                   {{ chatMessage.content }}
                 </p>
 
-                <time
-                  class="time"
-                  [attr.datetime]="chatMessage.sentAt">
-
-                  {{
-                    formatMessageTime(
-                      chatMessage.sentAt
-                    )
-                  }}
+                <time class="time" [attr.datetime]="chatMessage.sentAt">
+                  {{ formatMessageTime(chatMessage.sentAt) }}
                 </time>
               </article>
             </main>
 
-
             <section class="chat-input-area">
-              <p
-                *ngIf="sendError"
-                class="send-error">
-
+              <p *ngIf="sendError" class="send-error">
                 {{ sendError }}
               </p>
 
@@ -352,10 +195,7 @@
                 <input
                   [(ngModel)]="message"
                   maxlength="2000"
-                  [disabled]="
-                    isLoadingMessages ||
-                    isSendingMessage
-                  "
+                  [disabled]="isLoadingMessages || isSendingMessage"
                   placeholder="Escreva uma mensagem..."
                   (keyup.enter)="sendMessage()"
                 />
@@ -364,12 +204,9 @@
                   type="button"
                   aria-label="Enviar mensagem"
                   [disabled]="!canSendMessage"
-                  (click)="sendMessage()">
-
-                  <img
-                    src="/icons/send.svg"
-                    alt=""
-                  />
+                  (click)="sendMessage()"
+                >
+                  <img src="/icons/send.svg" alt="" />
                 </button>
               </div>
             </section>
@@ -379,41 +216,23 @@
     </div>
   </div>
 
-
-  <!-- Modal para escolher destinatário -->
-
-  <div
-    *ngIf="showNewMessage"
-    class="contact-picker-backdrop"
-    (click)="closeNewMessagePicker()">
-
+  <div *ngIf="showNewMessage" class="contact-picker-backdrop" (click)="closeNewMessagePicker()">
     <section
       class="contact-picker"
       role="dialog"
       aria-modal="true"
       aria-labelledby="new-message-title"
-      (click)="$event.stopPropagation()">
-
+      (click)="$event.stopPropagation()"
+    >
       <header class="contact-picker-header">
         <div>
-          <span class="section-label">
-            Nova mensagem
-          </span>
+          <span class="section-label"> Nova mensagem </span>
 
-          <h2 id="new-message-title">
-            Escolher destinatário
-          </h2>
+          <h2 id="new-message-title">Escolher destinatário</h2>
         </div>
 
-        <button
-          type="button"
-          aria-label="Fechar"
-          (click)="closeNewMessagePicker()">
-
-          ×
-        </button>
+        <button type="button" aria-label="Fechar" (click)="closeNewMessagePicker()">×</button>
       </header>
-
 
       <div class="contact-search">
         <span aria-hidden="true">⌕</span>
@@ -426,52 +245,27 @@
         />
       </div>
 
+      <div *ngIf="isLoadingContacts" class="panel-state">A carregar utilizadores...</div>
 
-      <div
-        *ngIf="isLoadingContacts"
-        class="panel-state">
-
-        A carregar utilizadores...
-      </div>
-
-
-      <div
-        *ngIf="
-          !isLoadingContacts &&
-          contactsError
-        "
-        class="panel-state error-state">
-
+      <div *ngIf="!isLoadingContacts && contactsError" class="panel-state error-state">
         {{ contactsError }}
       </div>
 
-
       <div
-        *ngIf="
-          !isLoadingContacts &&
-          !contactsError &&
-          filteredContacts.length === 0
-        "
-        class="panel-state empty-state">
-
+        *ngIf="!isLoadingContacts && !contactsError && filteredContacts.length === 0"
+        class="panel-state empty-state"
+      >
         Nenhum utilizador encontrado.
       </div>
 
-
       <div class="contact-list">
         <button
-          *ngFor="
-            let contact of filteredContacts;
-            trackBy: trackByContact
-          "
+          *ngFor="let contact of filteredContacts; trackBy: trackByContact"
           class="contact-item"
           type="button"
-          (click)="selectContact(contact)">
-
-          <img
-            [src]="avatarForContact(contact)"
-            [alt]="contact.fullName"
-          />
+          (click)="selectContact(contact)"
+        >
+          <img [src]="avatarForContact(contact)" [alt]="contact.fullName" />
 
           <span>
             <strong>
@@ -483,45 +277,35 @@
             </small>
           </span>
 
-          <span
-            class="contact-arrow"
-            aria-hidden="true">
-
-            ›
-          </span>
+          <span class="contact-arrow" aria-hidden="true"> › </span>
         </button>
       </div>
     </section>
   </div>
 
-
   <app-call-overlay
-    *ngIf="
-      showCallOverlay &&
-      selectedContact
-    "
+    *ngIf="showCallOverlay && selectedContact"
     [name]="selectedContact.fullName"
     status="A chamar ..."
     [avatar]="avatarForContact(selectedContact)"
-    (endCall)="closeCallOverlay()">
+    (endCall)="closeCallOverlay()"
+  >
   </app-call-overlay>
 
-  <app-notifications-popover
-    *ngIf="showNotifications"
-    (close)="closeNotifications()">
+  <app-notifications-popover *ngIf="showNotifications" (close)="closeNotifications()">
   </app-notifications-popover>
 
   <app-side-menu
     *ngIf="showSideMenu"
     [isAdmin]="isAdmin"
     (close)="closeSideMenu()"
-    (changePatient)="openPatients.emit();closeSideMenu()"
-    (openContents)="openContents.emit();closeSideMenu()"
+    (changePatient)="openPatients.emit(); closeSideMenu()"
+    (openContents)="openContents.emit(); closeSideMenu()"
     (openMessages)="closeSideMenu()"
-    (openAdminActivities)="
-     openAdminActivities.emit();closeSideMenu()"
-    (openUserManagement)="openUserManagement.emit();closeSideMenu()"
+    (openAdminActivities)="openAdminActivities.emit(); closeSideMenu()"
+    (openUserManagement)="openUserManagement.emit(); closeSideMenu()"
     [canChangePatient]="role === 'formal' || isAdmin"
-    (logout)="logout.emit();closeSideMenu()">
+    (logout)="logout.emit(); closeSideMenu()"
+  >
   </app-side-menu>
 </div>

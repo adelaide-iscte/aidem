@@ -4,14 +4,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LoadingSpinnerComponent } from '../shared/laoding-spinner-modal/loading-spinner.component';
 import { AppSessionService } from '../core/services/app-session.service';
 
-/*
- * Rota pai de /utentes/:patientId.
- *
- * Carrega o utente indicado no URL (também
- * ao fazer refresh ou ao navegar com os
- * botões do browser) e só depois mostra as
- * páginas filhas (início, atividades, perfil).
- */
 @Component({
   selector: 'app-patient-context-page',
   standalone: true,
@@ -24,7 +16,7 @@ import { AppSessionService } from '../core/services/app-session.service';
     } @else if (session.selectedPatient()?.id === patientId()) {
       <router-outlet />
     }
-  `
+  `,
 })
 export class PatientContextPage {
   readonly session = inject(AppSessionService);
@@ -32,8 +24,8 @@ export class PatientContextPage {
   readonly patientId = signal<number | null>(null);
 
   constructor() {
-    inject(ActivatedRoute).paramMap
-      .pipe(takeUntilDestroyed())
+    inject(ActivatedRoute)
+      .paramMap.pipe(takeUntilDestroyed())
       .subscribe((params) => {
         const patientId = Number(params.get('patientId'));
 

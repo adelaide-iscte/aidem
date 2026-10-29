@@ -1,21 +1,31 @@
 <div class="modal-backdrop">
-
   <div class="feedback-modal" *ngIf="!showSuccess && !showReasonStep">
-
     <h2>Conseguiu finalizar a atividade?</h2>
 
     <div class="feedback-row">
-      <button class="emoji-option" [class.selected]="selectedCompletion === 'yes'" (click)="selectCompletion('yes')">
+      <button
+        class="emoji-option"
+        [class.selected]="selectedCompletion === 'yes'"
+        (click)="selectCompletion('yes')"
+      >
         <img src="/icons/yes_face.png" />
         <span>Sim</span>
       </button>
 
-      <button class="emoji-option" [class.selected]="selectedCompletion === 'almost'" (click)="selectCompletion('almost')">
+      <button
+        class="emoji-option"
+        [class.selected]="selectedCompletion === 'almost'"
+        (click)="selectCompletion('almost')"
+      >
         <img src="/icons/almost_face.png" />
         <span>Quase</span>
       </button>
 
-      <button class="emoji-option" [class.selected]="selectedCompletion === 'no'" (click)="selectCompletion('no')">
+      <button
+        class="emoji-option"
+        [class.selected]="selectedCompletion === 'no'"
+        (click)="selectCompletion('no')"
+      >
         <img src="/icons/no_face.png" />
         <span>Não</span>
       </button>
@@ -24,17 +34,29 @@
     <h2>Como classifica a dificuldade da atividade?</h2>
 
     <div class="feedback-row">
-      <button class="emoji-option" [class.selected]="selectedDifficulty === 'easy'" (click)="selectDifficulty('easy')">
+      <button
+        class="emoji-option"
+        [class.selected]="selectedDifficulty === 'easy'"
+        (click)="selectDifficulty('easy')"
+      >
         <img src="/icons/easy_face.png" />
         <span>Fácil</span>
       </button>
 
-      <button class="emoji-option" [class.selected]="selectedDifficulty === 'medium'" (click)="selectDifficulty('medium')">
+      <button
+        class="emoji-option"
+        [class.selected]="selectedDifficulty === 'medium'"
+        (click)="selectDifficulty('medium')"
+      >
         <img src="/icons/medium_face.png" />
         <span>Média</span>
       </button>
 
-      <button class="emoji-option" [class.selected]="selectedDifficulty === 'hard'" (click)="selectDifficulty('hard')">
+      <button
+        class="emoji-option"
+        [class.selected]="selectedDifficulty === 'hard'"
+        (click)="selectDifficulty('hard')"
+      >
         <img src="/icons/hard_face.png" />
         <span>Difícil</span>
       </button>
@@ -44,7 +66,8 @@
       class="finish-button"
       [class.enabled]="selectedCompletion && selectedDifficulty"
       [disabled]="!selectedCompletion || !selectedDifficulty"
-      (click)="submit()">
+      (click)="submit()"
+    >
       Concluir
     </button>
 
@@ -54,17 +77,15 @@
   <div class="feedback-modal reason-modal" *ngIf="!showSuccess && showReasonStep">
     <h2>Porque é que a atividade não foi concluída?</h2>
 
-    <textarea
-      class="reason-textarea"
-      [(ngModel)]="reason"
-      placeholder="Escreva o motivo...">
+    <textarea class="reason-textarea" [(ngModel)]="reason" placeholder="Escreva o motivo...">
     </textarea>
 
     <button
       class="finish-button"
       [class.enabled]="reason.trim()"
       [disabled]="!reason.trim()"
-      (click)="submitReason()">
+      (click)="submitReason()"
+    >
       Concluir
     </button>
 
@@ -74,9 +95,6 @@
   <div class="success-modal" *ngIf="showSuccess">
     <h2>{{ successMessage }}</h2>
 
-    <button class="continue-button" (click)="closeModal()">
-      Continuar
-    </button>
+    <button class="continue-button" (click)="closeModal()">Continuar</button>
   </div>
-
 </div>

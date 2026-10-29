@@ -1,13 +1,10 @@
 :host {
-  font-family: "Poppins", Inter, Arial, sans-serif;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
 }
 
 * {
   box-sizing: border-box;
 }
-
-
-/* Fundo do modal */
 
 .modal-backdrop {
   position: fixed;
@@ -25,15 +22,8 @@
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 
-  /*
-   * Proteção para ecrãs pequenos ou zoom elevado.
-   * A caixa das instruções nunca terá scroll próprio.
-   */
   overflow-y: auto;
 }
-
-
-/* Modal principal */
 
 .instructions-modal {
   width: min(1220px, 100%);
@@ -50,9 +40,6 @@
     0 24px 70px rgba(33, 51, 79, 0.22),
     0 4px 14px rgba(33, 51, 79, 0.08);
 }
-
-
-/* Cabeçalho */
 
 .modal-header {
   margin-bottom: 22px;
@@ -83,7 +70,7 @@
 }
 
 .modal-label::before {
-  content: "";
+  content: '';
 
   width: 9px;
   height: 9px;
@@ -104,9 +91,6 @@
   line-height: 1.2;
 }
 
-
-/* Botão ouvir */
-
 .accessibility-button {
   min-height: 52px;
   padding: 0 22px;
@@ -124,7 +108,7 @@
   background: #ffffff;
   color: #407ce2;
 
-  font-family: "Poppins", Inter, Arial, sans-serif;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
   font-size: 18px;
   font-weight: 800;
 
@@ -161,14 +145,7 @@
   object-fit: contain;
 }
 
-
-/* Caixa das instruções */
-
 .instructions-card {
-  /*
-   * Não existe height, max-height nem overflow.
-   * A caixa cresce automaticamente com o texto.
-   */
   width: 100%;
   height: auto;
   max-height: none;
@@ -206,16 +183,9 @@
   line-height: 1.5;
   text-align: left;
 
-  /*
-   * Mantém as mudanças de linha existentes nas
-   * instruções guardadas na base de dados.
-   */
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
-
-
-/* Conteúdo inferior */
 
 .modal-content {
   margin-top: 22px;
@@ -228,9 +198,6 @@
   align-items: stretch;
   gap: 22px;
 }
-
-
-/* Cartão de informação */
 
 .information-card {
   padding: 12px 22px;
@@ -270,7 +237,7 @@
 }
 
 .info-label::after {
-  content: ":";
+  content: ':';
 }
 
 .info-value {
@@ -281,9 +248,6 @@
 
   overflow-wrap: anywhere;
 }
-
-
-/* Área do vídeo */
 
 .video-area {
   min-width: 0;
@@ -348,7 +312,7 @@
 }
 
 .video-preview::before {
-  content: "";
+  content: '';
 
   position: absolute;
   inset: 0;
@@ -397,9 +361,6 @@
 
   fill: currentColor;
 }
-
-
-/* Player aberto */
 
 .video-player-backdrop {
   position: fixed;
@@ -508,18 +469,17 @@
 }
 
 .demo-player::before {
-  content: "";
+  content: '';
 
   position: absolute;
   inset: 0;
 
-  background:
-    linear-gradient(
-        to top,
-        rgba(8, 14, 24, 0.9) 0%,
-        rgba(8, 14, 24, 0.26) 42%,
-        transparent 68%
-    );
+  background: linear-gradient(
+    to top,
+    rgba(8, 14, 24, 0.9) 0%,
+    rgba(8, 14, 24, 0.26) 42%,
+    transparent 68%
+  );
 }
 
 .demo-player-central-play {
@@ -587,12 +547,11 @@
 
   border-radius: 999px;
 
-  background:
-    linear-gradient(
-        to right,
-        #5d91e9 0 var(--progress),
-        rgba(255, 255, 255, 0.48) var(--progress) 100%
-    );
+  background: linear-gradient(
+    to right,
+    #5d91e9 0 var(--progress),
+    rgba(255, 255, 255, 0.48) var(--progress) 100%
+  );
 
   cursor: pointer;
 }
@@ -725,104 +684,6 @@
   border-radius: 0;
 }
 
-.video-title {
-  position: relative;
-  z-index: 2;
-
-  color: #ffffff;
-
-  font-size: 32px;
-  font-weight: 800;
-
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
-}
-
-
-/* Controlos visuais do vídeo */
-
-.video-controls {
-  position: absolute;
-  z-index: 3;
-  right: 16px;
-  bottom: 10px;
-  left: 16px;
-
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  column-gap: 8px;
-  row-gap: 8px;
-
-  color: #ffffff;
-}
-
-.video-time {
-  font-size: 13px;
-  font-weight: 600;
-  opacity: 0.9;
-}
-
-.video-progress {
-  position: relative;
-
-  height: 4px;
-
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.45);
-}
-
-.video-progress-fill {
-  width: 45%;
-  height: 100%;
-
-  border-radius: inherit;
-  background: #5d91e9;
-}
-
-.video-dot {
-  position: absolute;
-  top: 50%;
-  left: 45%;
-
-  width: 9px;
-  height: 9px;
-
-  transform: translate(-50%, -50%);
-
-  border-radius: 50%;
-  background: #ffffff;
-}
-
-.video-icons {
-  grid-column: 1 / -1;
-
-  padding: 0 6px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  font-size: 17px;
-  opacity: 0.95;
-}
-
-.play-circle {
-  width: 34px;
-  height: 34px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: rgba(255, 255, 255, 0.88);
-  color: #4079e8;
-}
-
-
-/* Botão fechar */
-
 .close-button {
   min-width: 190px;
   min-height: 56px;
@@ -834,7 +695,7 @@
   background: #407ce2;
   color: #ffffff;
 
-  font-family: "Poppins", Inter, Arial, sans-serif;
+  font-family: 'Poppins', Inter, Arial, sans-serif;
   font-size: 20px;
   font-weight: 800;
   line-height: 1;
@@ -863,9 +724,6 @@
   transform: scale(0.98);
 }
 
-
-/* Ecrãs com pouca altura */
-
 @media (max-height: 820px) and (min-width: 761px) {
   .modal-backdrop {
     padding: 14px 24px;
@@ -892,9 +750,6 @@
     padding: 8px 4px;
   }
 }
-
-
-/* Telemóvel e tablet estreito */
 
 @media (max-width: 760px) {
   .modal-backdrop {
@@ -938,10 +793,6 @@
     gap: 3px;
 
     font-size: 24px;
-  }
-
-  .video-title {
-    font-size: 28px;
   }
 
   .close-button {
@@ -1142,9 +993,7 @@
 
   transform: translateY(-50%);
 
-  box-shadow:
-    0 6px 18px
-    rgba(0, 0, 0, 0.24);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
 }
 
 .instruction-image-arrow-left {

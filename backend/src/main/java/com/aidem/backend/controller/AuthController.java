@@ -20,11 +20,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public AuthController(
-            UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            JwtService jwtService
-    ) {
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
@@ -32,8 +28,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
-        User user = userRepository.findByEmailIgnoreCase(request.email())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+        User user = userRepository
+            .findByEmailIgnoreCase(request.email())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
 
         boolean passwordOk = passwordEncoder.matches(request.password(), user.getPasswordHash());
 
@@ -48,13 +45,8 @@ public class AuthController {
         String token = jwtService.generateToken(user);
 
         return new LoginResponse(
-                token,
-                new UserResponse(
-                        user.getId(),
-                        user.getEmail(),
-                        user.getFullName(),
-                        user.getRole().name()
-                )
+            token,
+            new UserResponse(user.getId(), user.getEmail(), user.getFullName(), user.getRole().name())
         );
     }
 }

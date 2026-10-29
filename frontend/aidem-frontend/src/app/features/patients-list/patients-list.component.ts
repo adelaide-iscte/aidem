@@ -1,22 +1,9 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  Input,
-  Output
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-  NotificationsPopoverComponent
-} from '../../shared/notifications-popover-modal/notifications-popover.component';
-import {
-  AppPatient,
-  PatientService
-} from '../../core/services/patient.service';
-import {
-  SideMenuComponent
-} from '../../shared/side-menu-modal/side-menu.component';
+import { NotificationsPopoverComponent } from '../../shared/notifications-popover-modal/notifications-popover.component';
+import { AppPatient } from '../../core/services/patient.service';
+import { SideMenuComponent } from '../../shared/side-menu-modal/side-menu.component';
 
 type SortMode = 'recent' | 'alphabetical';
 
@@ -25,10 +12,9 @@ type SortMode = 'recent' | 'alphabetical';
   standalone: true,
   imports: [CommonModule, FormsModule, NotificationsPopoverComponent, SideMenuComponent],
   templateUrl: './patients-list.component.html',
-  styleUrl: './patients-list.component.scss'
+  styleUrl: './patients-list.component.scss',
 })
 export class PatientsListComponent {
-
   @Input() patients: AppPatient[] = [];
   @Input() isAdmin = false;
   @Output() selectPatient = new EventEmitter<AppPatient>();
@@ -45,11 +31,6 @@ export class PatientsListComponent {
   sortMode: SortMode = 'recent';
   showNotifications = false;
 
-  constructor(
-    private patientService: PatientService,
-    private cdr: ChangeDetectorRef
-  ) {}
-
   openSideMenu(): void {
     this.showSideMenu = true;
   }
@@ -58,12 +39,8 @@ export class PatientsListComponent {
     this.showSideMenu = false;
   }
 
-  @Output() openCreateExercise = new EventEmitter<void>();
-
   get headerAvatar(): string {
-    return this.isAdmin
-      ? '/icons/adm.svg'
-      : '/icons/professional.svg';
+    return this.isAdmin ? '/icons/adm.svg' : '/icons/professional.svg';
   }
 
   get filteredPatients(): AppPatient[] {

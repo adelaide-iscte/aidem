@@ -4,5 +4,5 @@ public enum DifficultyFeedback {
     EASY,
     OK,
     HARD,
-    TOO_HARD
+    TOO_HARD,
 }

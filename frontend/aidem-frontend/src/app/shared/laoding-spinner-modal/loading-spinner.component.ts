@@ -6,11 +6,10 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './loading-spinner.component.html',
-  styleUrl: './loading-spinner.component.scss'
+  styleUrl: './loading-spinner.component.scss',
 })
 export class LoadingSpinnerComponent {
   @Input() message = 'A carregar...';
   @Input() subMessage = '';
-  @Input() fullPage = false;
   @Input() compact = false;
 }

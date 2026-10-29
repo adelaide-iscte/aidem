@@ -6,7 +6,6 @@
     </button>
 
     <h1>Adicionar utente</h1>
-
   </header>
 
   <main class="content">
@@ -17,94 +16,58 @@
       <strong>{{ submitError }}</strong>
 
       <ul *ngIf="fieldErrors.length > 0">
-        <li *ngFor="let error of fieldErrors">
-          Falta preencher: {{ error }}
-        </li>
+        <li *ngFor="let error of fieldErrors">Falta preencher: {{ error }}</li>
       </ul>
     </section>
 
     <section class="form-card">
-
       <section class="patient-photo-section">
-
         <div class="patient-photo-preview">
+          <img [src]="patientAvatarPreview" alt="Fotografia do utente" />
 
-          <img
-            [src]="patientAvatarPreview"
-            alt="Fotografia do utente"
-          />
-
-          <label
-            class="patient-photo-camera"
-            aria-label="Selecionar fotografia">
-
+          <label class="patient-photo-camera" aria-label="Selecionar fotografia">
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp"
               (change)="onAvatarSelected($event)"
             />
 
-            <img
-              src="/icons/camera.svg"
-              alt=""
-              aria-hidden="true"
-            />
-
+            <img src="/icons/camera.svg" alt="" aria-hidden="true" />
           </label>
-
         </div>
 
-
         <div class="patient-photo-information">
-
           <h3>Fotografia do utente</h3>
 
           <p>
-            A fotografia é opcional. Se não selecionar nenhuma,
-            será utilizada a imagem predefinida.
+            A fotografia é opcional. Se não selecionar nenhuma, será utilizada a imagem predefinida.
           </p>
 
-
           <div class="patient-photo-actions">
-
             <label class="select-patient-photo">
-
-              {{
-                form.avatar
-                  ? 'Alterar fotografia'
-                  : 'Adicionar fotografia'
-              }}
+              {{ form.avatar ? 'Alterar fotografia' : 'Adicionar fotografia' }}
 
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 (change)="onAvatarSelected($event)"
               />
-
             </label>
-
 
             <button
               *ngIf="form.avatar"
               type="button"
               class="remove-patient-photo"
-              (click)="removeAvatar()">
-
+              (click)="removeAvatar()"
+            >
               Remover
             </button>
-
           </div>
 
-
-          <p
-            *ngIf="avatarError"
-            class="patient-photo-error">
-
+          <p *ngIf="avatarError" class="patient-photo-error">
             {{ avatarError }}
           </p>
-
         </div>
-
       </section>
       <h2>Dados do utente</h2>
 
@@ -214,39 +177,22 @@
     <section class="form-card">
       <h2>Dados do segundo cuidador</h2>
 
-      <p class="optional-section-description">
-        Preenchimento opcional.
-      </p>
+      <p class="optional-section-description">Preenchimento opcional.</p>
 
       <div class="form-grid">
         <label>
           Nome do segundo cuidador
-          <input
-            type="text"
-            [(ngModel)]="
-          form.secondInformalCaregiverName
-        "
-          />
+          <input type="text" [(ngModel)]="form.secondInformalCaregiverName" />
         </label>
 
         <label>
           Telefone do segundo cuidador
-          <input
-            type="text"
-            [(ngModel)]="
-          form.secondInformalCaregiverPhone
-        "
-          />
+          <input type="text" [(ngModel)]="form.secondInformalCaregiverPhone" />
         </label>
 
         <label>
           Email do segundo cuidador
-          <input
-            type="email"
-            [(ngModel)]="
-          form.secondInformalCaregiverEmail
-        "
-          />
+          <input type="email" [(ngModel)]="form.secondInformalCaregiverEmail" />
         </label>
       </div>
     </section>
@@ -286,7 +232,8 @@
               (ngModelChange)="recalculateEgpSummary()"
               [readonly]="isSummaryRow(row.domain)"
               [class.calculated-input]="isSummaryRow(row.domain)"
-              [class.invalid-input]="hasError('EGP - ' + row.domain + ' - PD')" />
+              [class.invalid-input]="hasError('EGP - ' + row.domain + ' - PD')"
+            />
 
             <input
               type="number"
@@ -296,16 +243,10 @@
               (ngModelChange)="recalculateEgpSummary()"
               [readonly]="isAutoCalculatedNr(row.domain)"
               [class.calculated-input]="isAutoCalculatedNr(row.domain)"
-              [class.invalid-input]="
-    hasError(
-      'EGP - ' + row.domain + ' - NR'
-    )
-  " />
+              [class.invalid-input]="hasError('EGP - ' + row.domain + ' - NR')"
+            />
 
-            <select
-              *ngIf="hasRiskClassification(row.domain)"
-              [(ngModel)]="row.riskLevel">
-
+            <select *ngIf="hasRiskClassification(row.domain)" [(ngModel)]="row.riskLevel">
               <option value="LOW">Baixo</option>
               <option value="MEDIUM">Médio</option>
               <option value="HIGH">Elevado</option>
@@ -314,9 +255,10 @@
             <span
               *ngIf="!hasRiskClassification(row.domain)"
               class="risk-not-applicable"
-              aria-label="Sem classificação de risco">
-  —
-</span>
+              aria-label="Sem classificação de risco"
+            >
+              —
+            </span>
           </div>
         </div>
       </div>
@@ -327,7 +269,8 @@
         type="button"
         class="save-button save-button-large"
         [disabled]="isSaving"
-        (click)="save()">
+        (click)="save()"
+      >
         {{ isSaving ? 'A guardar...' : 'Guardar utente' }}
       </button>
     </section>

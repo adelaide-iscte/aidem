@@ -2,10 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CreatePatientRequest, PatientService } from '../../core/services/patient.service';
-import {
-  DEFAULT_PATIENT_AVATAR,
-  resizeProfileImage
-} from '../../core/utils/image.util';
+import { DEFAULT_PATIENT_AVATAR, resizeProfileImage } from '../../core/utils/image.util';
 
 type PatientForm = {
   fullName: string;
@@ -45,10 +42,9 @@ type EgpFormRow = {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './create-patient.component.html',
-  styleUrl: './create-patient.component.scss'
+  styleUrl: './create-patient.component.scss',
 })
 export class CreatePatientComponent {
-  @Output() cancel = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
   @Output() goBack = new EventEmitter<void>();
 
@@ -79,77 +75,153 @@ export class CreatePatientComponent {
   };
 
   egpRows: EgpFormRow[] = [
-    { domain: 'Equilíbrio Estático I', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 1 },
-    { domain: 'Equilíbrio Estático II', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 2 },
-    { domain: 'Equilíbrio Dinâmico I', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 3 },
-    { domain: 'Equilíbrio Dinâmico II', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 4 },
-    { domain: 'Mobilização articular dos membros superiores', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 5 },
-    { domain: 'Mobilização articular dos membros inferiores', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 6 },
-    { domain: 'Motricidade fina dos membros superiores', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 7 },
-    { domain: 'Motricidade fina dos membros inferiores', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 8 },
+    {
+      domain: 'Equilíbrio Estático I',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 1,
+    },
+    {
+      domain: 'Equilíbrio Estático II',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 2,
+    },
+    {
+      domain: 'Equilíbrio Dinâmico I',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 3,
+    },
+    {
+      domain: 'Equilíbrio Dinâmico II',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 4,
+    },
+    {
+      domain: 'Mobilização articular dos membros superiores',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 5,
+    },
+    {
+      domain: 'Mobilização articular dos membros inferiores',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 6,
+    },
+    {
+      domain: 'Motricidade fina dos membros superiores',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 7,
+    },
+    {
+      domain: 'Motricidade fina dos membros inferiores',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 8,
+    },
     { domain: 'Praxias', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 9 },
-    { domain: 'Conhecimento das partes do corpo', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 10 },
-    { domain: 'Vigilância', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 11 },
-    { domain: 'Memória Percetiva', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 12 },
-    { domain: 'Domínio Espacial', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 13 },
-    { domain: 'Memória Verbal', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 14 },
+    {
+      domain: 'Conhecimento das partes do corpo',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 10,
+    },
+    {
+      domain: 'Vigilância',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 11,
+    },
+    {
+      domain: 'Memória Percetiva',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 12,
+    },
+    {
+      domain: 'Domínio Espacial',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 13,
+    },
+    {
+      domain: 'Memória Verbal',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 14,
+    },
     { domain: 'Perceção', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 15 },
-    { domain: 'Domínio Temporal', score: null, normalizedScore: null, riskLevel: 'LOW', displayOrder: 16 },
+    {
+      domain: 'Domínio Temporal',
+      score: null,
+      normalizedScore: null,
+      riskLevel: 'LOW',
+      displayOrder: 16,
+    },
     {
       domain: 'Comunicação',
       score: null,
       normalizedScore: null,
       riskLevel: 'LOW',
-      displayOrder: 17
+      displayOrder: 17,
     },
     {
       domain: 'Constrangimentos físicos',
       score: null,
       normalizedScore: null,
       riskLevel: null,
-      displayOrder: 18
+      displayOrder: 18,
     },
     {
       domain: 'Prevalência motora',
       score: null,
       normalizedScore: null,
       riskLevel: null,
-      displayOrder: 19
+      displayOrder: 19,
     },
     {
       domain: 'Prevalência cognitiva',
       score: null,
       normalizedScore: null,
       riskLevel: null,
-      displayOrder: 20
+      displayOrder: 20,
     },
     {
       domain: 'Total',
       score: null,
       normalizedScore: null,
       riskLevel: null,
-      displayOrder: 21
-    }
+      displayOrder: 21,
+    },
   ];
 
   constructor(private patientService: PatientService) {}
 
-
   get patientAvatarPreview(): string {
-    return (
-      this.form.avatar ||
-      DEFAULT_PATIENT_AVATAR
-    );
+    return this.form.avatar || DEFAULT_PATIENT_AVATAR;
   }
 
-  async onAvatarSelected(
-    event: Event
-  ): Promise<void> {
-    const input =
-      event.target as HTMLInputElement;
+  async onAvatarSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
 
-    const file =
-      input.files?.[0];
+    const file = input.files?.[0];
 
     input.value = '';
 
@@ -160,14 +232,10 @@ export class CreatePatientComponent {
     this.avatarError = '';
 
     try {
-      this.form.avatar =
-        await resizeProfileImage(file);
-
+      this.form.avatar = await resizeProfileImage(file);
     } catch (error) {
       this.avatarError =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível selecionar a fotografia.';
+        error instanceof Error ? error.message : 'Não foi possível selecionar a fotografia.';
     }
   }
 
@@ -180,7 +248,7 @@ export class CreatePatientComponent {
       'Constrangimentos físicos',
       'Prevalência motora',
       'Prevalência cognitiva',
-      'Total'
+      'Total',
     ].includes(domain);
   }
 
@@ -189,7 +257,7 @@ export class CreatePatientComponent {
       'Constrangimentos físicos',
       'Prevalência motora',
       'Prevalência cognitiva',
-      'Total'
+      'Total',
     ].includes(domain);
   }
 
@@ -198,67 +266,46 @@ export class CreatePatientComponent {
       'Constrangimentos físicos',
       'Prevalência motora',
       'Prevalência cognitiva',
-      'Total'
+      'Total',
     ].includes(domain);
   }
 
   private findEgpRow(domain: string): EgpFormRow | undefined {
-    return this.egpRows.find(row => row.domain === domain);
+    return this.egpRows.find((row) => row.domain === domain);
   }
 
   private calculateSum(domains: string[]): number | null {
-    const rows = domains.map(domain => this.findEgpRow(domain));
+    const rows = domains.map((domain) => this.findEgpRow(domain));
 
-    /*
-     * Não apresenta um resultado parcial.
-     * Só calcula quando todos os campos necessários estiverem preenchidos.
-     */
-    const hasMissingValue = rows.some(
-      row => row?.score === null || row?.score === undefined
-    );
+    const hasMissingValue = rows.some((row) => row?.score === null || row?.score === undefined);
 
     if (hasMissingValue) {
       return null;
     }
 
-    return rows.reduce(
-      (total, row) => total + Number(row?.score ?? 0),
-      0
-    );
+    return rows.reduce((total, row) => total + Number(row?.score ?? 0), 0);
   }
 
-  private calculateNormalizedAverage(
-    domains: string[]
-  ): number | null {
-    const rows = domains.map(
-      domain => this.findEgpRow(domain)
-    );
+  private calculateNormalizedAverage(domains: string[]): number | null {
+    const rows = domains.map((domain) => this.findEgpRow(domain));
 
     const hasMissingValue = rows.some(
-      row =>
-        row?.normalizedScore === null ||
-        row?.normalizedScore === undefined
+      (row) => row?.normalizedScore === null || row?.normalizedScore === undefined,
     );
 
     if (hasMissingValue) {
       return null;
     }
 
-    const total = rows.reduce(
-      (sum, row) =>
-        sum + Number(row?.normalizedScore ?? 0),
-      0
-    );
+    const total = rows.reduce((sum, row) => sum + Number(row?.normalizedScore ?? 0), 0);
 
-    return Math.round(
-      (total / domains.length) * 100
-    ) / 100;
+    return Math.round((total / domains.length) * 100) / 100;
   }
 
   recalculateEgpSummary(): void {
     const physicalDomains = [
       'Mobilização articular dos membros superiores',
-      'Mobilização articular dos membros inferiores'
+      'Mobilização articular dos membros inferiores',
     ];
 
     const motorDomains = [
@@ -266,7 +313,7 @@ export class CreatePatientComponent {
       'Equilíbrio Estático II',
       'Equilíbrio Dinâmico I',
       'Equilíbrio Dinâmico II',
-      'Motricidade fina dos membros inferiores'
+      'Motricidade fina dos membros inferiores',
     ];
 
     const cognitiveDomains = [
@@ -279,107 +326,61 @@ export class CreatePatientComponent {
       'Memória Verbal',
       'Perceção',
       'Domínio Temporal',
-      'Comunicação'
+      'Comunicação',
     ];
 
-    const physicalConstraints =
-      this.calculateSum(physicalDomains);
+    const physicalConstraints = this.calculateSum(physicalDomains);
 
-    const physicalConstraintsNr =
-      this.calculateNormalizedAverage(
-        physicalDomains
-      );
+    const physicalConstraintsNr = this.calculateNormalizedAverage(physicalDomains);
 
-    const motorPrevalence =
-      this.calculateSum(motorDomains);
+    const motorPrevalence = this.calculateSum(motorDomains);
 
-    const motorPrevalenceNr =
-      this.calculateNormalizedAverage(
-        motorDomains
-      );
+    const motorPrevalenceNr = this.calculateNormalizedAverage(motorDomains);
 
-    const cognitivePrevalence =
-      this.calculateSum(cognitiveDomains);
+    const cognitivePrevalence = this.calculateSum(cognitiveDomains);
 
-    const cognitivePrevalenceNr =
-      this.calculateNormalizedAverage(
-        cognitiveDomains
-      );
+    const cognitivePrevalenceNr = this.calculateNormalizedAverage(cognitiveDomains);
 
-    const physicalRow =
-      this.findEgpRow('Constrangimentos físicos');
+    const physicalRow = this.findEgpRow('Constrangimentos físicos');
 
-    const motorRow =
-      this.findEgpRow('Prevalência motora');
+    const motorRow = this.findEgpRow('Prevalência motora');
 
-    const cognitiveRow =
-      this.findEgpRow('Prevalência cognitiva');
+    const cognitiveRow = this.findEgpRow('Prevalência cognitiva');
 
-    const totalRow =
-      this.findEgpRow('Total');
+    const totalRow = this.findEgpRow('Total');
 
     if (physicalRow) {
-      physicalRow.score =
-        physicalConstraints;
+      physicalRow.score = physicalConstraints;
 
-      physicalRow.normalizedScore =
-        physicalConstraintsNr;
+      physicalRow.normalizedScore = physicalConstraintsNr;
     }
 
     if (motorRow) {
-      motorRow.score =
-        motorPrevalence;
+      motorRow.score = motorPrevalence;
 
-      motorRow.normalizedScore =
-        motorPrevalenceNr;
+      motorRow.normalizedScore = motorPrevalenceNr;
     }
 
     if (cognitiveRow) {
-      cognitiveRow.score =
-        cognitivePrevalence;
+      cognitiveRow.score = cognitivePrevalence;
 
-      cognitiveRow.normalizedScore =
-        cognitivePrevalenceNr;
+      cognitiveRow.normalizedScore = cognitivePrevalenceNr;
     }
 
     if (totalRow) {
-      const pdSummaries = [
-        physicalConstraints,
-        motorPrevalence,
-        cognitivePrevalence
-      ];
+      const pdSummaries = [physicalConstraints, motorPrevalence, cognitivePrevalence];
 
-      const nrSummaries = [
-        physicalConstraintsNr,
-        motorPrevalenceNr,
-        cognitivePrevalenceNr
-      ];
+      const nrSummaries = [physicalConstraintsNr, motorPrevalenceNr, cognitivePrevalenceNr];
 
-      totalRow.score =
-        pdSummaries.some(
-          value => value === null
-        )
-          ? null
-          : pdSummaries.reduce(
-            (total: number, value) =>
-              total + (value ?? 0),
-            0
-          );
+      totalRow.score = pdSummaries.some((value) => value === null)
+        ? null
+        : pdSummaries.reduce((total: number, value) => total + (value ?? 0), 0);
 
-      totalRow.normalizedScore =
-        nrSummaries.some(
-          value => value === null
-        )
-          ? null
-          : Math.round(
-          (
-            nrSummaries.reduce(
-              (total: number, value) =>
-                total + (value ?? 0),
-              0
-            ) / 3
-          ) * 100
-        ) / 100;
+      totalRow.normalizedScore = nrSummaries.some((value) => value === null)
+        ? null
+        : Math.round(
+            (nrSummaries.reduce((total: number, value) => total + (value ?? 0), 0) / 3) * 100,
+          ) / 100;
     }
   }
 
@@ -411,14 +412,10 @@ export class CreatePatientComponent {
         errors.push(`EGP - ${row.domain} - NR`);
       }
 
-      if (
-        this.hasRiskClassification(row.domain) &&
-        !row.riskLevel
-      ) {
+      if (this.hasRiskClassification(row.domain) && !row.riskLevel) {
         errors.push(`EGP - ${row.domain} - Risco`);
       }
     });
-
 
     this.fieldErrors = errors;
     return errors.length === 0;
@@ -450,22 +447,19 @@ export class CreatePatientComponent {
       informalCaregiverName: this.form.informalCaregiverName.trim(),
       informalCaregiverPhone: this.form.informalCaregiverPhone.trim(),
       informalCaregiverEmail: this.form.informalCaregiverEmail.trim(),
-      secondInformalCaregiverName:this.form.secondInformalCaregiverName.trim(),
-      secondInformalCaregiverPhone:this.form.secondInformalCaregiverPhone.trim(),
-      secondInformalCaregiverEmail:this.form.secondInformalCaregiverEmail.trim(),
+      secondInformalCaregiverName: this.form.secondInformalCaregiverName.trim(),
+      secondInformalCaregiverPhone: this.form.secondInformalCaregiverPhone.trim(),
+      secondInformalCaregiverEmail: this.form.secondInformalCaregiverEmail.trim(),
       notes: this.form.notes.trim(),
       assessmentDate: this.form.assessmentDate,
-      avatar:
-      this.form.avatar,
+      avatar: this.form.avatar,
       egpScores: this.egpRows.map((row) => ({
         domain: row.domain,
         score: Number(row.score),
         normalizedScore: Number(row.normalizedScore),
-        riskLevel: this.hasRiskClassification(row.domain)
-          ? row.riskLevel
-          : null,
-        displayOrder: row.displayOrder
-      }))
+        riskLevel: this.hasRiskClassification(row.domain) ? row.riskLevel : null,
+        displayOrder: row.displayOrder,
+      })),
     };
 
     try {
@@ -473,10 +467,7 @@ export class CreatePatientComponent {
       this.created.emit();
     } catch (error) {
       console.error(error);
-      this.submitError =
-        error instanceof Error
-          ? error.message
-          : 'Erro ao criar utente.';
+      this.submitError = error instanceof Error ? error.message : 'Erro ao criar utente.';
     } finally {
       this.isSaving = false;
     }

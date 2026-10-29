@@ -8,24 +8,17 @@ import {
   PatientService,
   SessionHistory,
   SessionHistoryExercise,
-  UpdatePatientRequest
-} from '../../core/services/patient.service';import {SideMenuComponent} from '../../shared/side-menu-modal/side-menu.component';
-import {LoadingSpinnerComponent} from '../../shared/laoding-spinner-modal/loading-spinner.component';
+  UpdatePatientRequest,
+} from '../../core/services/patient.service';
+import { SideMenuComponent } from '../../shared/side-menu-modal/side-menu.component';
+import { LoadingSpinnerComponent } from '../../shared/laoding-spinner-modal/loading-spinner.component';
 import { FormsModule } from '@angular/forms';
-import {
-  ExerciseNotificationService
-} from '../../core/services/exercise-notification.service';
+import { ExerciseNotificationService } from '../../core/services/exercise-notification.service';
 
 type ProfileTab = 'dados' | 'sessoes';
 type UserRole = 'informal' | 'formal';
-type UserDataRow = [
-  { label: string; value: string },
-  { label: string; value: string }
-];
-import {
-  DEFAULT_PATIENT_AVATAR,
-  resizeProfileImage
-} from '../../core/utils/image.util';
+type UserDataRow = [{ label: string; value: string }, { label: string; value: string }];
+import { DEFAULT_PATIENT_AVATAR, resizeProfileImage } from '../../core/utils/image.util';
 
 @Component({
   selector: 'app-profile',
@@ -36,10 +29,10 @@ import {
     EgpModalComponent,
     NotificationsPopoverComponent,
     SideMenuComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
   ],
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss'
+  styleUrl: './profile.component.scss',
 })
 export class ProfileComponent {
   @Input() role: UserRole = 'informal';
@@ -71,20 +64,13 @@ export class ProfileComponent {
   editForm: UpdatePatientRequest = this.createEmptyEditForm();
 
   get editablePatientAvatar(): string {
-    return (
-      this.editForm.avatar ||
-      DEFAULT_PATIENT_AVATAR
-    );
+    return this.editForm.avatar || DEFAULT_PATIENT_AVATAR;
   }
 
-  async onPatientAvatarSelected(
-    event: Event
-  ): Promise<void> {
-    const input =
-      event.target as HTMLInputElement;
+  async onPatientAvatarSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
 
-    const file =
-      input.files?.[0];
+    const file = input.files?.[0];
 
     if (!file) {
       return;
@@ -93,24 +79,19 @@ export class ProfileComponent {
     this.avatarError = '';
 
     try {
-      const resizedAvatar =
-        await resizeProfileImage(file);
+      const resizedAvatar = await resizeProfileImage(file);
 
       this.editForm = {
         ...this.editForm,
-        avatar: resizedAvatar
+        avatar: resizedAvatar,
       };
 
       this.cdr.detectChanges();
-
     } catch (error) {
       this.avatarError =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível selecionar a fotografia.';
+        error instanceof Error ? error.message : 'Não foi possível selecionar a fotografia.';
 
       this.cdr.detectChanges();
-
     } finally {
       input.value = '';
     }
@@ -119,7 +100,7 @@ export class ProfileComponent {
   removePatientAvatar(): void {
     this.editForm = {
       ...this.editForm,
-      avatar: null
+      avatar: null,
     };
 
     this.avatarError = '';
@@ -131,23 +112,15 @@ export class ProfileComponent {
       return '/icons/adm.svg';
     }
 
-    return this.role === 'formal'
-      ? '/icons/professional.svg'
-      : '/icons/generic_user.svg';
+    return this.role === 'formal' ? '/icons/professional.svg' : '/icons/generic_user.svg';
   }
 
   get canEditProfile(): boolean {
-    return (
-      this.isAdmin ||
-      this.role === 'formal'
-    );
+    return this.isAdmin || this.role === 'formal';
   }
 
   get canDeletePatient(): boolean {
-    return (
-      this.isAdmin ||
-      this.role === 'formal'
-    );
+    return this.isAdmin || this.role === 'formal';
   }
 
   get patientGenderLabel(): string {
@@ -175,10 +148,7 @@ export class ProfileComponent {
     this.editError = '';
     this.avatarError = '';
 
-    this.editForm =
-      this.createEditForm(
-        this.patient
-      );
+    this.editForm = this.createEditForm(this.patient);
 
     this.isEditing = true;
   }
@@ -192,17 +162,11 @@ export class ProfileComponent {
     this.isEditing = false;
     this.editError = '';
 
-    this.editForm =
-      this.createEditForm(
-        this.patient
-      );
+    this.editForm = this.createEditForm(this.patient);
   }
 
   openDeleteModal(): void {
-    if (
-      !this.canDeletePatient ||
-      this.isEditing
-    ) {
+    if (!this.canDeletePatient || this.isEditing) {
       return;
     }
 
@@ -220,11 +184,7 @@ export class ProfileComponent {
   }
 
   async confirmDelete(): Promise<void> {
-    if (
-      !this.canDeletePatient ||
-      !this.patient?.id ||
-      this.isDeletingPatient
-    ) {
+    if (!this.canDeletePatient || !this.patient?.id || this.isDeletingPatient) {
       return;
     }
 
@@ -235,24 +195,17 @@ export class ProfileComponent {
     this.cdr.detectChanges();
 
     try {
-      await this.patientService
-        .deletePatient(patientId);
+      await this.patientService.deletePatient(patientId);
 
       this.showDeleteModal = false;
       this.isDeletingPatient = false;
 
       this.patientDeleted.emit(patientId);
-
     } catch (error) {
-      console.error(
-        'Erro ao remover utente:',
-        error
-      );
+      console.error('Erro ao remover utente:', error);
 
       this.deleteError =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível remover o utente.';
+        error instanceof Error ? error.message : 'Não foi possível remover o utente.';
 
       this.isDeletingPatient = false;
       this.cdr.detectChanges();
@@ -260,167 +213,93 @@ export class ProfileComponent {
   }
 
   async saveProfile(): Promise<void> {
-    if (
-      !this.canEditProfile ||
-      !this.patient?.id ||
-      this.isSavingProfile
-    ) {
+    if (!this.canEditProfile || !this.patient?.id || this.isSavingProfile) {
       return;
     }
 
     this.editError = '';
 
     if (!this.hasRequiredEditFields()) {
-      this.editError =
-        'Preencha todos os campos obrigatórios.';
+      this.editError = 'Preencha todos os campos obrigatórios.';
 
       return;
     }
 
-    if (
-      this.editForm.email.trim() &&
-      !this.isValidEmail(
-        this.editForm.email
-      )
-    ) {
-      this.editError =
-        'Indique um email válido para o utente.';
+    if (this.editForm.email.trim() && !this.isValidEmail(this.editForm.email)) {
+      this.editError = 'Indique um email válido para o utente.';
 
       return;
     }
 
     if (
       this.editForm.informalCaregiverEmail.trim() &&
-      !this.isValidEmail(
-        this.editForm.informalCaregiverEmail
-      )
+      !this.isValidEmail(this.editForm.informalCaregiverEmail)
     ) {
-      this.editError =
-        'Indique um email válido para o cuidador.';
+      this.editError = 'Indique um email válido para o cuidador.';
 
       return;
     }
 
     if (
-      this.editForm
-        .secondInformalCaregiverEmail
-        .trim() &&
-      !this.isValidEmail(
-        this.editForm
-          .secondInformalCaregiverEmail
-      )
+      this.editForm.secondInformalCaregiverEmail.trim() &&
+      !this.isValidEmail(this.editForm.secondInformalCaregiverEmail)
     ) {
-      this.editError =
-        'Indique um email válido para o segundo cuidador.';
+      this.editError = 'Indique um email válido para o segundo cuidador.';
 
       return;
     }
 
-    const payload:
-      UpdatePatientRequest = {
+    const payload: UpdatePatientRequest = {
+      fullName: this.editForm.fullName.trim(),
 
-      fullName:
-        this.editForm.fullName.trim(),
+      birthDate: this.editForm.birthDate,
 
-      birthDate:
-      this.editForm.birthDate,
+      gender: this.editForm.gender,
 
-      gender:
-      this.editForm.gender,
+      diagnosisType: this.editForm.diagnosisType.trim(),
 
-      diagnosisType:
-        this.editForm
-          .diagnosisType
-          .trim(),
+      phone: this.editForm.phone.trim(),
 
-      phone:
-        this.editForm.phone.trim(),
+      email: this.editForm.email.trim(),
 
-      email:
-        this.editForm.email.trim(),
+      address: this.editForm.address.trim(),
 
-      address:
-        this.editForm.address.trim(),
+      education: this.editForm.education.trim(),
 
-      education:
-        this.editForm.education.trim(),
+      profession: this.editForm.profession.trim(),
+      avatar: this.editForm.avatar,
+      sessionType: this.editForm.sessionType.trim(),
 
-      profession:
-        this.editForm.profession.trim(),
-      avatar:
-      this.editForm.avatar,
-      sessionType:
-        this.editForm.sessionType.trim(),
+      informalCaregiverName: this.editForm.informalCaregiverName.trim(),
 
-      informalCaregiverName:
-        this.editForm
-          .informalCaregiverName
-          .trim(),
+      informalCaregiverPhone: this.editForm.informalCaregiverPhone.trim(),
 
-      informalCaregiverPhone:
-        this.editForm
-          .informalCaregiverPhone
-          .trim(),
+      informalCaregiverEmail: this.editForm.informalCaregiverEmail.trim(),
 
-      informalCaregiverEmail:
-        this.editForm
-          .informalCaregiverEmail
-          .trim(),
+      secondInformalCaregiverName: this.editForm.secondInformalCaregiverName.trim(),
 
-      secondInformalCaregiverName:
-        this.editForm
-          .secondInformalCaregiverName
-          .trim(),
+      secondInformalCaregiverPhone: this.editForm.secondInformalCaregiverPhone.trim(),
 
-      secondInformalCaregiverPhone:
-        this.editForm
-          .secondInformalCaregiverPhone
-          .trim(),
-
-      secondInformalCaregiverEmail:
-        this.editForm
-          .secondInformalCaregiverEmail
-          .trim()
-
+      secondInformalCaregiverEmail: this.editForm.secondInformalCaregiverEmail.trim(),
     };
-
-
 
     this.isSavingProfile = true;
 
     try {
-      const updatedPatient =
-        await this.patientService
-          .updatePatient(
-            this.patient.id,
-            payload
-          );
+      const updatedPatient = await this.patientService.updatePatient(this.patient.id, payload);
 
-      this.patient =
-        updatedPatient;
+      this.patient = updatedPatient;
 
-      this.patientUpdated.emit(
-        updatedPatient
-      );
+      this.patientUpdated.emit(updatedPatient);
 
-      this.editForm =
-        this.createEditForm(
-          updatedPatient
-        );
+      this.editForm = this.createEditForm(updatedPatient);
 
       this.isEditing = false;
-
     } catch (error) {
-      console.error(
-        'Erro ao atualizar perfil do utente:',
-        error
-      );
+      console.error('Erro ao atualizar perfil do utente:', error);
 
       this.editError =
-        error instanceof Error
-          ? error.message
-          : 'Não foi possível guardar as alterações.';
-
+        error instanceof Error ? error.message : 'Não foi possível guardar as alterações.';
     } finally {
       this.isSavingProfile = false;
       this.cdr.detectChanges();
@@ -435,11 +314,9 @@ export class ProfileComponent {
     this.showSideMenu = false;
   }
 
-
   sessionHistory: SessionHistory[] = [];
   isLoadingSessions = false;
   sessionsError = '';
-  expandedSessionId: number | null = null;
 
   showEgpModal = false;
   showNotifications = false;
@@ -451,7 +328,7 @@ export class ProfileComponent {
   constructor(
     private patientService: PatientService,
     public notificationService: ExerciseNotificationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   get patientSubtitle(): string {
@@ -459,15 +336,11 @@ export class ProfileComponent {
   }
 
   toggleNotifications(): void {
-    if (
-      this.role !== 'informal' ||
-      this.isAdmin
-    ) {
+    if (this.role !== 'informal' || this.isAdmin) {
       return;
     }
 
-    this.showNotifications =
-      !this.showNotifications;
+    this.showNotifications = !this.showNotifications;
 
     if (this.showNotifications) {
       this.notificationService.markAsRead();
@@ -489,25 +362,16 @@ export class ProfileComponent {
 
     try {
       this.egpData = await this.patientService.getLatestEgp(this.patient.id);
-      console.log('EGP LOADED:', this.egpData);
     } catch (error) {
       console.error('load EGP failed', error);
-      this.egpError =
-        error instanceof Error ? error.message : 'Erro ao carregar dados EGP.';
+      this.egpError = error instanceof Error ? error.message : 'Erro ao carregar dados EGP.';
     } finally {
       this.isLoadingEgp = false;
       this.cdr.detectChanges();
     }
   }
 
-  onEgpUpdated(
-    assessment: EgpAssessment
-  ): void {
-    /*
-     * Atualiza os dados em memória para que
-     * a visualização e o gráfico apresentem
-     * imediatamente os novos valores.
-     */
+  onEgpUpdated(assessment: EgpAssessment): void {
     this.egpData = assessment;
     this.egpError = '';
 
@@ -519,35 +383,35 @@ export class ProfileComponent {
       [
         {
           label: 'Examinando',
-          value: this.patient.code
+          value: this.patient.code,
         },
         {
           label: 'Sexo',
-          value: this.patientGenderLabel
-        }
+          value: this.patientGenderLabel,
+        },
       ],
 
       [
         {
           label: 'Sessão',
-          value: this.patient.sessionType || '-'
+          value: this.patient.sessionType || '-',
         },
         {
           label: 'Escolaridade',
-          value: this.patient.education || '-'
-        }
+          value: this.patient.education || '-',
+        },
       ],
 
       [
         {
           label: 'Idade',
-          value: `${this.patient.age} anos`
+          value: `${this.patient.age} anos`,
         },
         {
           label: 'Profissão',
-          value: this.patient.profession || '-'
-        }
-      ]
+          value: this.patient.profession || '-',
+        },
+      ],
     ];
   }
 
@@ -564,29 +428,13 @@ export class ProfileComponent {
     this.sessionsError = '';
 
     try {
-      this.sessionHistory =
-        await this.patientService.getSessionHistory(
-          this.patient.id
-        );
-
-      console.log(
-        'SESSION HISTORY LOADED:',
-        this.sessionHistory
-      );
+      this.sessionHistory = await this.patientService.getSessionHistory(this.patient.id);
     } catch (error) {
-      console.error(
-        'Erro ao carregar histórico:',
-        error
-      );
+      console.error('Erro ao carregar histórico:', error);
 
-      this.sessionsError =
-        'Não foi possível carregar o histórico de sessões.';
+      this.sessionsError = 'Não foi possível carregar o histórico de sessões.';
     } finally {
       this.isLoadingSessions = false;
-      console.log(
-        'LOADING TERMINADO:',
-        this.isLoadingSessions
-      );
       this.cdr.detectChanges();
     }
   }
@@ -625,10 +473,7 @@ export class ProfileComponent {
     }
   }
 
-  effectiveExerciseStatus(
-    exercise: SessionHistoryExercise
-  ): SessionHistoryExercise['status'] {
-
+  effectiveExerciseStatus(exercise: SessionHistoryExercise): SessionHistoryExercise['status'] {
     if (exercise.status === 'SKIPPED') {
       return 'SKIPPED';
     }
@@ -714,103 +559,67 @@ export class ProfileComponent {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
-      year: 'numeric'
+      year: 'numeric',
     }).format(parsedDate);
   }
 
-  private hasRequiredEditFields():
-    boolean {
-
+  private hasRequiredEditFields(): boolean {
     return Boolean(
       this.editForm.fullName.trim() &&
       this.editForm.birthDate &&
       this.editForm.gender &&
-      this.editForm
-        .diagnosisType
-        .trim() &&
+      this.editForm.diagnosisType.trim() &&
       this.editForm.address.trim() &&
       this.editForm.education.trim() &&
       this.editForm.profession.trim() &&
       this.editForm.sessionType.trim() &&
-      this.editForm
-        .informalCaregiverName
-        .trim()
+      this.editForm.informalCaregiverName.trim(),
     );
   }
 
-  private isValidEmail(
-    value: string
-  ): boolean {
-
-    return (
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        .test(value.trim())
-    );
+  private isValidEmail(value: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
   }
 
-  private createEditForm(
-    patient: PatientProfile
-  ): UpdatePatientRequest {
-
+  private createEditForm(patient: PatientProfile): UpdatePatientRequest {
     return {
-      fullName:
-        patient.fullName ?? '',
+      fullName: patient.fullName ?? '',
 
-      birthDate:
-        patient.birthDate ?? '',
+      birthDate: patient.birthDate ?? '',
 
-      gender:
-        patient.gender ?? '',
+      gender: patient.gender ?? '',
 
-      diagnosisType:
-        patient.diagnosisType ?? '',
+      diagnosisType: patient.diagnosisType ?? '',
 
-      phone:
-        patient.phone ?? '',
+      phone: patient.phone ?? '',
 
-      email:
-        patient.email ?? '',
+      email: patient.email ?? '',
 
-      address:
-        patient.address ?? '',
+      address: patient.address ?? '',
 
-      education:
-        patient.education ?? '',
+      education: patient.education ?? '',
 
-      profession:
-        patient.profession ?? '',
+      profession: patient.profession ?? '',
 
-      sessionType:
-        patient.sessionType ?? '',
+      sessionType: patient.sessionType ?? '',
 
-      informalCaregiverName:
-        patient.informalCaregiverName ?? '',
+      informalCaregiverName: patient.informalCaregiverName ?? '',
 
-      informalCaregiverPhone:
-        patient.informalCaregiverPhone ?? '',
+      informalCaregiverPhone: patient.informalCaregiverPhone ?? '',
 
-      informalCaregiverEmail:
-        patient.informalCaregiverEmail ?? '',
+      informalCaregiverEmail: patient.informalCaregiverEmail ?? '',
 
-      secondInformalCaregiverName:
-        patient.secondInformalCaregiverName ?? '',
+      secondInformalCaregiverName: patient.secondInformalCaregiverName ?? '',
 
-      secondInformalCaregiverPhone:
-        patient.secondInformalCaregiverPhone ?? '',
+      secondInformalCaregiverPhone: patient.secondInformalCaregiverPhone ?? '',
 
-      secondInformalCaregiverEmail:
-        patient.secondInformalCaregiverEmail ?? '',
+      secondInformalCaregiverEmail: patient.secondInformalCaregiverEmail ?? '',
 
-      avatar:
-        patient.avatar === DEFAULT_PATIENT_AVATAR
-          ? null
-          : patient.avatar
+      avatar: patient.avatar === DEFAULT_PATIENT_AVATAR ? null : patient.avatar,
     };
   }
 
-  private createEmptyEditForm():
-    UpdatePatientRequest {
-
+  private createEmptyEditForm(): UpdatePatientRequest {
     return {
       fullName: '',
       birthDate: '',
@@ -828,8 +637,7 @@ export class ProfileComponent {
       secondInformalCaregiverName: '',
       secondInformalCaregiverPhone: '',
       secondInformalCaregiverEmail: '',
-      avatar: null
+      avatar: null,
     };
   }
-
 }

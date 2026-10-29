@@ -18,18 +18,12 @@ textarea {
   font: inherit;
 }
 
-
-/* Página */
-
 .exercise-form-page {
   min-height: 100vh;
 
   background: #f7f9fc;
   color: #263750;
 }
-
-
-/* Cabeçalho */
 
 .header {
   height: 100px;
@@ -86,9 +80,6 @@ textarea {
     0 4px 12px rgba(54, 83, 126, 0.12);
 }
 
-
-/* Botão voltar */
-
 .back-button {
   justify-self: start;
 
@@ -138,17 +129,11 @@ textarea {
   line-height: 1;
 }
 
-
-/* Conteúdo */
-
 .form-content {
   width: min(1200px, calc(100% - 64px));
   margin: 0 auto;
   padding: 30px 0 60px;
 }
-
-
-/* Imagem da atividade */
 
 .exercise-image-editor {
   margin: 0 auto 26px;
@@ -163,8 +148,7 @@ textarea {
 
   background: #ffffff;
 
-  box-shadow:
-    0 8px 24px rgba(54, 83, 126, 0.07);
+  box-shadow: 0 8px 24px rgba(54, 83, 126, 0.07);
 }
 
 .exercise-image-preview {
@@ -213,8 +197,7 @@ textarea {
 
   cursor: pointer;
 
-  box-shadow:
-    0 5px 14px rgba(43, 80, 139, 0.25);
+  box-shadow: 0 5px 14px rgba(43, 80, 139, 0.25);
 }
 
 .exercise-image-camera:hover {
@@ -321,9 +304,7 @@ textarea {
 }
 
 .select-exercise-image.disabled,
-.select-exercise-image:has(
-  input:disabled
-) {
+.select-exercise-image:has(input:disabled) {
   opacity: 0.55;
 
   cursor: not-allowed;
@@ -361,9 +342,6 @@ textarea {
     height: 170px;
   }
 }
-
-
-/* Formulário */
 
 .activity-form {
   display: flex;
@@ -428,9 +406,6 @@ textarea {
   border-radius: 50%;
   background: #407ce2;
 }
-
-
-/* Labels */
 
 .full-field,
 .main-fields label,
@@ -748,11 +723,6 @@ input:disabled {
   .form-columns {
     grid-template-columns: 1fr;
   }
-
-  .form-illustration {
-    width: 130px;
-    height: 100px;
-  }
 }
 
 @media (max-width: 620px) {
@@ -795,12 +765,6 @@ input:disabled {
   .form-content {
     width: calc(100% - 28px);
     padding: 24px 0 38px;
-  }
-
-  .form-illustration {
-    width: 110px;
-    height: 86px;
-    margin-bottom: 18px;
   }
 
   .main-fields,
@@ -922,7 +886,6 @@ input:disabled {
   gap: 11px;
 }
 
-
 @media (max-width: 620px) {
   .instruction-media-header h3 {
     font-size: 18px;
@@ -943,10 +906,8 @@ input:disabled {
     flex-direction: column;
   }
 
-  .instruction-media-actions
-  .select-exercise-image,
-  .instruction-media-actions
-  .remove-exercise-image {
+  .instruction-media-actions .select-exercise-image,
+  .instruction-media-actions .remove-exercise-image {
     min-height: 54px;
     padding: 0 18px;
 
@@ -978,25 +939,23 @@ input:disabled {
   cursor: pointer;
 
   transition:
-    background .2s,
-    border-color .2s,
-    transform .2s,
-    box-shadow .2s;
+    background 0.2s,
+    border-color 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
 
-  box-shadow:
-    0 6px 16px rgba(64,124,226,.18);
+  box-shadow: 0 6px 16px rgba(64, 124, 226, 0.18);
 }
 
 .select-instruction-media:hover:not(.disabled) {
   background: #326ed2;
   border-color: #326ed2;
 
-  box-shadow:
-    0 10px 22px rgba(64,124,226,.24);
+  box-shadow: 0 10px 22px rgba(64, 124, 226, 0.24);
 }
 
 .select-instruction-media:active:not(.disabled) {
-  transform: scale(.98);
+  transform: scale(0.98);
 }
 
 .select-instruction-media img {
@@ -1019,7 +978,7 @@ input:disabled {
 }
 
 .select-instruction-media.disabled {
-  opacity: .55;
+  opacity: 0.55;
 
   cursor: not-allowed;
   pointer-events: none;
@@ -1103,11 +1062,7 @@ input:disabled {
 
 .instruction-media-list {
   display: grid;
-  grid-template-columns:
-    repeat(
-      auto-fit,
-        minmax(220px, 1fr)
-    );
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
 }
 
