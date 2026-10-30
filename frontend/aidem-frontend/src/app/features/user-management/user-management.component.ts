@@ -260,8 +260,8 @@ export class UserManagementComponent implements OnInit {
       return;
     }
 
-    if (this.form.password && this.form.password.length < 6) {
-      this.formError = 'A palavra-passe deve ter pelo menos 6 caracteres.';
+    if (this.form.password && this.form.password.length < 8) {
+      this.formError = 'A palavra-passe deve ter pelo menos 8 caracteres.';
 
       return;
     }

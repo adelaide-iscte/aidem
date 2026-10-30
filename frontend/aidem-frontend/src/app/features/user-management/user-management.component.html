@@ -255,7 +255,7 @@
                 type="password"
                 name="password"
                 [(ngModel)]="form.password"
-                [placeholder]="isEditing ? 'Deixar vazio para manter' : 'Mínimo de 6 caracteres'"
+                [placeholder]="isEditing ? 'Deixar vazio para manter' : 'Mínimo de 8 caracteres'"
                 autocomplete="new-password"
               />
             </label>
@@ -420,9 +420,7 @@
       <p class="delete-modal-description">
         Tem a certeza de que pretende remover
 
-        <strong>
-          {{ userToDelete?.fullName }} </strong
-        >?
+        <strong> {{ userToDelete?.fullName }} </strong>?
       </p>
 
       <span class="delete-warning-text"> Esta ação não pode ser anulada. </span>

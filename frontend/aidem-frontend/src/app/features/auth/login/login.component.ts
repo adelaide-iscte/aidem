@@ -74,6 +74,9 @@ export class LoginComponent {
       case 'ACCOUNT_DISABLED':
         return 'Esta conta está desativada. Contacte o administrador.';
 
+      case 'TOO_MANY_ATTEMPTS':
+        return 'Demasiadas tentativas falhadas. Tente novamente dentro de 15 minutos.';
+
       case 'REQUEST_TIMEOUT':
         return 'O servidor está a demorar demasiado a responder. Tente novamente dentro de instantes.';
 

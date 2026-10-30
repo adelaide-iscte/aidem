@@ -23,6 +23,7 @@ export type LoginResponse = {
 export type LoginErrorCode =
   | 'INVALID_CREDENTIALS'
   | 'ACCOUNT_DISABLED'
+  | 'TOO_MANY_ATTEMPTS'
   | 'REQUEST_TIMEOUT'
   | 'SERVER_UNAVAILABLE';
 
@@ -99,6 +100,10 @@ export class AuthService {
 
       if (response.status === 403) {
         throw new LoginError('ACCOUNT_DISABLED');
+      }
+
+      if (response.status === 429) {
+        throw new LoginError('TOO_MANY_ATTEMPTS');
       }
 
       if (!response.ok) {

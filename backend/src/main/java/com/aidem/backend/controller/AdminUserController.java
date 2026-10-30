@@ -178,8 +178,8 @@ public class AdminUserController {
             throw badRequest("A palavra-passe é obrigatória.");
         }
 
-        if (request.password() != null && !request.password().isBlank() && request.password().length() < 6) {
-            throw badRequest("A palavra-passe deve ter pelo menos 6 caracteres.");
+        if (request.password() != null && !request.password().isBlank() && request.password().length() < 8) {
+            throw badRequest("A palavra-passe deve ter pelo menos 8 caracteres.");
         }
 
         UserRole role = parseCaregiverRole(request.role());
