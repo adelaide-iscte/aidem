@@ -75,20 +75,34 @@ public class SessionPlanService {
             throw new IllegalArgumentException("Utente não encontrado.");
         }
 
-        return sessionPlanRepository
-            .findByPatient_IdOrderBySessionDateDescIdDesc(patientId)
+        Map<SessionPlan, List<SessionPlanExercise>> itemsByPlan = sessionPlanExerciseRepository
+            .findHistoryItemsByPatientId(patientId)
             .stream()
-            .filter(this::hasSessionProgress)
-            .map(this::toHistoryResponse)
+            .collect(Collectors.groupingBy(SessionPlanExercise::getSessionPlan, LinkedHashMap::new, Collectors.toList()));
+
+        itemsByPlan
+            .values()
+            .removeIf(items -> items.stream().allMatch(item -> item.getStatus() == ExerciseStatus.PENDING));
+
+        List<Long> itemIds = itemsByPlan
+            .values()
+            .stream()
+            .flatMap(List::stream)
+            .map(SessionPlanExercise::getId)
             .toList();
-    }
 
-    private boolean hasSessionProgress(SessionPlan plan) {
-        List<SessionPlanExercise> items = sessionPlanExerciseRepository.findBySessionPlan_IdOrderByOrderIndexAsc(
-            plan.getId()
-        );
+        Map<Long, ExerciseFeedback> feedbackByExerciseId = itemIds.isEmpty()
+            ? Map.of()
+            : exerciseFeedbackRepository
+                .findBySessionPlanExercise_IdIn(itemIds)
+                .stream()
+                .collect(Collectors.toMap(feedback -> feedback.getSessionPlanExercise().getId(), feedback -> feedback));
 
-        return items.stream().anyMatch(item -> item.getStatus() != ExerciseStatus.PENDING);
+        return itemsByPlan
+            .entrySet()
+            .stream()
+            .map(entry -> toHistoryResponse(patientId, entry.getKey(), entry.getValue(), feedbackByExerciseId))
+            .toList();
     }
 
     @Transactional
@@ -724,19 +738,17 @@ public class SessionPlanService {
         return "Difícil";
     }
 
-    private SessionHistoryResponse toHistoryResponse(SessionPlan plan) {
-        List<SessionPlanExercise> items = sessionPlanExerciseRepository.findBySessionPlan_IdOrderByOrderIndexAsc(
-            plan.getId()
-        );
-
-        List<Long> itemIds = items.stream().map(SessionPlanExercise::getId).toList();
-
-        Map<Long, ExerciseFeedback> feedbackByExerciseId = itemIds.isEmpty()
-            ? Map.of()
-            : exerciseFeedbackRepository
-                .findBySessionPlanExercise_IdIn(itemIds)
-                .stream()
-                .collect(Collectors.toMap(feedback -> feedback.getSessionPlanExercise().getId(), feedback -> feedback));
+    private SessionHistoryResponse toHistoryResponse(
+        Long patientId,
+        SessionPlan plan,
+        List<SessionPlanExercise> items,
+        Map<Long, ExerciseFeedback> feedbackByExerciseId
+    ) {
+        List<ExerciseFeedback> planFeedbacks = items
+            .stream()
+            .map(item -> feedbackByExerciseId.get(item.getId()))
+            .filter(Objects::nonNull)
+            .toList();
 
         List<SessionHistoryExerciseResponse> exercises = items
             .stream()
@@ -750,12 +762,12 @@ public class SessionPlanService {
 
         return new SessionHistoryResponse(
             plan.getId(),
-            plan.getPatient().getId(),
+            patientId,
             plan.getSessionDate(),
             plan.getStatus().name(),
             completedActivities,
             items.size(),
-            averageDifficultyLabel(feedbackByExerciseId.values()),
+            averageDifficultyLabel(planFeedbacks),
             exercises
         );
     }
