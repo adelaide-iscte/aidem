@@ -908,9 +908,9 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
       const updated = await this.sessionPlanService.resetExercise(activity.sessionPlanExerciseId);
       this.updateActivity(updated);
     } catch (error) {
-      console.error('Erro ao cancelar atividade concluída', error);
+      console.error('Erro ao cancelar a classificação da atividade', error);
       this.planError =
-        error instanceof Error ? error.message : 'Erro ao cancelar atividade concluída.';
+        error instanceof Error ? error.message : 'Erro ao cancelar a classificação da atividade.';
     } finally {
       this.cdr.detectChanges();
     }
@@ -971,8 +971,8 @@ export class ActivitiesModalComponent implements OnInit, OnChanges, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  isCompleted(activity: SessionPlanExercise): boolean {
-    return activity.status === 'COMPLETED';
+  canUndo(activity: SessionPlanExercise): boolean {
+    return activity.status !== 'PENDING';
   }
 
   isSkipped(activity: SessionPlanExercise): boolean {

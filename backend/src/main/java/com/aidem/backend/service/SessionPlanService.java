@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
@@ -616,14 +618,38 @@ public class SessionPlanService {
         }
 
         return (
-            "Domínio " +
-            exercise.getDomain() +
+            domainLabel(exercise.getDomain()) +
             " com NR " +
             scoreValue(score) +
             " e nível de risco " +
-            score.getRiskLevel().name() +
+            riskLabel(score.getRiskLevel().name()) +
             "."
         );
+    }
+
+    private static final Pattern OLD_REASON = Pattern.compile(
+        "^Domínio (.+) com NR (\\S+) e nível de risco (HIGH|MEDIUM|LOW)\\.$"
+    );
+
+    private String displayReason(String reason) {
+        if (reason == null) return null;
+        Matcher m = OLD_REASON.matcher(reason.trim());
+        if (!m.matches()) return reason;
+        return domainLabel(m.group(1)) + " com NR " + m.group(2) + " e nível de risco " + riskLabel(m.group(3)) + ".";
+    }
+
+    private String domainLabel(String domain) {
+        String value = domain == null ? "" : domain.trim();
+        return normalize(value).startsWith("domínio") ? value : "Domínio " + value;
+    }
+
+    private String riskLabel(String risk) {
+        return switch (risk) {
+            case "HIGH" -> "elevado";
+            case "MEDIUM" -> "médio";
+            case "LOW" -> "baixo";
+            default -> risk;
+        };
     }
 
     private DifficultyFeedback parseDifficulty(String value) {
@@ -750,7 +776,7 @@ public class SessionPlanService {
             exercise.getDifficultyLevel().name(),
             item.getRecommendedDurationMinutes(),
             item.getStatus().name(),
-            item.getReason(),
+            displayReason(item.getReason()),
             feedback == null ? null : feedback.getCompleted(),
             feedback == null || feedback.getDifficultyFeedback() == null
                 ? null
@@ -864,7 +890,7 @@ public class SessionPlanService {
             null,
             resolveExerciseMedia(exercise),
             List.of(),
-            item.getReason(),
+            displayReason(item.getReason()),
             item.getStatus().name()
         );
     }
@@ -888,7 +914,7 @@ public class SessionPlanService {
             ex.getInstructions(),
             resolveExerciseMedia(ex),
             resolveInstructionMedia(ex),
-            item.getReason(),
+            displayReason(item.getReason()),
             item.getStatus().name()
         );
     }

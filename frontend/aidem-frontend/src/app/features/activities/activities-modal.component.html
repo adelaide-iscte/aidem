@@ -171,7 +171,7 @@
               </button>
 
               <button
-                *ngIf="isCompleted(activity)"
+                *ngIf="canUndo(activity)"
                 class="action-button secondary"
                 type="button"
                 (click)="resetExercise(activity)"
@@ -409,7 +409,7 @@
                 </ng-container>
 
                 <button
-                  *ngIf="isSelectedWeekPlanToday && isCompleted(activity)"
+                  *ngIf="isSelectedWeekPlanToday && canUndo(activity)"
                   class="action-button secondary"
                   type="button"
                   (click)="resetExercise(activity)"
