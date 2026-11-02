@@ -9,6 +9,7 @@ import com.aidem.backend.model.*;
 import com.aidem.backend.model.enums.*;
 import com.aidem.backend.repository.*;
 import com.aidem.backend.repository.projection.ExercisePlanCandidate;
+import com.aidem.backend.repository.projection.SessionHistoryRow;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -75,33 +76,16 @@ public class SessionPlanService {
             throw new IllegalArgumentException("Utente não encontrado.");
         }
 
-        Map<SessionPlan, List<SessionPlanExercise>> itemsByPlan = sessionPlanExerciseRepository
-            .findHistoryItemsByPatientId(patientId)
+        Map<Long, List<SessionHistoryRow>> rowsByPlan = sessionPlanExerciseRepository
+            .findHistoryRowsByPatientId(patientId)
             .stream()
-            .collect(Collectors.groupingBy(SessionPlanExercise::getSessionPlan, LinkedHashMap::new, Collectors.toList()));
+            .collect(Collectors.groupingBy(SessionHistoryRow::getPlanId, LinkedHashMap::new, Collectors.toList()));
 
-        itemsByPlan
-            .values()
-            .removeIf(items -> items.stream().allMatch(item -> item.getStatus() == ExerciseStatus.PENDING));
-
-        List<Long> itemIds = itemsByPlan
+        return rowsByPlan
             .values()
             .stream()
-            .flatMap(List::stream)
-            .map(SessionPlanExercise::getId)
-            .toList();
-
-        Map<Long, ExerciseFeedback> feedbackByExerciseId = itemIds.isEmpty()
-            ? Map.of()
-            : exerciseFeedbackRepository
-                .findBySessionPlanExercise_IdIn(itemIds)
-                .stream()
-                .collect(Collectors.toMap(feedback -> feedback.getSessionPlanExercise().getId(), feedback -> feedback));
-
-        return itemsByPlan
-            .entrySet()
-            .stream()
-            .map(entry -> toHistoryResponse(patientId, entry.getKey(), entry.getValue(), feedbackByExerciseId))
+            .filter(rows -> rows.stream().anyMatch(row -> row.getStatus() != ExerciseStatus.PENDING))
+            .map(rows -> toHistoryResponse(patientId, rows))
             .toList();
     }
 
@@ -738,70 +722,50 @@ public class SessionPlanService {
         return "Difícil";
     }
 
-    private SessionHistoryResponse toHistoryResponse(
-        Long patientId,
-        SessionPlan plan,
-        List<SessionPlanExercise> items,
-        Map<Long, ExerciseFeedback> feedbackByExerciseId
-    ) {
-        List<ExerciseFeedback> planFeedbacks = items
-            .stream()
-            .map(item -> feedbackByExerciseId.get(item.getId()))
-            .filter(Objects::nonNull)
-            .toList();
+    private SessionHistoryResponse toHistoryResponse(Long patientId, List<SessionHistoryRow> rows) {
+        SessionHistoryRow plan = rows.get(0);
 
-        List<SessionHistoryExerciseResponse> exercises = items
-            .stream()
-            .map(item -> toHistoryExerciseResponse(item, feedbackByExerciseId.get(item.getId())))
-            .toList();
+        List<SessionHistoryExerciseResponse> exercises = rows.stream().map(this::toHistoryExerciseResponse).toList();
 
-        int completedActivities = (int) items
+        int completedActivities = (int) rows
             .stream()
-            .filter(item -> item.getStatus() == ExerciseStatus.COMPLETED)
+            .filter(row -> row.getStatus() == ExerciseStatus.COMPLETED)
             .count();
 
         return new SessionHistoryResponse(
-            plan.getId(),
+            plan.getPlanId(),
             patientId,
             plan.getSessionDate(),
-            plan.getStatus().name(),
+            plan.getPlanStatus().name(),
             completedActivities,
-            items.size(),
-            averageDifficultyLabel(planFeedbacks),
+            rows.size(),
+            averageDifficultyLabel(rows.stream().map(SessionHistoryRow::getDifficultyFeedback).toList()),
             exercises
         );
     }
 
-    private SessionHistoryExerciseResponse toHistoryExerciseResponse(
-        SessionPlanExercise item,
-        ExerciseFeedback feedback
-    ) {
-        Exercise exercise = item.getExercise();
-
+    private SessionHistoryExerciseResponse toHistoryExerciseResponse(SessionHistoryRow row) {
         return new SessionHistoryExerciseResponse(
-            item.getId(),
-            exercise.getId(),
-            item.getOrderIndex(),
-            exercise.getTitle(),
-            exercise.getDomain(),
-            exercise.getActivityType().name(),
-            exercise.getDifficultyLevel().name(),
-            item.getRecommendedDurationMinutes(),
-            item.getStatus().name(),
-            displayReason(item.getReason()),
-            feedback == null ? null : feedback.getCompleted(),
-            feedback == null || feedback.getDifficultyFeedback() == null
-                ? null
-                : feedback.getDifficultyFeedback().name(),
-            feedback == null ? null : feedback.getEmotionFeedback(),
-            feedback == null ? null : feedback.getNotes()
+            row.getItemId(),
+            row.getExerciseId(),
+            row.getOrderIndex(),
+            row.getTitle(),
+            row.getDomain(),
+            row.getActivityType().name(),
+            row.getDifficultyLevel().name(),
+            row.getDurationMinutes(),
+            row.getStatus().name(),
+            displayReason(row.getReason()),
+            row.getCompleted(),
+            row.getDifficultyFeedback() == null ? null : row.getDifficultyFeedback().name(),
+            row.getEmotionFeedback(),
+            row.getNotes()
         );
     }
 
-    private String averageDifficultyLabel(Collection<ExerciseFeedback> feedbacks) {
-        List<Integer> values = feedbacks
+    private String averageDifficultyLabel(List<DifficultyFeedback> difficulties) {
+        List<Integer> values = difficulties
             .stream()
-            .map(ExerciseFeedback::getDifficultyFeedback)
             .filter(Objects::nonNull)
             .map(this::difficultyValue)
             .toList();
